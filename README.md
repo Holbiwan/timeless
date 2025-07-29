@@ -1,16 +1,12 @@
-# timeless
+# 🚀 Timeless – Career Companion
 
-A new Flutter project.
+**A Flutter mobile app redefining IT job hunting, powered by Firebase and Cloud Functions for a seamless and scalable backend experience.**
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
+## ✨ Key Features
 
-A few resources to get you started if this is your first Flutter project:
+- 🔔 **Real-time Database** – Efficient data handling via Firestore.
+- 🤝 **Direct Employer Connections** – Scalable serverless backend logic.
+- 📊 **Cloud Functions** – Go beyond resumes by highlighting real skills and achievements.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+---
