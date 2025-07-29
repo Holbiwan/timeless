@@ -1,0 +1,62 @@
+name: timeless
+description: A new Flutter project.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # UI Components
+  cupertino_icons: ^1.0.6
+  google_fonts: ^6.2.1
+  get: ^4.7.2
+  smooth_page_indicator: ^1.2.1
+  flutter_switch: ^0.3.2
+  salomon_bottom_bar: ^3.3.2
+
+  # Firebase Suite (toutes versions compatibles)
+  firebase_core: ^2.32.0  # Gardé en v2 pour compatibilité avec les autres packages
+  firebase_auth: ^4.16.0
+  cloud_firestore: ^4.17.5
+  firebase_storage: ^11.6.5
+  firebase_messaging: ^14.7.10
+
+  # Auth
+  google_sign_in: ^6.3.0
+  flutter_facebook_auth: ^7.0.2
+
+  # Utilitaires
+  shared_preferences: ^2.2.2
+  intl: ^0.18.1
+  url_launcher: ^6.3.2
+  permission_handler: ^12.0.0
+  country_picker: ^2.0.27
+  pull_to_refresh: ^2.0.0
+  advanced_search: ^2.2.6+1
+
+  # Fichiers & Media
+  file_picker: ^6.2.1  # Version stable pour Flutter <3.10
+  image_picker: ^1.1.2
+  pdf_render: ^1.4.12
+  flutter_pdfview: ^1.3.1
+
+  # Notifications
+  flutter_local_notifications: ^14.1.0  # Version compatible avec Firebase v14
+
+dependency_overrides:
+  js: ^0.6.7  # Nécessaire pour certains packages web
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+    - assets/icons/
