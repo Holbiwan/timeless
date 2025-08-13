@@ -10,7 +10,7 @@ import 'package:timeless/utils/string.dart';
 
 // ignore: must_be_immutable
 class RecentApplicationScreen extends StatelessWidget {
-  RecentApplicationScreen({Key? key}) : super(key: key);
+  RecentApplicationScreen({super.key});
   JobDetailsUploadCvController jobDetailsUploadCvController =
       Get.put(JobDetailsUploadCvController());
 

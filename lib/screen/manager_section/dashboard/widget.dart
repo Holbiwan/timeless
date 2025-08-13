@@ -13,7 +13,7 @@ Future alert(context) {
             ElevatedButton(
               style: ButtonStyle(
                 backgroundColor:
-                    MaterialStateProperty.all<Color>(ColorRes.containerColor),
+                    WidgetStateProperty.all<Color>(ColorRes.containerColor),
               ),
               child: Text(
                 'Cancel',
@@ -26,7 +26,7 @@ Future alert(context) {
             ElevatedButton(
               style: ButtonStyle(
                 backgroundColor:
-                    MaterialStateProperty.all<Color>(ColorRes.containerColor),
+                    WidgetStateProperty.all<Color>(ColorRes.containerColor),
               ),
               child: Text("Exit",
                   style: appTextStyle(color: ColorRes.white, fontSize: 15)),

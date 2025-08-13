@@ -13,7 +13,7 @@ import 'package:timeless/utils/string.dart';
 
 // ignore: must_be_immutable
 class SearchJobScreen extends StatelessWidget {
-  SearchJobScreen({Key? key}) : super(key: key);
+  SearchJobScreen({super.key});
   SearchJobController controller = Get.put(SearchJobController());
 
   @override

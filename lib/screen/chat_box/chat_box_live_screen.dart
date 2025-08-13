@@ -5,7 +5,6 @@ import 'package:timeless/screen/chat_box/chat_box_controller.dart';
 import 'package:timeless/screen/chat_box_user/chat_box_usercontroller.dart';
 import 'package:timeless/screen/manager_section/Notification/notification_services.dart';
 import 'package:timeless/screen/manager_section/call/call_join_screen.dart';
-import 'package:timeless/screen/manager_section/call/video_joinig_screen.dart';
 import 'package:timeless/service/pref_services.dart';
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/asset_res.dart';
@@ -23,13 +22,12 @@ class ChatBoxLiveScreenM extends StatelessWidget {
   final String? deviceToken;
 
   ChatBoxLiveScreenM(
-      {Key? key,
+      {super.key,
         this.name,
         this.userUid,
         this.otherUserUid,
         this.roomId,
-        this.deviceToken})
-      : super(key: key);
+        this.deviceToken});
 
   ChatBoxController controller = Get.put(ChatBoxController());
   ChatBoxUserController chatBoxUserController =
@@ -198,7 +196,7 @@ class ChatBoxLiveScreenM extends StatelessWidget {
                       .snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return CircularProgressIndicator(); // or any loading widget you prefer
+                      return const CircularProgressIndicator(); // or any loading widget you prefer
                     }
 
                     if (snapshot.hasError) {

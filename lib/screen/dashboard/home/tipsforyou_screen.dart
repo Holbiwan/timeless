@@ -7,7 +7,7 @@ import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/string.dart';
 
 class TipsForYouScreen extends StatelessWidget {
-  const TipsForYouScreen({Key? key}) : super(key: key);
+  const TipsForYouScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

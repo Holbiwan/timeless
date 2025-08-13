@@ -9,7 +9,7 @@ import 'package:timeless/utils/string.dart';
 import 'notification_controller.dart';
 
 class NotificationScreenU extends StatelessWidget {
-  const NotificationScreenU({Key? key}) : super(key: key);
+  const NotificationScreenU({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -11,7 +11,7 @@ import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/pref_keys.dart';
 
 class EditProfileUser extends StatelessWidget {
-  EditProfileUser({Key? key}) : super(key: key);
+  EditProfileUser({super.key});
   final controller = Get.put(ProfileUserController());
 
   @override

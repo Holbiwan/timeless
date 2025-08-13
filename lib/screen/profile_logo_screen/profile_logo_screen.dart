@@ -9,7 +9,7 @@ import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/string.dart';
 
 class ProfileLogoScreen extends StatelessWidget {
-  const ProfileLogoScreen({Key? key}) : super(key: key);
+  const ProfileLogoScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

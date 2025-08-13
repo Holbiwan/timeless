@@ -302,8 +302,7 @@ Widget recentPeopleBox({bool? homeScreen, String? position}) {
 }
 
 class GradientIcon extends StatelessWidget {
-  const GradientIcon(this.icon, this.size, this.gradient, {Key? key})
-      : super(key: key);
+  const GradientIcon(this.icon, this.size, this.gradient, {super.key});
 
   final IconData icon;
   final double size;

@@ -26,7 +26,6 @@ import 'package:timeless/service/pref_services.dart';
 import 'package:timeless/utils/app_res.dart';
 import 'package:timeless/utils/pref_keys.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -37,33 +36,30 @@ void main() async {
   String? value = await FirebaseMessaging.instance.getToken();
   await PrefService.setValue(PrefKeys.deviceToken, value);
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      systemNavigationBarColor: Colors.transparent, // navigation bar color
-      statusBarColor: Colors.transparent, // status bar color
+      systemNavigationBarColor: Colors.transparent,
+      statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.dark,
       systemNavigationBarIconBrightness: Brightness.dark));
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: "jobSeek",
+      title: "Timeless",
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.red,
       ),
       debugShowCheckedModeBanner: false,
       home: const SplashScreen(),
-      //const SplashScreen(),
-
       initialRoute: "/",
       getPages: [
         GetPage(
             name: AppRes.notificationScreen,
             page: () => const NotificationScreenU()),
-        // GetPage(name: AppRes.jobDetailScreen, page: () => JobDetailScreen()),
         GetPage(
             name: AppRes.newHomePageUi,
             page: () => HomePageNewScreenU()),
@@ -75,7 +71,6 @@ class MyApp extends StatelessWidget {
             page: () => JobDetailsSuccessOrFailedScreen()),
         GetPage(
             name: AppRes.notificationScreen, page: () => NotificationScreenM()),
-        //GetPage(name: AppRes.jobDetailScreen, page: () => JobDetailScreen()),
         GetPage(name: AppRes.jobDetailScreen, page: () => JobDetailScreen()),
         GetPage(
             name: AppRes.jobRecommendationScreen,

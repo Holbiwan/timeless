@@ -7,7 +7,7 @@ import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/color_res.dart';
 
 class AppearanceScreenU extends StatelessWidget {
-  const AppearanceScreenU({Key? key}) : super(key: key);
+  const AppearanceScreenU({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -9,7 +9,7 @@ import 'forgot_password_controller.dart';
 
 // ignore: must_be_immutable
 class ForgotPasswordScreen extends StatelessWidget {
-  ForgotPasswordScreen({Key? key}) : super(key: key);
+  ForgotPasswordScreen({super.key});
   ForgotPasswordController con = Get.put(ForgotPasswordController());
 
   @override

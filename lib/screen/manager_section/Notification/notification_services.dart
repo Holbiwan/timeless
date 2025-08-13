@@ -3,41 +3,52 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-// ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
 
 class NotificationService {
   static Map<String, dynamic> noti = {};
+
+  static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
   static Future<void> init() async {
     await FirebaseMessaging.instance
         .setForegroundNotificationPresentationOptions(
-      alert: true, // Required to display a heads up notification
+      alert: true,
       badge: true,
       sound: true,
     );
 
     const AndroidNotificationChannel channel = AndroidNotificationChannel(
-      'high_importance_channel', // id
-      'High Importance Notifications', // title
+      'high_importance_channel',
+      'High Importance Notifications',
       importance: Importance.max,
     );
-
-    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-        FlutterLocalNotificationsPlugin();
 
     await flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(channel);
 
-    FirebaseMessaging.onMessage.listen((RemoteMessage? message) {
-      RemoteNotification? notification = message?.notification;
-      AndroidNotification? android = message?.notification?.android;
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
 
-      // If `onMessage` is triggered with a notification, construct our own
-      // local notification to show to users using the created channel.
+    const DarwinInitializationSettings initializationSettingsIOS =
+        DarwinInitializationSettings();
+
+    const InitializationSettings initializationSettings =
+        InitializationSettings(
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsIOS,
+    );
+
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      RemoteNotification? notification = message.notification;
+      AndroidNotification? android = message.notification?.android;
+
       if (notification != null && android != null) {
-        Map<String, dynamic> payload = message!.data;
         flutterLocalNotificationsPlugin.show(
           notification.hashCode,
           notification.title,
@@ -47,11 +58,11 @@ class NotificationService {
               channel.id,
               channel.name,
               icon: android.smallIcon,
-              // other properties...
             ),
           ),
-          payload: jsonEncode(payload),
+          payload: jsonEncode(message.data),
         );
+
         noti = {
           "title": notification.title,
           "body": notification.body,
@@ -63,42 +74,16 @@ class NotificationService {
       await Firebase.initializeApp();
     });
 
-    FirebaseMessaging.instance
-        .getInitialMessage()
-        .then((RemoteMessage? message) async {});
+    await FirebaseMessaging.instance.getInitialMessage();
     await FirebaseMessaging.instance.setAutoInitEnabled(true);
 
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
-    const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
-    const IOSInitializationSettings initializationSettingsIOS =
-        IOSInitializationSettings(
-            onDidReceiveLocalNotification: onDidReceiveLocalNotification);
-    const InitializationSettings initializationSettings =
-        InitializationSettings(
-            android: initializationSettingsAndroid,
-            iOS: initializationSettingsIOS);
-
-    flutterLocalNotificationsPlugin.initialize(initializationSettings,
-        onSelectNotification: (String? payload) async {
-      if (payload != null) {
-        if (true) {}
-      }
-    });
   }
 
   static Future<void> _firebaseMessagingBackgroundHandler(
       RemoteMessage message) async {
     await Firebase.initializeApp();
   }
-
-  static Future onDidReceiveLocalNotification(
-    int id,
-    String? title,
-    String? body,
-    String? payload,
-  ) async {}
 
   static Future<String?> getToken() async {
     try {
@@ -109,14 +94,19 @@ class NotificationService {
     }
   }
 
-  static FirebaseMessaging message = FirebaseMessaging.instance;
+  // ✅ Méthode conforme attendue dans le controller
+  static Future<String?> getFcmToken() async {
+    try {
+      final token = await FirebaseMessaging.instance.getToken();
+      return token;
+    } catch (e) {
+      print('Erreur lors de la récupération du FCM Token : $e');
+      return null;
+    }
+  }
 
   static const String serverToken =
       'AAAAmOaKNCQ:APA91bFqbgmjl8dlMHvZpfArI9ekY8dg9NSg7kqOzunggtGggN_kJcq8HalG7VD5J4MpkEu3Mq5H0F7vmugPHC_k8hCbe0GqdBeZA6lwlms4m2NiFJFHD-noCYmN3QuoBvcx8EQlfuhI';
-
-  static Future<String?> getFcmToken() async {
-    return await message.getToken();
-  }
 
   static Future<void> sendNotification(
       SendNotificationModel notification) async {

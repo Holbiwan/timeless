@@ -18,7 +18,7 @@ import 'chat_box_usercontroller.dart';
 
 // ignore: must_be_immutable
 class ChatBoxUserScreen extends StatelessWidget {
-  ChatBoxUserScreen({Key? key}) : super(key: key);
+  ChatBoxUserScreen({super.key});
   final controller = Get.put(ChatBoxUserController());
   List p = [];
   bool abc = false;

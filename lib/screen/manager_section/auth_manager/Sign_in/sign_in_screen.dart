@@ -13,7 +13,7 @@ import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/string.dart';
 
 class SignInScreenM extends StatefulWidget {
-  const SignInScreenM({Key? key}) : super(key: key);
+  const SignInScreenM({super.key});
 
   @override
   State<SignInScreenM> createState() => _SignInScreenMState();
@@ -99,7 +99,7 @@ class _SignInScreenMState extends State<SignInScreenM> {
                                 boxShadow: [
                                   BoxShadow(
                                       offset: const Offset(6, 6),
-                                      color: ColorRes.containerColor
+                                      color: const Color.fromARGB(255, 255, 0, 13)
                                           .withOpacity(0.12),
                                       spreadRadius: 0,
                                       blurRadius: 35),
@@ -107,7 +107,7 @@ class _SignInScreenMState extends State<SignInScreenM> {
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: Material(
-                                shadowColor: ColorRes.containerColor,
+                                shadowColor: const Color.fromARGB(255, 161, 86, 12),
                                 borderRadius: BorderRadius.circular(10),
                                 child: commonTextFormField(
                                   onChanged: controller.onChanged,
@@ -232,7 +232,7 @@ class _SignInScreenMState extends State<SignInScreenM> {
                                 boxShadow: [
                                   BoxShadow(
                                       offset: const Offset(6, 6),
-                                      color: ColorRes.containerColor
+                                      color: const Color.fromARGB(255, 255, 0, 0)
                                           .withOpacity(0.13),
                                       spreadRadius: 0,
                                       blurRadius: 35),
@@ -240,7 +240,7 @@ class _SignInScreenMState extends State<SignInScreenM> {
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: Material(
-                                shadowColor: ColorRes.containerColor,
+                                shadowColor: const Color.fromARGB(255, 255, 0, 0),
                                 borderRadius: BorderRadius.circular(12),
                                 child: commonTextFormField(
                                   onChanged: controller.onChanged,
@@ -367,11 +367,11 @@ class _SignInScreenMState extends State<SignInScreenM> {
                                   child: Row(
                                     children: [
                                       Checkbox(
-                                        activeColor: ColorRes.containerColor,
+                                        activeColor: const Color.fromARGB(255, 255, 1, 1),
                                         checkColor: ColorRes.white,
                                         side: const BorderSide(
                                             width: 1.2,
-                                            color: ColorRes.containerColor),
+                                            color: Color.fromARGB(255, 255, 0, 0)),
                                         value: controller.rememberMe,
                                         onChanged:
                                             controller.onRememberMeChange,
@@ -425,8 +425,8 @@ class _SignInScreenMState extends State<SignInScreenM> {
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
                                   gradient: const LinearGradient(colors: [
-                                    ColorRes.gradientColor,
-                                    ColorRes.containerColor
+                                    Color.fromARGB(255, 255, 0, 0),
+                                    Color.fromARGB(255, 253, 6, 6)
                                   ]),
                                 ),
                                 child: Text(Strings.signIn,
@@ -450,7 +450,7 @@ class _SignInScreenMState extends State<SignInScreenM> {
                               style: appTextStyle(
                                   fontWeight: FontWeight.w500,
                                   fontSize: 15,
-                                  color: ColorRes.containerColor)),
+                                  color: const Color.fromARGB(255, 255, 9, 9))),
                         ),
                       ),
                       const SizedBox(height: 28),
@@ -481,7 +481,7 @@ class _SignInScreenMState extends State<SignInScreenM> {
                                   boxShadow: [
                                     BoxShadow(
                                         offset: const Offset(6, 6),
-                                        color: ColorRes.containerColor
+                                        color: const Color.fromARGB(255, 255, 0, 0)
                                             .withOpacity(0.08),
                                         spreadRadius: 0,
                                         blurRadius: 35),
@@ -521,7 +521,7 @@ class _SignInScreenMState extends State<SignInScreenM> {
                                   boxShadow: [
                                     BoxShadow(
                                         offset: const Offset(6, 6),
-                                        color: ColorRes.containerColor
+                                        color: const Color.fromARGB(255, 255, 9, 9)
                                             .withOpacity(0.08),
                                         spreadRadius: 0,
                                         blurRadius: 35),
@@ -581,7 +581,7 @@ class _SignInScreenMState extends State<SignInScreenM> {
                                 style: appTextStyle(
                                     fontWeight: FontWeight.w600,
                                     fontSize: 16,
-                                    color: ColorRes.containerColor),
+                                    color: const Color.fromARGB(255, 255, 0, 0)),
                               ),
                             ),
                           ),
@@ -601,7 +601,7 @@ class _SignInScreenMState extends State<SignInScreenM> {
 
   OutlineInputBorder enableBorder() {
     return OutlineInputBorder(
-      borderSide: const BorderSide(color: ColorRes.containerColor),
+      borderSide: const BorderSide(color: Color.fromARGB(255, 255, 0, 0)),
       borderRadius: BorderRadius.circular(10),
     );
   }

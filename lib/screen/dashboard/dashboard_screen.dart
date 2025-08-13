@@ -19,7 +19,7 @@ import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'applications/applications_screen.dart';
 
 class DashBoardScreen extends StatelessWidget {
-  DashBoardScreen({Key? key}) : super(key: key);
+  DashBoardScreen({super.key});
   final DashBoardController controller = Get.put(DashBoardController());
 
   @override

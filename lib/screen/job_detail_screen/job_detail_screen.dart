@@ -15,7 +15,7 @@ import 'package:timeless/utils/string.dart';
 
 // ignore: must_be_immutable
 class JobDetailScreen extends StatelessWidget {
-  JobDetailScreen({Key? key}) : super(key: key);
+  JobDetailScreen({super.key});
   final JobDetailsController controller = Get.put(JobDetailsController());
   var args = Get.arguments;
 

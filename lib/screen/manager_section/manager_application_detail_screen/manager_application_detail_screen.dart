@@ -10,7 +10,7 @@ import 'package:timeless/utils/string.dart';
 
 // ignore: must_be_immutable
 class ManagerApplicationDetailScreen extends StatelessWidget {
-  ManagerApplicationDetailScreen({Key? key}) : super(key: key);
+  ManagerApplicationDetailScreen({super.key});
   var args = Get.arguments;
   @override
   Widget build(BuildContext context) {

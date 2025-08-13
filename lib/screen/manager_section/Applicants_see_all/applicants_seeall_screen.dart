@@ -10,7 +10,7 @@ import 'package:timeless/utils/string.dart';
 
 
 class ApplicantsSeeAllScreen extends StatelessWidget {
-  const ApplicantsSeeAllScreen({Key? key}) : super(key: key);
+  const ApplicantsSeeAllScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

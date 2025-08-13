@@ -4,7 +4,7 @@ import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/string.dart';
 
 class VideoJoiningScreen extends StatelessWidget {
-  const VideoJoiningScreen({Key? key}) : super(key: key);
+  const VideoJoiningScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

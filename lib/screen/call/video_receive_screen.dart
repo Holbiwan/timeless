@@ -3,7 +3,7 @@ import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/asset_res.dart';
 
 class VideoReceiveScreen extends StatelessWidget {
-  const VideoReceiveScreen({Key? key}) : super(key: key);
+  const VideoReceiveScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

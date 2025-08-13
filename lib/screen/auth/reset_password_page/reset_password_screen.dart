@@ -11,7 +11,7 @@ import 'reset_password_controller.dart';
 
 // ignore: must_be_immutable
 class ResetPasswordScreen extends StatelessWidget {
-  ResetPasswordScreen({Key? key}) : super(key: key);
+  ResetPasswordScreen({super.key});
   ResetPasswordController controller = Get.put(ResetPasswordController());
   final _formKey = GlobalKey<FormState>();
 

@@ -8,7 +8,7 @@ import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/color_res.dart';
 
 class AppliesLogoScreen extends StatelessWidget {
-  const AppliesLogoScreen({Key? key}) : super(key: key);
+  const AppliesLogoScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

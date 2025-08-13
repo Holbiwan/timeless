@@ -10,7 +10,7 @@ import 'package:timeless/utils/color_res.dart';
 
 // ignore: must_be_immutable
 class ResetPasswordScreenM extends StatelessWidget {
-  ResetPasswordScreenM({Key? key}) : super(key: key);
+  ResetPasswordScreenM({super.key});
   ResetPasswordControllerM controller = Get.put(ResetPasswordControllerM());
   final _formKey = GlobalKey<FormState>();
 

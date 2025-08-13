@@ -10,7 +10,7 @@ import 'package:timeless/utils/string.dart';
 
 // ignore: must_be_immutable
 class NotificationScreenM extends StatelessWidget {
-  NotificationScreenM({Key? key}) : super(key: key);
+  NotificationScreenM({super.key});
   ApplicantsDetailsController anscontro =
       Get.put(ApplicantsDetailsController());
 

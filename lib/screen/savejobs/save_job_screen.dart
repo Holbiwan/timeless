@@ -12,7 +12,7 @@ import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/utils/string.dart';
 
 class SaveJobScreen extends StatelessWidget {
-  SaveJobScreen({Key? key}) : super(key: key);
+  SaveJobScreen({super.key});
   final SaveJobController controller = SaveJobController();
 
   @override

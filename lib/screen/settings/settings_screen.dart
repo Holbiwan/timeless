@@ -13,7 +13,7 @@ import 'package:timeless/utils/string.dart';
 import 'appearance/appearance_screen.dart';
 
 class SettingsScreenU extends StatelessWidget {
-  const SettingsScreenU({Key? key}) : super(key: key);
+  const SettingsScreenU({super.key});
 
   @override
   Widget build(BuildContext context) {

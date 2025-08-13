@@ -15,7 +15,7 @@ import 'localization_screen.dart';
 
 // ignore: must_be_immutable
 class SettingScreenM extends StatelessWidget {
-  SettingScreenM({Key? key}) : super(key: key);
+  SettingScreenM({super.key});
   AppearanceControllerM controller = Get.put(AppearanceControllerM());
   @override
   Widget build(BuildContext context) {

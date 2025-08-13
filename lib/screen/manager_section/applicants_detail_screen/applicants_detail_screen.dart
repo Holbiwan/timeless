@@ -25,9 +25,9 @@ class ApplicantsDetailScreen extends StatelessWidget {
   final bool isWrong;
 
   ApplicantsDetailScreen({
-    Key? key,
+    super.key,
     required this.isWrong,
-  }) : super(key: key);
+  });
   final ApplicantsDetailsController controller =
       Get.put(ApplicantsDetailsController());
   ApplicantsDetailsController ans = Get.put(ApplicantsDetailsController());

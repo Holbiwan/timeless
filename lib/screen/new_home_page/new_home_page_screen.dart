@@ -17,7 +17,7 @@ import 'package:timeless/utils/string.dart';
 
 // ignore: must_be_immutable
 class HomePageNewScreenU extends StatelessWidget {
-  HomePageNewScreenU({Key? key}) : super(key: key);
+  HomePageNewScreenU({super.key});
 
   HomePageNewController controller = Get.put(HomePageNewController());
 
@@ -60,7 +60,7 @@ class HomePageNewScreenU extends StatelessWidget {
 
                   child: Icon(
                     Icons.notifications,
-                    color: ColorRes.containerColor,
+                    color: Color.fromARGB(255, 255, 0, 0),
                   ),
                 ),
               ),
@@ -127,7 +127,7 @@ class HomePageNewScreenU extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(15.0),
               child: Text(
-                'Make the most of Job Seeker by creating your job profile ',
+                'Make the most of Timeless by creating your job profile ',
                 style: GoogleFonts.playfairDisplay(
                     fontWeight: FontWeight.w700,
                     fontSize: 20,
@@ -135,10 +135,10 @@ class HomePageNewScreenU extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15.0),
               child: Row(
-                children: const [
+                children: [
                   Icon(
                     Icons.star,
                     color: ColorRes.orange,
@@ -166,10 +166,10 @@ class HomePageNewScreenU extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15.0),
               child: Row(
-                children: const [
+                children: [
                   Icon(
                     Icons.star,
                     color: ColorRes.orange,
@@ -211,7 +211,7 @@ class HomePageNewScreenU extends StatelessWidget {
                     height: 36,
                     width: 95,
                     decoration: BoxDecoration(
-                      color: ColorRes.containerColor,
+                      color: const Color.fromARGB(255, 7, 48, 228),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: const Center(
@@ -241,7 +241,7 @@ class HomePageNewScreenU extends StatelessWidget {
                       child: Text(
                         "Log in",
                         style: TextStyle(
-                            color: ColorRes.containerColor,
+                            color: Color.fromARGB(255, 16, 220, 74),
                             fontWeight: FontWeight.w500,
                             fontSize: 14),
                       ),
@@ -360,7 +360,7 @@ class HomePageNewScreenU extends StatelessWidget {
                   height: 36,
                   width: 119,
                   decoration: BoxDecoration(
-                    color: ColorRes.containerColor,
+                    color: const Color.fromARGB(255, 124, 4, 4),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: const Center(
@@ -580,7 +580,7 @@ class HomePageNewScreenU extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: Text(
-                        "Top companies on Job Seeker are hiring by directly \nreaching out to Jobseekers without posting a job. \nLearn how you can get the most out of this opportunity",
+                        "Top companies on Timeless are hiring by directly \nreaching out to Jobseekers without posting a job. \nLearn how you can get the most out of this opportunity",
                         style: TextStyle(
                             fontSize: 9,
                             fontWeight: FontWeight.w400,

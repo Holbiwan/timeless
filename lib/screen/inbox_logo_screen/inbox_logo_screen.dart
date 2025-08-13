@@ -9,7 +9,7 @@ import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/string.dart';
 
 class InboxLogoScreen extends StatelessWidget {
-  const InboxLogoScreen({Key? key}) : super(key: key);
+  const InboxLogoScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

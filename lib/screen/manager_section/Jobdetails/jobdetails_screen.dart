@@ -16,8 +16,7 @@ class JobDetailsScreen extends StatelessWidget {
   final bool isError;
   String? position;
 
-  JobDetailsScreen({Key? key, required this.isError, this.position})
-      : super(key: key);
+  JobDetailsScreen({super.key, required this.isError, this.position});
   final JobDetailsController controller = Get.put(JobDetailsController());
   // var args = Get.arguments;
 

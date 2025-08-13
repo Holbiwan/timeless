@@ -14,7 +14,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 // ignore: must_be_immutable
 class FirstScreen extends StatelessWidget {
-  FirstScreen({Key? key}) : super(key: key);
+  FirstScreen({super.key});
   FirstScreenController controller = Get.put(FirstScreenController());
 
   @override

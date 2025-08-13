@@ -15,7 +15,7 @@ import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/utils/string.dart';
 
 class SignUpScreen extends StatelessWidget {
-  const SignUpScreen({Key? key}) : super(key: key);
+  const SignUpScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

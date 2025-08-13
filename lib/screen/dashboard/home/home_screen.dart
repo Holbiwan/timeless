@@ -16,7 +16,7 @@ import 'package:timeless/utils/string.dart';
 
 // ignore: must_be_immutable
 class HomeScreen extends StatelessWidget {
-  HomeScreen({Key? key}) : super(key: key);
+  HomeScreen({super.key});
   final HomeController controller = HomeController();
   JobRecommendationController jrcontroller =
       Get.put(JobRecommendationController());

@@ -11,7 +11,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../sign_up_new/sign_up_new_screen.dart';
 
 class FirstPageScreenM extends StatelessWidget {
-  const FirstPageScreenM({Key? key}) : super(key: key);
+  const FirstPageScreenM({super.key});
 
   @override
   Widget build(BuildContext context) {

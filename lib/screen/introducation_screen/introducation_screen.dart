@@ -14,7 +14,7 @@ import 'introduction_controller.dart';
 
 // ignore: must_be_immutable
 class IntroductionScreen extends StatelessWidget {
-  IntroductionScreen({Key? key}) : super(key: key);
+  IntroductionScreen({super.key});
   PageController controller = PageController();
   IntroductionController introductionController =
       Get.put(IntroductionController());
@@ -22,19 +22,19 @@ class IntroductionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorRes.backgroundColor,
+      backgroundColor: const Color.fromARGB(255, 200, 210, 54),
       body: Obx(() => Column(
             children: [
               const SizedBox(height: 60),
               introductionController.selectedIndex.value != 2
-                  ? Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  ? const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
-                        children: const [
+                        children: [
                           Text(
                             "skip",
-                            style: TextStyle(color: ColorRes.containerColor),
+                            style: TextStyle(color: Color.fromARGB(255, 255, 2, 2)),
                           ),
                         ],
                       ),
@@ -60,12 +60,12 @@ class IntroductionScreen extends StatelessWidget {
                                 Text(
                                   "Search Jobs",
                                   style: appTextStyle(
-                                      color: ColorRes.containerColor,
+                                      color: const Color.fromARGB(255, 250, 2, 2),
                                       fontSize: 24,
                                       fontWeight: FontWeight.w600),
                                 ),
                                 Text(
-                                  "Lorem ipsum dolor sit amet, consectetur \n                         adipiscing elit",
+                                  "Bridging the gap with timeless talent",
                                   style: appTextStyle(
                                       color: ColorRes.black,
                                       fontSize: 15,
@@ -84,12 +84,12 @@ class IntroductionScreen extends StatelessWidget {
                                     Text(
                                       "Apply Job",
                                       style: appTextStyle(
-                                          color: ColorRes.containerColor,
+                                          color: const Color.fromARGB(255, 255, 0, 0),
                                           fontSize: 24,
                                           fontWeight: FontWeight.w600),
                                     ),
                                     Text(
-                                      "Lorem ipsum dolor sit amet, consectetur \n                         adipiscing elit",
+                                      "Bridging the gap with timeless talent",
                                       style: appTextStyle(
                                           color: ColorRes.black,
                                           fontSize: 15,
@@ -109,12 +109,12 @@ class IntroductionScreen extends StatelessWidget {
                                         Text(
                                           "Ready For The Job!",
                                           style: appTextStyle(
-                                              color: ColorRes.containerColor,
+                                              color: const Color.fromARGB(255, 255, 4, 4),
                                               fontSize: 24,
                                               fontWeight: FontWeight.w600),
                                         ),
                                         Text(
-                                          "Lorem ipsum dolor sit amet, consectetur \n                         adipiscing elit",
+                                          "Bridging the gap with timeless talent",
                                           style: appTextStyle(
                                               color: ColorRes.black,
                                               fontSize: 15,
@@ -165,8 +165,8 @@ class IntroductionScreen extends StatelessWidget {
                             Radius.circular(10),
                           ),
                           gradient: LinearGradient(colors: [
-                            ColorRes.gradientColor,
-                            ColorRes.containerColor,
+                            Color.fromARGB(255, 255, 0, 0),
+                            Color.fromARGB(255, 50, 235, 47),
                           ]),
                         ),
                         child: Text(

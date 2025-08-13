@@ -19,7 +19,7 @@ import 'uiux_designer_screen.dart';
 import 'accepted_screen.dart';
 
 class ApplicationsScreen extends StatelessWidget {
-  ApplicationsScreen({Key? key}) : super(key: key);
+  ApplicationsScreen({super.key});
 
   final applicationController = Get.put(ApplicationsController());
 

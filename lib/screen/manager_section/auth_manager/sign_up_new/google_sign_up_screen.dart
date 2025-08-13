@@ -15,12 +15,11 @@ class GoogleSignupScreenM extends StatelessWidget {
   final String lastName;
   final String uid;
   const GoogleSignupScreenM(
-      {Key? key,
+      {super.key,
       required this.email,
       required this.firstName,
       required this.lastName,
-      required this.uid})
-      : super(key: key);
+      required this.uid});
 
   @override
   Widget build(BuildContext context) {

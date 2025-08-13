@@ -16,12 +16,11 @@ class GoogleSignupScreen extends StatelessWidget {
   final String lastName;
   final String uid;
   const GoogleSignupScreen(
-      {Key? key,
+      {super.key,
       required this.email,
       required this.firstName,
       required this.lastName,
-      required this.uid})
-      : super(key: key);
+      required this.uid});
 
   @override
   Widget build(BuildContext context) {
@@ -130,12 +129,12 @@ class GoogleSignupScreen extends StatelessWidget {
                           color: controller.phoneController.text.trim().isEmpty
                               ? ColorRes.borderColor
                               : controller.phoneError == ""
-                                  ? ColorRes.containerColor
+                                  ? const Color.fromARGB(255, 0, 255, 51)
                                   : ColorRes.starColor),
                       boxShadow: [
                         BoxShadow(
                             offset: const Offset(6, 6),
-                            color: ColorRes.containerColor.withOpacity(0.10),
+                            color: const Color.fromARGB(255, 255, 0, 0).withOpacity(0.10),
                             spreadRadius: 0,
                             blurRadius: 35),
                       ],

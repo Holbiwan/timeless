@@ -7,7 +7,7 @@ import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/color_res.dart';
 
 class CongratsScreenM extends StatelessWidget {
-  const CongratsScreenM({Key? key}) : super(key: key);
+  const CongratsScreenM({super.key});
 
   @override
   Widget build(BuildContext context) {

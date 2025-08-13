@@ -6,7 +6,7 @@ import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/string.dart';
 
 class CallReceivedScreen extends StatelessWidget {
-  const CallReceivedScreen({Key? key}) : super(key: key);
+  const CallReceivedScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

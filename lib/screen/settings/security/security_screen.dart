@@ -8,7 +8,7 @@ import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/string.dart';
 
 class SecurityScreenU extends StatelessWidget {
-  const SecurityScreenU({Key? key}) : super(key: key);
+  const SecurityScreenU({super.key});
   @override
   Widget build(BuildContext context) {
     SecurityControllerU controller = Get.put(SecurityControllerU());

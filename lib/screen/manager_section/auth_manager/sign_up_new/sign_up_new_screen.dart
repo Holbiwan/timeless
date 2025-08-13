@@ -13,7 +13,7 @@ import 'package:timeless/utils/string.dart';
 
 // ignore: must_be_immutable
 class SignUpScreenM extends StatelessWidget {
-  SignUpScreenM({Key? key}) : super(key: key);
+  SignUpScreenM({super.key});
   SignUpControllerM controller = Get.put(SignUpControllerM());
 
   @override

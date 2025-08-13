@@ -10,7 +10,7 @@ import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/string.dart';
 
 class JobRecommendation extends StatelessWidget {
-  const JobRecommendation({Key? key}) : super(key: key);
+  const JobRecommendation({super.key});
 
   @override
   Widget build(BuildContext context) {

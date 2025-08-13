@@ -14,7 +14,7 @@ import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/utils/string.dart';
 
 class ProfileUserScreenU extends StatelessWidget {
-  ProfileUserScreenU({Key? key}) : super(key: key);
+  ProfileUserScreenU({super.key});
   final controller = Get.put(ProfileUserController());
 
   @override

@@ -7,7 +7,7 @@ import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/string.dart';
 
 class ChatBovLiveScreen extends StatelessWidget {
-  const ChatBovLiveScreen({Key? key}) : super(key: key);
+  const ChatBovLiveScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

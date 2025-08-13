@@ -9,7 +9,7 @@ import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/string.dart';
 
 class RequirementsScreen extends StatelessWidget {
-  RequirementsScreen({Key? key}) : super(key: key);
+  RequirementsScreen({super.key});
   final controller = Get.put(CreateVacanciesController());
 
   @override

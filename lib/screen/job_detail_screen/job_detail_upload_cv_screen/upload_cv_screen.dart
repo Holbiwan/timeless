@@ -12,7 +12,7 @@ import 'package:timeless/utils/string.dart';
 
 // ignore: must_be_immutable
 class JobDetailsUploadCvScreen extends StatelessWidget {
-  JobDetailsUploadCvScreen({Key? key}) : super(key: key);
+  JobDetailsUploadCvScreen({super.key});
   final JobDetailsUploadCvController controller =
       Get.put(JobDetailsUploadCvController());
   var args = Get.arguments;

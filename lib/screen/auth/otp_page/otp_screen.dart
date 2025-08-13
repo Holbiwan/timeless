@@ -11,7 +11,7 @@ import 'otp_controller.dart';
 
 // ignore: must_be_immutable
 class OtpScreen extends StatelessWidget {
-  OtpScreen({Key? key}) : super(key: key);
+  OtpScreen({super.key});
   OtpController controller = Get.put(OtpController());
 
   @override

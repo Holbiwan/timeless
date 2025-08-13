@@ -9,7 +9,7 @@ import 'package:timeless/utils/string.dart';
 import 'create_vacancies_controller.dart';
 
 class CreateVacanciesScreenM extends StatelessWidget {
-  const CreateVacanciesScreenM({Key? key}) : super(key: key);
+  const CreateVacanciesScreenM({super.key});
 
   @override
   Widget build(BuildContext context) {

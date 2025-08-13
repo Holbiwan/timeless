@@ -9,7 +9,7 @@ import 'package:timeless/utils/color_res.dart';
 import 'forgot_password_new_controller.dart';
 
 class ForgotPasswordScreenU extends StatelessWidget {
-  ForgotPasswordScreenU({Key? key}) : super(key: key);
+  ForgotPasswordScreenU({super.key});
 
   final ForgotPasswordControllerU controller =
       Get.put(ForgotPasswordControllerU());

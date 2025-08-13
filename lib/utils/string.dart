@@ -1,11 +1,13 @@
+// ignore_for_file: constant_identifier_names
+
 class Strings {
   ///-----------------------firstScreen-------------------------------------------
-  static const logo = 'Logo';
-  static const jobSeeker = "Job Seeker";
+  static const logo = "";
+  static const Timeless = "Timeless";
+  static const jobSeeker = "TIMELESS Career booster";
 
   ///-------------------------sentences--------------------------------------------
-  static const firstScreenSentences =
-      ' We currently have over 140 live roles waiting \nfor you!';
+  static const firstScreenSentences = ' We currently have roles waiting !';
   static const screenSentences =
       'By creating an account, you are agreeing to our ';
 
@@ -27,7 +29,7 @@ class Strings {
   static const apply = "Apply";
   static const uploadResume = "Upload Resume/CV";
   static const uploadYourCvOr =
-      "Upload your CV or Resume to apply for the job vacancy.";
+      "Upload your CV/Resume to apply for the job vacancy.";
   static const uploading = "Uploading...";
   static const successful = "Successful";
   static const failed = "Failed";
@@ -62,7 +64,7 @@ class Strings {
   // ignore: constant_identifier_names
   static const RecentPeopleApplication = " Recent People Application";
   static const nowYouCanSeeAllTheApplier =
-      "Now you can see all the applier CV/Resume and invite them to the next step";
+      "Now you can see all the applier Resume and invite them to the next step";
   static const applicants = "Applicants";
   static const seeResume = "See Resume";
   static const markStatusAs = "Mark Status as";

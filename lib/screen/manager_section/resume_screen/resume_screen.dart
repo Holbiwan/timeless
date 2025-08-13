@@ -11,7 +11,7 @@ import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:timeless/utils/color_res.dart';
 
 class ResumeScreen extends StatefulWidget {
-  const ResumeScreen({Key? key}) : super(key: key);
+  const ResumeScreen({super.key});
 
   @override
   State<ResumeScreen> createState() => _ResumeScreenState();

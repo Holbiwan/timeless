@@ -12,7 +12,7 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
 
 class SeeDetailsScreen extends StatelessWidget {
-  const SeeDetailsScreen({Key? key}) : super(key: key);
+  const SeeDetailsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

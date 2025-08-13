@@ -15,7 +15,7 @@ import 'package:timeless/utils/string.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
 class ManagerDashBoardScreen extends StatelessWidget {
-  ManagerDashBoardScreen({Key? key}) : super(key: key);
+  ManagerDashBoardScreen({super.key});
   ManagerDashBoardScreenController controller =
       Get.put(ManagerDashBoardScreenController());
 

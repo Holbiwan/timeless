@@ -6,7 +6,7 @@ import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/string.dart';
 
 class CallJoiningScreen extends StatelessWidget {
-  const CallJoiningScreen({Key? key}) : super(key: key);
+  const CallJoiningScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

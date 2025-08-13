@@ -14,14 +14,13 @@ class RejectedScreen extends StatelessWidget {
   String? location;
   String? type;
   RejectedScreen(
-      {Key? key,
+      {super.key,
       this.position,
       this.companyName,
       this.message,
       this.salary,
       this.location,
-      this.type})
-      : super(key: key);
+      this.type});
 
   @override
   Widget build(BuildContext context) {

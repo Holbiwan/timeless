@@ -6,7 +6,7 @@ import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/string.dart';
 
 class NotificationScreenU extends StatelessWidget {
-  const NotificationScreenU({Key? key}) : super(key: key);
+  const NotificationScreenU({super.key});
 
   @override
   Widget build(BuildContext context) {

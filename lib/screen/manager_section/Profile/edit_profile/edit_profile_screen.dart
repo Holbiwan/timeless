@@ -11,7 +11,7 @@ import 'package:timeless/utils/color_res.dart';
 
 // ignore: must_be_immutable
 class EditProfileScreen extends StatelessWidget {
-  EditProfileScreen({Key? key}) : super(key: key);
+  EditProfileScreen({super.key});
   final controller = Get.put(ProfileController());
 
   CreateVacanciesController getCreate = Get.put(CreateVacanciesController());

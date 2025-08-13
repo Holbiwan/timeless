@@ -10,7 +10,7 @@ import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/string.dart';
 
 class JobRecomandationSearch extends StatelessWidget {
-  JobRecomandationSearch({Key? key}) : super(key: key);
+  JobRecomandationSearch({super.key});
   final controller = Get.put(JobRecomandationSearchController());
 
   @override

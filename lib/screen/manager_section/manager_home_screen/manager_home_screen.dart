@@ -15,7 +15,7 @@ import 'package:timeless/utils/string.dart';
 
 // ignore: must_be_immutable
 class ManagerHomeScreen extends StatelessWidget {
-  ManagerHomeScreen({Key? key}) : super(key: key);
+  ManagerHomeScreen({super.key});
   final controller = Get.put(ManagerHomeScreenController());
 
   JobDetailsUploadCvController jobDetailsUploadCvController =

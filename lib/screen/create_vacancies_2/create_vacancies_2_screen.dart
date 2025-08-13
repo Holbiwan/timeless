@@ -10,7 +10,7 @@ import 'package:timeless/utils/string.dart';
 import 'create_vacancies_2_controller.dart';
 
 class CreateVacancies2Screen extends StatelessWidget {
-  CreateVacancies2Screen({Key? key}) : super(key: key);
+  CreateVacancies2Screen({super.key});
   final controller = Get.put(CreateVacancies2Controller());
 
   @override

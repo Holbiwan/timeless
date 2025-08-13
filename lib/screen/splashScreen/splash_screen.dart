@@ -44,7 +44,7 @@ class _SplashScreenState extends State<SplashScreen> {
     /*String token = PrefService.getString(PrefKeys.userId);
     String rol = PrefService.getString(PrefKeys.rol);
     bool company = PrefService.getBool(PrefKeys.company);*/
-    await Future.delayed(const Duration(seconds: 3), () {
+    await Future.delayed(const Duration(seconds: 5), () {
       return Get.offAll(IntroductionScreen());
     });
   }

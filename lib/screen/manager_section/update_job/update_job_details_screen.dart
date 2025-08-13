@@ -6,7 +6,7 @@ import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/string.dart';
 
 class UpdateJobScreen extends StatelessWidget {
-  const UpdateJobScreen({Key? key}) : super(key: key);
+  const UpdateJobScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

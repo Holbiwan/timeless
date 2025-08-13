@@ -21,7 +21,7 @@ class ManagerApplicationScreen extends StatelessWidget {
   final jrController = Get.put(ManagerApplicationScreenController());
   FirebaseFirestore fireStore = FirebaseFirestore.instance;
 
-  ManagerApplicationScreen({Key? key}) : super(key: key);
+  ManagerApplicationScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

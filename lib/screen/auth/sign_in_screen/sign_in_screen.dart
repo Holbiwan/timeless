@@ -15,7 +15,7 @@ import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/utils/string.dart';
 
 class SigninScreenU extends StatefulWidget {
-  const SigninScreenU({Key? key}) : super(key: key);
+  const SigninScreenU({super.key});
 
   @override
   State<SigninScreenU> createState() => _SigninScreenUState();

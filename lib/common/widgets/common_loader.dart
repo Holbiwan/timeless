@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:timeless/utils/color_res.dart';
 
 class CommonLoader extends StatelessWidget {
-  const CommonLoader({Key? key}) : super(key: key);
+  const CommonLoader({super.key});
 
   @override
   Widget build(BuildContext context) {

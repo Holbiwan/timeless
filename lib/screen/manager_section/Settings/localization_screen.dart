@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:timeless/utils/color_res.dart';
 
 class LocalizationScreenM extends StatelessWidget {
-  const LocalizationScreenM({Key? key}) : super(key: key);
+  const LocalizationScreenM({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
         body: Column(
-          children: const [
+          children: [
             SizedBox(
               height: 200,
               width: 200,

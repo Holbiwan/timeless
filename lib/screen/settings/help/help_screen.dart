@@ -9,7 +9,7 @@ import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/color_res.dart';
 
 class HelpScreenU extends StatelessWidget {
-  const HelpScreenU({Key? key}) : super(key: key);
+  const HelpScreenU({super.key});
 
   @override
   Widget build(BuildContext context) {

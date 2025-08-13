@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:timeless/screen/call/call_joining_screen.dart';
-import 'package:timeless/screen/call/video_join_screen.dart';
 import 'package:timeless/screen/chat_box/chat_box_controller.dart';
 import 'package:timeless/screen/manager_section/Notification/notification_services.dart';
 import 'package:timeless/service/pref_services.dart';
@@ -24,13 +23,13 @@ class ChatLiveScreen extends StatelessWidget {
   final String? deviceToken;
 
   ChatLiveScreen({
-    Key? key,
+    super.key,
     this.name,
     this.userUid,
     this.otherUserUid,
     this.roomId,
     this.deviceToken,
-  }) : super(key: key);
+  });
 
   ChatBoxUserController controller = Get.put(ChatBoxUserController());
   ChatBoxController chatBoxController = Get.put(ChatBoxController());

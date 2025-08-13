@@ -15,7 +15,7 @@ import 'package:timeless/utils/string.dart';
 
 // ignore: must_be_immutable
 class ProfileScreen extends StatelessWidget {
-  ProfileScreen({Key? key}) : super(key: key);
+  ProfileScreen({super.key});
   final controller = Get.put(ProfileController());
   static FirebaseFirestore fireStore = FirebaseFirestore.instance;
 

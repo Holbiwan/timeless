@@ -13,8 +13,8 @@ import 'package:timeless/utils/string.dart';
 
 class UpdateVacanciesRequirementsScreen extends StatelessWidget {
   const UpdateVacanciesRequirementsScreen({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

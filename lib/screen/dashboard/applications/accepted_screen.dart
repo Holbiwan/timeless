@@ -15,14 +15,13 @@ class AcceptedScreen extends StatelessWidget {
   String? location;
   String? type;
   AcceptedScreen(
-      {Key? key,
+      {super.key,
       this.position,
       this.companyName,
       this.message,
       this.salary,
       this.location,
-      this.type})
-      : super(key: key);
+      this.type});
 
   @override
   Widget build(BuildContext context) {
