@@ -450,7 +450,7 @@ class HomePageNewScreenU extends StatelessWidget {
                             fontWeight: FontWeight.w400),
                       ),
                       Text(
-                        "United States - Full Time",
+                        "Paris - Full Time",
                         style: appTextStyle(
                             color: ColorRes.black.withOpacity(0.5),
                             fontSize: 10,
@@ -470,9 +470,9 @@ class HomePageNewScreenU extends StatelessWidget {
                           color: ColorRes.containerColor),
                       const SizedBox(height: 10),
                       Text(
-                        "\$2.350",
+                        "\€2.600",
                         style: appTextStyle(
-                            color: ColorRes.containerColor,
+                            color: const Color.fromARGB(255, 15, 1, 1),
                             fontSize: 16,
                             fontWeight: FontWeight.w600),
                       ),
@@ -507,7 +507,7 @@ class HomePageNewScreenU extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Financial planner",
+                        'Full Stack Dev',
                         style: appTextStyle(
                             color: ColorRes.black,
                             fontSize: 15,
@@ -515,14 +515,14 @@ class HomePageNewScreenU extends StatelessWidget {
                       ),
                       const SizedBox(height: 6),
                       Text(
-                        "Twitter",
+                        "X",
                         style: appTextStyle(
                             color: ColorRes.black,
                             fontSize: 10,
                             fontWeight: FontWeight.w400),
                       ),
                       Text(
-                        "United Kingdom - Part Time",
+                        "Lyon - Part Time",
                         style: appTextStyle(
                             color: ColorRes.black.withOpacity(0.5),
                             fontSize: 10,
@@ -542,9 +542,9 @@ class HomePageNewScreenU extends StatelessWidget {
                           color: ColorRes.containerColor),
                       const SizedBox(height: 10),
                       Text(
-                        "\$2.200",
+                        "\€2.400",
                         style: appTextStyle(
-                            color: ColorRes.containerColor,
+                            color: const Color.fromARGB(255, 12, 0, 0),
                             fontSize: 16,
                             fontWeight: FontWeight.w600),
                       ),
@@ -559,7 +559,7 @@ class HomePageNewScreenU extends StatelessWidget {
               height: 227,
               width: Get.width,
               decoration: BoxDecoration(
-                color: ColorRes.logoColor,
+                color: const Color.fromARGB(255, 232, 157, 216),
                 borderRadius: BorderRadius.circular(30),
               ),
               child: Column(
@@ -570,21 +570,24 @@ class HomePageNewScreenU extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Text(
-                        "70% hiring \nhappens without \nany job post",
+                        "75% of hiring \nhappens off the job boards",
                         style: TextStyle(
                             fontSize: 20,
-                            fontWeight: FontWeight.w600,
-                            color: ColorRes.containerColor.withOpacity(0.4)),
+                            fontWeight: FontWeight.w700,
+                            color: const Color.fromARGB(255, 10, 8, 8).withOpacity(0.4)),
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: Text(
-                        "Top companies on Timeless are hiring by directly \nreaching out to Jobseekers without posting a job. \nLearn how you can get the most out of this opportunity",
+                        "Timeless is the best way to get discovered by recruiters and find relevant job recommendations"
+                        "On Timeless, leading companies connect directly with candidates "
+                        "To make sure you get noticed first.",
+
                         style: TextStyle(
                             fontSize: 9,
                             fontWeight: FontWeight.w400,
-                            color: ColorRes.black.withOpacity(0.6)),
+                            color: const Color.fromRGBO(15, 1, 1, 1).withOpacity(0.6)),
                       ),
                     ),
                     const Padding(

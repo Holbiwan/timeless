@@ -22,7 +22,7 @@ class IntroductionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 200, 210, 54),
+      backgroundColor: const Color.fromARGB(255, 219, 112, 5),
       body: Obx(() => Column(
             children: [
               const SizedBox(height: 60),
@@ -34,7 +34,7 @@ class IntroductionScreen extends StatelessWidget {
                         children: [
                           Text(
                             "skip",
-                            style: TextStyle(color: Color.fromARGB(255, 255, 2, 2)),
+                            style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
                           ),
                         ],
                       ),
@@ -60,7 +60,7 @@ class IntroductionScreen extends StatelessWidget {
                                 Text(
                                   "Search Jobs",
                                   style: appTextStyle(
-                                      color: const Color.fromARGB(255, 250, 2, 2),
+                                      color: const Color.fromARGB(255, 255, 255, 255),
                                       fontSize: 24,
                                       fontWeight: FontWeight.w600),
                                 ),
@@ -84,7 +84,7 @@ class IntroductionScreen extends StatelessWidget {
                                     Text(
                                       "Apply Job",
                                       style: appTextStyle(
-                                          color: const Color.fromARGB(255, 255, 0, 0),
+                                          color: const Color.fromARGB(255, 255, 255, 255),
                                           fontSize: 24,
                                           fontWeight: FontWeight.w600),
                                     ),
@@ -109,7 +109,7 @@ class IntroductionScreen extends StatelessWidget {
                                         Text(
                                           "Ready For The Job!",
                                           style: appTextStyle(
-                                              color: const Color.fromARGB(255, 255, 4, 4),
+                                              color: const Color.fromARGB(255, 255, 255, 255),
                                               fontSize: 24,
                                               fontWeight: FontWeight.w600),
                                         ),
@@ -129,7 +129,7 @@ class IntroductionScreen extends StatelessWidget {
                 controller: controller,
                 count: 3,
                 effect: SlideEffect(
-                  activeDotColor: ColorRes.containerColor,
+                  activeDotColor: const Color.fromARGB(255, 0, 0, 0),
                   dotHeight: 9,
                   dotColor: ColorRes.black.withOpacity(0.20),
                   dotWidth: 9,
