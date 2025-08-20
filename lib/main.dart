@@ -3,6 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+
 import 'package:timeless/screen/dashboard/applications/applications_screen.dart';
 import 'package:timeless/screen/first_page/first_screen.dart';
 import 'package:timeless/screen/job_detail_screen/job_detail_screen.dart';
@@ -26,20 +27,31 @@ import 'package:timeless/service/pref_services.dart';
 import 'package:timeless/utils/app_res.dart';
 import 'package:timeless/utils/pref_keys.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp();
-  SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-  NotificationService.init();
   await PrefService.init();
-  String? value = await FirebaseMessaging.instance.getToken();
-  await PrefService.setValue(PrefKeys.deviceToken, value);
+  NotificationService.init();
+
+  // Orientation portrait uniquement
+  await SystemChrome.setPreferredOrientations(
+    [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown],
+  );
+
+  // Token FCM
+  final String? fcmToken = await FirebaseMessaging.instance.getToken();
+  await PrefService.setValue(PrefKeys.deviceToken, fcmToken);
+
+  // >>> Icônes BLANCHES par défaut (fond sombre)
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      systemNavigationBarColor: Colors.transparent,
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.dark,
-      systemNavigationBarIconBrightness: Brightness.dark));
+    statusBarColor: Colors.transparent, // barre de statut transparente
+    statusBarIconBrightness: Brightness.light, // icônes BLANCHES (Android)
+    statusBarBrightness: Brightness.dark, // iOS : contenu clair
+    systemNavigationBarColor: Colors.black, // barre de navigation sombre
+    systemNavigationBarIconBrightness: Brightness.light,
+  ));
+
   runApp(const MyApp());
 }
 
@@ -49,60 +61,99 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: "Timeless",
-      theme: ThemeData(
-        primarySwatch: Colors.red,
-      ),
+      title: 'Timeless',
       debugShowCheckedModeBanner: false,
+
+      // Thème léger mais avec AppBar configurée pour icônes blanches par défaut
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          systemOverlayStyle: SystemUiOverlayStyle(
+            // cohérent si tu utilises AppBar
+            statusBarColor: Colors.transparent,
+            statusBarIconBrightness: Brightness.light,
+            statusBarBrightness: Brightness.dark,
+            systemNavigationBarColor: Colors.black,
+            systemNavigationBarIconBrightness: Brightness.light,
+          ),
+        ),
+      ),
+
+      // Écran de démarrage
       home: const SplashScreen(),
+
       initialRoute: "/",
       getPages: [
         GetPage(
-            name: AppRes.notificationScreen,
-            page: () => const NotificationScreenU()),
+          name: AppRes.notificationScreen,
+          page: () => const NotificationScreenU(),
+        ),
         GetPage(
-            name: AppRes.newHomePageUi,
-            page: () => HomePageNewScreenU()),
+          name: AppRes.newHomePageUi,
+          page: () => HomePageNewScreenU(),
+        ),
         GetPage(
-            name: AppRes.jobDetailUploadCvScreen,
-            page: () => JobDetailsUploadCvScreen()),
+          name: AppRes.jobDetailUploadCvScreen,
+          page: () => JobDetailsUploadCvScreen(),
+        ),
         GetPage(
-            name: AppRes.jobDetailSuccessOrFailed,
-            page: () => JobDetailsSuccessOrFailedScreen()),
+          name: AppRes.jobDetailSuccessOrFailed,
+          page: () => JobDetailsSuccessOrFailedScreen(),
+        ),
         GetPage(
-            name: AppRes.notificationScreen, page: () => NotificationScreenM()),
-        GetPage(name: AppRes.jobDetailScreen, page: () => JobDetailScreen()),
+          name: AppRes.notificationScreen,
+          page: () => NotificationScreenM(),
+        ),
         GetPage(
-            name: AppRes.jobRecommendationScreen,
-            page: () => const JobRecommendation()),
+          name: AppRes.jobDetailScreen,
+          page: () => JobDetailScreen(),
+        ),
         GetPage(
-            name: AppRes.organizationProfileScreen,
-            page: () => const OrganizationProfileScreen()),
+          name: AppRes.jobRecommendationScreen,
+          page: () => const JobRecommendation(),
+        ),
         GetPage(
-            name: AppRes.applicationsUser,
-            page: () => ApplicationsScreen()),
+          name: AppRes.organizationProfileScreen,
+          page: () => const OrganizationProfileScreen(),
+        ),
         GetPage(
-            name: AppRes.managerDashboardScreen,
-            page: () => ManagerDashBoardScreen()),
+          name: AppRes.applicationsUser,
+          page: () => ApplicationsScreen(),
+        ),
         GetPage(
-            name: AppRes.managerApplicationDetailScreen,
-            page: () => ManagerApplicationDetailScreen()),
+          name: AppRes.managerDashboardScreen,
+          page: () => ManagerDashBoardScreen(),
+        ),
         GetPage(
-            name: AppRes.resumeScreen,
-            page: () => const ResumeScreen()),
+          name: AppRes.managerApplicationDetailScreen,
+          page: () => ManagerApplicationDetailScreen(),
+        ),
         GetPage(
-            name: AppRes.applicantsDetails,
-            page: () => ApplicantsDetailScreen(isWrong: false)),
+          name: AppRes.resumeScreen,
+          page: () => const ResumeScreen(),
+        ),
         GetPage(
-            name: AppRes.firstPageScreenM,
-            page: () => const FirstPageScreenM()),
+          name: AppRes.applicantsDetails,
+          page: () => ApplicantsDetailScreen(isWrong: false),
+        ),
         GetPage(
-            name: AppRes.seeDetailsScreen,
-            page: () => const SeeDetailsScreen()),
+          name: AppRes.firstPageScreenM,
+          page: () => const FirstPageScreenM(),
+        ),
         GetPage(
-            name: AppRes.updateVacanciesRequirementScreen,
-            page: () => const UpdateVacanciesRequirementsScreen()),
-        GetPage(name: AppRes.firstScreen, page: () => FirstScreen()),
+          name: AppRes.seeDetailsScreen,
+          page: () => const SeeDetailsScreen(),
+        ),
+        GetPage(
+          name: AppRes.updateVacanciesRequirementScreen,
+          page: () => const UpdateVacanciesRequirementsScreen(),
+        ),
+        GetPage(
+          name: AppRes.firstScreen,
+          page: () => FirstScreen(),
+        ),
       ],
     );
   }

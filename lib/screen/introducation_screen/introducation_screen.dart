@@ -22,7 +22,7 @@ class IntroductionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 219, 112, 5),
+      backgroundColor: const Color.fromARGB(255, 10, 10, 10),
       body: Obx(() => Column(
             children: [
               const SizedBox(height: 60),
@@ -67,7 +67,7 @@ class IntroductionScreen extends StatelessWidget {
                                 Text(
                                   "Bridging the gap with timeless talent",
                                   style: appTextStyle(
-                                      color: ColorRes.black,
+                                      color: const Color.fromARGB(255, 9, 205, 48),
                                       fontSize: 15,
                                       fontWeight: FontWeight.w400),
                                 )
@@ -91,7 +91,7 @@ class IntroductionScreen extends StatelessWidget {
                                     Text(
                                       "Bridging the gap with timeless talent",
                                       style: appTextStyle(
-                                          color: ColorRes.black,
+                                          color: const Color.fromARGB(255, 255, 0, 0),
                                           fontSize: 15,
                                           fontWeight: FontWeight.w400),
                                     )
@@ -116,7 +116,7 @@ class IntroductionScreen extends StatelessWidget {
                                         Text(
                                           "Bridging the gap with timeless talent",
                                           style: appTextStyle(
-                                              color: ColorRes.black,
+                                              color: const Color.fromARGB(255, 255, 247, 0),
                                               fontSize: 15,
                                               fontWeight: FontWeight.w400),
                                         ),
@@ -129,9 +129,9 @@ class IntroductionScreen extends StatelessWidget {
                 controller: controller,
                 count: 3,
                 effect: SlideEffect(
-                  activeDotColor: const Color.fromARGB(255, 0, 0, 0),
+                  activeDotColor: const Color.fromARGB(255, 31, 167, 10),
                   dotHeight: 9,
-                  dotColor: ColorRes.black.withOpacity(0.20),
+                  dotColor: const Color.fromARGB(255, 240, 229, 6).withOpacity(0.20),
                   dotWidth: 9,
                 ),
               ),
