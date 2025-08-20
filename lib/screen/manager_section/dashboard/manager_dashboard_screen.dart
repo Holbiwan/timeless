@@ -1,7 +1,7 @@
-// ignore_for_file: must_be_immutable
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
+
 import 'package:timeless/screen/chat_box/chat_box_screen.dart';
 import 'package:timeless/screen/manager_section/Profile/profile_screen.dart';
 import 'package:timeless/screen/manager_section/dashboard/manager_dashboard_screen_controller.dart';
@@ -10,13 +10,17 @@ import 'package:timeless/screen/manager_section/manager_application_screen/mange
 import 'package:timeless/screen/manager_section/manager_home_screen/manager_home_screen.dart';
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/asset_res.dart';
-import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/string.dart';
-import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
+
+/// --- Palette Jamaïque ---
+const _kJBlack = Colors.black; // fond
+const _kJYellow = Color(0xFFFED100); // actif
+const _kJGreen = Color(0xFF1FA24A); // inactif
 
 class ManagerDashBoardScreen extends StatelessWidget {
   ManagerDashBoardScreen({super.key});
-  ManagerDashBoardScreenController controller =
+
+  final ManagerDashBoardScreenController controller =
       Get.put(ManagerDashBoardScreenController());
 
   @override
@@ -27,104 +31,102 @@ class ManagerDashBoardScreen extends StatelessWidget {
         return true;
       },
       child: Scaffold(
-          resizeToAvoidBottomInset: false,
-          backgroundColor: ColorRes.backgroundColor,
-          body: Obx(
-            () => controller.currentTab.value == 0
-                ? ManagerHomeScreen()
-                : controller.currentTab.value == 1
-                    ? ManagerApplicationScreen()
-                    : controller.currentTab.value == 2
-                        ? ChatBoxScreen()
-                        : ProfileScreen(),
-          ),
-          bottomNavigationBar: Obx(() => Container(
-                margin: const EdgeInsets.only(left: 18, right: 18, bottom: 10),
-                decoration: const BoxDecoration(
-                  color: ColorRes.white,
-                  // border: Border.all(),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(15),
-                  ),
-                ),
+        resizeToAvoidBottomInset: false,
+        backgroundColor: Colors.white, // couleur globale de page
+        body: Obx(() {
+          switch (controller.currentTab.value) {
+            case 0:
+              return ManagerHomeScreen();
+            case 1:
+              return ManagerApplicationScreen();
+            case 2:
+              return ChatBoxScreen();
+            default:
+              return ProfileScreen();
+          }
+        }),
+        bottomNavigationBar: Obx(
+          () {
+            int tab = controller.currentTab.value;
+
+            Color _iconColor(int index) =>
+                tab == index ? _kJYellow : _kJGreen.withOpacity(0.85);
+
+            TextStyle _labelStyle(int index) => appTextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: tab == index ? _kJYellow : _kJGreen.withOpacity(0.85),
+                );
+
+            return SafeArea(
+              top: false,
+              child: Container(
+                width: double.infinity,
+                margin: EdgeInsets.zero, // pleine largeur
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                color: _kJBlack, // fond noir
                 child: SalomonBottomBar(
-                  margin: const EdgeInsets.all(12),
-                  selectedItemColor: const Color(0xff8B4EFF),
-                  unselectedItemColor: ColorRes.containerColor,
-                  currentIndex: controller.currentTab.value,
-                  onTap: (int index) {
-                    controller.onBottomBarChange(index);
-                  },
+                  margin: EdgeInsets.zero,
+                  backgroundColor: Colors.transparent,
+                  currentIndex: tab,
+                  selectedItemColor: _kJYellow,
+                  unselectedItemColor: _kJGreen.withOpacity(0.85),
+                  onTap: controller.onBottomBarChange,
                   items: [
-                    /// Home
+                    // Home
                     SalomonBottomBarItem(
-                      selectedColor: ColorRes.containerColor,
+                      selectedColor: _kJYellow,
                       icon: Image.asset(
                         AssetRes.home,
-                        height: 16,
-                        width: 16,
-                        color: controller.currentTab.value == 0
-                            ? ColorRes.containerColor
-                            : ColorRes.grey.withOpacity(0.6),
+                        height: 18,
+                        width: 18,
+                        color: _iconColor(0),
                       ),
-                      title: Text(Strings.home,
-                          style: controller.currentTab.value == 0
-                              ? bottomTitleStyle
-                              : bottomTitleStyleDisable),
+                      title: Text(Strings.home, style: _labelStyle(0)),
                     ),
 
-                    /// application
+                    // Applications
                     SalomonBottomBarItem(
+                      selectedColor: _kJYellow,
                       icon: Image.asset(
                         AssetRes.applies,
-                        height: 16,
-                        width: 16,
-                        color: controller.currentTab.value == 1
-                            ? ColorRes.containerColor
-                            : ColorRes.grey.withOpacity(0.6),
+                        height: 18,
+                        width: 18,
+                        color: _iconColor(1),
                       ),
-                      title: Text(Strings.applies,
-                          style: controller.currentTab.value == 1
-                              ? bottomTitleStyle
-                              : bottomTitleStyleDisable),
+                      title: Text(Strings.applies, style: _labelStyle(1)),
                     ),
 
-                    /// chat
+                    // Inbox
                     SalomonBottomBarItem(
+                      selectedColor: _kJYellow,
                       icon: Image.asset(
                         AssetRes.chat,
-                        height: 16,
-                        width: 16,
-                        color: controller.currentTab.value == 2
-                            ? ColorRes.containerColor
-                            : ColorRes.grey.withOpacity(0.6),
+                        height: 18,
+                        width: 18,
+                        color: _iconColor(2),
                       ),
-                      title: Text(
-                        Strings.inbox,
-                        style: controller.currentTab.value == 2
-                            ? bottomTitleStyle
-                            : bottomTitleStyleDisable,
-                      ),
+                      title: Text(Strings.inbox, style: _labelStyle(2)),
                     ),
 
-                    /// Profile
+                    // Profile
                     SalomonBottomBarItem(
+                      selectedColor: _kJYellow,
                       icon: Image.asset(
                         AssetRes.profile1,
-                        height: 16,
-                        width: 16,
-                        color: controller.currentTab.value == 3
-                            ? ColorRes.containerColor
-                            : ColorRes.grey.withOpacity(0.6),
+                        height: 18,
+                        width: 18,
+                        color: _iconColor(3),
                       ),
-                      title: Text(Strings.profile,
-                          style: controller.currentTab.value == 3
-                              ? bottomTitleStyle
-                              : bottomTitleStyleDisable),
+                      title: Text(Strings.profile, style: _labelStyle(3)),
                     ),
                   ],
                 ),
-              ))),
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 }

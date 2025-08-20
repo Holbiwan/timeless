@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:timeless/api/api_country.dart';
-import 'package:timeless/screen/introducation_screen/introducation_screen.dart';
+import 'package:timeless/screen/introducation_screen/introducation_screen.dart' as intro;
 import 'package:timeless/screen/splashScreen/splash_controller.dart';
 import 'package:timeless/service/pref_services.dart';
 import 'package:timeless/utils/asset_res.dart';
@@ -20,168 +20,168 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  SplashController controller = Get.put(SplashController());
+  final SplashController controller = Get.put(SplashController());
+
   @override
   void initState() {
     super.initState();
-    getpref();
+    _bootstrap();
   }
 
-  getpref() async {
+  /// Prépare les prefs + données puis lance le timer
+  Future<void> _bootstrap() async {
     await PrefService.init();
-    // ignore: unnecessary_null_comparison
-    if (PrefService.getList(PrefKeys.allDesignation) == null ||
-        PrefService.getList(PrefKeys.allDesignation).isEmpty ||
-        // ignore: unnecessary_null_comparison
-        PrefService.getList(PrefKeys.allCountryData) == null ||
+
+    if (PrefService.getList(PrefKeys.allDesignation).isEmpty ||
         PrefService.getList(PrefKeys.allCountryData).isEmpty) {
-      countryApi();
+      await _loadCountryData();
     }
-    splash();
+
+    // Vers l’intro après 3 secondes
+    Timer(const Duration(seconds: 3), () {
+      Get.offAll(() => intro.IntroductionScreen());
+    });
   }
 
-  void splash() async {
-    /*String token = PrefService.getString(PrefKeys.userId);
-    String rol = PrefService.getString(PrefKeys.rol);
-    bool company = PrefService.getBool(PrefKeys.company);*/
-    await Future.delayed(const Duration(seconds: 5), () {
-      return Get.offAll(IntroductionScreen());
-    });
+  /// Pré-charge l’image pour éviter le flash blanc
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    precacheImage(const AssetImage(AssetRes.splashScreenBack), context);
   }
 
   @override
   Widget build(BuildContext context) {
-    ImageProvider backgroundImage = const AssetImage(AssetRes.splashScreenBack);
-    backgroundImage.resolve(createLocalImageConfiguration(context));
-    ImageProvider backgroundImageBoy = const AssetImage(AssetRes.splashBoyImg);
-    backgroundImageBoy.resolve(createLocalImageConfiguration(context));
     return Scaffold(
-      body: Container(
-        height: Get.height,
-        width: Get.width,
-        decoration: BoxDecoration(
-            image: DecorationImage(image: backgroundImage, fit: BoxFit.fill)),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
+      backgroundColor: Colors.black, // fond net et uniforme
+      body: SafeArea(
+        child: Stack(
           children: [
-            Container(
-              alignment: Alignment.centerRight,
-              padding: const EdgeInsets.only(top: 54, right: 30),
-              child: Text(
-                textAlign: TextAlign.end,
-                Strings.logo,
-                style: GoogleFonts.poppins(
-                    fontSize: 30,
-                    fontWeight: FontWeight.w400,
-                    color: ColorRes.splashLogoColor),
-              ),
-            ),
-            SizedBox(
-              height: 140,
-              child: Row(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 15),
-                    child: RichText(
-                      text: TextSpan(
-                        children: <TextSpan>[
-                          TextSpan(
-                              text: ' Find Your  \n',
-                              style: GoogleFonts.poppins(
-                                color: ColorRes.black2,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 40,
-                                height: 1,
-                              )),
-                          TextSpan(
-                            text: ' dream job \n',
-                            style: GoogleFonts.poppins(
-                              fontSize: 40,
-                              fontWeight: FontWeight.w500,
-                              color: ColorRes.black2,
-                              background: Paint()..color = Colors.white,
-                              height: 1,
-                            ),
-                          ),
-                          TextSpan(
-                              text: ' here',
-                              style: GoogleFonts.poppins(
-                                  color: ColorRes.black2,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 40,
-                                  height: 1))
-                        ],
-                      ),
+            /// --- HERO IMAGE (grande, bien cadrée) ---
+            Positioned.fill(
+              child: Center(
+                child: AspectRatio(
+                  aspectRatio: 3 / 4, // évite l’écrasement sur mobiles longs
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: Image.asset(
+                      AssetRes.splashScreenBack, // on réutilise cette image
+                      fit: BoxFit.cover,
+                      filterQuality: FilterQuality.high,
                     ),
                   ),
-                  const Spacer(),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10),
+                ),
+              ),
+            ),
+
+            /// --- CARTOUCHE DE TITRE EN HAUT ---
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Carte blanche avec texte
+                  Expanded(
                     child: Container(
-                      height: 140,
-                      alignment: Alignment.bottomRight,
-                      child: Container(
-                        margin: const EdgeInsets.only(right: 33),
-                        alignment: Alignment.center,
-                        height: 70,
-                        width: 70,
-                        decoration: BoxDecoration(
-                            border: Border.all(),
-                            shape: BoxShape.circle,
-                            color: ColorRes.black2),
-                        child: const Icon(
-                          Icons.search,
-                          color: Colors.white,
-                          size: 40,
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(16),
+                          topRight: Radius.circular(16),
+                          bottomLeft: Radius.circular(24),
+                          bottomRight: Radius.circular(24),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.12),
+                            blurRadius: 14,
+                            offset: const Offset(0, 6),
+                          ),
+                        ],
+                      ),
+                      child: RichText(
+                        text: TextSpan(
+                          style: GoogleFonts.poppins(
+                            fontSize: 32,
+                            fontWeight: FontWeight.w600,
+                            height: 1.05,
+                            color: Colors.black,
+                          ),
+                          children: const [
+                            TextSpan(text: 'Find Your\n'),
+                            TextSpan(text: 'dream job\n'),
+                            TextSpan(text: 'here'),
+                          ],
                         ),
                       ),
                     ),
-                  )
+                  ),
+
+                  const SizedBox(width: 12),
+
+                  // Bouton loupe
+                  Container(
+                    height: 56,
+                    width: 56,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.92),
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.18),
+                          blurRadius: 12,
+                          offset: const Offset(0, 6),
+                        ),
+                      ],
+                    ),
+                    child:
+                        const Icon(Icons.search, size: 28, color: Colors.black),
+                  ),
                 ],
               ),
             ),
-            const Spacer(),
-            Image.asset(
-              AssetRes.splashBoyImg,
-              height: Get.height < 657 ? Get.height / 2 : Get.height / 1.6,
-              width: Get.width,
-              fit: BoxFit.cover,
-              filterQuality: FilterQuality.none,
-            )
+
+            /// --- LOGO TEXTE EN HAUT À DROITE (optionnel, comme avant) ---
+            Positioned(
+              top: 12,
+              right: 16,
+              child: Text(
+                Strings.logo,
+                style: GoogleFonts.poppins(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w500,
+                  color: ColorRes.splashLogoColor,
+                ),
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
-  countryApi() async {
+  Future<void> _loadCountryData() async {
     controller.countryData = await CountrySearch.countNotification();
 
-    // ignore: avoid_function_literals_in_foreach_calls
-    controller.countryData!.forEach((element) {
-      controller.allData.add(element.name ?? "");
-      // ignore: avoid_function_literals_in_foreach_calls
-      element.state!.forEach((el) {
-        controller.allData.add(el.name ?? "");
-        // ignore: avoid_function_literals_in_foreach_calls
-        el.city!.forEach((e) {
-          controller.allData.add(e.name ?? "");
-        });
-      });
-    });
+    for (final country in controller.countryData ?? []) {
+      controller.allData.add(country.name ?? "");
+      for (final state in country.state ?? []) {
+        controller.allData.add(state.name ?? "");
+        for (final city in state.city ?? []) {
+          controller.allData.add(city.name ?? "");
+        }
+      }
+    }
 
     if (kDebugMode) {
       print(PrefService.getList(PrefKeys.allDesignation));
     }
-    // ignore: unnecessary_null_comparison
-    if (PrefService.getList(PrefKeys.allCountryData) == null ||
-        PrefService.getList(PrefKeys.allCountryData).isEmpty) {
+
+    if (PrefService.getList(PrefKeys.allCountryData).isEmpty) {
       PrefService.setValue(PrefKeys.allCountryData, controller.allData);
     }
-    // ignore: unnecessary_null_comparison
-    if (PrefService.getList(PrefKeys.allDesignation) == null ||
-        PrefService.getList(PrefKeys.allDesignation).isEmpty) {
+    if (PrefService.getList(PrefKeys.allDesignation).isEmpty) {
       PrefService.setValue(PrefKeys.allDesignation, controller.allDesignation);
     }
   }

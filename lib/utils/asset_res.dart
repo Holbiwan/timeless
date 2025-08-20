@@ -56,7 +56,6 @@ class AssetRes {
   static const twitterLogo = '${images}twitter_logo.png';
   static const lookingForYou = '${images}looking_for_you.png';
   static const resumeImage = '${images}resume.png';
-
   static const notificationDetail = '${images}notification_detail.png';
   static const successImage = '${images}success_image.png';
   static const failedImage = '${images}failed_image.png';
