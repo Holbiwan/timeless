@@ -4,7 +4,7 @@ class Strings {
   ///-----------------------firstScreen-------------------------------------------
   static const logo = "";
   static const Timeless = "Timeless";
-  static const jobSeeker = "TIMELESS Career booster";
+  static const jobSeeker = 'TIMELESS Career booster';
 
   ///-------------------------sentences--------------------------------------------
   static const firstScreenSentences = ' We currently have roles waiting !';
@@ -61,7 +61,6 @@ class Strings {
   static const airBNB = "AirBNB";
   static const welcome = 'Welcome,';
   static const hello = 'hello,';
-  // ignore: constant_identifier_names
   static const RecentPeopleApplication = " Recent People Application";
   static const nowYouCanSeeAllTheApplier =
       "Now you can see all the applier Resume and invite them to the next step";

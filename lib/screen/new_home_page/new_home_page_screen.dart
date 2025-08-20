@@ -235,13 +235,13 @@ class HomePageNewScreenU extends StatelessWidget {
                     height: 36,
                     width: 95,
                     decoration: BoxDecoration(
-                        color: ColorRes.logoColor,
+                        color: const Color.fromARGB(255, 8, 94, 7),
                         borderRadius: BorderRadius.circular(10)),
                     child: const Center(
                       child: Text(
                         "Log in",
                         style: TextStyle(
-                            color: Color.fromARGB(255, 16, 220, 74),
+                            color: Color.fromARGB(255, 255, 255, 255),
                             fontWeight: FontWeight.w500,
                             fontSize: 14),
                       ),
@@ -470,7 +470,7 @@ class HomePageNewScreenU extends StatelessWidget {
                           color: ColorRes.containerColor),
                       const SizedBox(height: 10),
                       Text(
-                        "\€2.600",
+                        "€2.600",
                         style: appTextStyle(
                             color: const Color.fromARGB(255, 15, 1, 1),
                             fontSize: 16,
@@ -542,7 +542,7 @@ class HomePageNewScreenU extends StatelessWidget {
                           color: ColorRes.containerColor),
                       const SizedBox(height: 10),
                       Text(
-                        "\€2.400",
+                        "€2.400",
                         style: appTextStyle(
                             color: const Color.fromARGB(255, 12, 0, 0),
                             fontSize: 16,
