@@ -74,7 +74,6 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
         () => Column(
           children: [
             const SizedBox(height: 60),
-
             if (_intro.selectedIndex.value != 2)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -83,14 +82,14 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
                   children: [
                     GestureDetector(
                       onTap: _goToApp,
-                      child: const Text("skip", style: TextStyle(color: Colors.white)),
+                      child: const Text("skip",
+                          style: TextStyle(color: Colors.yellow),
                     ),
                   ],
                 ),
               )
             else
               const SizedBox(height: 24),
-
             SizedBox(
               height: h * 0.60,
               child: PageView(
@@ -118,22 +117,19 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
                 ],
               ),
             ),
-
             const SizedBox(height: 8),
-
             SmoothPageIndicator(
               controller: _pageController,
               count: 3,
               effect: SlideEffect(
                 activeDotColor: const Color.fromARGB(255, 31, 167, 10),
-                dotColor: const Color.fromARGB(255, 240, 229, 6).withOpacity(0.20),
+                dotColor:
+                    const Color.fromARGB(255, 240, 229, 6).withOpacity(0.20),
                 dotWidth: 9,
                 dotHeight: 9,
               ),
             ),
-
             const SizedBox(height: 32),
-
             if (_intro.selectedIndex.value == 2)
               InkWell(
                 onTap: _goToApp,
@@ -154,7 +150,8 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
                   ),
                   child: Text(
                     "Get Started",
-                    style: appTextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                    style:
+                        appTextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                   ),
                 ),
               ),

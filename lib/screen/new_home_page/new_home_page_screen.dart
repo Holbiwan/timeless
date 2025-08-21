@@ -87,7 +87,7 @@ class HomePageNewScreenU extends StatelessWidget {
                 ),
                 onPressed: () {},
                 child: const Text(
-                  "Start Now",
+                  "Welcome",
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
