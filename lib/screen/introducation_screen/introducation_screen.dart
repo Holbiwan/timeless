@@ -82,8 +82,10 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
                   children: [
                     GestureDetector(
                       onTap: _goToApp,
-                      child: const Text("skip",
-                          style: TextStyle(color: Colors.yellow),
+                      child: const Text(
+                        "skip",
+                        style: TextStyle(color: Colors.yellow),
+                      ),
                     ),
                   ],
                 ),
