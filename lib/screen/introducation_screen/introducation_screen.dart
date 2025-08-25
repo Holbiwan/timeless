@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
+// 🔑 Assure-toi que ce chemin et cette classe existent bien :
 import 'package:timeless/screen/auth/sign_in_screen/sign_in_screen.dart';
+
 import 'package:timeless/screen/dashboard/dashboard_controller.dart';
 import 'package:timeless/screen/dashboard/dashboard_screen.dart';
 import 'package:timeless/screen/manager_section/dashboard/manager_dashboard_screen.dart';
@@ -14,7 +16,6 @@ import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'introduction_controller.dart';
 
-// Jam palette
 const kJYellow = Color(0xFFFED100);
 const kJGreen = Color(0xFF1FA24A);
 
@@ -33,11 +34,6 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
   @override
   void initState() {
     super.initState();
-    _startAutoPlay();
-  }
-
-  void _startAutoPlay() {
-    _autoPlay?.cancel();
     _autoPlay = Timer.periodic(const Duration(seconds: 3), (_) {
       final int current = _pageController.page?.round() ?? 0;
       final int next = (current + 1) % 3;
@@ -74,6 +70,19 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
                 : const OrganizationProfileScreen());
   }
 
+  void _goToWelcome() {
+    // 🛠️ Appelle l’écran de connexion. Si le constructeur n’est pas const, enlève "const".
+    debugPrint('[INTRO] Welcome tapped');
+    try {
+      Get.to(() => const SigninScreenU());
+    } catch (e) {
+      debugPrint('[INTRO] Get.to failed: $e — trying Navigator.push');
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const SigninScreenU()),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final double h = MediaQuery.of(context).size.height;
@@ -85,13 +94,13 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
           children: [
             const SizedBox(height: 40),
 
-            // Top actions: Welcome (left) + Skip (right)
+            // Welcome (gauche) + Skip (droite)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
                 children: [
                   TextButton(
-                    onPressed: () => Get.to(() => const SigninScreenU()),
+                    onPressed: _goToWelcome,
                     child: Text(
                       "Welcome",
                       style: appTextStyle(
@@ -120,7 +129,7 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
               ),
             ),
 
-            // Carousel
+            // Carrousel (3 pages)
             SizedBox(
               height: h * 0.60,
               child: PageView(
@@ -151,7 +160,7 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
 
             const SizedBox(height: 8),
 
-            // Dots
+            // Indicateurs
             SmoothPageIndicator(
               controller: _pageController,
               count: 3,
@@ -165,7 +174,7 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
 
             const SizedBox(height: 28),
 
-            // Final CTA
+            // CTA final sur la 3e page
             if (_intro.selectedIndex.value == 2)
               InkWell(
                 onTap: _goToApp,

@@ -4,10 +4,11 @@ class Strings {
   ///-----------------------firstScreen-------------------------------------------
   static const logo = "";
   static const Timeless = "Timeless";
-  static const jobSeeker = 'TIMELESS Career booster';
+  // ignore: non_constant_identifier_names
+  static get Timelessbooster => 'TIMELESS booster';
 
   ///-------------------------sentences--------------------------------------------
-  static const firstScreenSentences = ' We currently have roles waiting !';
+  static const firstScreenSentences = ' We have roles waiting !';
   static const screenSentences =
       'By creating an account, you are agreeing to our ';
 
@@ -113,7 +114,7 @@ class Strings {
   static const profile = "Profile";
   static const cancel = "Cancel";
   static const exit = "exit";
-  static const createAccount = "Create Account";
+  static const createAccount = "Create Your Account";
   static const termsOfService = " Terms of Service";
   static const registerForFree = "Register for free";
   static const login = "Login";

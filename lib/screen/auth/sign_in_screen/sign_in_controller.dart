@@ -4,402 +4,311 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:timeless/screen/dashboard/dashboard_screen.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+
+import 'package:timeless/screen/dashboard/dashboard_screen.dart';
 import 'package:timeless/service/pref_services.dart';
 import 'package:timeless/utils/pref_keys.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SignInScreenController extends GetxController {
-  RxBool loading = false.obs;
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  FirebaseFirestore fireStore = FirebaseFirestore.instance;
+  // State
+  final RxBool loading = false.obs;
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  final FirebaseFirestore fireStore = FirebaseFirestore.instance;
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  final GoogleSignIn googleSignIn = GoogleSignIn();
+
   bool isUser = false;
   String emailError = "";
   String pwdError = "";
   bool rememberMe = false;
+  bool show = true;
 
-  getRememberEmailDataUser() {
-    if (PrefService.getString(PrefKeys.emailRememberUser) != "") {
-      emailController.text = PrefService.getString(PrefKeys.emailRememberUser);
-      passwordController.text =
-          PrefService.getString(PrefKeys.passwordRememberUser);
+  // Prefill remembered credentials
+  void getRememberEmailDataUser() {
+    final email = PrefService.getString(PrefKeys.emailRememberUser);
+    final pwd = PrefService.getString(PrefKeys.passwordRememberUser);
+    if (email.isNotEmpty) {
+      emailController.text = email;
+      passwordController.text = pwd;
     }
   }
 
-  void loadUserEmailPassword() async {
-    try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      var email = prefs.getString("email") ?? "";
-      var password = prefs.getString("password") ?? "";
-      var remeberMe = prefs.getBool("remember_me") ?? false;
-
-      if (kDebugMode) {
-        print(remeberMe);
-      }
-
-      if (kDebugMode) {
-        print(email);
-      }
-
-      if (kDebugMode) {
-        print(password);
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
-    }
-  }
-
-  emailValidation() {
-    if (emailController.text.trim() == "") {
+  // Validation
+  void emailValidation() {
+    final text = emailController.text.trim();
+    if (text.isEmpty) {
       emailError = 'Please enter email';
+    } else if (RegExp(
+      r"^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$",
+    ).hasMatch(text)) {
+      emailError = '';
     } else {
-      if (RegExp(
-              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-          .hasMatch(emailController.text)) {
-        emailError = '';
-      } else {
-        emailError = "Invalid email";
-      }
+      emailError = "Invalid email";
     }
     update(["showEmail"]);
   }
 
-  passwordValidation() {
-    if (passwordController.text.trim() == "") {
+  void passwordValidation() {
+    final text = passwordController.text.trim();
+    if (text.isEmpty) {
       pwdError = 'Please enter Password';
+    } else if (text.length >= 8) {
+      pwdError = '';
     } else {
-      if (passwordController.text.trim().length >= 8) {
-        pwdError = '';
-      } else {
-        pwdError = "At least 8 character";
-      }
+      pwdError = "At least 8 character";
     }
     update(["showPassword"]);
   }
 
-  void onChanged(String value) {
-    update(["colorChange"]);
-  }
+  void onChanged(String value) => update(["colorChange"]);
 
   bool validator() {
     emailValidation();
     passwordValidation();
-    if (emailError == "" && pwdError == "") {
-      return true;
-    } else {
-      return false;
-    }
+    return emailError.isEmpty && pwdError.isEmpty;
   }
 
-  void signInWithEmailAndPassword(
-      {required String email, required String password}) async {
+  // Email/password
+  Future<void> signInWithEmailAndPassword({
+    required String email,
+    required String password,
+  }) async {
     loading.value = true;
-    await fireStore
-        .collection("Auth")
-        .doc("User")
-        .collection("register")
-        .get()
-        .then((value) async {
-      if (value.docs.length.isEqual(0)) {
-        loading.value = true;
+    try {
+      final snap = await fireStore
+          .collection("Auth")
+          .doc("User")
+          .collection("register")
+          .get();
+
+      if (snap.docs.isEmpty) {
         Get.snackbar(
             "Error", "Please create account,\n your email is not registered",
             colorText: const Color(0xffDA1414));
+        return;
+      }
+
+      isUser = false;
+      for (final d in snap.docs) {
+        if ((d["Email"] ?? "") == email) {
+          isUser = true;
+          PrefService.setValue(PrefKeys.rol, "User");
+          PrefService.setValue(PrefKeys.userId, d.id);
+          PrefService.setValue(PrefKeys.fullName, d["fullName"] ?? "");
+          PrefService.setValue(PrefKeys.email, d["Email"] ?? "");
+          PrefService.setValue(PrefKeys.phoneNumber, d["Phone"] ?? "");
+          PrefService.setValue(PrefKeys.city, d["City"] ?? "");
+          PrefService.setValue(PrefKeys.state, d["State"] ?? "");
+          PrefService.setValue(PrefKeys.country, d["Country"] ?? "");
+          PrefService.setValue(PrefKeys.occupation, d["Occupation"] ?? "");
+          break;
+        }
+      }
+
+      if (!isUser) {
+        Get.snackbar(
+            "Error", "Please create account,\n your email is not registered",
+            colorText: const Color(0xffDA1414));
+        return;
+      }
+
+      final credential = await auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      final user = credential.user;
+      if (user != null) {
+        PrefService.setValue(PrefKeys.userId, user.uid);
+        emailController.clear();
+        passwordController.clear();
+        Get.off(() => DashBoardScreen());
+      }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        Get.snackbar("Error", "Wrong user", colorText: const Color(0xffDA1414));
+      } else if (e.code == 'wrong-password') {
+        Get.snackbar("Error", "Wrong password",
+            colorText: const Color(0xffDA1414));
       } else {
-        for (int i = 0; i < value.docs.length; i++) {
-          if (kDebugMode) {
-            print("${value.docs[i]["Email"]}=||||||++++++++++");
-          }
-
-          if (value.docs[i]["Email"] == email && value.docs[i]["Email"] != "") {
-            isUser = true;
-            PrefService.setValue(PrefKeys.rol, "User");
-
-            if (kDebugMode) {
-              print("$isUser====]]]]]");
-            }
-
-            PrefService.setValue(PrefKeys.userId, value.docs[i].id);
-            PrefService.setValue(PrefKeys.fullName, value.docs[i]["fullName"]);
-            PrefService.setValue(PrefKeys.email, value.docs[i]["Email"]);
-            PrefService.setValue(PrefKeys.phoneNumber, value.docs[i]["Phone"]);
-            PrefService.setValue(PrefKeys.city, value.docs[i]["City"]);
-            PrefService.setValue(PrefKeys.state, value.docs[i]["State"]);
-            PrefService.setValue(PrefKeys.country, value.docs[i]["Country"]);
-            PrefService.setValue(
-                PrefKeys.occupation, value.docs[i]["Occupation"]);
-
-            break;
-          } else {
-            isUser = false;
-
-            if (kDebugMode) {
-              print("$isUser====]]]]]");
-            }
-          }
-        }
-
-        if (isUser == true) {
-          try {
-            loading.value = true;
-            UserCredential credential = await auth.signInWithEmailAndPassword(
-                email: email, password: password);
-
-            if (kDebugMode) {
-              print(credential);
-            }
-
-            if (credential.user!.email.toString() == email) {
-              PrefService.setValue(
-                  PrefKeys.userId, credential.user!.uid.toString());
-              Get.off(() => DashBoardScreen());
-              emailController.text = "";
-              passwordController.text = "";
-            }
-          } on FirebaseAuthException catch (e) {
-            if (e.code == 'user-not-found') {
-              Get.snackbar("Error", "Wrong user",
-                  colorText: const Color(0xffDA1414));
-              loading.value = false;
-
-              if (kDebugMode) {
-                print('No user found for that email.');
-              }
-            } else if (e.code == 'wrong-password') {
-              Get.snackbar("Error", "Wrong password",
-                  colorText: const Color(0xffDA1414));
-              loading.value = false;
-
-              if (kDebugMode) {
-                print('Wrong password provided for that user.');
-              }
-            }
-
-            if (kDebugMode) {
-              print(e.code);
-            }
-            Get.snackbar("Error", e.code, colorText: const Color(0xffDA1414));
-            loading.value = false;
-          }
-        } else {
-          Get.snackbar(
-              "Error", "Please create account,\n your email is not registered",
-              colorText: const Color(0xffDA1414));
-          loading.value = false;
-        }
-        loading.value = false;
+        Get.snackbar("Error", e.code, colorText: const Color(0xffDA1414));
       }
-
-      if (kDebugMode) {
-        print("${value.isBlank}=|=|=|");
-      }
-
-      if (kDebugMode) {
-        print("${value.docs.length}=|=|=|");
-      }
-    });
+    } catch (e) {
+      if (kDebugMode) print(e);
+      Get.snackbar("Error", "Sign-in failed",
+          colorText: const Color(0xffDA1414));
+    } finally {
+      loading.value = false;
+    }
   }
 
-  onLoginBtnTap({String? email, String? password}) async {
-    if (rememberMe == true) {
+  // Login button handler
+  Future<void> onLoginBtnTap({String? email, String? password}) async {
+    if (rememberMe) {
       await PrefService.setValue(
           PrefKeys.emailRememberUser, emailController.text);
       await PrefService.setValue(
           PrefKeys.passwordRememberUser, passwordController.text);
     }
-    if (validator()) {
-      loading.value = true;
-      signInWithEmailAndPassword(password: password!, email: email!);
-      loading.value = true;
+    if (!validator()) return;
 
-      if (kDebugMode) {
-        print("GO TO HOME PAGE");
-      }
-    }
+    await signInWithEmailAndPassword(
+      email: email!,
+      password: password!,
+    );
   }
 
-  bool show = true;
-
-  chang() {
-    debugPrint("SHOW $show");
+  // UI helpers
+  void chang() {
     show = !show;
     update(['showPassword']);
   }
 
   void onRememberMeChange(bool? value) {
-    if (value != null) {
-      rememberMe = value;
-      update(['remember_me']);
+    if (value == null) return;
+    rememberMe = value;
+    update(['remember_me']);
+  }
+
+  void button() {
+    final hasText = emailController.text.trim().isNotEmpty &&
+        passwordController.text.trim().isNotEmpty;
+    update(['color']);
+    if (hasText) {
+      // no-op placeholder if you colorize outside
     }
   }
 
-  bool buttonColor = false;
+  // Google Sign-In
+  Future<void> signWithGoogle() async {
+    loading.value = true;
+    try {
+      if (await googleSignIn.isSignedIn()) {
+        await googleSignIn.signOut();
+      }
 
-  button() {
-    if (emailController.text != '' && passwordController.text != '') {
-      buttonColor = true;
-      update(['color']);
-    } else {
-      buttonColor = false;
-      update(['color']);
-    }
-    update();
-  }
+      final GoogleSignInAccount? account = await googleSignIn.signIn();
+      if (account == null) {
+        // User cancelled
+        return;
+      }
 
-  final FirebaseAuth auth = FirebaseAuth.instance;
-  final GoogleSignIn googleSignIn = GoogleSignIn();
+      final GoogleSignInAuthentication authentication =
+          await account.authentication;
 
-  void signWithGoogle() async {
-    if (await googleSignIn.isSignedIn()) {
-      await googleSignIn.signOut();
-    }
-    final GoogleSignInAccount? account = await googleSignIn.signIn();
-    if (await googleSignIn.isSignedIn()) {
-      loading.value = true;
-    }
-    final GoogleSignInAuthentication authentication =
-        await account!.authentication;
+      final OAuthCredential credential = GoogleAuthProvider.credential(
+        idToken: authentication.idToken,
+        accessToken: authentication.accessToken,
+      );
 
-    final OAuthCredential credential = GoogleAuthProvider.credential(
-      idToken: authentication.idToken,
-      accessToken: authentication.accessToken,
-    );
+      final UserCredential authResult =
+          await auth.signInWithCredential(credential);
+      final User? user = authResult.user;
 
-    final UserCredential authResult =
-        await auth.signInWithCredential(credential);
-    final User? user = authResult.user;
+      if (user == null || user.uid.isEmpty) return;
 
-    if (kDebugMode) {
-      print(user!.email);
-    }
-
-    if (kDebugMode) {
-      print(user?.uid);
-    }
-
-    if (kDebugMode) {
-      print(user?.displayName);
-    }
-
-    if (user?.uid != null && user?.uid != "") {
-      loading.value = true;
-      await fireStore
+      // Vérifie si email existe déjà dans ta collection "register"
+      final regSnap = await fireStore
           .collection("Auth")
           .doc("User")
           .collection("register")
-          .get()
-          .then((value) async {
-        if (value.docs.length.isEqual(0)) {
-          loading.value = true;
-          Get.snackbar(
-              "Error", "Please create account,\n your email is not registered",
-              colorText: const Color(0xffDA1414));
-        } else {
-          for (int i = 0; i < value.docs.length; i++) {
-            if (kDebugMode) {
-              print("${value.docs[i]["Email"]}=||||||++++++++++");
-            }
+          .get();
 
-            if (value.docs[i]["Email"] == user!.email &&
-                value.docs[i]["Email"] != "") {
-              isUser = true;
-              PrefService.setValue(PrefKeys.rol, "User");
-              PrefService.setValue(PrefKeys.accessToken, user.uid);
-              PrefService.setValue(PrefKeys.fullName, user.displayName);
-              PrefService.setValue(PrefKeys.userId, user.uid);
-
-              Get.offAll(() => DashBoardScreen());
-              loading.value == false;
-
-              if (kDebugMode) {
-                print("$isUser====]]]]]");
-              }
-
-              break;
-            } else {
-              isUser = false;
-
-              if (kDebugMode) {
-                print("$isUser====]]]]]");
-              }
-            }
-          }
+      isUser = false;
+      for (final d in regSnap.docs) {
+        if ((d["Email"] ?? "") == user.email && (d["Email"] ?? "").isNotEmpty) {
+          isUser = true;
+          PrefService.setValue(PrefKeys.rol, "User");
+          PrefService.setValue(PrefKeys.accessToken, user.uid);
+          PrefService.setValue(PrefKeys.fullName, user.displayName ?? "");
+          PrefService.setValue(PrefKeys.userId, user.uid);
+          break;
         }
+      }
 
-        if (isUser == false) {
-          Get.snackbar(
-              "Error", "Please create account,\n your email is not registered",
-              colorText: const Color(0xffDA1414));
-          if (await googleSignIn.isSignedIn()) {
-            await googleSignIn.signOut();
-          }
-        }
-        loading.value = false;
+      if (!isUser) {
+        Get.snackbar(
+            "Error", "Please create account,\n your email is not registered",
+            colorText: const Color(0xffDA1414));
+        await googleSignIn.signOut();
+        return;
+      }
 
-        if (kDebugMode) {
-          print("${value.isBlank}=|=|=|");
-        }
-
-        if (kDebugMode) {
-          print("${value.docs.length}=|=|=|");
-        }
-      });
-    } else {
-      loading.value == false;
+      Get.offAll(() => DashBoardScreen());
+    } on FirebaseAuthException catch (e) {
+      Get.snackbar("Google", e.message ?? 'Auth error',
+          snackPosition: SnackPosition.BOTTOM,
+          colorText: const Color(0xffDA1414));
+    } catch (e) {
+      if (kDebugMode) print(e);
+      Get.snackbar("Google", "Sign-in failed",
+          snackPosition: SnackPosition.BOTTOM,
+          colorText: const Color(0xffDA1414));
+    } finally {
+      loading.value = false;
     }
-    loading.value == false;
   }
 
-  void faceBookSignIn() async {
+  // Facebook Sign-In
+  Future<void> faceBookSignIn() async {
+    loading.value = true;
     try {
-      loading.value = true;
       final LoginResult loginResult = await FacebookAuth.instance
           .login(permissions: ["email", "public_profile"]);
 
-      if (kDebugMode) {
-        print(loginResult);
+      if (loginResult.status != LoginStatus.success ||
+          loginResult.accessToken == null) {
+        return; // cancelled or failed
       }
 
-      await FacebookAuth.instance.getUserData().then((userData) {
-        if (kDebugMode) {
-          print(userData);
-        }
-      });
       final OAuthCredential facebookAuthCredential =
-          FacebookAuthProvider.credential(
-        loginResult.accessToken!.tokenString,
-      );
+          FacebookAuthProvider.credential(loginResult.accessToken!.tokenString);
 
-      if (kDebugMode) {
-        print(facebookAuthCredential);
+      final UserCredential userCredential =
+          await auth.signInWithCredential(facebookAuthCredential);
+
+      final User? user = userCredential.user;
+      if (user == null || user.uid.isEmpty) return;
+
+      final regSnap = await fireStore
+          .collection("Auth")
+          .doc("User")
+          .collection("register")
+          .get();
+
+      isUser = false;
+      for (final d in regSnap.docs) {
+        if ((d["Email"] ?? "") == (user.email ?? "")) {
+          isUser = true;
+          PrefService.setValue(PrefKeys.rol, "User");
+          PrefService.setValue(PrefKeys.userId, user.uid);
+          PrefService.setValue(PrefKeys.fullName, user.displayName ?? "");
+          break;
+        }
       }
 
-      UserCredential userCredential = await FirebaseAuth.instance
-          .signInWithCredential(facebookAuthCredential);
-
-      if (kDebugMode) {
-        print(userCredential);
+      if (!isUser) {
+        Get.snackbar(
+            "Error", "Please create account,\n your email is not registered",
+            colorText: const Color(0xffDA1414));
+        await FacebookAuth.instance.logOut();
+        return;
       }
 
-      if (userCredential.user?.uid != null && userCredential.user?.uid != "") {
-        Get.offAll(() => DashBoardScreen());
-        loading.value == false;
-        // loader false
-      } else {
-        loading.value == false;
-      }
-
-      loading.value = false;
-      //flutterToast(Strings.faceBookSignInSuccess);
+      Get.offAll(() => DashBoardScreen());
+    } on FirebaseAuthException catch (e) {
+      Get.snackbar("Facebook", e.message ?? 'Auth error',
+          snackPosition: SnackPosition.BOTTOM,
+          colorText: const Color(0xffDA1414));
     } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
-
+      if (kDebugMode) print(e);
+      Get.snackbar("Facebook", "Sign-in failed",
+          snackPosition: SnackPosition.BOTTOM,
+          colorText: const Color(0xffDA1414));
+    } finally {
       loading.value = false;
     }
   }
