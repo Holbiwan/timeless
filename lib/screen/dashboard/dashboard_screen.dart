@@ -46,7 +46,7 @@ class DashBoardScreen extends StatelessWidget {
           builder: (c) {
             switch (c.currentTab) {
               case 0:
-                return token.isEmpty ? HomePageNewScreenU() : HomeScreen();
+                return token.isEmpty ? const HomePageNewScreenU() : HomeScreen();
               case 1:
                 // Si tu as un vrai écran des candidatures, remplace par ApplicationsScreen()
                 return token.isEmpty
@@ -68,10 +68,10 @@ class DashBoardScreen extends StatelessWidget {
         bottomNavigationBar: GetBuilder<DashBoardController>(
           id: "bottom_bar",
           builder: (c) {
-            Color _iconColor(int i) =>
+            Color iconColor(int i) =>
                 c.currentTab == i ? _kJYellow : _kJGreen.withOpacity(0.85);
 
-            TextStyle _labelStyle(int i) => appTextStyle(
+            TextStyle labelStyle(int i) => appTextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
                   color: c.currentTab == i
@@ -100,9 +100,9 @@ class DashBoardScreen extends StatelessWidget {
                         AssetRes.home,
                         height: 18,
                         width: 18,
-                        color: _iconColor(0),
+                        color: iconColor(0),
                       ),
-                      title: Text("Home", style: _labelStyle(0)),
+                      title: Text("Home", style: labelStyle(0)),
                     ),
 
                     /// Applies
@@ -112,9 +112,9 @@ class DashBoardScreen extends StatelessWidget {
                         AssetRes.applies,
                         height: 18,
                         width: 18,
-                        color: _iconColor(1),
+                        color: iconColor(1),
                       ),
-                      title: Text("Applies", style: _labelStyle(1)),
+                      title: Text("Applies", style: labelStyle(1)),
                     ),
 
                     /// Inbox
@@ -124,9 +124,9 @@ class DashBoardScreen extends StatelessWidget {
                         AssetRes.chat,
                         height: 18,
                         width: 18,
-                        color: _iconColor(2),
+                        color: iconColor(2),
                       ),
-                      title: Text("Inbox", style: _labelStyle(2)),
+                      title: Text("Inbox", style: labelStyle(2)),
                     ),
 
                     /// Profile
@@ -136,9 +136,9 @@ class DashBoardScreen extends StatelessWidget {
                         AssetRes.profile1,
                         height: 18,
                         width: 18,
-                        color: _iconColor(3),
+                        color: iconColor(3),
                       ),
-                      title: Text(Strings.profile, style: _labelStyle(3)),
+                      title: Text(Strings.profile, style: labelStyle(3)),
                     ),
                   ],
                 ),

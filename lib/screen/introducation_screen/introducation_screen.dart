@@ -14,7 +14,7 @@ import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'introduction_controller.dart';
 
-// Jamaican palette
+// Jam palette
 const kJYellow = Color(0xFFFED100);
 const kJGreen = Color(0xFF1FA24A);
 

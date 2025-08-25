@@ -49,10 +49,10 @@ class ManagerDashBoardScreen extends StatelessWidget {
           () {
             int tab = controller.currentTab.value;
 
-            Color _iconColor(int index) =>
+            Color iconColor(int index) =>
                 tab == index ? _kJYellow : _kJGreen.withOpacity(0.85);
 
-            TextStyle _labelStyle(int index) => appTextStyle(
+            TextStyle labelStyle(int index) => appTextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
                   color: tab == index ? _kJYellow : _kJGreen.withOpacity(0.85),
@@ -80,9 +80,9 @@ class ManagerDashBoardScreen extends StatelessWidget {
                         AssetRes.home,
                         height: 18,
                         width: 18,
-                        color: _iconColor(0),
+                        color: iconColor(0),
                       ),
-                      title: Text(Strings.home, style: _labelStyle(0)),
+                      title: Text(Strings.home, style: labelStyle(0)),
                     ),
 
                     // Applications
@@ -92,9 +92,9 @@ class ManagerDashBoardScreen extends StatelessWidget {
                         AssetRes.applies,
                         height: 18,
                         width: 18,
-                        color: _iconColor(1),
+                        color: iconColor(1),
                       ),
-                      title: Text(Strings.applies, style: _labelStyle(1)),
+                      title: Text(Strings.applies, style: labelStyle(1)),
                     ),
 
                     // Inbox
@@ -104,9 +104,9 @@ class ManagerDashBoardScreen extends StatelessWidget {
                         AssetRes.chat,
                         height: 18,
                         width: 18,
-                        color: _iconColor(2),
+                        color: iconColor(2),
                       ),
-                      title: Text(Strings.inbox, style: _labelStyle(2)),
+                      title: Text(Strings.inbox, style: labelStyle(2)),
                     ),
 
                     // Profile
@@ -116,9 +116,9 @@ class ManagerDashBoardScreen extends StatelessWidget {
                         AssetRes.profile1,
                         height: 18,
                         width: 18,
-                        color: _iconColor(3),
+                        color: iconColor(3),
                       ),
-                      title: Text(Strings.profile, style: _labelStyle(3)),
+                      title: Text(Strings.profile, style: labelStyle(3)),
                     ),
                   ],
                 ),

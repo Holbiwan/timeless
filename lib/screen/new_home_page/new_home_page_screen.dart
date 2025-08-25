@@ -15,12 +15,12 @@ class HomePageNewScreenU extends StatelessWidget {
               /// Exemple avec RichText multicolore
               RichText(
                 textAlign: TextAlign.center,
-                text: TextSpan(
-                  style: const TextStyle(
+                text: const TextSpan(
+                  style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
                   ),
-                  children: const [
+                  children: [
                     TextSpan(
                       text: "Timeless ",
                       style: TextStyle(color: Colors.green), // Vert Jamaïque

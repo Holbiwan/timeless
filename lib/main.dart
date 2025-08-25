@@ -92,7 +92,7 @@ class MyApp extends StatelessWidget {
         ),
         GetPage(
           name: AppRes.newHomePageUi,
-          page: () => HomePageNewScreenU(),
+          page: () => const HomePageNewScreenU(),
         ),
         GetPage(
           name: AppRes.jobDetailUploadCvScreen,

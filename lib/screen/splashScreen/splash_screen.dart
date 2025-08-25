@@ -39,7 +39,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
     // Vers l’intro après 3 secondes
     Timer(const Duration(seconds: 3), () {
-      Get.offAll(() => intro.IntroductionScreen());
+      Get.offAll(() => const intro.IntroductionScreen());
     });
   }
 
