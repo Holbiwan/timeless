@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
+import 'package:timeless/screen/auth/sign_in_screen/sign_in_screen.dart';
 import 'package:timeless/screen/dashboard/dashboard_controller.dart';
 import 'package:timeless/screen/dashboard/dashboard_screen.dart';
 import 'package:timeless/screen/manager_section/dashboard/manager_dashboard_screen.dart';
@@ -12,6 +13,10 @@ import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'introduction_controller.dart';
+
+// Jamaican palette
+const kJYellow = Color(0xFFFED100);
+const kJGreen = Color(0xFF1FA24A);
 
 class IntroductionScreen extends StatefulWidget {
   const IntroductionScreen({super.key});
@@ -28,6 +33,11 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
   @override
   void initState() {
     super.initState();
+    _startAutoPlay();
+  }
+
+  void _startAutoPlay() {
+    _autoPlay?.cancel();
     _autoPlay = Timer.periodic(const Duration(seconds: 3), (_) {
       final int current = _pageController.page?.round() ?? 0;
       final int next = (current + 1) % 3;
@@ -73,25 +83,44 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
       body: Obx(
         () => Column(
           children: [
-            const SizedBox(height: 60),
-            if (_intro.selectedIndex.value != 2)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    GestureDetector(
-                      onTap: _goToApp,
-                      child: const Text(
-                        "skip",
-                        style: TextStyle(color: Colors.yellow),
+            const SizedBox(height: 40),
+
+            // Top actions: Welcome (left) + Skip (right)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  TextButton(
+                    onPressed: () => Get.to(() => const SigninScreenU()),
+                    child: Text(
+                      "Welcome",
+                      style: appTextStyle(
+                        color: kJGreen,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
-                  ],
-                ),
-              )
-            else
-              const SizedBox(height: 24),
+                  ),
+                  const Spacer(),
+                  if (_intro.selectedIndex.value != 2)
+                    TextButton(
+                      onPressed: _goToApp,
+                      child: Text(
+                        "Skip",
+                        style: appTextStyle(
+                          color: kJYellow,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    )
+                  else
+                    const SizedBox(width: 64),
+                ],
+              ),
+            ),
+
+            // Carousel
             SizedBox(
               height: h * 0.60,
               child: PageView(
@@ -102,36 +131,41 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
                     asset: AssetRes.page1,
                     title: "Find Your Job",
                     subtitle: "Bridging the gap with timeless talent",
-                    subtitleColor: Color.fromARGB(255, 9, 205, 48),
+                    subtitleColor: kJGreen,
                   ),
                   _IntroPage(
                     asset: AssetRes.page2,
                     title: "Apply Job",
                     subtitle: "Bridging the gap with timeless talent",
-                    subtitleColor: Color.fromARGB(255, 234, 255, 0),
+                    subtitleColor: kJYellow,
                   ),
                   _IntroPage(
                     asset: AssetRes.page3,
                     title: "Ready For The Job!",
                     subtitle: "Bridging the gap with timeless talent",
-                    subtitleColor: Color.fromARGB(255, 255, 247, 0),
+                    subtitleColor: kJYellow,
                   ),
                 ],
               ),
             ),
+
             const SizedBox(height: 8),
+
+            // Dots
             SmoothPageIndicator(
               controller: _pageController,
               count: 3,
               effect: SlideEffect(
-                activeDotColor: const Color.fromARGB(255, 31, 167, 10),
-                dotColor:
-                    const Color.fromARGB(255, 240, 229, 6).withOpacity(0.20),
+                activeDotColor: kJGreen,
+                dotColor: kJYellow.withOpacity(0.25),
                 dotWidth: 9,
                 dotHeight: 9,
               ),
             ),
-            const SizedBox(height: 32),
+
+            const SizedBox(height: 28),
+
+            // Final CTA
             if (_intro.selectedIndex.value == 2)
               InkWell(
                 onTap: _goToApp,
@@ -139,11 +173,10 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
                   height: 50,
                   width: 294,
                   alignment: Alignment.center,
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  margin: const EdgeInsets.only(right: 18, left: 18, top: 10),
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                    gradient: LinearGradient(
+                  margin: const EdgeInsets.symmetric(horizontal: 18),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    gradient: const LinearGradient(
                       colors: [
                         Color.fromARGB(255, 255, 0, 0),
                         Color.fromARGB(255, 50, 235, 47),
@@ -152,8 +185,11 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
                   ),
                   child: Text(
                     "Get Started",
-                    style:
-                        appTextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                    style: appTextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
