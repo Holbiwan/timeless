@@ -1,17 +1,17 @@
+// lib/screen/auth/sign_in_screen/sign_in_controller.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 import 'package:timeless/screen/dashboard/dashboard_screen.dart';
 import 'package:timeless/service/pref_services.dart';
 import 'package:timeless/utils/pref_keys.dart';
 
 class SignInScreenController extends GetxController {
-  // State
+  // Etat
   final RxBool loading = false.obs;
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -20,13 +20,14 @@ class SignInScreenController extends GetxController {
   final FirebaseAuth auth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn();
 
-  bool isUser = false;
+  bool rememberMe = false;
+  bool show = true; // afficher/masquer le mot de passe
+
+  // Erreurs UI
   String emailError = "";
   String pwdError = "";
-  bool rememberMe = false;
-  bool show = true;
 
-  // Prefill remembered credentials
+  // Récup pré-remplissage
   void getRememberEmailDataUser() {
     final email = PrefService.getString(PrefKeys.emailRememberUser);
     final pwd = PrefService.getString(PrefKeys.passwordRememberUser);
@@ -36,14 +37,13 @@ class SignInScreenController extends GetxController {
     }
   }
 
-  // Validation
+  // ===== Validations =====
   void emailValidation() {
     final text = emailController.text.trim();
     if (text.isEmpty) {
       emailError = 'Please enter email';
-    } else if (RegExp(
-      r"^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$",
-    ).hasMatch(text)) {
+    } else if (RegExp(r"^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$")
+        .hasMatch(text)) {
       emailError = '';
     } else {
       emailError = "Invalid email";
@@ -71,17 +71,20 @@ class SignInScreenController extends GetxController {
     return emailError.isEmpty && pwdError.isEmpty;
   }
 
-  // Email/password
+  // ===== Connexion email/mot de passe =====
   Future<void> signInWithEmailAndPassword({
     required String email,
     required String password,
   }) async {
     loading.value = true;
     try {
+      // Vérifie si l'email existe déjà dans la collection "Auth/User/register"
       final snap = await fireStore
           .collection("Auth")
           .doc("User")
           .collection("register")
+          .where("Email", isEqualTo: email)
+          .limit(1)
           .get();
 
       if (snap.docs.isEmpty) {
@@ -91,38 +94,23 @@ class SignInScreenController extends GetxController {
         return;
       }
 
-      isUser = false;
-      for (final d in snap.docs) {
-        if ((d["Email"] ?? "") == email) {
-          isUser = true;
-          PrefService.setValue(PrefKeys.rol, "User");
-          PrefService.setValue(PrefKeys.userId, d.id);
-          PrefService.setValue(PrefKeys.fullName, d["fullName"] ?? "");
-          PrefService.setValue(PrefKeys.email, d["Email"] ?? "");
-          PrefService.setValue(PrefKeys.phoneNumber, d["Phone"] ?? "");
-          PrefService.setValue(PrefKeys.city, d["City"] ?? "");
-          PrefService.setValue(PrefKeys.state, d["State"] ?? "");
-          PrefService.setValue(PrefKeys.country, d["Country"] ?? "");
-          PrefService.setValue(PrefKeys.occupation, d["Occupation"] ?? "");
-          break;
-        }
-      }
-
-      if (!isUser) {
-        Get.snackbar(
-            "Error", "Please create account,\n your email is not registered",
-            colorText: const Color(0xffDA1414));
-        return;
-      }
-
       final credential = await auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+          email: email, password: password);
 
       final user = credential.user;
       if (user != null) {
         PrefService.setValue(PrefKeys.userId, user.uid);
+        PrefService.setValue(PrefKeys.rol, "User");
+        PrefService.setValue(PrefKeys.email, email);
+
+        final doc = snap.docs.first;
+        PrefService.setValue(PrefKeys.fullName, doc["fullName"] ?? "");
+        PrefService.setValue(PrefKeys.phoneNumber, doc["Phone"] ?? "");
+        PrefService.setValue(PrefKeys.city, doc["City"] ?? "");
+        PrefService.setValue(PrefKeys.state, doc["State"] ?? "");
+        PrefService.setValue(PrefKeys.country, doc["Country"] ?? "");
+        PrefService.setValue(PrefKeys.occupation, doc["Occupation"] ?? "");
+
         emailController.clear();
         passwordController.clear();
         Get.off(() => DashBoardScreen());
@@ -145,8 +133,8 @@ class SignInScreenController extends GetxController {
     }
   }
 
-  // Login button handler
-  Future<void> onLoginBtnTap({String? email, String? password}) async {
+  // ===== Bouton Login =====
+  Future<void> onLoginBtnTap() async {
     if (rememberMe) {
       await PrefService.setValue(
           PrefKeys.emailRememberUser, emailController.text);
@@ -156,12 +144,12 @@ class SignInScreenController extends GetxController {
     if (!validator()) return;
 
     await signInWithEmailAndPassword(
-      email: email!,
-      password: password!,
+      email: emailController.text.trim(),
+      password: passwordController.text.trim(),
     );
   }
 
-  // UI helpers
+  // ===== UI helpers =====
   void chang() {
     show = !show;
     update(['showPassword']);
@@ -173,75 +161,52 @@ class SignInScreenController extends GetxController {
     update(['remember_me']);
   }
 
-  void button() {
-    final hasText = emailController.text.trim().isNotEmpty &&
-        passwordController.text.trim().isNotEmpty;
-    update(['color']);
-    if (hasText) {
-      // no-op placeholder if you colorize outside
-    }
-  }
+  void button() => update(['color']);
 
-  // Google Sign-In
+  // ===== Google Sign-In =====
   Future<void> signWithGoogle() async {
     loading.value = true;
     try {
       if (await googleSignIn.isSignedIn()) {
         await googleSignIn.signOut();
       }
-
       final GoogleSignInAccount? account = await googleSignIn.signIn();
-      if (account == null) {
-        // User cancelled
-        return;
-      }
+      if (account == null) return;
 
-      final GoogleSignInAuthentication authentication =
-          await account.authentication;
-
-      final OAuthCredential credential = GoogleAuthProvider.credential(
-        idToken: authentication.idToken,
-        accessToken: authentication.accessToken,
+      final authen = await account.authentication;
+      final credential = GoogleAuthProvider.credential(
+        idToken: authen.idToken,
+        accessToken: authen.accessToken,
       );
 
       final UserCredential authResult =
           await auth.signInWithCredential(credential);
       final User? user = authResult.user;
-
-      if (user == null || user.uid.isEmpty) return;
-
-      // Vérifie si email existe déjà dans ta collection "register"
-      final regSnap = await fireStore
-          .collection("Auth")
-          .doc("User")
-          .collection("register")
-          .get();
-
-      isUser = false;
-      for (final d in regSnap.docs) {
-        if ((d["Email"] ?? "") == user.email && (d["Email"] ?? "").isNotEmpty) {
-          isUser = true;
-          PrefService.setValue(PrefKeys.rol, "User");
-          PrefService.setValue(PrefKeys.accessToken, user.uid);
-          PrefService.setValue(PrefKeys.fullName, user.displayName ?? "");
-          PrefService.setValue(PrefKeys.userId, user.uid);
-          break;
-        }
-      }
-
-      if (!isUser) {
-        Get.snackbar(
-            "Error", "Please create account,\n your email is not registered",
+      if (user == null) {
+        Get.snackbar("Google", "Sign-in failed",
+            snackPosition: SnackPosition.BOTTOM,
             colorText: const Color(0xffDA1414));
-        await googleSignIn.signOut();
         return;
       }
 
+      await FirebaseFirestore.instance
+          .collection("Auth")
+          .doc("User")
+          .collection("register")
+          .doc(user.uid)
+          .set({
+        "Email": user.email ?? account.email,
+        "fullName": user.displayName ?? account.displayName ?? "",
+        "createdAt": FieldValue.serverTimestamp(),
+        "provider": "google",
+      }, SetOptions(merge: true));
+
+      PrefService.setValue(PrefKeys.rol, "User");
+      PrefService.setValue(PrefKeys.userId, user.uid);
+      PrefService.setValue(PrefKeys.email, user.email ?? account.email);
+      PrefService.setValue(
+          PrefKeys.fullName, user.displayName ?? account.displayName ?? "");
       Get.offAll(() => DashBoardScreen());
-    } on FirebaseAuthException catch (e) {
-      Get.snackbar("Google", e.message ?? 'Auth error',
-          snackPosition: SnackPosition.BOTTOM,
-          colorText: const Color(0xffDA1414));
     } catch (e) {
       if (kDebugMode) print(e);
       Get.snackbar("Google", "Sign-in failed",
@@ -252,64 +217,12 @@ class SignInScreenController extends GetxController {
     }
   }
 
-  // Facebook Sign-In
+  // ===== Facebook Sign-In (stub, compile sans package) =====
   Future<void> faceBookSignIn() async {
-    loading.value = true;
-    try {
-      final LoginResult loginResult = await FacebookAuth.instance
-          .login(permissions: ["email", "public_profile"]);
-
-      if (loginResult.status != LoginStatus.success ||
-          loginResult.accessToken == null) {
-        return; // cancelled or failed
-      }
-
-      final OAuthCredential facebookAuthCredential =
-          FacebookAuthProvider.credential(loginResult.accessToken!.tokenString);
-
-      final UserCredential userCredential =
-          await auth.signInWithCredential(facebookAuthCredential);
-
-      final User? user = userCredential.user;
-      if (user == null || user.uid.isEmpty) return;
-
-      final regSnap = await fireStore
-          .collection("Auth")
-          .doc("User")
-          .collection("register")
-          .get();
-
-      isUser = false;
-      for (final d in regSnap.docs) {
-        if ((d["Email"] ?? "") == (user.email ?? "")) {
-          isUser = true;
-          PrefService.setValue(PrefKeys.rol, "User");
-          PrefService.setValue(PrefKeys.userId, user.uid);
-          PrefService.setValue(PrefKeys.fullName, user.displayName ?? "");
-          break;
-        }
-      }
-
-      if (!isUser) {
-        Get.snackbar(
-            "Error", "Please create account,\n your email is not registered",
-            colorText: const Color(0xffDA1414));
-        await FacebookAuth.instance.logOut();
-        return;
-      }
-
-      Get.offAll(() => DashBoardScreen());
-    } on FirebaseAuthException catch (e) {
-      Get.snackbar("Facebook", e.message ?? 'Auth error',
-          snackPosition: SnackPosition.BOTTOM,
-          colorText: const Color(0xffDA1414));
-    } catch (e) {
-      if (kDebugMode) print(e);
-      Get.snackbar("Facebook", "Sign-in failed",
-          snackPosition: SnackPosition.BOTTOM,
-          colorText: const Color(0xffDA1414));
-    } finally {
-      loading.value = false;
-    }
+    // TODO: implémenter avec `flutter_facebook_auth`.
+    // Pour le moment on affiche un message pour ne pas casser la compile.
+    Get.snackbar("Facebook", "Facebook Sign-In not implemented yet",
+        snackPosition: SnackPosition.BOTTOM,
+        colorText: const Color(0xffDA1414));
   }
 }

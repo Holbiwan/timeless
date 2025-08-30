@@ -9,23 +9,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:timeless/screen/auth/sign_up/google_signupscreen.dart';
+
 import 'package:timeless/screen/dashboard/dashboard_screen.dart';
 import 'package:timeless/service/pref_services.dart';
 import 'package:timeless/utils/pref_keys.dart';
+// >>> Import aliasé pour éviter tout conflit et corriger "GoogleSignupScreen not defined"
+import 'package:timeless/screen/auth/sign_up/google_signupscreen.dart' as gsu;
+
 
 class SignUpController extends GetxController {
-  TextEditingController firstnameController = TextEditingController();
-  TextEditingController lastnameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController phoneController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController cityController = TextEditingController();
-  TextEditingController stateController = TextEditingController();
-  TextEditingController countryController = TextEditingController();
-  TextEditingController occupationController = TextEditingController();
+  // Controllers
+  final TextEditingController firstnameController = TextEditingController();
+  final TextEditingController lastnameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController cityController = TextEditingController();
+  final TextEditingController stateController = TextEditingController();
+  final TextEditingController countryController = TextEditingController();
+  final TextEditingController occupationController = TextEditingController();
 
-  RxBool loading = false.obs;
+  // State
+  final RxBool loading = false.obs;
+
   String emailError = "";
   String pwdError = "";
   String phoneError = "";
@@ -35,119 +41,95 @@ class SignUpController extends GetxController {
   String stateError = "";
   String countryError = "";
   String occupationError = "";
-  static FirebaseFirestore fireStore = FirebaseFirestore.instance;
 
-  changeDropdwon({required String val}) {
-    dropDownValue = val;
-    countryController.text = dropDownValue;
+  static final FirebaseFirestore fireStore = FirebaseFirestore.instance;
 
-    update(["dropdown"]);
-  }
-
+  // Dropdown
   String dropDownValue = 'India';
-  var items = [
+  final List<String> items = const [
     'India',
     'United States',
     'Europe',
     'china',
     'United Kingdom',
-    " Cuba",
-    "	Havana",
-    "Cyprus",
-    "Nicosia",
-    "Czech ",
-    "Republic",
-    "Prague",
+    'Cuba',
+    'Havana',
+    'Cyprus',
+    'Nicosia',
+    'Czech',
+    'Republic',
+    'Prague',
   ];
-  emailValidation() {
-    if (emailController.text.trim() == "") {
+
+  void changeDropdwon({required String val}) {
+    dropDownValue = val;
+    countryController.text = dropDownValue;
+    update(["dropdown"]);
+  }
+
+  // ===== Validations =====
+  void emailValidation() {
+    final text = emailController.text.trim();
+    if (text.isEmpty) {
       emailError = 'Please Enter email';
+    } else if (RegExp(r"^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$")
+        .hasMatch(text)) {
+      emailError = '';
     } else {
-      if (RegExp(
-              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-          .hasMatch(emailController.text)) {
-        emailError = '';
-      } else {
-        emailError = "Invalid email";
-      }
+      emailError = "Invalid email";
     }
   }
 
-  firstNameValidation() {
-    if (firstnameController.text.trim() == "") {
-      firstError = 'Please Enter Firstname';
-    } else {
-      firstError = "";
-    }
+  void firstNameValidation() {
+    firstError =
+        firstnameController.text.trim().isEmpty ? 'Please Enter Firstname' : "";
   }
 
-  lastNameValidation() {
-    if (lastnameController.text.trim() == "") {
-      lastError = 'Please Enter Lastname';
-    } else {
-      lastError = "";
-    }
+  void lastNameValidation() {
+    lastError =
+        lastnameController.text.trim().isEmpty ? 'Please Enter Lastname' : "";
   }
 
-  cityNameValidation() {
-    if (cityController.text.trim() == "") {
-      cityError = 'Please Enter city';
-    } else {
-      cityError = "";
-    }
+  void cityNameValidation() {
+    cityError = cityController.text.trim().isEmpty ? 'Please Enter city' : "";
   }
 
-  stateNameValidation() {
-    if (stateController.text.trim() == "") {
-      stateError = 'Please Enter State';
-    } else {
-      stateError = "";
-    }
+  void stateNameValidation() {
+    stateError =
+        stateController.text.trim().isEmpty ? 'Please Enter State' : "";
   }
 
-  countryNameValidation() {
-    if (cityController.text.trim() == "") {
-      countryError = 'Please Enter Country';
-    } else {
-      countryError = "";
-    }
+  void countryNameValidation() {
+    countryError =
+        countryController.text.trim().isEmpty ? 'Please Enter Country' : "";
   }
 
-  occupationNameValidation() {
-    if (occupationController.text.trim() == "") {
-      occupationError = 'Please Enter Country';
-    } else {
-      occupationError = "";
-    }
+  void occupationNameValidation() {
+    occupationError = occupationController.text.trim().isEmpty
+        ? 'Please Enter Occupation'
+        : "";
   }
 
-  phoneValidation() {
-    if (phoneController.text.trim() == "") {
+  void phoneValidation() {
+    final text = phoneController.text.trim();
+    if (text.isEmpty) {
       phoneError = 'Please Enter phoneNumber';
+    } else if (text.length == 10) {
+      phoneError = "";
     } else {
-      if (phoneController.text.length == 10) {
-        phoneError = "";
-      } else {
-        phoneError = "Invalid Phone Number";
-      }
-      // if (RegExp(r"^\+?0[0-9]{10}$").hasMatch(phoneController.text)) {
-      //     phoneError = "";
-      // } else {
-      //   phoneError = "Invalid PhoneNumber";
-      // }
+      phoneError = "Invalid Phone Number";
     }
     update(["showPhoneNumber"]);
   }
 
-  passwordValidation() {
-    if (passwordController.text.trim() == "") {
+  void passwordValidation() {
+    final text = passwordController.text.trim();
+    if (text.isEmpty) {
       pwdError = 'Please Enter Password';
+    } else if (text.length >= 8) {
+      pwdError = '';
     } else {
-      if (passwordController.text.trim().length >= 8) {
-        pwdError = '';
-      } else {
-        pwdError = "At Least 8 Character";
-      }
+      pwdError = "At Least 8 Character";
     }
   }
 
@@ -161,25 +143,21 @@ class SignUpController extends GetxController {
     stateNameValidation();
     countryNameValidation();
     occupationNameValidation();
-    if (emailError == "" &&
-        pwdError == "" &&
-        phoneError == "" &&
-        firstError == "" &&
-        lastError == "" &&
-        cityError == "" &&
-        stateError == "" &&
-        countryError == "" &&
-        occupationError == "") {
-      return true;
-    } else {
-      return false;
-    }
+
+    return emailError.isEmpty &&
+        pwdError.isEmpty &&
+        phoneError.isEmpty &&
+        firstError.isEmpty &&
+        lastError.isEmpty &&
+        cityError.isEmpty &&
+        stateError.isEmpty &&
+        countryError.isEmpty &&
+        occupationError.isEmpty;
   }
 
-  onSignUpBtnTap() {
+  void onSignUpBtnTap() {
     if (validator()) {
-      singUp(emailController.text, passwordController.text);
-
+      singUp(emailController.text.trim(), passwordController.text.trim());
       if (kDebugMode) {
         print("GO TO HOME PAGE");
       }
@@ -198,108 +176,126 @@ class SignUpController extends GetxController {
     update(['dark']);
   }
 
-  void onChanged(String value) {
-    update(["dark"]);
-  }
+  void onChanged(String value) => update(["dark"]);
 
-  singUp(email, password) async {
+  // ===== Email/Password Sign up =====
+  Future<void> singUp(String email, String password) async {
     try {
       loading.value = true;
-      UserCredential userCredential =
+
+      final UserCredential userCredential =
           await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-      if (userCredential.user?.uid != null) {
-        PrefService.setValue(
-            PrefKeys.userId, userCredential.user?.uid.toString());
+
+      final uid = userCredential.user?.uid;
+      if (uid != null) {
+        PrefService.setValue(PrefKeys.userId, uid);
         PrefService.setValue(PrefKeys.rol, "User");
-        Map<String, dynamic> map2 = {
-          "fullName": "${firstnameController.text} ${lastnameController.text}",
-          "Email": emailController.text,
-          "Phone": phoneController.text,
-          "Occupation": occupationController.text,
-          "City": cityController.text,
-          "State": stateController.text,
-          "Country": countryController.text,
+
+        final fullName =
+            "${firstnameController.text.trim()} ${lastnameController.text.trim()}";
+
+        final Map<String, dynamic> map2 = {
+          "fullName": fullName,
+          "Email": emailController.text.trim(),
+          "Phone": phoneController.text.trim(),
+          "Occupation": occupationController.text.trim(),
+          "City": cityController.text.trim(),
+          "State": stateController.text.trim(),
+          "Country": countryController.text.trim(),
           "imageUrl": "",
           "deviceTokenU": PrefService.getString(PrefKeys.deviceToken),
         };
-        await PrefService.setValue(
-            PrefKeys.email, emailController.text.toString());
-        await PrefService.setValue(
-            PrefKeys.occupation, occupationController.text.toString());
-        await PrefService.setValue(
-            PrefKeys.fullName,
-            firstnameController.text.toString() +
-                lastnameController.text.toString());
-        await PrefService.setValue(
-            PrefKeys.city, cityController.text.toString());
-        await PrefService.setValue(
-            PrefKeys.state, stateController.text.toString());
-        await PrefService.setValue(
-            PrefKeys.country, countryController.text.toString());
-        await PrefService.setValue(
-            PrefKeys.phoneNumber, phoneController.text.toString());
 
-        addDataInFirebase(userUid: userCredential.user?.uid ?? "", map: map2);
+        await PrefService.setValue(PrefKeys.email, emailController.text.trim());
+        await PrefService.setValue(
+            PrefKeys.occupation, occupationController.text.trim());
+        await PrefService.setValue(PrefKeys.fullName, fullName);
+        await PrefService.setValue(PrefKeys.city, cityController.text.trim());
+        await PrefService.setValue(PrefKeys.state, stateController.text.trim());
+        await PrefService.setValue(
+            PrefKeys.country, countryController.text.trim());
+        await PrefService.setValue(
+            PrefKeys.phoneNumber, phoneController.text.trim());
+
+        await addDataInFirebase(userUid: uid, map: map2);
       }
 
       loading.value = false;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-        if (kDebugMode) {
-          print('The password provided is too weak.');
-        }
+        if (kDebugMode) print('The password provided is too weak.');
       } else if (e.code == 'email-already-in-use') {
         Get.snackbar("Error", e.message.toString(),
             colorText: const Color(0xffDA1414));
-        loading.value = false;
-
-        if (kDebugMode) {
-          print('The account already exists for that email.');
-        }
       }
+      loading.value = false;
     } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
+      if (kDebugMode) print(e);
       loading.value = false;
     }
   }
 
-  addDataInFirebase(
-      {required String userUid, required Map<String, dynamic> map}) async {
-    await fireStore
-        .collection("Auth")
-        .doc("User")
-        .collection("register")
-        .doc(userUid)
-        .set(map)
-        .catchError((e) async {
-      if (kDebugMode) {
-        print('...error...' + e);
-      }
-    });
-    loading.value = false;
+  Future<void> addDataInFirebase({
+    required String userUid,
+    required Map<String, dynamic> map,
+  }) async {
+    try {
+      await fireStore
+          .collection("Auth")
+          .doc("User")
+          .collection("register")
+          .doc(userUid)
+          .set(map);
+      loading.value = false;
 
-    Get.off(() => DashBoardScreen());
-    firstnameController.text = "";
-    lastnameController.text = "";
-    emailController.text = "";
-    phoneController.text = "";
-    passwordController.text = "";
-    cityController.text = "";
-    stateController.text = "";
-    countryController.text = "";
-    occupationController.text = "";
+      // Clear fields
+      firstnameController.clear();
+      lastnameController.clear();
+      emailController.clear();
+      phoneController.clear();
+      passwordController.clear();
+      cityController.clear();
+      stateController.clear();
+      countryController.clear();
+      occupationController.clear();
 
-    if (kDebugMode) {
-      print("*************************** Success");
+      Get.off(() => DashBoardScreen());
+      if (kDebugMode) print("*************************** Success");
+    } catch (e) {
+      if (kDebugMode) print('...error... $e');
+      loading.value = false;
     }
   }
 
+  // ===== UI helpers =====
   bool show = true;
+  void chang() {
+    show = !show;
+    update(['showPassword']);
+  }
+
+  bool rememberMe = false;
+  void onRememberMeChange(bool? value) {
+    if (value != null) {
+      rememberMe = value;
+      update(['remember_me']);
+    }
+  }
+
+  bool buttonColor = false;
+  void button() {
+    if (emailController.text.isNotEmpty && passwordController.text.isNotEmpty) {
+      buttonColor = true;
+    } else {
+      buttonColor = false;
+    }
+    update(['color']);
+  }
+
+  // ===== Country picker (pour le téléphone) =====
   Country countryModel = Country.from(json: {
     "e164_cc": "1",
     "iso2_cc": "CA",
@@ -313,7 +309,8 @@ class SignUpController extends GetxController {
     "display_name_no_e164_cc": "Canada (CA)",
     "e164_key": "1-CA-0"
   });
-  void countrySelect(context) {
+
+  void countrySelect(BuildContext context) {
     showCountryPicker(
       context: context,
       showPhoneCode: true,
@@ -335,194 +332,123 @@ class SignUpController extends GetxController {
     );
   }
 
-  chang() {
-    debugPrint("SHOW $show");
-    show = !show;
-    update(['showPassword']);
-  }
-
-  bool rememberMe = false;
-
-  void onRememberMeChange(bool? value) {
-    if (value != null) {
-      rememberMe = value;
-      update(['remember_me']);
-    }
-  }
-
-  bool buttonColor = false;
-
-  button() {
-    if (emailController.text != '' && passwordController.text != '') {
-      buttonColor = true;
-      update(['color']);
-    } else {
-      buttonColor = false;
-      update(['color']);
-    }
-    update();
-  }
-
+  // ===== Google Sign-In (pré-inscription Google) =====
   final FirebaseAuth auth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn();
 
-  void signWithGoogle() async {
-    if (await googleSignIn.isSignedIn()) {
-      await googleSignIn.signOut();
-    }
-    final GoogleSignInAccount? account = await googleSignIn.signIn();
-    if (await googleSignIn.isSignedIn()) {
+  Future<void> signWithGoogle() async {
+    try {
+      if (await googleSignIn.isSignedIn()) {
+        await googleSignIn.signOut();
+      }
+
+      final GoogleSignInAccount? account = await googleSignIn.signIn();
+      if (account == null) {
+        // user cancelled
+        return;
+      }
+
       loading.value = true;
-    }
-    final GoogleSignInAuthentication authentication =
-        await account!.authentication;
 
-    final OAuthCredential credential = GoogleAuthProvider.credential(
-      idToken: authentication.idToken,
-      accessToken: authentication.accessToken,
-    );
-    final UserCredential authResult =
-        await auth.signInWithCredential(credential);
-    final User? user = authResult.user;
+      final GoogleSignInAuthentication authentication =
+          await account.authentication;
 
-    if (kDebugMode) {
-      print(user!.email);
-    }
+      final OAuthCredential credential = GoogleAuthProvider.credential(
+        idToken: authentication.idToken,
+        accessToken: authentication.accessToken,
+      );
 
-    if (kDebugMode) {
-      print(user?.uid);
-    }
+      final UserCredential authResult =
+          await auth.signInWithCredential(credential);
+      final User? user = authResult.user;
 
-    if (kDebugMode) {
-      print(user?.displayName);
-    }
+      if (user?.uid == null || (user?.uid ?? "").isEmpty) {
+        loading.value = false;
+        return;
+      }
 
-    if (user?.uid != null && user?.uid != "") {
+      // Vérifie si déjà existant
       bool isUser = false;
-      await fireStore
+      final QuerySnapshot snapshot = await fireStore
           .collection("Auth")
           .doc("User")
           .collection("register")
-          .get()
-          .then((value) async {
-        if (value.docs.length.isEqual(0)) {
-          loading.value = true;
-          isUser = false;
-          Get.snackbar(
-              "Error", "Please create account,\n your email is not registered",
-              colorText: const Color(0xffDA1414));
-        } else {
-          for (int i = 0; i < value.docs.length; i++) {
-            if (kDebugMode) {
-              print("${value.docs[i]["Email"]}=||||||++++++++++");
-            }
+          .get();
 
-            if (value.docs[i]["Email"] == user!.email &&
-                value.docs[i]["Email"] != "") {
-              isUser = true;
-              Get.snackbar("Error", "This email is already registered",
-                  colorText: const Color(0xffDA1414));
-
-              if (kDebugMode) {
-                print("$isUser====]]]]]");
-              }
-
-              break;
-            } else {
-              isUser = false;
-
-              if (kDebugMode) {
-                print("$isUser====]]]]]");
-              }
-            }
+      if (snapshot.docs.isEmpty) {
+        isUser = false;
+        Get.snackbar(
+          "Error",
+          "Please create account,\n your email is not registered",
+          colorText: const Color(0xffDA1414),
+        );
+      } else {
+        for (final d in snapshot.docs) {
+          if (kDebugMode) {
+            print("${d["Email"]}=||||||++++++++++");
           }
-
-          if (isUser == false) {
-            String firstNm = user!.displayName.toString().split(" ").first;
-            String lastNm = user.displayName.toString().split(" ").last;
-            Get.to(
-              GoogleSignupScreen(
-                uid: user.uid.toString(),
-                email: user.email.toString(),
-                firstName: firstNm,
-                lastName: lastNm,
-              ),
-            );
-          } else {
-            if (await googleSignIn.isSignedIn()) {
-              await googleSignIn.signOut();
-            }
+          if ((d["Email"] ?? "") == (user!.email ?? "")) {
+            isUser = true;
             Get.snackbar("Error", "This email is already registered",
                 colorText: const Color(0xffDA1414));
-            loading.value = false;
+            break;
           }
-          loading.value = false;
         }
+      }
 
-        if (kDebugMode) {
-          print("${value.isBlank}=|=|=|");
+      if (!isUser) {
+        final display = user!.displayName ?? "";
+        final parts = display.trim().split(RegExp(r"\s+"));
+        final String firstNm = parts.isNotEmpty ? parts.first : "";
+        final String lastNm = parts.length > 1 ? parts.last : "";
+
+        Get.to(() => gsu.GoogleSignupScreen(
+              uid: user.uid,
+              email: user.email ?? "",
+              firstName: firstNm,
+              lastName: lastNm,
+            ));
+      } else {
+        if (await googleSignIn.isSignedIn()) {
+          await googleSignIn.signOut();
         }
-
-        if (kDebugMode) {
-          print("${value.docs.length}=|=|=|");
-        }
-      });
-
-      // Get.offAll(() => DashBoardScreen());
-      loading.value == false;
-      // loader false
-    } else {
-      loading.value == false;
+      }
+    } catch (e) {
+      if (kDebugMode) print(e);
+    } finally {
+      loading.value = false;
     }
-    loading.value == false;
   }
 
-  void faceBookSignIn() async {
+  // ===== Facebook Sign-In =====
+  Future<void> faceBookSignIn() async {
     try {
       loading.value = true;
+
       final LoginResult loginResult = await FacebookAuth.instance
           .login(permissions: ["email", "public_profile"]);
 
-      if (kDebugMode) {
-        print(loginResult);
+      if (loginResult.status != LoginStatus.success ||
+          loginResult.accessToken == null) {
+        loading.value = false;
+        return;
       }
 
-      await FacebookAuth.instance.getUserData().then((userData) {
-        if (kDebugMode) {
-          print(userData);
-        }
-      });
       final OAuthCredential facebookAuthCredential =
-          FacebookAuthProvider.credential(
-        loginResult.accessToken!.tokenString
+          FacebookAuthProvider.credential(loginResult.accessToken!.tokenString);
 
+      final UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithCredential(
+        facebookAuthCredential,
       );
 
-      if (kDebugMode) {
-        print(facebookAuthCredential);
-      }
-
-      UserCredential userCredential = await FirebaseAuth.instance
-          .signInWithCredential(facebookAuthCredential);
-
-      if (kDebugMode) {
-        print(userCredential);
-      }
-
-      if (userCredential.user?.uid != null && userCredential.user?.uid != "") {
+      if (userCredential.user?.uid != null &&
+          (userCredential.user?.uid ?? "").isNotEmpty) {
         Get.offAll(() => DashBoardScreen());
-        loading.value == false;
-        // loader false
-      } else {
-        loading.value == false;
       }
-
-      loading.value = false;
     } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
-
+      if (kDebugMode) print(e);
+    } finally {
       loading.value = false;
     }
   }

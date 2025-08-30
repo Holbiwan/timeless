@@ -1,415 +1,115 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-import 'package:timeless/common/widgets/back_button.dart';
-import 'package:timeless/common/widgets/common_error_box.dart';
-import 'package:timeless/common/widgets/common_text_field.dart';
-import 'package:timeless/screen/profile/edit_profile_user/edit_profile_user_screen.dart';
-import 'package:timeless/screen/profile/profile_controller.dart';
-import 'package:timeless/screen/settings/settings_screen.dart';
-import 'package:timeless/service/pref_services.dart';
-import 'package:timeless/utils/app_style.dart';
-import 'package:timeless/utils/asset_res.dart';
-import 'package:timeless/utils/color_res.dart';
-import 'package:timeless/utils/pref_keys.dart';
-import 'package:timeless/utils/string.dart';
+import 'package:timeless/screen/manager_section/profile/manager_profile_controller.dart';
 
-class ProfileUserScreenU extends StatelessWidget {
-  ProfileUserScreenU({super.key});
-  final controller = Get.put(ProfileUserController());
+class ManagerDashBoardScreenController extends GetxController
+    implements GetxService {
+  final RxInt currentTab = 0.obs;
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      backgroundColor: ColorRes.backgroundColor,
-      body: SingleChildScrollView(
-        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        child: Column(
-          children: [
-            const SizedBox(height: 50),
-            Row(children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 18.0),
-                child: logo(),
-              ),
-              const Spacer(),
-              Center(
-                child: Text(
-                  Strings.profile,
-                  style: appTextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w500,
-                      height: 1,
-                      color: ColorRes.black),
-                ),
-              ),
-              const Spacer(),
-              Container(
-                margin: const EdgeInsets.all(15),
-                height: 40,
-                width: 40,
-                decoration: BoxDecoration(
-                  color: ColorRes.logoColor,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (con) => const SettingsScreenU(),
-                      ),
-                    );
-                  },
-                  child: const Icon(
-                    Icons.settings,
-                    color: ColorRes.containerColor,
-                  ),
-                ),
-              ),
-            ]),
-            const SizedBox(height: 10),
-            SizedBox(
-              height: Get.height - 210,
-              child: SingleChildScrollView(
-                child: Column(children: [
-                  Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Row(
-                      children: [
-                        Stack(
-                          children: [
-                            GetBuilder<ProfileUserController>(
-                                id: "pic",
-                                builder: (context) {
-                                  return Container(
-                                    width: 100,
-                                    height: 100,
-                                    decoration: BoxDecoration(
-                                      color: ColorRes.black,
-                                      borderRadius: BorderRadius.circular(50),
-                                      image: controller.fbImageUrl.value != ""
-                                          ? DecorationImage(
-                                              image: NetworkImage(
-                                                  controller.fbImageUrl.value),
-                                              fit: BoxFit.fill)
-                                          : (controller.image != null)
-                                              ? DecorationImage(
-                                                  image: FileImage(
-                                                      controller.image!),
-                                                )
-                                              : const DecorationImage(
-                                                  image: AssetImage(
-                                                      AssetRes.userprofileLogo),
-                                                ),
-                                    ),
-                                  );
-                                }),
-                          ],
-                        ),
-                        const SizedBox(width: 20),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              PrefService.getString(PrefKeys.fullName),
-                              style: appTextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w500,
-                                  color: ColorRes.black),
-                            ),
-                            const SizedBox(height: 2),
-                            Text(
-                              PrefService.getString(PrefKeys.email),
-                              style: appTextStyle(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 12,
-                                color: ColorRes.black.withOpacity(0.6),
-                              ),
-                            ),
-                            const SizedBox(height: 2),
-                            Text(
-                              PrefService.getString(PrefKeys.occupation),
-                              style: appTextStyle(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 12,
-                                color: ColorRes.black.withOpacity(0.6),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Obx(
-                      () => Column(
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                Strings.fullName,
-                                style: appTextStyle(
-                                  color: ColorRes.black.withOpacity(0.6),
-                                  fontSize: 14,
-                                ),
-                              ),
-                              Text(
-                                "*",
-                                style: appTextStyle(color: ColorRes.starColor),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          commonTextFormField(
-                              onChanged: controller.onChanged,
-                              readOnly: true,
-                              textDecoration: InputDecoration(
-                                contentPadding: const EdgeInsets.all(15),
-                                border: InputBorder.none,
-                                hintText: "  Full Name",
-                                hintStyle: appTextStyle(
-                                  fontSize: 14,
-                                  color: ColorRes.black.withOpacity(0.15),
-                                ),
-                              ),
-                              controller: controller.fullNameController),
-                          controller.isNameValidate.value == true
-                              ? Column(
-                                  children: [
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    commonErrorBox(Strings.enterValidName),
-                                  ],
-                                )
-                              : const SizedBox(),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            children: [
-                              Text(
-                                Strings.email,
-                                style: appTextStyle(
-                                    color: ColorRes.grey, fontSize: 14),
-                              ),
-                              Text(
-                                "*",
-                                style: appTextStyle(color: ColorRes.starColor),
-                              )
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          commonTextFormField(
-                              onChanged: controller.onChanged,
-                              readOnly: true,
-                              textDecoration: InputDecoration(
-                                contentPadding: const EdgeInsets.all(15),
-                                border: InputBorder.none,
-                                hintText: "  Email",
-                                hintStyle: appTextStyle(
-                                    fontSize: 14,
-                                    color: ColorRes.black.withOpacity(0.15)),
-                                suffixIcon: Icon(
-                                  Icons.mail_outline_outlined,
-                                  color: ColorRes.black.withOpacity(0.20),
-                                ),
-                              ),
-                              controller: controller.emailController),
-                          controller.isEmailValidate.value == true
-                              ? Column(
-                                  children: [
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    commonErrorBox(Strings.enterValidEmail),
-                                  ],
-                                )
-                              : const SizedBox(),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            children: [
-                              Text(
-                                Strings.dateOfBirth,
-                                style: appTextStyle(
-                                    color: ColorRes.grey, fontSize: 14),
-                              ),
-                              Text(
-                                "*",
-                                style: appTextStyle(color: ColorRes.starColor),
-                              )
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          InkWell(
-                            onTap: () {
-                              //controller.onDatePickerTap(context);
-                            },
-                            child: commonTextFormField(
-                                readOnly: true,
-                                onChanged: controller.onChanged,
-                                // onTap: () =>
-                                //    controller.onDatePickerTap(context),
-                                textDecoration: InputDecoration(
-                                  contentPadding: const EdgeInsets.all(15),
-                                  border: InputBorder.none,
-                                  hintText: "  Date of birth",
-                                  hintStyle: appTextStyle(
-                                    fontSize: 14,
-                                    color: ColorRes.black.withOpacity(0.15),
-                                  ),
-                                  suffixIcon: Container(
-                                    padding: const EdgeInsets.all(15),
-                                    child: Image(
-                                      color: ColorRes.black.withOpacity(0.20),
-                                      image: const AssetImage(
-                                        AssetRes.dateIcon,
-                                      ),
-                                      height: 20,
-                                    ),
-                                  ),
-                                ),
-                                controller: controller.dateOfBirthController),
-                          ),
-                          const SizedBox(height: 10),
-                          Row(
-                            children: [
-                              Text(
-                                Strings.address,
-                                style: appTextStyle(
-                                    color: ColorRes.grey, fontSize: 14),
-                              ),
-                              Text(
-                                "*",
-                                style: appTextStyle(color: ColorRes.starColor),
-                              )
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          commonTextFormField(
-                              readOnly: true,
-                              onChanged: controller.onChanged,
-                              textDecoration: InputDecoration(
-                                border: InputBorder.none,
-                                contentPadding: const EdgeInsets.all(15),
-                                hintText: "  Address",
-                                hintStyle: appTextStyle(
-                                  fontSize: 14,
-                                  color: ColorRes.black.withOpacity(0.15),
-                                ),
-                              ),
-                              controller: controller.addressController),
-                          controller.isAddressValidate.value == true
-                              ? Column(
-                                  children: [
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    commonErrorBox(Strings.enterValidAddress),
-                                  ],
-                                )
-                              : const SizedBox(),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            children: [
-                              Text(
-                                Strings.occupation,
-                                style: appTextStyle(
-                                    color: ColorRes.grey, fontSize: 14),
-                              ),
-                              Text(
-                                "*",
-                                style: appTextStyle(color: ColorRes.starColor),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          commonTextFormField(
-                              readOnly: true,
-                              onChanged: controller.onChanged,
-                              textDecoration: InputDecoration(
-                                border: InputBorder.none,
-                                contentPadding: const EdgeInsets.all(15),
-                                hintText: "  Occupation",
-                                hintStyle: appTextStyle(
-                                  fontSize: 14,
-                                  color: ColorRes.black.withOpacity(0.15),
-                                ),
-                              ),
-                              controller: controller.occupationController),
-                          controller.isOccupationValidate.value == true
-                              ? Column(
-                                  children: [
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    commonErrorBox(
-                                        Strings.enterValidOccupation),
-                                  ],
-                                )
-                              : const SizedBox(),
-                          const SizedBox(height: 20),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          GetBuilder<ProfileUserController>(
-                              id: "Organization",
-                              builder: (controller) {
-                                return InkWell(
-                                  onTap: () {
-                                    Get.to(() => EditProfileUser());
-                                  },
-                                  child: Container(
-                                    height: 50,
-                                    width: MediaQuery.of(context).size.width,
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      gradient: const LinearGradient(colors: [
-                                        ColorRes.gradientColor,
-                                        ColorRes.containerColor
-                                      ]),
-                                    ),
-                                    child: Text(
-                                      Strings.edit,
-                                      style: appTextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w500,
-                                          color: ColorRes.white),
-                                    ),
-                                  ),
-                                );
-                              }),
-                        ],
-                      ),
-                    ),
-                  ),
-                ]),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+  void onInit() {
+    _handleInitialArguments();
+    super.onInit();
+  }
+
+  /// Gestion des arguments passés à l'écran
+  void _handleInitialArguments() {
+    try {
+      final args = Get.arguments;
+      if (args != null) {
+        final tabIndex = _extractTabIndexFromArguments(args);
+        if (tabIndex != null) {
+          currentTab.value = tabIndex;
+          // NE PAS appeler _executeTabSpecificLogic ici
+        }
+      }
+    } catch (e) {
+      debugPrint('Error handling initial arguments: $e');
+    }
+  }
+
+  /// Extrait l'index de l'onglet depuis différents formats d'arguments
+  int? _extractTabIndexFromArguments(dynamic args) {
+    if (args is int) {
+      return args;
+    } else if (args is String) {
+      return int.tryParse(args);
+    } else if (args is Map<String, dynamic>) {
+      // Cherche différentes clés possibles pour l'index
+      final dynamic value = args['index'] ?? args['tab'] ?? args['currentTab'];
+      
+      if (value is int) return value;
+      if (value is String) return int.tryParse(value);
+    }
+    return null;
+  }
+
+  /// Change l'onglet actuel et exécute la logique spécifique
+  void onBottomBarChange(int index) {
+    if (index == currentTab.value) return; // Évite les traitements inutiles
+    
+    currentTab.value = index;
+    _executeTabSpecificLogic(index);
+    update(['bottom_bar']);
+  }
+
+  /// Exécute la logique spécifique à chaque onglet
+  void _executeTabSpecificLogic(int index) {
+    debugPrint("INDEX IS $index");
+    
+    switch (index) {
+      case 0:
+        _initHomeTab();
+        break;
+      case 1:
+        _initSearchTab();
+        break;
+      case 2:
+        _initMessageTab();
+        break;
+      case 3:
+        _initProfileTab();
+        break;
+      default:
+        debugPrint("Unknown tab index: $index");
+    }
+  }
+
+  /// Méthodes spécifiques à chaque onglet
+  void _initHomeTab() {
+    debugPrint("Initializing Home Tab");
+  }
+
+  void _initSearchTab() {
+    debugPrint("Initializing Search Tab");
+  }
+
+  void _initMessageTab() {
+    debugPrint("Initializing Message Tab");
+  }
+
+  void _initProfileTab() {
+    try {
+      debugPrint("Initializing Manager Profile Tab");
+      
+      // UTILISEZ ManagerProfileController au lieu de ProfileController
+      if (Get.isRegistered<ManagerProfileController>()) {
+        final profileController = Get.find<ManagerProfileController>();
+        profileController.init();
+      } else {
+        final profileController = Get.put(ManagerProfileController());
+        profileController.init();
+      }
+    } catch (e) {
+      debugPrint('Error initializing manager profile tab: $e');
+    }
+  }
+
+  /// Méthode utilitaire pour obtenir l'index actuel
+  int get currentIndex => currentTab.value;
+
+  /// Méthode pour forcer le rafraîchissement de la bottom bar
+  void refreshBottomBar() {
+    update(['bottom_bar']);
   }
 }

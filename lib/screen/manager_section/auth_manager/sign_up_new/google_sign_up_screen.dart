@@ -1,326 +1,221 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:timeless/screen/auth/sign_up/sign_up_screen.dart';
-import 'package:timeless/screen/auth/sign_up/widget/signup_bottom/country.dart';
-import 'package:timeless/screen/manager_section/auth_manager/sign_up_new/google_sign_up_new_controller.dart';
-import 'package:timeless/utils/app_style.dart';
-import 'package:timeless/utils/asset_res.dart';
-import 'package:timeless/utils/color_res.dart';
-import 'package:timeless/utils/string.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
-class GoogleSignupScreenM extends StatelessWidget {
-  final String email;
-  final String firstName;
-  final String lastName;
-  final String uid;
-  const GoogleSignupScreenM(
-      {super.key,
-      required this.email,
-      required this.firstName,
-      required this.lastName,
-      required this.uid});
+import 'package:timeless/screen/dashboard/dashboard_screen.dart';
+import 'package:timeless/service/pref_services.dart';
+import 'package:timeless/utils/pref_keys.dart';
 
-  @override
-  Widget build(BuildContext context) {
+class SignUpController extends GetxController {
+  // Champs
+  final TextEditingController fullNameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPwdController = TextEditingController();
 
-      if (kDebugMode) {
-        print("EMAIL : $email , $firstName , $lastName");
+  // Etats
+  final RxBool loading = false.obs;
+  bool show = true;
+  bool showConfirm = true;
+
+  // Erreurs UI
+  String nameError = '';
+  String emailError = '';
+  String pwdError = '';
+  String confirmError = '';
+
+  // Services
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  final FirebaseFirestore fireStore = FirebaseFirestore.instance;
+  final GoogleSignIn googleSignIn = GoogleSignIn();
+
+  // ========= Validations =========
+  void validateName() {
+    final text = fullNameController.text.trim();
+    nameError = text.isEmpty ? "Please enter name" : '';
+    update(["showName"]);
+  }
+
+  void validateEmail() {
+    final text = emailController.text.trim();
+    if (text.isEmpty) {
+      emailError = "Please enter email";
+    } else if (!RegExp(r"^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$").hasMatch(text)) {
+      emailError = "Invalid email";
+    } else {
+      emailError = '';
+    }
+    update(["showEmail"]);
+  }
+
+  void validatePassword() {
+    final text = passwordController.text.trim();
+    if (text.isEmpty) {
+      pwdError = "Please enter Password";
+    } else if (text.length < 8) {
+      pwdError = "At least 8 character";
+    } else {
+      pwdError = '';
+    }
+    update(["showPassword"]);
+  }
+
+  void validateConfirm() {
+    final pwd = passwordController.text.trim();
+    final confirm = confirmPwdController.text.trim();
+    if (confirm.isEmpty) {
+      confirmError = "Please confirm password";
+    } else if (confirm != pwd) {
+      confirmError = "Password not match";
+    } else {
+      confirmError = '';
+    }
+    update(["showConfirm"]);
+  }
+
+  bool _isValid() {
+    validateName();
+    validateEmail();
+    validatePassword();
+    validateConfirm();
+    return nameError.isEmpty && emailError.isEmpty && pwdError.isEmpty && confirmError.isEmpty;
+  }
+
+  // ========= UI helpers =========
+  void chang() {
+    show = !show;
+    update(["showPassword"]);
+  }
+
+  void changConfirm() {
+    showConfirm = !showConfirm;
+    update(["showConfirm"]);
+  }
+
+  void onChanged(String _) => update(["colorChange"]);
+
+  // ========= Enregistrement email / mot de passe =========
+  Future<void> signUpWithEmail() async {
+    if (!_isValid()) return;
+
+    loading.value = true;
+    try {
+      final credential = await auth.createUserWithEmailAndPassword(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+      );
+
+      final user = credential.user;
+      if (user == null) {
+        Get.snackbar("Error", "Sign-up failed", colorText: const Color(0xffDA1414));
+        return;
       }
 
-   /* GoogleSignUpControllerM controller = Get.put(GoogleSignUpControllerM(
-        email: email, firstname: firstName, lastname: lastName, uid: uid));*/
+      // Ecrit l’utilisateur dans Firestore
+      await fireStore
+          .collection("Auth")
+          .doc("User")
+          .collection("register")
+          .doc(user.uid)
+          .set({
+        "Email": emailController.text.trim(),
+        "fullName": fullNameController.text.trim(),
+        "Phone": "",
+        "City": "",
+        "State": "",
+        "Country": "",
+        "Occupation": "",
+        "createdAt": FieldValue.serverTimestamp(),
+        "provider": "password",
+      }, SetOptions(merge: true));
 
-    return Scaffold(
-      backgroundColor: ColorRes.backgroundColor,
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const SizedBox(
-              height: 50,
-            ),
-            Center(
-              child: Container(
-                alignment: Alignment.center,
-                height: 80,
-                width: 80,
-                decoration: BoxDecoration(
-                  color: ColorRes.logoColor,
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: const Image(
-                  image: AssetImage(AssetRes.logo),
-                ),
-              ),
-            ),
-            const SizedBox(height: 18),
-            Center(
-              child: Text(
-                Strings.signUpForFree,
-                style: appTextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                    color: ColorRes.black),
-              ),
-            ),
-            const SizedBox(height: 37),
-            GetBuilder<GoogleSignUpControllerM>(
-              id: "showFirstname",
-              builder: (controller) => texFieldColumn(
-                  title: Strings.firstName,
-                  hintText: 'First Name',
-                  onChanged: controller.onChanged,
-                  error: controller.firstError,
-                  txtController: controller.firstnameController),
-            ),
-            const SizedBox(height: 10),
-            GetBuilder<GoogleSignUpControllerM>(
-              id: "showLastname",
-              builder: (controller) => texFieldColumn(
-                title: Strings.lastName,
-                hintText: 'Last Name',
-                onChanged: controller.onChanged,
-                error: controller.lastError,
-                txtController: controller.lastnameController,
-              ),
-            ),
-            const SizedBox(height: 10),
-            GetBuilder<GoogleSignUpControllerM>(
-              id: "showEmail",
-              builder: (controller) => texFieldColumn(
-                  title: Strings.email,
-                  hintText: 'Email',
-                  read: true,
-                  error: controller.emailError,
-                  txtController: controller.emailController),
-            ),
-            const SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.only(left: 15, bottom: 10),
-              child: Row(
-                children: [
-                  Text(Strings.phoneNumber,
-                      style: appTextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14,
-                          color: ColorRes.black.withOpacity(0.6))),
-                  Text(
-                    '*',
-                    style:
-                        appTextStyle(fontSize: 15, color: ColorRes.starColor),
-                  ),
-                ],
-              ),
-            ),
-            GetBuilder<GoogleSignUpControllerM>(
-              id: "showPhoneNumber",
-              builder: (controller) => Column(
-                children: [
-                  Container(
-                    width: Get.width,
-                    height: 51,
-                    padding: const EdgeInsets.only(left: 10),
-                    decoration: BoxDecoration(
-                      color: ColorRes.white,
-                      border: Border.all(
-                          color: controller.phoneController.text.trim().isEmpty
-                              ? ColorRes.borderColor
-                              : controller.phoneError == ""
-                                  ? ColorRes.containerColor
-                                  : ColorRes.starColor),
-                      boxShadow: [
-                        BoxShadow(
-                            offset: const Offset(6, 6),
-                            color: ColorRes.containerColor.withOpacity(0.10),
-                            spreadRadius: 0,
-                            blurRadius: 35),
-                      ],
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Row(
-                      children: [
-                        countryCodePicker(context, padding: 3),
-                        SizedBox(
-                          width: Get.width / 2,
-                          child: Material(
-                            shadowColor: ColorRes.containerColor,
-                            borderRadius: BorderRadius.circular(12),
-                            child: TextFormField(
-                              keyboardType: TextInputType.number,
-                              controller: controller.phoneController,
-                              onChanged: controller.onChanged,
-                              decoration: InputDecoration(
-                                  // prefix:countryCodePicker(context) ,
-                                  hintText: 'Phone number',
-                                  fillColor: ColorRes.white,
-                                  filled: true,
-                                  hintStyle: appTextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w500,
-                                      color: ColorRes.black.withOpacity(0.15)),
-                                  border: InputBorder.none),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  controller.phoneError == ""
-                      ? SizedBox(height: Get.height * 0.0197)
-                      : Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: 28,
-                          margin: const EdgeInsets.symmetric(vertical: 10),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50),
-                              color: ColorRes.invalidColor),
-                          padding: const EdgeInsets.only(left: 15),
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                const Image(
-                                  image: AssetImage(
-                                    AssetRes.invalid,
-                                  ),
-                                  height: 14,
-                                ),
-                                const SizedBox(width: 10),
-                                Text(
-                                  controller.phoneError,
-                                  style: appTextStyle(
-                                      fontSize: 9,
-                                      fontWeight: FontWeight.w400,
-                                      color: ColorRes.starColor),
-                                )
-                              ]),
-                        ),
-                  // Text(controller.phoneError)
-                ],
-              ),
-            ),
-            const SizedBox(height: 10),
-            GetBuilder<GoogleSignUpControllerM>(
-              id: "showCity",
-              builder: (controller) => texFieldColumn(
-                  title: Strings.city,
-                  hintText: 'City',
-                  onChanged: controller.onChanged,
-                  error: controller.cityError,
-                  txtController: controller.cityController),
-            ),
-            const SizedBox(height: 10),
-            GetBuilder<GoogleSignUpControllerM>(
-                id: "showState",
-                builder: (controller) => texFieldColumn(
-                      title: Strings.state,
-                      hintText: 'State',
-                      onChanged: controller.onChanged,
-                      error: controller.stateError,
-                      txtController: controller.stateController,
-                    )),
-            const SizedBox(height: 10),
-            GetBuilder<GoogleSignUpControllerM>(
-                id: "showCountry",
-                builder: (controller) => texFieldColumn(
-                      title: Strings.country,
-                      hintText: 'Country',
-                      onChanged: controller.onChanged,
-                      error: controller.countryError,
-                      txtController: controller.countryController,
-                    )),
-            GetBuilder<GoogleSignUpControllerM>(
-                id: "remember_me",
-                builder: (controller) {
-                  return InkWell(
-                    onTap: () {
-                      controller.rememberMe = !controller.rememberMe;
-                      controller.update(["remember_me"]);
-                    },
-                    child: Row(
-                      children: [
-                        Checkbox(
-                          activeColor: ColorRes.containerColor,
-                          checkColor: ColorRes.white,
-                          side: const BorderSide(
-                              width: 1, color: ColorRes.containerColor),
-                          value: controller.rememberMe,
-                          onChanged: controller.onRememberMeChange,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                        ),
-                        Text(
-                          Strings.rememberMe,
-                          style: appTextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 13,
-                              color: ColorRes.black),
-                        )
-                      ],
-                    ),
-                  );
-                }),
-            const SizedBox(height: 25),
-            GetBuilder<GoogleSignUpControllerM>(
-                id: "dark",
-                builder: (controller) {
-                  return
-                      /* (controller.firstnameController.text == '' ||
-                      controller.lastnameController.text == '' ||
-                      controller.emailController.text == '' ||
-                      controller.phoneController.text == '' ||
-                      controller.cityController.text == '' ||
-                      controller.stateController.text == '' ||
-                      controller.countryController.text == '')
-                      ? Container(
-                    height: 50,
-                    width: MediaQuery.of(context).size.width,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      gradient: LinearGradient(colors: [
-                        ColorRes.gradientColor.withOpacity(0.2),
-                        ColorRes.containerColor.withOpacity(0.4)
-                      ]),
-                    ),
-                    child: Text("Sign up",
-                        style: appTextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                            color: ColorRes.white)),
-                  )
-                      :*/
-                      InkWell(
-                    // dashboard write
-                    onTap: controller.onSignUpBtnTap,
-                    child: Container(
-                      height: 50,
-                      width: MediaQuery.of(context).size.width,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        gradient: const LinearGradient(colors: [
-                          ColorRes.gradientColor,
-                          ColorRes.containerColor
-                        ]),
-                      ),
-                      child: Text(
-                        Strings.signUp,
-                        style: appTextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                            color: ColorRes.white),
-                      ),
-                    ),
-                  );
-                }),
-            const SizedBox(height: 28),
-          ]),
-        ),
-      ),
-    );
+      // Prefs/navigation
+      PrefService.setValue(PrefKeys.rol, "User");
+      PrefService.setValue(PrefKeys.userId, user.uid);
+      PrefService.setValue(PrefKeys.email, emailController.text.trim());
+      PrefService.setValue(PrefKeys.fullName, fullNameController.text.trim());
+
+      // Nettoyage champs
+      fullNameController.clear();
+      emailController.clear();
+      passwordController.clear();
+      confirmPwdController.clear();
+
+      Get.offAll(() => DashBoardScreen());
+    } on FirebaseAuthException catch (e) {
+      Get.snackbar("Error", e.message ?? e.code, colorText: const Color(0xffDA1414));
+    } catch (e) {
+      if (kDebugMode) print(e);
+      Get.snackbar("Error", "Sign-up failed", colorText: const Color(0xffDA1414));
+    } finally {
+      loading.value = false;
+    }
+  }
+
+  // ========= Inscription Google =========
+  Future<void> signUpWithGoogle() async {
+    loading.value = true;
+    try {
+      if (await googleSignIn.isSignedIn()) {
+        await googleSignIn.signOut();
+      }
+      final GoogleSignInAccount? account = await googleSignIn.signIn();
+      if (account == null) return; // cancel
+
+      final authen = await account.authentication;
+      final credential = GoogleAuthProvider.credential(
+        idToken: authen.idToken,
+        accessToken: authen.accessToken,
+      );
+
+      final UserCredential authResult = await auth.signInWithCredential(credential);
+      final User? user = authResult.user;
+      if (user == null) {
+        Get.snackbar("Google", "Sign-in failed",
+            snackPosition: SnackPosition.BOTTOM,
+            colorText: const Color(0xffDA1414));
+        return;
+      }
+
+      // Ecrit/minimise l’utilisateur côté Firestore
+      await fireStore
+          .collection("Auth")
+          .doc("User")
+          .collection("register")
+          .doc(user.uid)
+          .set({
+        "Email": user.email ?? account.email,
+        "fullName": user.displayName ?? account.displayName ?? "",
+        "Phone": "",
+        "City": "",
+        "State": "",
+        "Country": "",
+        "Occupation": "",
+        "createdAt": FieldValue.serverTimestamp(),
+        "provider": "google",
+      }, SetOptions(merge: true));
+
+      // Prefs/nav
+      PrefService.setValue(PrefKeys.rol, "User");
+      PrefService.setValue(PrefKeys.userId, user.uid);
+      PrefService.setValue(PrefKeys.email, user.email ?? account.email);
+      PrefService.setValue(PrefKeys.fullName, user.displayName ?? account.displayName ?? "");
+
+      Get.offAll(() => DashBoardScreen());
+    } on FirebaseAuthException catch (e) {
+      Get.snackbar("Google", e.message ?? 'Auth error',
+          snackPosition: SnackPosition.BOTTOM,
+          colorText: const Color(0xffDA1414));
+    } catch (e) {
+      if (kDebugMode) print(e);
+      Get.snackbar("Google", "Sign-in failed",
+          snackPosition: SnackPosition.BOTTOM,
+          colorText: const Color(0xffDA1414));
+    } finally {
+      loading.value = false;
+    }
   }
 }

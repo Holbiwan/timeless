@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
 import 'package:timeless/screen/chat_box/chat_box_screen.dart';
-import 'package:timeless/screen/manager_section/Profile/profile_screen.dart';
+
 import 'package:timeless/screen/manager_section/dashboard/manager_dashboard_screen_controller.dart';
 import 'package:timeless/screen/manager_section/dashboard/widget.dart';
 import 'package:timeless/screen/manager_section/manager_application_screen/manger_application_screen.dart';
@@ -42,7 +42,7 @@ class ManagerDashBoardScreen extends StatelessWidget {
             case 2:
               return ChatBoxScreen();
             default:
-              return ProfileScreen();
+              return const ProfileScreen();
           }
         }),
         bottomNavigationBar: Obx(
@@ -127,6 +127,17 @@ class ManagerDashBoardScreen extends StatelessWidget {
           },
         ),
       ),
+    );
+  }
+}
+
+class ProfileScreen extends StatelessWidget {
+  const ProfileScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Text('Profile Screen'),
     );
   }
 }

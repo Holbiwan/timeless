@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:timeless/utils/color_res.dart';
-import 'package:pinput/pinput.dart';
+import 'package:pinput/pinput.dart' show PinTheme;
 
 class OtpController extends GetxController {
 

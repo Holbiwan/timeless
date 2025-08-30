@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
@@ -6,239 +7,97 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
+
 import 'package:timeless/screen/manager_section/dashboard/manager_dashboard_screen.dart';
 import 'package:timeless/service/pref_services.dart';
 import 'package:timeless/utils/pref_keys.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class OrganizationProfileScreenController extends GetxController
     implements GetxService {
-  TextEditingController companyNameController = TextEditingController();
-  TextEditingController companyEmailController = TextEditingController();
-  TextEditingController companyAddressController = TextEditingController();
-  TextEditingController countryController = TextEditingController();
-  TextEditingController dateController = TextEditingController();
-  TextEditingController positionController = TextEditingController();
-  TextEditingController salaryController = TextEditingController();
-  TextEditingController locationController = TextEditingController();
-  TextEditingController typeController = TextEditingController();
-  TextEditingController statusController = TextEditingController();
-  RxBool isNameValidate = false.obs;
-  RxBool isEmailValidate = false.obs;
-  RxBool isAddressValidate = false.obs;
-  RxBool isCountryValidate = false.obs;
-  RxBool isDateValidate = false.obs;
-  RxBool isPositionValidate = false.obs;
-  RxBool isSalaryValidate = false.obs;
-  RxBool isLocationValidate = false.obs;
-  RxBool isTypeValidate = false.obs;
-  RxBool isStatusValidate = false.obs;
-  RxBool isLod = false.obs;
-  RxString fbImageUrlM = "".obs;
+  // --- Controllers champs ---
+  final TextEditingController companyNameController = TextEditingController();
+  final TextEditingController companyEmailController = TextEditingController();
+  final TextEditingController companyAddressController =
+      TextEditingController();
+  final TextEditingController countryController = TextEditingController();
+  final TextEditingController dateController = TextEditingController();
+  final TextEditingController positionController = TextEditingController();
+  final TextEditingController salaryController = TextEditingController();
+  final TextEditingController locationController = TextEditingController();
+  final TextEditingController typeController = TextEditingController();
+  final TextEditingController statusController = TextEditingController();
+
+  // --- Etats de validation ---
+  final RxBool isNameValidate = false.obs;
+  final RxBool isEmailValidate = false.obs;
+  final RxBool isAddressValidate = false.obs;
+  final RxBool isCountryValidate = false.obs;
+  final RxBool isDateValidate = false.obs;
+  final RxBool isPositionValidate = false.obs;
+  final RxBool isSalaryValidate = false.obs;
+  final RxBool isLocationValidate = false.obs;
+  final RxBool isTypeValidate = false.obs;
+  final RxBool isStatusValidate = false.obs;
+
+  // --- UI/chargements ---
+  final RxBool isLod = false.obs; // loader image
+  final RxBool conLoader = false.obs; // loader bouton "Confirmer"
+  final RxString fbImageUrlM = "".obs;
+
+  // --- Divers ---
   DateTime? startTime;
-  ImagePicker picker = ImagePicker();
+  final ImagePicker picker = ImagePicker();
   File? image;
-  static FirebaseFirestore fireStore = FirebaseFirestore.instance;
+  static final FirebaseFirestore fireStore = FirebaseFirestore.instance;
 
-  @override
-  /*void onInit() {
-    // TODO: implement onInit
-    // getFbImgUrlM();
-    super.onInit();
-  }*/
-  /*getFbImgUrlM() async {
-    fbImageUrlM.value = await PrefService.getString(PrefKeys.imageIdM);
-    if (kDebugMode) {
-      print("fbIMGURL  $fbImageUrlM");
-    }
-  }*/
+  String url = "";
+  String dropDownValue = 'India';
 
-  // ignore: override_on_non_overriding_member
+  final List<String> items = const [
+    'India',
+    'United States',
+    'Europe',
+    'china',
+    'United Kingdom',
+    'Cuba',
+    'Havana',
+    'Cyprus',
+    'Nicosia',
+    'Czech Republic',
+    'Prague',
+  ];
+
+  // ============= UI =============
   void onChanged(String value) {
     update(["colorChange"]);
     update(["Organization"]);
   }
 
-  RxBool conLoader = false.obs;
-  onConfirmTap() async {
-    conLoader.value = true;
-    String uid = PrefService.getString(PrefKeys.userId);
-    Map<String, dynamic> map = {
-      "email": companyEmailController.text.trim(),
-      "name": companyNameController.text.trim(),
-      "date": dateController.text.trim(),
-      "country": countryController.text.trim(),
-      "address": companyAddressController.text.trim(),
-      "imageUrl": url,
-      "deviceToken": PrefService.getString(PrefKeys.deviceToken),
-
-    };
-    PrefService.setValue(
-      PrefKeys.imageManager,
-      url,
-    );
-    validate();
-    if (isNameValidate.value == false &&
-        isEmailValidate.value == false &&
-        isAddressValidate.value == false &&
-        isCountryValidate.value == false &&
-        isDateValidate.value == false) {
-      await fireStore
-          .collection("Auth")
-          .doc("Manager")
-          .collection("register")
-          .doc(uid)
-          .update({
-        "company": true,
-      });
-      PrefService.setValue(PrefKeys.company, true);
-      await fireStore
-          .collection("Auth")
-          .doc("Manager")
-          .collection("register")
-          .doc(uid)
-          .collection("company")
-          .doc("details")
-          .set(map)
-          .then((value) {
-        PrefService.setValue(
-            PrefKeys.companyName, companyNameController.text.toString());
-        Get.off(ManagerDashBoardScreen());
-        conLoader.value = false;
-      });
-    }
-    PrefService.setValue(
-        PrefKeys.companyName, companyNameController.text.toString());
+  void changeDropdwon({required String val}) {
+    dropDownValue = val;
+    countryController.text = dropDownValue;
+    update(["dropdown"]);
   }
 
-  String url = "";
-  getUrl() {
-    FirebaseStorage storage = FirebaseStorage.instance;
-    Reference ref = storage.ref().child("image1${DateTime.now()}");
-    UploadTask uploadTask = ref.putFile(image!);
+  // ============= Validation =============
+  void validate() {
+    isNameValidate.value = companyNameController.text.trim().isEmpty;
 
-    uploadTask.then((res) async {
-      isLod.value = true;
-      url = await res.ref.getDownloadURL();
-      isLod.value = false;
-      if (kDebugMode) {
-        print("url $url");
-      }
-      update();
-    });
+    final email = companyEmailController.text.trim();
+    final emailOk =
+        RegExp(r"^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$")
+            .hasMatch(email);
+    isEmailValidate.value = email.isEmpty || !emailOk;
+
+    isAddressValidate.value = companyAddressController.text.trim().isEmpty;
+    isCountryValidate.value = countryController.text.trim().isEmpty;
+    isDateValidate.value = dateController.text.trim().isEmpty;
   }
 
-  addImg({required String img}) async {
-    final storage = FirebaseStorage.instance;
-
-    // if (imagePath != null) {
-    //   var snapshot =
-    //       await storage.ref().child('images/imageName').putFile(imagePath!);
-    //   var downloadUrl = await snapshot.ref.getDownloadURL();
-    //   await FirebaseFirestore.instance
-    //       .collection("User")
-    //       .doc("profile")
-    //       .collection("Profile")
-    //       .doc("profilePic")
-    //       .set({"url": downloadUrl, "name": "ProfilePic"});
-    // } else {
-    //   print("no path received");
-    // }
-
-    String imageName =
-        img.substring(img.lastIndexOf("/") + 1, img.lastIndexOf("."));
-
-    String path = img.substring(img.indexOf("/") + 1, img.lastIndexOf("/"));
-
-    final Directory systemTempDir = Directory.systemTemp;
-    final byteData = await rootBundle.load(img);
-    final file = File('${systemTempDir.path}/$imageName.jpg');
-
-    await file.writeAsBytes(byteData.buffer
-        .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
-
-    TaskSnapshot taskSnapshot =
-        await storage.ref('$path/$imageName').putFile(file);
-    final String downloadUrl = await taskSnapshot.ref.getDownloadURL();
-
-    await FirebaseFirestore.instance
-        .collection(path)
-        .add({"url": downloadUrl, "name": imageName});
-  }
-
-  Future<String?> uploadImage({File? flow, String? path}) async {
-    final firebaseStorage = FirebaseStorage.instance;
-    // final imagePicker = ImagePicker();
-    // PickedFile? image;
-    String? imageUrl;
-    //Check Permissions
-    await Permission.photos.request();
-
-    var permissionStatus = await Permission.photos.status;
-    if (kDebugMode) {
-      print(permissionStatus);
-    }
-
-    if (permissionStatus.isGranted) {
-      if (flow != null) {
-        //  File(image.path);
-        //Upload to Firebase
-        var snapshot =
-            firebaseStorage.ref().child(path!).putFile(flow).snapshot;
-        String downloadUrl = await snapshot.ref.getDownloadURL();
-        // setState(() {
-        imageUrl = downloadUrl;
-        if (kDebugMode) {
-          print(imageUrl);
-        }
-        return imageUrl;
-        // });
-      } else {
-        if (kDebugMode) {
-          print('No Image Path Received');
-        }
-        return '';
-      }
-    } else {
-      if (kDebugMode) {
-        print('Permission not granted. Try Again with permission access');
-      }
-      return '';
-    }
-  }
-
-  validate() {
-    if (companyNameController.text.isEmpty) {
-      isNameValidate.value = true;
-    } else {
-      isNameValidate.value = false;
-    }
-    if (companyEmailController.text.isEmpty ||
-        !RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-            .hasMatch(companyEmailController.text)) {
-      isEmailValidate.value = true;
-    } else {
-      isEmailValidate.value = false;
-    }
-    if (companyAddressController.text.isEmpty) {
-      isAddressValidate.value = true;
-    } else {
-      isAddressValidate.value = false;
-    }
-    if (countryController.text.isEmpty) {
-      isCountryValidate.value = true;
-    } else {
-      isCountryValidate.value = false;
-    }
-    if (dateController.text.isEmpty) {
-      isDateValidate.value = true;
-    } else {
-      isDateValidate.value = false;
-    }
-  }
-
-  Future<void> onDatePickerTap(context) async {
-    DateTime? picked = await showDatePicker(
+  // ============= DatePicker =============
+  Future<void> onDatePickerTap(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       initialEntryMode: DatePickerEntryMode.calendarOnly,
@@ -246,60 +105,187 @@ class OrganizationProfileScreenController extends GetxController
       lastDate: DateTime.now(),
       builder: (context, child) {
         return Theme(
-          data: ThemeData(
-            primarySwatch: Colors.blue,
-          ),
+          data: ThemeData(primarySwatch: Colors.blue),
           child: child!,
         );
       },
     );
-    if (picked != null) {
-      startTime = picked;
-      if (kDebugMode) {
-        print("START TIME : $startTime");
-      }
-      dateController.text =
-          "${picked.toLocal().month}/${picked.toLocal().day}/${picked.toLocal().year}";
+
+    if (picked == null) {
+      // utilisateur a annulé
+      return;
+    }
+
+    startTime = picked;
+    // Pas d'appel à toLocal() sur une valeur nulle
+    final d = picked.toLocal();
+    dateController.text = "${d.month}/${d.day}/${d.year}";
+    update();
+  }
+
+  // ============= Upload / Storage =============
+  /// Upload depuis [image] (déjà choisie) et met à jour [url]
+  Future<void> getUrl() async {
+    if (image == null) return;
+
+    final storage = FirebaseStorage.instance;
+    final ref =
+        storage.ref().child("image_${DateTime.now().millisecondsSinceEpoch}");
+    try {
+      isLod.value = true;
+      final task = await ref.putFile(image!);
+      url = await task.ref.getDownloadURL();
+    } catch (e) {
+      if (kDebugMode) print("Erreur upload image: $e");
+      url = "";
+      Get.snackbar("Image", "Échec de l'upload de l'image",
+          snackPosition: SnackPosition.BOTTOM,
+          colorText: const Color(0xffDA1414));
+    } finally {
+      isLod.value = false;
       update();
     }
   }
 
-  changeDropdwon({required String val}) {
-    dropDownValue = val;
-    countryController.text = dropDownValue;
+  /// Upload générique d'un fichier [flow] sur un chemin [path] et renvoie l'URL
+  Future<String?> uploadImage({File? flow, required String path}) async {
+    if (flow == null) return '';
 
-    update(["dropdown"]);
+    // Permissions selon plate-forme
+    if (Platform.isAndroid) {
+      // Sur Android 13+, ce sont READ_MEDIA_IMAGES, ci-dessous Permission.photos géré par le plugin
+      await Permission.photos.request();
+      final granted = await Permission.photos.isGranted ||
+          await Permission.storage.isGranted;
+      if (!granted) {
+        if (kDebugMode) {
+          print('Permission storage/photos refusée');
+        }
+        return '';
+      }
+    } else if (Platform.isIOS || Platform.isMacOS) {
+      await Permission.photos.request();
+      if (!await Permission.photos.isGranted) return '';
+    }
+
+    try {
+      final snapshot = await FirebaseStorage.instance.ref(path).putFile(flow);
+      final downloadUrl = await snapshot.ref.getDownloadURL();
+      if (kDebugMode) print("Image uploadée: $downloadUrl");
+      return downloadUrl;
+    } catch (e) {
+      if (kDebugMode) print("Erreur upload: $e");
+      return '';
+    }
   }
 
-  String dropDownValue = 'India';
+  /// Upload d’une image intégrée aux assets vers un dossier Firestore/Storage
+  Future<void> addImg({required String img}) async {
+    try {
+      final storage = FirebaseStorage.instance;
 
-  var items = [
-    'India',
-    'United States',
-    'Europe',
-    'china',
-    'United Kingdom',
-    " Cuba",
-    "	Havana",
-    "Cyprus",
-    "Nicosia",
-    "Czech ",
-    "Republic",
-    "Prague",
-  ];
+      final imageName =
+          img.substring(img.lastIndexOf("/") + 1, img.lastIndexOf("."));
+      final path = img.substring(img.indexOf("/") + 1, img.lastIndexOf("/"));
 
-  onTapGallery1() async {
-    //filepath.value = file.name.toString();
-    XFile? gallery = await picker.pickImage(source: ImageSource.gallery);
-    String path = gallery!.path;
-    image = File(path);
-    getUrl();
-    uploadImage();
-    imagePicker();
+      final Directory systemTempDir = Directory.systemTemp;
+      final byteData = await rootBundle.load(img);
+      final file = File('${systemTempDir.path}/$imageName.jpg');
+      await file.writeAsBytes(byteData.buffer
+          .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
+
+      final taskSnapshot = await storage.ref('$path/$imageName').putFile(file);
+      final String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+
+      await FirebaseFirestore.instance
+          .collection(path)
+          .add({"url": downloadUrl, "name": imageName});
+    } catch (e) {
+      if (kDebugMode) print("addImg error: $e");
+    }
   }
 
-  imagePicker() {
-    update(['image']);
-    update();
+  // ============= Sélection image =============
+  Future<void> onTapGallery1() async {
+    try {
+      final XFile? gallery =
+          await picker.pickImage(source: ImageSource.gallery);
+      if (gallery == null) return;
+      image = File(gallery.path);
+      update(['image']);
+
+      // Upload vers Storage → url
+      await getUrl();
+
+      // Optionnel : upload vers un chemin spécifique via uploadImage()
+      // await uploadImage(flow: image, path: 'organizations/${DateTime.now().millisecondsSinceEpoch}.jpg');
+    } catch (e) {
+      if (kDebugMode) print("pickImage error: $e");
+      Get.snackbar("Image", "Erreur lors du choix de l'image",
+          snackPosition: SnackPosition.BOTTOM,
+          colorText: const Color(0xffDA1414));
+    }
+  }
+
+  // ============= Sauvegarde =============
+  Future<void> onConfirmTap() async {
+    conLoader.value = true;
+    try {
+      validate();
+
+      // Si erreurs, on stoppe là.
+      if (isNameValidate.value ||
+          isEmailValidate.value ||
+          isAddressValidate.value ||
+          isCountryValidate.value ||
+          isDateValidate.value) {
+        conLoader.value = false;
+        update();
+        return;
+      }
+
+      final String uid = PrefService.getString(PrefKeys.userId);
+      final Map<String, dynamic> map = {
+        "email": companyEmailController.text.trim(),
+        "name": companyNameController.text.trim(),
+        "date": dateController.text.trim(),
+        "country": countryController.text.trim(),
+        "address": companyAddressController.text.trim(),
+        "imageUrl": url,
+        "deviceToken": PrefService.getString(PrefKeys.deviceToken),
+      };
+
+      // Sauvegarde de l’URL image côté prefs
+      PrefService.setValue(PrefKeys.imageManager, url);
+      PrefService.setValue(PrefKeys.companyName, companyNameController.text);
+
+      // Marque "company" = true sur le profil Manager, puis écrit les détails
+      await fireStore
+          .collection("Auth")
+          .doc("Manager")
+          .collection("register")
+          .doc(uid)
+          .update({"company": true});
+
+      PrefService.setValue(PrefKeys.company, true);
+
+      await fireStore
+          .collection("Auth")
+          .doc("Manager")
+          .collection("register")
+          .doc(uid)
+          .collection("company")
+          .doc("details")
+          .set(map, SetOptions(merge: true));
+
+      Get.off(() => ManagerDashBoardScreen());
+    } catch (e) {
+      if (kDebugMode) print("onConfirmTap error: $e");
+      Get.snackbar("Erreur", "Échec de l’enregistrement",
+          snackPosition: SnackPosition.BOTTOM,
+          colorText: const Color(0xffDA1414));
+    } finally {
+      conLoader.value = false;
+    }
   }
 }

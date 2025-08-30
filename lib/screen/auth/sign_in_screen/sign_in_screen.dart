@@ -57,7 +57,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                       backButton(),
                       const SizedBox(height: 16),
 
-                      // Logo / Welcome 
+                      // Logo / Welcome
                       Center(
                         child: Container(
                           height: 80,
@@ -382,10 +382,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                         id: "colorChange",
                         builder: (_) => InkWell(
                           onTap: () {
-                            controller.onLoginBtnTap(
-                              password: controller.passwordController.text,
-                              email: controller.emailController.text,
-                            );
+                            controller.onLoginBtnTap();
                           },
                           child: Container(
                             height: 50,
