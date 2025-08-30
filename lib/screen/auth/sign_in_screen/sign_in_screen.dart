@@ -449,42 +449,53 @@ class _SigninScreenUState extends State<SigninScreenU> {
 
                       SizedBox(height: Get.height * 0.028),
 
-                      // Social buttons
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      // ---------- Social buttons (sans Facebook) ----------
+                      Column(
                         children: [
-                          InkWell(
-                            onTap: () async {
-                              try {
-                                await controller.faceBookSignIn();
-                              } catch (e) {
-                                Get.snackbar(
-                                  "Facebook",
-                                  "Not configured yet",
-                                  snackPosition: SnackPosition.BOTTOM,
-                                );
-                              }
-                            },
-                            child: _socialBtn(
-                              icon: AssetRes.facebookImage,
-                              label: Strings.facebook,
+                          // Google
+                          SizedBox(
+                            width: double.infinity,
+                            height: 48,
+                            child: OutlinedButton.icon(
+                              onPressed: () async {
+                                try {
+                                  await controller.signWithGoogle();
+                                } catch (e) {
+                                  Get.snackbar(
+                                    "Google",
+                                    "Not configured yet",
+                                    snackPosition: SnackPosition.BOTTOM,
+                                  );
+                                }
+                              },
+                              icon: const Icon(Icons.login),
+                              label: const Text('Continue with Google'),
+                              style: OutlinedButton.styleFrom(
+                                side: const BorderSide(width: 1),
+                              ),
                             ),
                           ),
-                          InkWell(
-                            onTap: () async {
-                              try {
-                                await controller.signWithGoogle();
-                              } catch (e) {
+                          const SizedBox(height: 12),
+
+                          // GitHub (prêt à brancher)
+                          SizedBox(
+                            width: double.infinity,
+                            height: 48,
+                            child: OutlinedButton.icon(
+                              onPressed: () async {
+                                // TODO: implémente la connexion GitHub dans ton controller
+                                // (ex: Firebase Auth GitHub provider ou OAuth via serveur)
                                 Get.snackbar(
-                                  "Google",
-                                  "Not configured yet",
+                                  "GitHub",
+                                  "Sign-in with GitHub not configured yet",
                                   snackPosition: SnackPosition.BOTTOM,
                                 );
-                              }
-                            },
-                            child: _socialBtn(
-                              icon: AssetRes.googleLogo,
-                              label: Strings.google,
+                              },
+                              icon: const Icon(Icons.code),
+                              label: const Text('Continue with GitHub'),
+                              style: OutlinedButton.styleFrom(
+                                side: const BorderSide(width: 1),
+                              ),
                             ),
                           ),
                         ],
@@ -561,39 +572,4 @@ class _SigninScreenUState extends State<SigninScreenU> {
         borderSide: const BorderSide(color: ColorRes.starColor),
         borderRadius: BorderRadius.circular(12),
       );
-
-  Widget _socialBtn({required String icon, required String label}) {
-    return Container(
-      height: 50,
-      width: 145,
-      decoration: BoxDecoration(
-        border: Border.all(color: ColorRes.borderColor),
-        boxShadow: [
-          BoxShadow(
-            offset: const Offset(6, 6),
-            color: ColorRes.containerColor.withOpacity(0.08),
-            spreadRadius: 0,
-            blurRadius: 35,
-          ),
-        ],
-        borderRadius: BorderRadius.circular(10),
-        color: ColorRes.white,
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image(image: AssetImage(icon), height: 27),
-          const SizedBox(width: 12),
-          Text(
-            label,
-            style: GoogleFonts.poppins(
-              fontWeight: FontWeight.w500,
-              fontSize: 15,
-              color: ColorRes.black,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }
