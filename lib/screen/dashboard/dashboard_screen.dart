@@ -17,10 +17,13 @@ import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/utils/string.dart';
 
+// ⬇️ bouton DEV (debug only)
+import 'package:timeless/test/dev_fab.dart';
+
 /// --- Palette Jamaïque ---
-const _kJBlack = Colors.black;          // fond
-const _kJYellow = Color(0xFFFED100);    // actif
-const _kJGreen = Color(0xFF1FA24A);     // inactif
+const _kJBlack = Colors.black; // fond
+const _kJYellow = Color(0xFFFED100); // actif
+const _kJGreen = Color(0xFF1FA24A); // inactif
 
 class DashBoardScreen extends StatelessWidget {
   DashBoardScreen({super.key});
@@ -45,18 +48,26 @@ class DashBoardScreen extends StatelessWidget {
           builder: (c) {
             switch (c.currentTab) {
               case 0:
-                return token.isEmpty ? const HomePageNewScreenU() : HomeScreen();
+                return token.isEmpty
+                    ? const HomePageNewScreenU()
+                    : HomeScreen();
               case 1:
                 return const AppliesLogoScreen();
               case 2:
-                return token.isEmpty ? const InboxLogoScreen() : ChatBoxUserScreen();
+                return token.isEmpty
+                    ? const InboxLogoScreen()
+                    : ChatBoxUserScreen();
               default:
-                return token.isEmpty ? const ProfileLogoScreen() : EditProfileUserScreen();
+                return token.isEmpty
+                    ? const ProfileLogoScreen()
+                    : EditProfileUserScreen();
             }
           },
         ),
 
-        // ✅ BottomNavigationBar natif (aucune dépendance externe)
+        // ⬇️ FAB de test (visible uniquement en mode debug via DevFab)
+        floatingActionButton: const DevFab(),
+
         bottomNavigationBar: GetBuilder<DashBoardController>(
           id: "bottom_bar",
           builder: (c) {
@@ -73,19 +84,23 @@ class DashBoardScreen extends StatelessWidget {
                 showUnselectedLabels: true,
                 items: [
                   BottomNavigationBarItem(
-                    icon: Image.asset(AssetRes.home, height: 18, width: 18, color: _kGreenOrYellow(c, 0)),
+                    icon: Image.asset(AssetRes.home,
+                        height: 18, width: 18, color: _kGreenOrYellow(c, 0)),
                     label: "Home",
                   ),
                   BottomNavigationBarItem(
-                    icon: Image.asset(AssetRes.applies, height: 18, width: 18, color: _kGreenOrYellow(c, 1)),
+                    icon: Image.asset(AssetRes.applies,
+                        height: 18, width: 18, color: _kGreenOrYellow(c, 1)),
                     label: "Applies",
                   ),
                   BottomNavigationBarItem(
-                    icon: Image.asset(AssetRes.chat, height: 18, width: 18, color: _kGreenOrYellow(c, 2)),
+                    icon: Image.asset(AssetRes.chat,
+                        height: 18, width: 18, color: _kGreenOrYellow(c, 2)),
                     label: "Inbox",
                   ),
                   BottomNavigationBarItem(
-                    icon: Image.asset(AssetRes.profile1, height: 18, width: 18, color: _kGreenOrYellow(c, 3)),
+                    icon: Image.asset(AssetRes.profile1,
+                        height: 18, width: 18, color: _kGreenOrYellow(c, 3)),
                     label: Strings.profile,
                   ),
                 ],

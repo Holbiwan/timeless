@@ -14,21 +14,21 @@ import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/string.dart';
 
+// 👇 ajout pour le bouton "See Jobs"
+import 'package:timeless/test/job_list_test_screen.dart';
+
 // ignore: must_be_immutable
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
   final HomeController controller = HomeController();
-  JobRecommendationController jrcontroller =
-      Get.put(JobRecommendationController());
+  JobRecommendationController jrcontroller = Get.put(JobRecommendationController());
   FirebaseFirestore fireStore = FirebaseFirestore.instance;
   var args = Get.arguments;
-  JobDetailsUploadCvController jobDetailsUploadCvController =
-      Get.put(JobDetailsUploadCvController());
+  JobDetailsUploadCvController jobDetailsUploadCvController = Get.put(JobDetailsUploadCvController());
 
   @override
   Widget build(BuildContext context) {
     jobDetailsUploadCvController.init();
-    //final controller = Get.put(HomeController());
 
     return Container(
       height: Get.height,
@@ -36,66 +36,56 @@ class HomeScreen extends StatelessWidget {
       color: ColorRes.backgroundColor,
       child: Column(
         children: [
-          const SizedBox(
-            height: 60,
-          ),
+          const SizedBox(height: 60),
           homeAppBar(),
           SizedBox(
             height: Get.height - 200,
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  /* const SizedBox(height: 23),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 18),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            decoration: const BoxDecoration(
-                              color: ColorRes.white2,
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(8),
-                              ),
-                            ),
-                            child: TextField(
-                              readOnly: true,
-                              //controller: controller.searchNewController,
-                              onChanged: (value) {},
-                              onTap: () {
-                                Get.to(() => SearchJobScreen());
-                              },
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                suffixIcon: const Icon(Icons.search,
-                                    color: ColorRes.grey),
-                                hintText: "Search",
-                                hintStyle: appTextStyle(
-                                    fontSize: 14,
-                                    color: ColorRes.grey,
-                                    fontWeight: FontWeight.w500),
-                                contentPadding:
-                                    const EdgeInsets.only(left: 20, top: 13),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-*/
-                  //searchArea(),
+                  // --- Tips for you (inchangé)
                   InkWell(
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (con) => const TipsForYouScreen(),
-                        ),
+                        MaterialPageRoute(builder: (con) => const TipsForYouScreen()),
                       );
                     },
                     child: tipsForYouSection(),
                   ),
+
+                  // --- NOUVEAU : bouton "See Jobs"
+                  const SizedBox(height: 12),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: 44,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          // ouvre la liste d’annonces Firestore (écran de test)
+                          Get.to(() => const JobListTestScreen());
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF1FA24A), // vert cohérent avec ta palette
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          elevation: 0,
+                        ),
+                        child: Text(
+                          "See Jobs",
+                          style: GoogleFonts.poppins(
+                            color: Colors.white,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 18),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 18),
                     child: Row(
@@ -110,204 +100,95 @@ class HomeScreen extends StatelessWidget {
                         ),
                         const Spacer(),
                         InkWell(
-                          onTap: () =>
-                              Get.toNamed(AppRes.jobRecommendationScreen),
+                          onTap: () => Get.toNamed(AppRes.jobRecommendationScreen),
                           child: Text(
                             Strings.seeAll,
                             style: GoogleFonts.poppins(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: ColorRes.containerColor),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: ColorRes.containerColor,
+                            ),
                           ),
                         ),
                       ],
                     ),
                   ),
 
-                  ///listview using obx
-                  /*  SizedBox(
-                    height: 32,
-                    child: Obx(() {
-                      return ListView.builder(
-
-                          itemCount: controller.jobs.length,
-                          shrinkWrap: true,
-                          scrollDirection: Axis.horizontal,
-                          physics: const BouncingScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            return GestureDetector(
-                              onTap: ()=>controller.onTapJobs(index),
-                              child: Container(
-                                margin: const EdgeInsets.only(right: 10),
-                                height: 32,
-                                width: 80,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: ColorRes.containerColor, width: 2),
-                                    borderRadius: const BorderRadius.all(
-                                      Radius.circular(10),
-                                    ),
-                                    color: index == controller.selectedJobs.value
-                                        ? ColorRes.containerColor
-                                        : ColorRes.white),
-                                child: Text(
-                                  controller.jobs[index],
-                                  style: appTextStyle(
-                                      color: index == controller.selectedJobs.value
-                                          ? ColorRes.white
-                                          : ColorRes.containerColor,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                              ),
-                            );
-                          });
-                    }),
-                  ),*/
-
                   const SizedBox(height: 18),
                   Container(
                     padding: const EdgeInsets.only(left: 20, right: 20),
                     height: 32,
                     child: ListView.builder(
-                        itemCount: jrcontroller.jobs2.length,
-                        shrinkWrap: true,
-                        scrollDirection: Axis.horizontal,
-                        physics: const BouncingScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          return GestureDetector(
-                            onTap: () => jrcontroller.onTapJobs2(index),
-                            child: Obx(
-                              () => Container(
-                                margin: const EdgeInsets.only(right: 10),
-                                height: 32,
-                                // width: 70,
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 10),
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: ColorRes.containerColor,
-                                        width: 2),
-                                    borderRadius: const BorderRadius.all(
-                                      Radius.circular(10),
-                                    ),
-                                    color: jrcontroller.selectedJobs2.value ==
-                                            index
-                                        ? ColorRes.containerColor
-                                        : ColorRes.white),
-                                child: Text(
-                                  jrcontroller.jobs2[index],
-                                  style: appTextStyle(
-                                      color: jrcontroller.selectedJobs2.value ==
-                                              index
-                                          ? ColorRes.white
-                                          : ColorRes.containerColor,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w600),
+                      itemCount: jrcontroller.jobs2.length,
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      physics: const BouncingScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () => jrcontroller.onTapJobs2(index),
+                          child: Obx(
+                            () => Container(
+                              margin: const EdgeInsets.only(right: 10),
+                              height: 32,
+                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                border: Border.all(color: ColorRes.containerColor, width: 2),
+                                borderRadius: const BorderRadius.all(Radius.circular(10)),
+                                color: jrcontroller.selectedJobs2.value == index
+                                    ? ColorRes.containerColor
+                                    : ColorRes.white,
+                              ),
+                              child: Text(
+                                jrcontroller.jobs2[index],
+                                style: appTextStyle(
+                                  color: jrcontroller.selectedJobs2.value == index
+                                      ? ColorRes.white
+                                      : ColorRes.containerColor,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
                             ),
-                          );
-                        }),
+                          ),
+                        );
+                      },
+                    ),
                   ),
+
                   const SizedBox(height: 18),
                   Obx(
                     () => jrcontroller.selectedJobs2.value == 0
                         ? allJobs(fireStore.collection("allPost").snapshots())
                         : jrcontroller.selectedJobs2.value == 1
-                            ? allJobs(
-                                fireStore
-                                    .collection("category")
-                                    .doc("Writer")
-                                    .collection("Writer")
-                                    .snapshots(),
-                              )
+                            ? allJobs(fireStore.collection("category").doc("Writer").collection("Writer").snapshots())
                             : jrcontroller.selectedJobs2.value == 2
-                                ? allJobs(
-                                    fireStore
-                                        .collection("category")
-                                        .doc("Design")
-                                        .collection("Design")
-                                        .snapshots(),
-                                  )
+                                ? allJobs(fireStore.collection("category").doc("Design").collection("Design").snapshots())
                                 : jrcontroller.selectedJobs2.value == 3
-                                    ? allJobs(
-                                        fireStore
-                                            .collection("category")
-                                            .doc("Finance")
-                                            .collection("Finance")
-                                            .snapshots(),
-                                      )
+                                    ? allJobs(fireStore.collection("category").doc("Finance").collection("Finance").snapshots())
                                     : jrcontroller.selectedJobs2.value == 4
-                                        ? allJobs(fireStore
-                                            .collection("category")
-                                            .doc("Software")
-                                            .collection("Software")
-                                            .snapshots())
+                                        ? allJobs(fireStore.collection("category").doc("Software").collection("Software").snapshots())
                                         : jrcontroller.selectedJobs2.value == 5
-                                            ? allJobs(fireStore
-                                                .collection("category")
-                                                .doc("Database Manager")
-                                                .collection("Database Manager")
-                                                .snapshots())
-                                            : jrcontroller.selectedJobs2.value ==
-                                                    6
-                                                ? allJobs(fireStore
-                                                    .collection("category")
-                                                    .doc("Product Manager")
-                                                    .collection(
-                                                        "Product Manager")
-                                                    .snapshots())
-                                                : jrcontroller.selectedJobs2.value ==
-                                                        7
-                                                    ? allJobs(fireStore
-                                                        .collection("category")
-                                                        .doc(
-                                                            "Full-Stack Developer")
-                                                        .collection(
-                                                            "Full-Stack Developer")
-                                                        .snapshots())
-                                                    : jrcontroller.selectedJobs2.value ==
-                                                            8
-                                                        ? allJobs(fireStore
-                                                            .collection(
-                                                                "category")
-                                                            .doc(
-                                                                "Data Scientist")
-                                                            .collection(
-                                                                "Data Scientist")
-                                                            .snapshots())
-                                                        : jrcontroller
-                                                                    .selectedJobs2
-                                                                    .value ==
-                                                                9
+                                            ? allJobs(fireStore.collection("category").doc("Database Manager").collection("Database Manager").snapshots())
+                                            : jrcontroller.selectedJobs2.value == 6
+                                                ? allJobs(fireStore.collection("category").doc("Product Manager").collection("Product Manager").snapshots())
+                                                : jrcontroller.selectedJobs2.value == 7
+                                                    ? allJobs(fireStore.collection("category").doc("Full-Stack Developer").collection("Full-Stack Developer").snapshots())
+                                                    : jrcontroller.selectedJobs2.value == 8
+                                                        ? allJobs(fireStore.collection("category").doc("Data Scientist").collection("Data Scientist").snapshots())
+                                                        : jrcontroller.selectedJobs2.value == 9
                                                             ? allJobs(
-                                                                fireStore
-                                                                    .collection(
-                                                                        "category")
-                                                                    .doc(
-                                                                        "Web Developers")
-                                                                    .collection(
-                                                                        "Web Developers")
-                                                                    .snapshots(),
-                                                                seeAll: true)
-                                                            : jrcontroller
-                                                                        .selectedJobs2
-                                                                        .value ==
-                                                                    10
-                                                                ? allJobs(fireStore
-                                                                    .collection("category")
-                                                                    .doc("Networking")
-                                                                    .collection("Networking")
-                                                                    .snapshots())
+                                                                fireStore.collection("category").doc("Web Developers").collection("Web Developers").snapshots(),
+                                                                seeAll: true,
+                                                              )
+                                                            : jrcontroller.selectedJobs2.value == 10
+                                                                ? allJobs(fireStore.collection("category").doc("Networking").collection("Networking").snapshots())
                                                                 : jrcontroller.selectedJobs2.value == 11
                                                                     ? allJobs(fireStore.collection("category").doc("Cyber Security").collection("Cyber Security").snapshots())
                                                                     : Center(
-                                                                        child: Text(jrcontroller.jobs2[jrcontroller
-                                                                            .selectedJobs2
-                                                                            .value]),
+                                                                        child: Text(
+                                                                          jrcontroller.jobs2[jrcontroller.selectedJobs2.value],
+                                                                        ),
                                                                       ),
                   ),
                 ],

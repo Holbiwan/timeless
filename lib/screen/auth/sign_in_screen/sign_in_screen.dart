@@ -45,6 +45,8 @@ class _SigninScreenUState extends State<SigninScreenU> {
         child: GestureDetector(
           onTap: () => FocusScope.of(context).unfocus(),
           child: Obx(() {
+            final isLoading = controller.loading.value;
+
             return Stack(
               children: [
                 SingleChildScrollView(
@@ -101,9 +103,13 @@ class _SigninScreenUState extends State<SigninScreenU> {
                                 color: ColorRes.black.withOpacity(0.6),
                               ),
                             ),
-                            const Text(' *',
-                                style: TextStyle(
-                                    fontSize: 15, color: ColorRes.starColor)),
+                            const Text(
+                              ' *',
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: ColorRes.starColor,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -216,9 +222,13 @@ class _SigninScreenUState extends State<SigninScreenU> {
                                 color: ColorRes.black.withOpacity(0.6),
                               ),
                             ),
-                            const Text(' *',
-                                style: TextStyle(
-                                    fontSize: 15, color: ColorRes.starColor)),
+                            const Text(
+                              ' *',
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: ColorRes.starColor,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -243,6 +253,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                               child: commonTextFormField(
                                 onChanged: controller.onChanged,
                                 controller: controller.passwordController,
+                                // enabled: !isLoading, // Removed invalid parameter
                                 obscureText: controller.show,
                                 textDecoration: InputDecoration(
                                   contentPadding: const EdgeInsets.symmetric(
@@ -251,7 +262,8 @@ class _SigninScreenUState extends State<SigninScreenU> {
                                   filled: true,
                                   fillColor: Colors.transparent,
                                   suffixIcon: IconButton(
-                                    onPressed: controller.chang,
+                                    onPressed:
+                                        isLoading ? null : controller.chang,
                                     icon: Icon(
                                       controller.show
                                           ? Icons.visibility_off
@@ -377,13 +389,11 @@ class _SigninScreenUState extends State<SigninScreenU> {
 
                       SizedBox(height: Get.height * 0.028),
 
-                      // Sign in button
+                      // Sign in button (email/password)
                       GetBuilder<SignInScreenController>(
                         id: "colorChange",
                         builder: (_) => InkWell(
-                          onTap: () {
-                            controller.onLoginBtnTap();
-                          },
+                          onTap: isLoading ? null : controller.onLoginBtnTap,
                           child: Container(
                             height: 50,
                             width: MediaQuery.of(context).size.width,
@@ -449,7 +459,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
 
                       SizedBox(height: Get.height * 0.028),
 
-                      // ---------- Social buttons (sans Facebook) ----------
+                      // ---------- Social buttons (Google + GitHub) ----------
                       Column(
                         children: [
                           // Google
@@ -457,17 +467,19 @@ class _SigninScreenUState extends State<SigninScreenU> {
                             width: double.infinity,
                             height: 48,
                             child: OutlinedButton.icon(
-                              onPressed: () async {
-                                try {
-                                  await controller.signWithGoogle();
-                                } catch (e) {
-                                  Get.snackbar(
-                                    "Google",
-                                    "Not configured yet",
-                                    snackPosition: SnackPosition.BOTTOM,
-                                  );
-                                }
-                              },
+                              onPressed: isLoading
+                                  ? null
+                                  : () async {
+                                      try {
+                                        await controller.signWithGoogle();
+                                      } catch (e) {
+                                        Get.snackbar(
+                                          "Google",
+                                          "Not configured yet",
+                                          snackPosition: SnackPosition.BOTTOM,
+                                        );
+                                      }
+                                    },
                               icon: const Icon(Icons.login),
                               label: const Text('Continue with Google'),
                               style: OutlinedButton.styleFrom(
@@ -477,20 +489,24 @@ class _SigninScreenUState extends State<SigninScreenU> {
                           ),
                           const SizedBox(height: 12),
 
-                          // GitHub (prêt à brancher)
+                          // GitHub
                           SizedBox(
                             width: double.infinity,
                             height: 48,
                             child: OutlinedButton.icon(
-                              onPressed: () async {
-                                // TODO: implémente la connexion GitHub dans ton controller
-                                // (ex: Firebase Auth GitHub provider ou OAuth via serveur)
-                                Get.snackbar(
-                                  "GitHub",
-                                  "Sign-in with GitHub not configured yet",
-                                  snackPosition: SnackPosition.BOTTOM,
-                                );
-                              },
+                              onPressed: isLoading
+                                  ? null
+                                  : () async {
+                                      try {
+                                        await controller.signInWithGitHub();
+                                      } catch (e) {
+                                        Get.snackbar(
+                                          "GitHub",
+                                          "Sign-in with GitHub error",
+                                          snackPosition: SnackPosition.BOTTOM,
+                                        );
+                                      }
+                                    },
                               icon: const Icon(Icons.code),
                               label: const Text('Continue with GitHub'),
                               style: OutlinedButton.styleFrom(
@@ -521,7 +537,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) => const SignUpScreen(),
+                                  builder: (_) => SignUpScreen(),
                                 ),
                               ).then((_) {
                                 controller.emailController.clear();
@@ -546,9 +562,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                 ),
 
                 // Loader
-                controller.loading.isTrue
-                    ? const CommonLoader()
-                    : const SizedBox(),
+                isLoading ? const CommonLoader() : const SizedBox(),
               ],
             );
           }),
