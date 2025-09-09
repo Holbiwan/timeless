@@ -5,15 +5,6 @@
   <img src="https://zupimages.net/up/25/37/x2vb.png" alt="Timeless logo" width="300">
 </p>
 
-
-
-
-## ✨ Key Features
-
-- 🔔 **Real-time Database** – Efficient data handling via Firestore.
-- 🤝 **Direct Employer Connections** – Scalable serverless backend logic.
-- 📊 **Cloud Functions** – Go beyond resumes by highlighting real skills and achievements.
-
 ---
 
 
