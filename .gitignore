@@ -24,6 +24,11 @@ android/local.properties
 android/key.properties
 android/app/*.keystore
 android/app/*.jks
+
+# Hide platforms not used for the demo
+/web/
+/macos/
+
 # If you want to keep Firebase files private on GitHub, ignore them:
 android/app/google-services.json
 android/app/src/**/google-services.json
