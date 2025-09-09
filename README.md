@@ -1,4 +1,5 @@
-# 🚀 Timeless – Career Companion
+# 🚀 Timeless  
+Career Companion
 
 ---
 <p align="center">
@@ -59,4 +60,5 @@ For presentations or low-connectivity scenarios, the app includes an **Offline D
 ```bash
 git clone <your-repo-url> timeless
 cd timeless
+
 flutter pub get
