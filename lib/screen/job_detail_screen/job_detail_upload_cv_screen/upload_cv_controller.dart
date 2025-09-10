@@ -19,26 +19,39 @@ class JobDetailsUploadCvController extends GetxController {
 
   init() async {
     companyList = [];
+    try {
+      final value = await firestore.collection("Apply").get();
 
-    await firestore.collection("Apply").get().then((value) {
-      // ignore: avoid_function_literals_in_foreach_calls
-      value.docs.forEach((element) {
+      for (final element in value.docs) {
         if (element['uid'] == PrefService.getString(PrefKeys.userId)) {
-          for (int y = 0; y < element['companyName'].length; y++) {
-            companyList.add({
-              "companyName": element['companyName'][y]["companyname"],
-              "position": element['companyName'][y]["position"]
-            });
+          final list = element['companyName'];
+          if (list is List) {
+            for (int y = 0; y < list.length; y++) {
+              final item = list[y];
+              if (item is Map) {
+                companyList.add({
+                  "companyname": item["companyname"],
+                  "position": item["position"],
+                });
+              }
+            }
           }
         }
-      });
-
-      /*for (int i = 1; i <= value.docs.length; i++) {
-        if (value.docs[i]['uid'] == PrefService.getString(PrefKeys.userId)) {
-          companyList = value.docs[i]['companyName'];
+      }
+    } on FirebaseException catch (e) {
+      // Ne pas crasher si les règles Firestore bloquent (permission-denied)
+      if (e.code == 'permission-denied') {
+        if (kDebugMode) {
+          debugPrint('Firestore read blocked (Apply): permission-denied — skipping init list for demo.');
         }
-      }*/
-    });
+      } else {
+        rethrow; // autres erreurs : on laisse remonter
+      }
+    } catch (e) {
+      // Par sécurité : ne pas crasher sur un format inattendu
+      if (kDebugMode) debugPrint('Unexpected error reading Apply: $e');
+    }
+
     if (kDebugMode) {
       print(companyList);
     }
@@ -49,79 +62,34 @@ class JobDetailsUploadCvController extends GetxController {
   String? pdfUrl;
   double filesize = 0;
 
-  /* onTapApply({var args}) {
-    abc = false;
-    for (int i = 0; i < companyList.length; i++) {
-      if (companyList[i] == args['CompanyName']) {
-        abc = true;
-      }
-    }
-
-    if (!abc) {
-      companyList.add(args['CompanyName']);
-    }
-
-    List<String> companyNameList = List.generate(companyList.length, (index) {
-      return companyList[index].toString();
-    });
-    if (kDebugMode) {
-      print(companyNameList);
-    }
-
-    firestore
-        .collection("Apply")
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .set({
-      'apply': true,
-      'companyName': companyNameList,
-      'userName': PrefService.getString(PrefKeys.fullName),
-      'email': PrefService.getString(PrefKeys.email),
-      'phone': PrefService.getString(PrefKeys.phoneNumber),
-      'city': PrefService.getString(PrefKeys.city),
-      'state': PrefService.getString(PrefKeys.state),
-      'country': PrefService.getString(PrefKeys.country),
-      'Occupation': PrefService.getString(PrefKeys.occupation),
-      'uid': FirebaseAuth.instance.currentUser!.uid,
-      'resumeUrl': pdfUrl,
-      'salary': args['salary'],
-      'location': args['location'],
-      'type': args['type'],
-    });
-
-    Get.toNamed(AppRes.jobDetailSuccessOrFailed, arguments: [
-      {"doc": args},
-      {"error": false, "filename": filepath},
-    ]);
-
-    filepath.value = "";
-  }*/
   onTapApply({var args}) {
     abc = false;
     for (int i = 0; i < companyList.length; i++) {
-      if (companyList[i]['companyame'] == args['CompanyName'] &&
+      // ✅ correction de la typo: companyname
+      if (companyList[i]['companyname'] == args['CompanyName'] &&
           companyList[i]['position'] == args['Position']) {
         abc = true;
+        break;
       }
     }
 
     if (!abc) {
-      companyList.add(
-          {"companyname": args['CompanyName'], "position": args['Position']});
+      companyList.add({
+        "companyname": args['CompanyName'],
+        "position": args['Position'],
+      });
     }
 
-    List<Map<String, dynamic>> companyNameList =
-        List.generate(companyList.length, (index) {
-      return companyList[index];
-    });
+    final List<Map<String, dynamic>> companyNameList = List.generate(
+      companyList.length,
+      (index) => companyList[index],
+    );
 
     if (kDebugMode) {
       print(companyNameList.runtimeType);
     }
 
-    firestore
-        .collection("Apply")
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .set({
+    firestore.collection("Apply").doc(FirebaseAuth.instance.currentUser!.uid).set({
       'apply': true,
       'companyName': companyNameList,
       'userName': PrefService.getString(PrefKeys.fullName),
@@ -158,28 +126,14 @@ class JobDetailsUploadCvController extends GetxController {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowMultiple: true,
-      allowedExtensions: [
-        'pdf',
-        /* 'xlsx',
-        'xlsm',
-        'xls',
-        'ppt',
-        'pptx',
-        'doc',
-        'docx',
-        'txt',
-        'text',
-        'rtf',
-        'zip',*/
-      ],
+      allowedExtensions: ['pdf'],
     );
 
     if (result != null) {
-      PlatformFile file = result.files.first;
-      // List<PlatformFile> fileList = result.files;
+      final PlatformFile file = result.files.first;
 
-      debugPrint("FILES : $file");
       filepath.value = file.name.toString();
+
       final kb = file.size / 1024;
       final kbVal = kb.ceil().toInt();
       final mb = kb / 1024;
@@ -188,60 +142,40 @@ class JobDetailsUploadCvController extends GetxController {
 
       if (kDebugMode) {
         print(filesize);
-      }
-
-      debugPrint("filepath $filepath FileSize ${fileSize?.value}  $kbVal");
-      {
-        PlatformFile file = result.files.first;
-        // List<PlatformFile> fileList = result.files;
-
-        debugPrint("FILES : $file");
-        filepath.value = file.name.toString();
-        fileSize?.value = file.size.ceil().toInt();
-        isPdfUploadError.value = false;
-
-        debugPrint("filepath $filepath FileSize $fileSize");
+        debugPrint("filepath $filepath FileSize ${fileSize?.value}  $kbVal");
       }
 
       final File fileForFirebase = File(file.path!);
-
-      uploadImage(file: fileForFirebase, path: "files/${file.name}");
+      await uploadImage(file: fileForFirebase, path: "files/${file.name}");
     } else {
       // User canceled the picker
-
       isPdfUploadError.value = true;
     }
   }
 
-  Future<String?> uploadImage({
-    File? file,
-    String? path,
-  }) async {
-    final firebaseStorage = FirebaseStorage.instance;
-
-    if (file != null) {
-      firebaseStorage.ref().child(path!).putFile(file).snapshot;
-
-      //pdfUrl = file.path;
-
-      // PDF url :
-
-      dynamic storageRef =
-          FirebaseStorage.instance.ref().child(path).getDownloadURL();
-      storageRef.then((result) {
-        pdfUrl = result;
-
-        if (kDebugMode) {
-          print("result is $result");
-        }
-      });
-    } else {
+  Future<String?> uploadImage({File? file, String? path}) async {
+    if (file == null || path == null) {
       if (kDebugMode) {
-        print('No Image Path Received');
+        print('No file or path provided');
       }
-
-      return '';
+      return null;
     }
-    return null;
+
+    try {
+      final ref = FirebaseStorage.instance.ref().child(path);
+      await ref.putFile(file);
+      final url = await ref.getDownloadURL();
+      pdfUrl = url;
+
+      if (kDebugMode) {
+        print("Download URL: $url");
+      }
+      return url;
+    } catch (e) {
+      if (kDebugMode) {
+        print('Upload error: $e');
+      }
+      return null;
+    }
   }
 }
