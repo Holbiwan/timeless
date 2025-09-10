@@ -1,3 +1,4 @@
+// lib/screen/auth/sign_in_screen/sign_in_screen.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -55,7 +56,6 @@ class _SigninScreenUState extends State<SigninScreenU> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 8),
-                      // Back
                       backButton(),
                       const SizedBox(height: 16),
 
@@ -69,12 +69,9 @@ class _SigninScreenUState extends State<SigninScreenU> {
                             color: ColorRes.logoColor,
                             borderRadius: BorderRadius.circular(15),
                           ),
-                          child: const Image(
-                            image: AssetImage(AssetRes.logo),
-                          ),
+                          child: const Image(image: AssetImage(AssetRes.logo)),
                         ),
                       ),
-
                       const SizedBox(height: 12),
                       Center(
                         child: Text(
@@ -103,13 +100,9 @@ class _SigninScreenUState extends State<SigninScreenU> {
                                 color: ColorRes.black.withOpacity(0.6),
                               ),
                             ),
-                            const Text(
-                              ' *',
-                              style: TextStyle(
-                                fontSize: 15,
-                                color: ColorRes.starColor,
-                              ),
-                            ),
+                            const Text(' *',
+                                style: TextStyle(
+                                    fontSize: 15, color: ColorRes.starColor)),
                           ],
                         ),
                       ),
@@ -222,13 +215,9 @@ class _SigninScreenUState extends State<SigninScreenU> {
                                 color: ColorRes.black.withOpacity(0.6),
                               ),
                             ),
-                            const Text(
-                              ' *',
-                              style: TextStyle(
-                                fontSize: 15,
-                                color: ColorRes.starColor,
-                              ),
-                            ),
+                            const Text(' *',
+                                style: TextStyle(
+                                    fontSize: 15, color: ColorRes.starColor)),
                           ],
                         ),
                       ),
@@ -253,7 +242,6 @@ class _SigninScreenUState extends State<SigninScreenU> {
                               child: commonTextFormField(
                                 onChanged: controller.onChanged,
                                 controller: controller.passwordController,
-                                // enabled: !isLoading, // Removed invalid parameter
                                 obscureText: controller.show,
                                 textDecoration: InputDecoration(
                                   contentPadding: const EdgeInsets.symmetric(
@@ -489,7 +477,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                           ),
                           const SizedBox(height: 12),
 
-                          // GitHub
+                          // GitHub (flux standard Firebase)
                           SizedBox(
                             width: double.infinity,
                             height: 48,

@@ -47,19 +47,21 @@ class SignUpScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
                 ElevatedButton(
-                  onPressed: signInCtrl.loading.value
-                      ? null
-                      : () async {
-                          await signInCtrl.registerWithEmail(
-                            firstName: firstNameController.text.trim(),
-                            lastName: lastNameController.text.trim(),
-                            email: emailController.text.trim(),
-                            password: passwordController.text.trim(),
-                          );
-                        },
-                  child: signInCtrl.loading.value
-                      ? const CircularProgressIndicator()
-                      : const Text('Create account'),
+                  onPressed:
+                      signInCtrl.loading.value
+                          ? null
+                          : () async {
+                            await signInCtrl.registerWithEmail(
+                              firstName: firstNameController.text.trim(),
+                              lastName: lastNameController.text.trim(),
+                              email: emailController.text.trim(),
+                              password: passwordController.text,
+                            );
+                          },
+                  child:
+                      signInCtrl.loading.value
+                          ? const CircularProgressIndicator()
+                          : const Text('Create account'),
                 ),
               ],
             ),
