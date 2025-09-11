@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
+import 'firebase_options.dart';
+
 import 'package:timeless/screen/dashboard/applications/applications_screen.dart';
 import 'package:timeless/screen/first_page/first_screen.dart';
 import 'package:timeless/screen/job_detail_screen/job_detail_screen.dart';
@@ -30,7 +32,11 @@ import 'package:timeless/utils/pref_keys.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp();
+  // ✅ initialisation Firebase correcte
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   await PrefService.init();
   NotificationService.init();
 
@@ -45,10 +51,10 @@ Future<void> main() async {
 
   // >>> Icônes BLANCHES par défaut (fond sombre)
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarColor: Colors.transparent, // barre de statut transparente
-    statusBarIconBrightness: Brightness.light, // icônes BLANCHES (Android)
-    statusBarBrightness: Brightness.dark, // iOS : contenu clair
-    systemNavigationBarColor: Colors.black, // barre de navigation sombre
+    statusBarColor: Colors.transparent,
+    statusBarIconBrightness: Brightness.light,
+    statusBarBrightness: Brightness.dark,
+    systemNavigationBarColor: Colors.black,
     systemNavigationBarIconBrightness: Brightness.light,
   ));
 

@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_interpolation_to_compose_strings
+// sign_up_controller.dart
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:country_picker/country_picker.dart';
@@ -13,7 +13,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:timeless/screen/dashboard/dashboard_screen.dart';
 import 'package:timeless/service/pref_services.dart';
 import 'package:timeless/utils/pref_keys.dart';
-// >>> Import aliasé pour éviter tout conflit et corriger "GoogleSignupScreen not defined"
+// Import alias pour éviter conflit et corriger "GoogleSignupScreen not defined"
 import 'package:timeless/screen/auth/sign_up/google_signupscreen.dart' as gsu;
 
 
