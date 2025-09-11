@@ -75,11 +75,11 @@ class HomePageNewScreenU extends StatelessWidget {
 
               const SizedBox(height: 40),
 
-              /// Exemple bouton stylisé aux couleurs Jamaïcaines
+              /// Bouton principal
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF1FA24A), // vert
-                  foregroundColor: Colors.white,
+                  backgroundColor: const Color.fromARGB(255, 15, 15, 15), //noir
+                  foregroundColor: const Color.fromARGB(255, 255, 251, 1),
                   padding:
                       const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
                   shape: RoundedRectangleBorder(
@@ -88,13 +88,13 @@ class HomePageNewScreenU extends StatelessWidget {
                   shadowColor: Colors.black.withOpacity(0.5),
                   elevation: 6,
                 ),
-                onPressed: () {},
+                onPressed: null,
                 child: const Text(
                   "Start your journey today",
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
-                    color: Color.fromARGB(255, 255, 255, 255), // texte blanc
+                    color: Color.fromARGB(255, 255, 255, 0), // texte jaune
                   ),
                 ),
               ),
