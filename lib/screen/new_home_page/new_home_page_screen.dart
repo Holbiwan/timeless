@@ -9,7 +9,7 @@ class HomePageNewScreenU extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 79, 6, 6), // fond neutre
+      backgroundColor: const Color.fromARGB(255, 115, 3, 12), // fond neutre
       body: SafeArea(
         child: Center(
           child: Column(
@@ -35,7 +35,7 @@ class HomePageNewScreenU extends StatelessWidget {
                     ),
                     TextSpan(
                       text: "Search",
-                      style: TextStyle(color: Colors.black), // Noir Jamaïque
+                      style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)), // Noir Jamaïque
                     ),
                   ],
                 ),
@@ -94,7 +94,7 @@ class HomePageNewScreenU extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
-                    color: Color.fromARGB(255, 255, 208, 0), // texte jaune
+                    color: Color.fromARGB(255, 255, 255, 255), // texte blanc
                   ),
                 ),
               ),
