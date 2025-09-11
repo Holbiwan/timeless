@@ -9,7 +9,7 @@ class HomePageNewScreenU extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // fond neutre
+      backgroundColor: const Color.fromARGB(255, 79, 6, 6), // fond neutre
       body: SafeArea(
         child: Center(
           child: Column(
@@ -90,7 +90,7 @@ class HomePageNewScreenU extends StatelessWidget {
                 ),
                 onPressed: () {},
                 child: const Text(
-                  "Are u Ready ?",
+                  "Start your journey today",
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
