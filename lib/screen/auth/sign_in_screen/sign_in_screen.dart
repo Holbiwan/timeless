@@ -1,7 +1,12 @@
 // lib/screen/auth/sign_in_screen/sign_in_screen.dart
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb; // <- pour différencier web/mobile
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+// Imports nécessaires pour les boutons TEST
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:timeless/common/widgets/back_button.dart';
 import 'package:timeless/common/widgets/common_loader.dart';
@@ -10,7 +15,6 @@ import 'package:timeless/common/widgets/common_text_field.dart';
 import 'package:timeless/screen/auth/forgot_password_new/forgot_password_new_screen.dart';
 import 'package:timeless/screen/auth/sign_in_screen/sign_in_controller.dart';
 import 'package:timeless/screen/auth/sign_up/sign_up_screen.dart';
-
 import 'package:timeless/screen/job_detail_screen/job_detail_upload_cv_screen/upload_cv_controller.dart';
 
 import 'package:timeless/service/pref_services.dart';
@@ -34,8 +38,39 @@ class _SigninScreenUState extends State<SigninScreenU> {
   @override
   void initState() {
     super.initState();
+    // Reset dur au cas où un run précédent aurait laissé le loader actif
+    controller.loading.value = false;
     controller.getRememberEmailDataUser();
     jobDetailsUploadCvController.init();
+  }
+
+  // -------- helpers UI --------
+  void _showSnack(String title, String msg) {
+    Get.snackbar(title, msg, snackPosition: SnackPosition.BOTTOM);
+  }
+
+  Future<void> _tryGoogle() async {
+    if (controller.loading.value) return;
+    controller.loading.value = true;
+    try {
+      await controller.signWithGoogle();
+    } catch (e) {
+      _showSnack('Google', '$e');
+    } finally {
+      controller.loading.value = false;
+    }
+  }
+
+  Future<void> _tryGitHub() async {
+    if (controller.loading.value) return;
+    controller.loading.value = true;
+    try {
+      await controller.signInWithGitHub();
+    } catch (e) {
+      _showSnack('GitHub', '$e');
+    } finally {
+      controller.loading.value = false;
+    }
   }
 
   @override
@@ -89,7 +124,9 @@ class _SigninScreenUState extends State<SigninScreenU> {
                       // Email
                       Padding(
                         padding: EdgeInsets.only(
-                            left: 4, bottom: Get.height * 0.008),
+                          left: 4,
+                          bottom: Get.height * 0.008,
+                        ),
                         child: Row(
                           children: [
                             Text(
@@ -100,9 +137,13 @@ class _SigninScreenUState extends State<SigninScreenU> {
                                 color: ColorRes.black.withOpacity(0.6),
                               ),
                             ),
-                            const Text(' *',
-                                style: TextStyle(
-                                    fontSize: 15, color: ColorRes.starColor)),
+                            const Text(
+                              ' *',
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: ColorRes.starColor,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -129,7 +170,9 @@ class _SigninScreenUState extends State<SigninScreenU> {
                                 controller: controller.emailController,
                                 textDecoration: InputDecoration(
                                   contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 15, vertical: 12),
+                                    horizontal: 15,
+                                    vertical: 12,
+                                  ),
                                   hintText: 'Email',
                                   filled: true,
                                   fillColor: Colors.transparent,
@@ -167,16 +210,18 @@ class _SigninScreenUState extends State<SigninScreenU> {
                             ),
                             if (controller.emailError.isNotEmpty)
                               Container(
-                                margin:
-                                    const EdgeInsets.symmetric(vertical: 10),
+                                margin: const EdgeInsets.symmetric(
+                                  vertical: 10,
+                                ),
                                 width: double.infinity,
                                 height: 28,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(50),
                                   color: ColorRes.invalidColor,
                                 ),
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 12),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                ),
                                 child: Row(
                                   children: [
                                     const Image(
@@ -204,7 +249,9 @@ class _SigninScreenUState extends State<SigninScreenU> {
                       // Password
                       Padding(
                         padding: EdgeInsets.only(
-                            left: 4, bottom: Get.height * 0.008),
+                          left: 4,
+                          bottom: Get.height * 0.008,
+                        ),
                         child: Row(
                           children: [
                             Text(
@@ -215,9 +262,13 @@ class _SigninScreenUState extends State<SigninScreenU> {
                                 color: ColorRes.black.withOpacity(0.6),
                               ),
                             ),
-                            const Text(' *',
-                                style: TextStyle(
-                                    fontSize: 15, color: ColorRes.starColor)),
+                            const Text(
+                              ' *',
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: ColorRes.starColor,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -245,7 +296,9 @@ class _SigninScreenUState extends State<SigninScreenU> {
                                 obscureText: controller.show,
                                 textDecoration: InputDecoration(
                                   contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 13, vertical: 12),
+                                    horizontal: 13,
+                                    vertical: 12,
+                                  ),
                                   hintText: 'Password',
                                   filled: true,
                                   fillColor: Colors.transparent,
@@ -301,8 +354,9 @@ class _SigninScreenUState extends State<SigninScreenU> {
                                   borderRadius: BorderRadius.circular(50),
                                   color: ColorRes.invalidColor,
                                 ),
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 12),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                ),
                                 child: Row(
                                   children: [
                                     const Image(
@@ -334,12 +388,18 @@ class _SigninScreenUState extends State<SigninScreenU> {
                           onTap: () {
                             controller.rememberMe = !controller.rememberMe;
                             if (controller.rememberMe) {
-                              PrefService.setValue(PrefKeys.email,
-                                  controller.emailController.text);
-                              PrefService.setValue(PrefKeys.password,
-                                  controller.passwordController.text);
                               PrefService.setValue(
-                                  PrefKeys.rememberMe, controller.rememberMe);
+                                PrefKeys.email,
+                                controller.emailController.text,
+                              );
+                              PrefService.setValue(
+                                PrefKeys.password,
+                                controller.passwordController.text,
+                              );
+                              PrefService.setValue(
+                                PrefKeys.rememberMe,
+                                controller.rememberMe,
+                              );
                             } else {
                               PrefService.remove(PrefKeys.email);
                               PrefService.remove(PrefKeys.password);
@@ -377,7 +437,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
 
                       SizedBox(height: Get.height * 0.028),
 
-                      // Sign in button (email/password)
+                      // Sign in (email/password)
                       GetBuilder<SignInScreenController>(
                         id: "colorChange",
                         builder: (_) => InkWell(
@@ -447,7 +507,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
 
                       SizedBox(height: Get.height * 0.028),
 
-                      // ---------- Social buttons (Google + GitHub) ----------
+                      // ---------- Social buttons ----------
                       Column(
                         children: [
                           // Google
@@ -455,19 +515,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                             width: double.infinity,
                             height: 48,
                             child: OutlinedButton.icon(
-                              onPressed: isLoading
-                                  ? null
-                                  : () async {
-                                      try {
-                                        await controller.signWithGoogle();
-                                      } catch (e) {
-                                        Get.snackbar(
-                                          "Google",
-                                          "Not configured yet",
-                                          snackPosition: SnackPosition.BOTTOM,
-                                        );
-                                      }
-                                    },
+                              onPressed: _tryGoogle,
                               icon: const Icon(Icons.login),
                               label: const Text('Continue with Google'),
                               style: OutlinedButton.styleFrom(
@@ -477,24 +525,12 @@ class _SigninScreenUState extends State<SigninScreenU> {
                           ),
                           const SizedBox(height: 12),
 
-                          // GitHub (flux standard Firebase)
+                          // GitHub
                           SizedBox(
                             width: double.infinity,
                             height: 48,
                             child: OutlinedButton.icon(
-                              onPressed: isLoading
-                                  ? null
-                                  : () async {
-                                      try {
-                                        await controller.signInWithGitHub();
-                                      } catch (e) {
-                                        Get.snackbar(
-                                          "GitHub",
-                                          "Sign-in with GitHub error",
-                                          snackPosition: SnackPosition.BOTTOM,
-                                        );
-                                      }
-                                    },
+                              onPressed: _tryGitHub,
                               icon: const Icon(Icons.code),
                               label: const Text('Continue with GitHub'),
                               style: OutlinedButton.styleFrom(
@@ -502,6 +538,68 @@ class _SigninScreenUState extends State<SigninScreenU> {
                               ),
                             ),
                           ),
+
+                          // ⭐⭐⭐ BOUTONS TEST TEMPORAIRES ⭐⭐⭐
+
+                          // TEST 1 — google_sign_in (natif, mobile)
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: () async {
+                              print('🎯 TEST Google Package - Début');
+                              try {
+                                final googleSignIn = GoogleSignIn(
+                                  scopes: const ['email', 'profile'],
+                                );
+                                final user = await googleSignIn.signIn();
+                                if (user != null) {
+                                  print('✅ Google SUCCÈS: ${user.email}');
+                                  Get.snackbar(
+                                    'Google',
+                                    'Connexion réussie: ${user.email}',
+                                  );
+                                } else {
+                                  print('ℹ️ Google annulé');
+                                }
+                              } catch (e) {
+                                print('❌ Google ERREUR: $e');
+                                Get.snackbar('Google Erreur', '$e');
+                              }
+                            },
+                            child: const Text('TEST Google Package'),
+                          ),
+
+                          // TEST 2 — Firebase only (web: popup / mobile: provider)
+                          const SizedBox(height: 10),
+                          ElevatedButton(
+                            onPressed: () async {
+                              print('🎯 TEST Firebase Only - Début');
+                              try {
+                                final provider = GoogleAuthProvider();
+                                provider.addScope('email');
+                                UserCredential cred;
+
+                                if (kIsWeb) {
+                                  // Web: popup
+                                  cred = await FirebaseAuth.instance
+                                      .signInWithPopup(provider);
+                                } else {
+                                  // Android/iOS: Custom Tabs
+                                  cred = await FirebaseAuth.instance
+                                      .signInWithProvider(provider);
+                                }
+
+                                final email = cred.user?.email ?? cred.user?.uid;
+                                print('✅ Firebase SUCCÈS: $email');
+                                Get.snackbar('Firebase', 'Connexion: $email');
+                              } catch (e) {
+                                print('❌ Firebase ERREUR: $e');
+                                Get.snackbar('Firebase Erreur', '$e');
+                              }
+                            },
+                            child: const Text('TEST Firebase Only'),
+                          ),
+
+                          // ⭐⭐⭐ FIN DES BOUTONS TEST ⭐⭐⭐
                         ],
                       ),
 
@@ -549,7 +647,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                   ),
                 ),
 
-                // Loader
+                // Loader (⚠️ sans const pour éviter const with non_const)
                 isLoading ? const CommonLoader() : const SizedBox(),
               ],
             );

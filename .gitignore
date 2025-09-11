@@ -94,3 +94,4 @@ accessToken_token.code-search
 # pubspec.yaml and pubspec.lock should be tracked for apps to ensure reproducible builds.
 # /assets/ (except if it contains secrets, then create a separate /assets_private/ and ignore that)
 lib.zip
+log.txt

@@ -1,10 +1,10 @@
 // lib/screen/auth/sign_in_screen/sign_in_controller.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb;
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+
 import 'package:timeless/screen/dashboard/dashboard_screen.dart';
 import 'package:timeless/service/pref_services.dart';
 import 'package:timeless/utils/pref_keys.dart';
@@ -17,9 +17,6 @@ class SignInScreenController extends GetxController {
 
   final FirebaseFirestore fireStore = FirebaseFirestore.instance;
   final FirebaseAuth auth = FirebaseAuth.instance;
-
-  // Le plugin google_sign_in ne sert que sur mobile.
-  final GoogleSignIn googleSignIn = GoogleSignIn();
 
   bool rememberMe = false;
   bool show = true; // afficher/masquer le mot de passe
@@ -129,10 +126,8 @@ class SignInScreenController extends GetxController {
 
       final user = credential.user;
       if (user != null) {
-        // Prefs
         _persistUserPrefs(user, email: email);
 
-        // Quelques infos du profil Firestore si disponibles
         final doc = snap.docs.first.data();
         PrefService.setValue(PrefKeys.fullName, doc["fullName"] ?? "");
         PrefService.setValue(PrefKeys.phoneNumber, doc["Phone"] ?? "");
@@ -173,7 +168,7 @@ class SignInScreenController extends GetxController {
     );
   }
 
-  // ===== Création de compte Email/Password (à appeler depuis ton écran SignUp) =====
+  // ===== Création de compte Email/Password =====
   Future<void> registerWithEmail({
     required String firstName,
     required String lastName,
@@ -183,7 +178,6 @@ class SignInScreenController extends GetxController {
     if (loading.value) return;
     loading.value = true;
     try {
-      // 1) Crée l’utilisateur Firebase Auth
       final UserCredential cred = await auth.createUserWithEmailAndPassword(
         email: email.trim(),
         password: password.trim(),
@@ -196,7 +190,6 @@ class SignInScreenController extends GetxController {
         return;
       }
 
-      // 2) Crée/merge la fiche Firestore
       await _mergeUserDoc(uid: user.uid, data: {
         "Email": email.trim(),
         "fullName": "$firstName $lastName",
@@ -210,7 +203,6 @@ class SignInScreenController extends GetxController {
         "uid": user.uid,
       });
 
-      // 3) Prefs + nav
       _persistUserPrefs(user,
           email: email.trim(), fullName: "$firstName $lastName");
       _gotoDashboard();
@@ -233,60 +225,60 @@ class SignInScreenController extends GetxController {
     update(['showPassword']);
   }
 
-// === Création de compte (appelée par sign_up_screen.dart) ===
-Future<void> registerWithEmailAlt({
-  required String firstName,
-  required String lastName,
-  required String email,
-  required String password,
-}) async {
-  if (loading.value) return;
-  loading.value = true;
-  try {
-    final cred = await auth.createUserWithEmailAndPassword(
-      email: email.trim(),
-      password: password.trim(),
-    );
-    final user = cred.user;
-    if (user == null) {
-      Get.snackbar("Sign up", "Account creation failed",
+  // (utilisée par sign_up_screen.dart)
+  Future<void> registerWithEmailAlt({
+    required String firstName,
+    required String lastName,
+    required String email,
+    required String password,
+  }) async {
+    if (loading.value) return;
+    loading.value = true;
+    try {
+      final cred = await auth.createUserWithEmailAndPassword(
+        email: email.trim(),
+        password: password.trim(),
+      );
+      final user = cred.user;
+      if (user == null) {
+        Get.snackbar("Sign up", "Account creation failed",
+            snackPosition: SnackPosition.BOTTOM,
+            colorText: const Color(0xffDA1414));
+        return;
+      }
+
+      await FirebaseFirestore.instance
+          .collection("Auth")
+          .doc("User")
+          .collection("register")
+          .doc(user.uid)
+          .set({
+        "Email": email.trim(),
+        "fullName": "$firstName $lastName",
+        "Phone": "",
+        "City": "",
+        "State": "",
+        "Country": "",
+        "Occupation": "",
+        "createdAt": FieldValue.serverTimestamp(),
+        "provider": "password",
+        "uid": user.uid,
+      }, SetOptions(merge: true));
+
+      PrefService.setValue(PrefKeys.rol, "User");
+      PrefService.setValue(PrefKeys.userId, user.uid);
+      PrefService.setValue(PrefKeys.email, email.trim());
+      PrefService.setValue(PrefKeys.fullName, "$firstName $lastName");
+
+      Get.offAll(() => DashBoardScreen());
+    } on FirebaseAuthException catch (e) {
+      Get.snackbar("Sign up", e.message ?? 'Firebase error',
           snackPosition: SnackPosition.BOTTOM,
           colorText: const Color(0xffDA1414));
-      return;
+    } finally {
+      loading.value = false;
     }
-
-    await FirebaseFirestore.instance
-        .collection("Auth")
-        .doc("User")
-        .collection("register")
-        .doc(user.uid)
-        .set({
-      "Email": email.trim(),
-      "fullName": "$firstName $lastName",
-      "Phone": "",
-      "City": "",
-      "State": "",
-      "Country": "",
-      "Occupation": "",
-      "createdAt": FieldValue.serverTimestamp(),
-      "provider": "password",
-      "uid": user.uid,
-    }, SetOptions(merge: true));
-
-    PrefService.setValue(PrefKeys.rol, "User");
-    PrefService.setValue(PrefKeys.userId, user.uid);
-    PrefService.setValue(PrefKeys.email, email.trim());
-    PrefService.setValue(PrefKeys.fullName, "$firstName $lastName");
-
-    Get.offAll(() => DashBoardScreen());
-  } on FirebaseAuthException catch (e) {
-    Get.snackbar("Sign up", e.message ?? 'Firebase error',
-        snackPosition: SnackPosition.BOTTOM,
-        colorText: const Color(0xffDA1414));
-  } finally {
-    loading.value = false;
   }
-}
 
   void onRememberMeChange(bool? value) {
     if (value == null) return;
@@ -296,63 +288,48 @@ Future<void> registerWithEmailAlt({
 
   void button() => update(['color']);
 
-  // ===== Google Sign-In =====
-  // - Mobile: google_sign_in (native)
-  // - Web: signInWithPopup(GoogleAuthProvider())
+   // ===================================================================
+  // GOOGLE SIGN-IN via FirebaseAuth
+  // ===================================================================
   Future<void> signWithGoogle() async {
     if (loading.value) return;
     loading.value = true;
     try {
-      UserCredential authResult;
+      final GoogleAuthProvider provider = GoogleAuthProvider()
+        ..addScope('email')
+        ..addScope('profile')
+        ..setCustomParameters({'prompt': 'select_account'});
 
-      if (kIsWeb) {
-        // Web : popup Firebase
-        final googleProvider = GoogleAuthProvider()
-          ..addScope('email')
-          ..addScope('profile');
-        authResult = await auth.signInWithPopup(googleProvider);
-      } else {
-        // Mobile : google_sign_in
-        if (await googleSignIn.isSignedIn()) {
-          await googleSignIn.signOut();
-        }
-        final GoogleSignInAccount? account = await googleSignIn.signIn();
-        if (account == null) return; // user cancelled
+      // ⭐⭐ CORRECTION : Utilise signInWithPopup pour MOBILE et WEB ⭐⭐
+      final UserCredential cred = await auth.signInWithPopup(provider);
 
-        final authen = await account.authentication;
-        final credential = GoogleAuthProvider.credential(
-          idToken: authen.idToken,
-          accessToken: authen.accessToken,
-        );
-        authResult = await auth.signInWithCredential(credential);
-      }
-
-      final User? user = authResult.user;
+      final user = cred.user;
       if (user == null) {
-        Get.snackbar("Google", "Sign-in failed",
-            snackPosition: SnackPosition.BOTTOM,
-            colorText: const Color(0xffDA1414));
+        Get.snackbar("Google", "Sign-in cancelled",
+            snackPosition: SnackPosition.BOTTOM);
         return;
       }
 
-      // Enregistre/merge profil Firestore
       await _mergeUserDoc(uid: user.uid, data: {
         "Email": user.email ?? "",
         "fullName": user.displayName ?? "",
-        "createdAt": FieldValue.serverTimestamp(),
-        "provider": "google",
         "photoURL": user.photoURL ?? "",
+        "provider": "google",
+        "createdAt": FieldValue.serverTimestamp(),
         "uid": user.uid,
       });
 
-      // Prefs
       _persistUserPrefs(user,
           email: user.email ?? "", fullName: user.displayName ?? "");
-
       _gotoDashboard();
+    } on FirebaseAuthException catch (e) {
+      if (kDebugMode) print(e);
+      Get.snackbar("Google", "Firebase error: ${e.code}",
+          snackPosition: SnackPosition.BOTTOM,
+          colorText: const Color(0xffDA1414));
     } catch (e) {
       if (kDebugMode) print(e);
-      Get.snackbar("Google", "Sign-in failed",
+      Get.snackbar("Google", "Unexpected: $e",
           snackPosition: SnackPosition.BOTTOM,
           colorText: const Color(0xffDA1414));
     } finally {
@@ -360,35 +337,29 @@ Future<void> registerWithEmailAlt({
     }
   }
 
-  // ===== GitHub Sign-In =====
-  // Mobile & Web : signInWithProvider / signInWithPopup selon plate-forme.
+  // ===================================================================
+  // GITHUB SIGN-IN via FirebaseAuth
+  // ===================================================================
   Future<void> signInWithGitHub() async {
     if (loading.value) return;
     loading.value = true;
     try {
-      final provider = GithubAuthProvider()
+      final GithubAuthProvider provider = GithubAuthProvider()
         ..addScope('read:user')
         ..addScope('user:email')
         ..setCustomParameters({'allow_signup': 'false'});
 
-      UserCredential cred;
-      if (kIsWeb) {
-        // Sur web, utilise la popup
-        cred = await auth.signInWithPopup(provider);
-      } else {
-        // Sur mobile (Android), ouvre le navigateur (Custom Tabs)
-        cred = await auth.signInWithProvider(provider);
-      }
+      // ⭐⭐ CORRECTION : Utilise signInWithPopup pour MOBILE et WEB ⭐⭐
+      final UserCredential cred = await auth.signInWithPopup(provider);
 
-      final User? user = cred.user;
+      final user = cred.user;
       if (user == null) {
-        Get.snackbar("GitHub", "Sign-in failed",
-            snackPosition: SnackPosition.BOTTOM,
-            colorText: const Color(0xffDA1414));
+        Get.snackbar("GitHub", "Sign-in cancelled",
+            snackPosition: SnackPosition.BOTTOM);
         return;
       }
 
-      // Email : parfois privé côté GitHub → fallback
+      // email parfois masqué côté GitHub
       String email = user.email ?? '';
       if (email.isEmpty) {
         for (final p in user.providerData) {
@@ -405,28 +376,25 @@ Future<void> registerWithEmailAlt({
         if (email.isEmpty) email = '${user.uid}@users.noreply.github';
       }
 
-      // Enregistre/merge profil Firestore
       await _mergeUserDoc(uid: user.uid, data: {
         "Email": email,
         "fullName": user.displayName ?? "",
-        "createdAt": FieldValue.serverTimestamp(),
-        "provider": "github",
         "photoURL": user.photoURL ?? "",
+        "provider": "github",
+        "createdAt": FieldValue.serverTimestamp(),
         "uid": user.uid,
       });
 
-      // Prefs
       _persistUserPrefs(user, email: email, fullName: user.displayName ?? "");
-
       _gotoDashboard();
     } on FirebaseAuthException catch (e) {
       if (kDebugMode) print(e);
-      Get.snackbar("GitHub", e.message ?? 'Firebase error',
+      Get.snackbar("GitHub", "Firebase error: ${e.code}",
           snackPosition: SnackPosition.BOTTOM,
           colorText: const Color(0xffDA1414));
     } catch (e) {
       if (kDebugMode) print(e);
-      Get.snackbar("GitHub", "Sign-in failed",
+      Get.snackbar("GitHub", "Unexpected: $e",
           snackPosition: SnackPosition.BOTTOM,
           colorText: const Color(0xffDA1414));
     } finally {
