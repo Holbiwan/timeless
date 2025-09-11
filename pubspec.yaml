@@ -27,7 +27,8 @@ dependencies:
   firebase_messaging: ^14.7.10
 
   # Auth
-  google_sign_in: ^5.4.4
+  # -> Passage en 6.x pour éviter l’erreur Pigeon et garder compatibilité avec firebase_auth 4.x
+  google_sign_in: ^6.2.1
 
   # Utilitaires
   shared_preferences: ^2.3.2
@@ -50,6 +51,7 @@ dependencies:
   http: ^1.5.0
 
 dependency_overrides:
+  # Garde seulement celui-ci si tu en as besoin ailleurs
   js: ^0.7.2
 
 dev_dependencies:
