@@ -95,3 +95,9 @@ accessToken_token.code-search
 # /assets/ (except if it contains secrets, then create a separate /assets_private/ and ignore that)
 lib.zip
 log.txt
+
+lib/dev
+main_demo.dart
+demo_cv.pdf
+demo_flow.dart
+seed_jobs.dart
