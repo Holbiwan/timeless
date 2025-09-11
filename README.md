@@ -16,7 +16,7 @@ Career Companion
   <a href="https://flutter.dev"><img alt="Flutter" src="https://img.shields.io/badge/Flutter-3.x-02569B?logo=flutter&logoColor=white"></a>
   <a href="https://firebase.google.com"><img alt="Firebase" src="https://img.shields.io/badge/Firebase-Auth%20%7C%20Firestore-FFCA28?logo=firebase&logoColor=black"></a>
   <img alt="Platform" src="https://img.shields.io/badge/Platform-Android-3DDC84?logo=android&logoColor=white">
-  <img alt="Status" src="https://img.shields.io/badge/Status-Demo%20Ready-4CAF50">
+  <img alt="Status" src="https://img.shields.io/badge/Status-Demo%20Day-4CAF50">
 </p>
 
 ---
@@ -62,3 +62,4 @@ git clone <your-repo-url> timeless
 cd timeless
 
 flutter pub get
+
