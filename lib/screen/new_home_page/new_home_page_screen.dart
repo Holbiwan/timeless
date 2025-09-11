@@ -1,3 +1,6 @@
+
+// \lib\screen\new_home_page\new_home_page_screen.dart
+
 import 'package:flutter/material.dart';
 
 class HomePageNewScreenU extends StatelessWidget {
@@ -87,7 +90,7 @@ class HomePageNewScreenU extends StatelessWidget {
                 ),
                 onPressed: () {},
                 child: const Text(
-                  "Welcome",
+                  "Are u Ready ?",
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,

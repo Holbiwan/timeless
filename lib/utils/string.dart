@@ -60,7 +60,7 @@ class Strings {
       "Please make sure that your internet connection is active and stable, then press “Try Again”";
   static const uIUXDesigner = "UI/UX Designer";
   static const airBNB = "AirBNB";
-  static const welcome = 'Welcome,';
+  static const welcome = 'ready,';
   static const hello = 'hello,';
   static const RecentPeopleApplication = " Recent People Application";
   static const nowYouCanSeeAllTheApplier =

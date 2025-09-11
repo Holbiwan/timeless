@@ -20,13 +20,13 @@ class FirstScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (kDebugMode) {
-      // Petits logs utiles en debug
+      
       // ignore: avoid_print
       print('size: ${Get.width} x ${Get.height}');
     }
 
     return Scaffold(
-      backgroundColor: ColorRes.backgroundColor,
+      backgroundColor: const Color.fromARGB(255, 234, 239, 164),
       body: Container(
         width: Get.width,
         height: Get.height,
