@@ -6,50 +6,69 @@ import 'package:get/get.dart';
 
 import 'firebase_options.dart';
 
-import 'package:timeless/screen/dashboard/applications/applications_screen.dart';
+// ===== Screens (User) =====
+import 'package:timeless/screen/splashScreen/splash_screen.dart';
 import 'package:timeless/screen/first_page/first_screen.dart';
-import 'package:timeless/screen/job_detail_screen/job_detail_screen.dart';
-import 'package:timeless/screen/job_detail_screen/job_detail_upload_cv_screen/upload_cv_screen.dart';
-import 'package:timeless/screen/job_detail_screen/job_details_success_or_fails/job_details_success_or_faild_screen.dart';
-import 'package:timeless/screen/job_recommendation_screen/job_recommendation_screen.dart';
-import 'package:timeless/screen/manager_section/Notification/notification_services.dart';
-import 'package:timeless/screen/manager_section/applicants_detail_screen/applicants_detail_screen.dart';
-import 'package:timeless/screen/manager_section/auth_manager/first_page/first_screen.dart';
-import 'package:timeless/screen/manager_section/dashboard/manager_dashboard_screen.dart';
-import 'package:timeless/screen/manager_section/manager_application_detail_screen/manager_application_detail_screen.dart';
-import 'package:timeless/screen/manager_section/notification1/notification1_screen.dart';
-import 'package:timeless/screen/manager_section/resume_screen/resume_screen.dart';
 import 'package:timeless/screen/new_home_page/new_home_page_screen.dart';
-import 'package:timeless/screen/notification_screen/notification_screen.dart';
+import 'package:timeless/screen/notification_screen/notification_screen.dart' as UserNotification;
+import 'package:timeless/screen/job_detail_screen/job_detail_screen.dart';
+import 'package:timeless/screen/job_detail_screen/job_details_success_or_fails/job_details_success_or_faild_screen.dart';
+// Ensure this import is correct and the file exists with the correct class name
+import 'package:timeless/screen/job_recommendation_screen/job_recommendation_screen.dart';
 import 'package:timeless/screen/organization_profile_screen/organization_profile_screen.dart';
 import 'package:timeless/screen/see_details/see_details_screen.dart';
-import 'package:timeless/screen/splashScreen/splash_screen.dart';
+import 'package:timeless/screen/dashboard/applications/applications_screen.dart';
 import 'package:timeless/screen/update_vacancies_requirements/update_vacancies_requirements_screen.dart';
+
+// ⚠️ Utilise la page de test trouvée : lib/test/upload_cv_test_screen.dart
+import 'package:timeless/test/upload_cv_test_screen.dart';
+
+// ===== Manager Section =====
+import 'package:timeless/screen/manager_section/Notification/notification_services.dart';
+import 'package:timeless/screen/manager_section/auth_manager/first_page/first_screen.dart'
+    // ignore: library_prefixes
+    as ManagerFirstScreen;
+import 'package:timeless/screen/manager_section/dashboard/manager_dashboard_screen.dart';
+import 'package:timeless/screen/manager_section/manager_application_detail_screen/manager_application_detail_screen.dart';
+import 'package:timeless/screen/manager_section/resume_screen/resume_screen.dart';
+import 'package:timeless/screen/manager_section/applicants_detail_screen/applicants_detail_screen.dart';
+
+// ===== Utils / Services =====
 import 'package:timeless/service/pref_services.dart';
 import 'package:timeless/utils/app_res.dart';
 import 'package:timeless/utils/pref_keys.dart';
 
+import 'package:timeless/temp_placeholders.dart';
+
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // ✅ initialisation Firebase correcte
+  // Firebase
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
   await PrefService.init();
-  NotificationService.init();
+  await NotificationService.init();
 
-  // Orientation portrait uniquement
+  // Portrait only
   await SystemChrome.setPreferredOrientations(
     [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown],
   );
 
-  // Token FCM
-  final String? fcmToken = await FirebaseMessaging.instance.getToken();
-  await PrefService.setValue(PrefKeys.deviceToken, fcmToken);
+  // Optional FCM token
+  try {
+    final String? fcmToken = await FirebaseMessaging.instance.getToken();
+    if (fcmToken != null) {
+      await PrefService.setValue(PrefKeys.deviceToken, fcmToken);
+    }
+  } catch (e) {
+    // ignore: avoid_print
+    print("Erreur FCM (ignorable pour la démo): $e");
+  }
 
-  // >>> Icônes BLANCHES par défaut (fond sombre)
+  // UI chrome
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
     statusBarIconBrightness: Brightness.light,
@@ -69,15 +88,12 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Timeless',
       debugShowCheckedModeBanner: false,
-
-      // Thème léger mais avec AppBar configurée pour icônes blanches par défaut
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
         appBarTheme: const AppBarTheme(
           backgroundColor: Colors.transparent,
           elevation: 0,
           systemOverlayStyle: SystemUiOverlayStyle(
-            // cohérent si tu utilises AppBar
             statusBarColor: Colors.transparent,
             statusBarIconBrightness: Brightness.light,
             statusBarBrightness: Brightness.dark,
@@ -87,50 +103,42 @@ class MyApp extends StatelessWidget {
         ),
       ),
 
-      // Écran de démarrage
-      home: const SplashScreen(),
+      // Pas de const ici
+      // ignore: prefer_const_constructors
+      home: SplashScreen(),
 
       initialRoute: "/",
       getPages: [
         GetPage(
           name: AppRes.notificationScreen,
-          page: () => const NotificationScreenU(),
+          // ignore: prefer_const_constructors
+          page: () => UserNotification.NotificationScreenU(),
         ),
         GetPage(
-          name: AppRes.newHomePageUi,
-          page: () => const HomePageNewScreenU(),
+          name: AppRes.jobDetailScreen,
+          page: () => JobDetailScreen(),
         ),
+        // Utilise la page de test présente dans lib/test/
         GetPage(
           name: AppRes.jobDetailUploadCvScreen,
-          page: () => JobDetailsUploadCvScreen(),
+          // ignore: prefer_const_constructors
+          page: () => UploadCvTestScreen(),
         ),
         GetPage(
           name: AppRes.jobDetailSuccessOrFailed,
           page: () => JobDetailsSuccessOrFailedScreen(),
         ),
         GetPage(
-          name: AppRes.notificationScreen,
-          page: () => NotificationScreenM(),
-        ),
-        GetPage(
-          name: AppRes.jobDetailScreen,
-          page: () => JobDetailScreen(),
-        ),
-        GetPage(
           name: AppRes.jobRecommendationScreen,
-          page: () => const JobRecommendation(),
+          page: () => const JobRecommendationScreen(),
         ),
         GetPage(
           name: AppRes.organizationProfileScreen,
           page: () => const OrganizationProfileScreen(),
         ),
         GetPage(
-          name: AppRes.applicationsUser,
-          page: () => ApplicationsScreen(),
-        ),
-        GetPage(
           name: AppRes.managerDashboardScreen,
-          page: () => ManagerDashBoardScreen(),
+          page: () => const ManagerDashboardScreen(),
         ),
         GetPage(
           name: AppRes.managerApplicationDetailScreen,
@@ -142,23 +150,33 @@ class MyApp extends StatelessWidget {
         ),
         GetPage(
           name: AppRes.applicantsDetails,
-          page: () => ApplicantsDetailScreen(isWrong: false),
-        ),
-        GetPage(
-          name: AppRes.firstPageScreenM,
-          page: () => const FirstPageScreenM(),
+          page: () => ApplicantsDetailScreen(
+            isWrong: false, // paramètre requis
+          ),
         ),
         GetPage(
           name: AppRes.seeDetailsScreen,
           page: () => const SeeDetailsScreen(),
         ),
         GetPage(
-          name: AppRes.updateVacanciesRequirementScreen,
-          page: () => const UpdateVacanciesRequirementsScreen(),
+          name: AppRes.applicationsUser,
+          page: () => ApplicationsScreen(),
         ),
         GetPage(
           name: AppRes.firstScreen,
           page: () => FirstScreen(),
+        ),
+        GetPage(
+          name: AppRes.firstPageScreenM,
+          page: () => const ManagerFirstScreen.FirstPageScreenM(),
+        ),
+        GetPage(
+          name: AppRes.newHomePageUi,
+          page: () => const NewHomePageScreen(),
+        ),
+        GetPage(
+          name: AppRes.updateVacanciesRequirementScreen,
+          page: () => const UpdateVacanciesRequirementsScreen(),
         ),
       ],
     );
