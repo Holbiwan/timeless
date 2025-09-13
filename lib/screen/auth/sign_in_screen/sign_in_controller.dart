@@ -1,13 +1,17 @@
 // lib/screen/auth/sign_in_screen/sign_in_controller.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart' show kDebugMode;
+import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:timeless/screen/dashboard/dashboard_screen.dart';
 import 'package:timeless/service/pref_services.dart';
+import 'package:timeless/service/google_auth_service.dart';
 import 'package:timeless/utils/pref_keys.dart';
+
+// ⬇️ pour connaître l'état "succès d'inscription" et étouffer les erreurs tardives
+import 'package:timeless/screen/manager_section/auth_manager/sign_up_new/sign_up_new_controller.dart';
 
 class SignInScreenController extends GetxController {
   // ===== State / Controllers =====
@@ -19,9 +23,9 @@ class SignInScreenController extends GetxController {
   final FirebaseAuth auth = FirebaseAuth.instance;
 
   bool rememberMe = false;
-  bool show = true; // afficher/masquer le mot de passe
+  bool show = true; // true = caché
 
-  // Erreurs UI (champ texte)
+  // Erreurs UI
   String emailError = "";
   String pwdError = "";
 
@@ -70,6 +74,37 @@ class SignInScreenController extends GetxController {
   }
 
   // ===== Helpers =====
+
+  // ⬇️ Supprime les snacks si un sign-up a déjà réussi (évite le "mauvais" popup après succès)
+  bool _suppressAuthErrors() {
+    try {
+      final c = Get.find<SignUpControllerM>();
+      return c.isAuthCompleted; // vrai si succès d'inscription verrouillé
+    } catch (_) {
+      return false;
+    }
+  }
+
+  void _snack(
+    String title,
+    String msg, {
+    Color? colorText,
+    Color? backgroundColor,
+    SnackPosition snackPosition = SnackPosition.BOTTOM,
+  }) {
+    if (_suppressAuthErrors()) {
+      if (kDebugMode) print('[Suppressed Snack] $title: $msg');
+      return;
+    }
+    Get.snackbar(
+      title,
+      msg,
+      snackPosition: snackPosition,
+      colorText: colorText,
+      backgroundColor: backgroundColor,
+    );
+  }
+
   void _persistUserPrefs(User user, {String? email, String? fullName}) {
     PrefService.setValue(PrefKeys.rol, "User");
     PrefService.setValue(PrefKeys.userId, user.uid);
@@ -101,53 +136,46 @@ class SignInScreenController extends GetxController {
     if (loading.value) return;
     loading.value = true;
     try {
-      // Vérifie si l'email existe dans ton schéma Firestore (optionnel)
-      final snap = await fireStore
-          .collection("Auth")
-          .doc("User")
-          .collection("register")
-          .where("Email", isEqualTo: email)
-          .limit(1)
-          .get();
-
-      if (snap.docs.isEmpty) {
-        Get.snackbar(
-          "Error",
-          "Please create account,\n your email is not registered",
-          colorText: const Color(0xffDA1414),
-        );
-        return;
-      }
-
       final credential = await auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-
       final user = credential.user;
-      if (user != null) {
-        _persistUserPrefs(user, email: email);
-
-        final doc = snap.docs.first.data();
-        PrefService.setValue(PrefKeys.fullName, doc["fullName"] ?? "");
-        PrefService.setValue(PrefKeys.phoneNumber, doc["Phone"] ?? "");
-        PrefService.setValue(PrefKeys.city, doc["City"] ?? "");
-        PrefService.setValue(PrefKeys.state, doc["State"] ?? "");
-        PrefService.setValue(PrefKeys.country, doc["Country"] ?? "");
-        PrefService.setValue(PrefKeys.occupation, doc["Occupation"] ?? "");
-
-        emailController.clear();
-        passwordController.clear();
-
-        _gotoDashboard();
+      if (user == null) {
+        _snack("Error", "Sign-in failed", colorText: const Color(0xffDA1414));
+        return;
       }
+
+      // Profil minimal si absent
+      final ref = fireStore
+          .collection("Auth")
+          .doc("User")
+          .collection("register")
+          .doc(user.uid);
+
+      final snap = await ref.get();
+      if (!snap.exists) {
+        await ref.set({
+          "Email": email,
+          "fullName": "",
+          "Phone": "",
+          "City": "",
+          "State": "",
+          "Country": "",
+          "Occupation": "",
+          "createdAt": FieldValue.serverTimestamp(),
+          "provider": "password",
+          "uid": user.uid,
+        });
+      }
+
+      _persistUserPrefs(user, email: email);
+      _gotoDashboard();
     } on FirebaseAuthException catch (e) {
-      Get.snackbar("Error", e.message ?? e.code,
-          colorText: const Color(0xffDA1414));
+      _snack("Error", e.message ?? e.code, colorText: const Color(0xffDA1414));
     } catch (e) {
       if (kDebugMode) print(e);
-      Get.snackbar("Error", "Sign-in failed",
-          colorText: const Color(0xffDA1414));
+      _snack("Error", "Sign-in failed", colorText: const Color(0xffDA1414));
     } finally {
       loading.value = false;
     }
@@ -168,116 +196,10 @@ class SignInScreenController extends GetxController {
     );
   }
 
-  // ===== Création de compte Email/Password =====
-  Future<void> registerWithEmail({
-    required String firstName,
-    required String lastName,
-    required String email,
-    required String password,
-  }) async {
-    if (loading.value) return;
-    loading.value = true;
-    try {
-      final UserCredential cred = await auth.createUserWithEmailAndPassword(
-        email: email.trim(),
-        password: password.trim(),
-      );
-      final user = cred.user;
-      if (user == null) {
-        Get.snackbar("Sign up", "Account creation failed",
-            snackPosition: SnackPosition.BOTTOM,
-            colorText: const Color(0xffDA1414));
-        return;
-      }
-
-      await _mergeUserDoc(uid: user.uid, data: {
-        "Email": email.trim(),
-        "fullName": "$firstName $lastName",
-        "Phone": "",
-        "City": "",
-        "State": "",
-        "Country": "",
-        "Occupation": "",
-        "createdAt": FieldValue.serverTimestamp(),
-        "provider": "password",
-        "uid": user.uid,
-      });
-
-      _persistUserPrefs(user,
-          email: email.trim(), fullName: "$firstName $lastName");
-      _gotoDashboard();
-    } on FirebaseAuthException catch (e) {
-      Get.snackbar("Sign up", e.message ?? 'Firebase error',
-          snackPosition: SnackPosition.BOTTOM,
-          colorText: const Color(0xffDA1414));
-    } catch (e) {
-      Get.snackbar("Sign up", "Account creation failed",
-          snackPosition: SnackPosition.BOTTOM,
-          colorText: const Color(0xffDA1414));
-    } finally {
-      loading.value = false;
-    }
-  }
-
   // ===== UI helpers =====
   void chang() {
     show = !show;
     update(['showPassword']);
-  }
-
-  // (utilisée par sign_up_screen.dart)
-  Future<void> registerWithEmailAlt({
-    required String firstName,
-    required String lastName,
-    required String email,
-    required String password,
-  }) async {
-    if (loading.value) return;
-    loading.value = true;
-    try {
-      final cred = await auth.createUserWithEmailAndPassword(
-        email: email.trim(),
-        password: password.trim(),
-      );
-      final user = cred.user;
-      if (user == null) {
-        Get.snackbar("Sign up", "Account creation failed",
-            snackPosition: SnackPosition.BOTTOM,
-            colorText: const Color(0xffDA1414));
-        return;
-      }
-
-      await FirebaseFirestore.instance
-          .collection("Auth")
-          .doc("User")
-          .collection("register")
-          .doc(user.uid)
-          .set({
-        "Email": email.trim(),
-        "fullName": "$firstName $lastName",
-        "Phone": "",
-        "City": "",
-        "State": "",
-        "Country": "",
-        "Occupation": "",
-        "createdAt": FieldValue.serverTimestamp(),
-        "provider": "password",
-        "uid": user.uid,
-      }, SetOptions(merge: true));
-
-      PrefService.setValue(PrefKeys.rol, "User");
-      PrefService.setValue(PrefKeys.userId, user.uid);
-      PrefService.setValue(PrefKeys.email, email.trim());
-      PrefService.setValue(PrefKeys.fullName, "$firstName $lastName");
-
-      Get.offAll(() => DashBoardScreen());
-    } on FirebaseAuthException catch (e) {
-      Get.snackbar("Sign up", e.message ?? 'Firebase error',
-          snackPosition: SnackPosition.BOTTOM,
-          colorText: const Color(0xffDA1414));
-    } finally {
-      loading.value = false;
-    }
   }
 
   void onRememberMeChange(bool? value) {
@@ -288,48 +210,79 @@ class SignInScreenController extends GetxController {
 
   void button() => update(['color']);
 
-   // ===================================================================
-  // GOOGLE SIGN-IN via FirebaseAuth
-  // ===================================================================
-  Future<void> signWithGoogle() async {
+  // ===============================
+  // GOOGLE SIGN-IN (Android/iOS + Web)
+  // ===============================
+  Future<void> signInWithGoogle() async {
     if (loading.value) return;
     loading.value = true;
     try {
-      final GoogleAuthProvider provider = GoogleAuthProvider()
-        ..addScope('email')
-        ..addScope('profile')
-        ..setCustomParameters({'prompt': 'select_account'});
+      if (kDebugMode) print('Starting Google Sign-In...');
 
-      // ⭐⭐ CORRECTION : Utilise signInWithPopup pour MOBILE et WEB ⭐⭐
-      final UserCredential cred = await auth.signInWithPopup(provider);
-
-      final user = cred.user;
+      // Utiliser le service Google Auth
+      final user = await GoogleAuthService.signInWithGoogle();
       if (user == null) {
-        Get.snackbar("Google", "Sign-in cancelled",
-            snackPosition: SnackPosition.BOTTOM);
+        if (kDebugMode) print('Google sign-in cancelled or failed');
+        _snack("Google", "Connexion annulée",
+            snackPosition: SnackPosition.BOTTOM,
+            colorText: const Color(0xffDA1414));
         return;
       }
 
-      await _mergeUserDoc(uid: user.uid, data: {
-        "Email": user.email ?? "",
-        "fullName": user.displayName ?? "",
-        "photoURL": user.photoURL ?? "",
-        "provider": "google",
-        "createdAt": FieldValue.serverTimestamp(),
-        "uid": user.uid,
-      });
+      if (kDebugMode) print('User signed in: ${user.email}');
+
+      // Sauvegarder dans Firestore (non bloquant pour l'UX)
+      try {
+        await GoogleAuthService.saveUserToFirestore(user);
+        if (kDebugMode) print('User data saved to Firestore');
+      } catch (firestoreError) {
+        if (kDebugMode) print('Firestore error: $firestoreError');
+        _snack("Info", "Connexion réussie mais sauvegarde partielle",
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.orange.shade100);
+      }
 
       _persistUserPrefs(user,
           email: user.email ?? "", fullName: user.displayName ?? "");
+
+      _snack("Succès", "Connexion Google réussie !",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green.shade100,
+          colorText: Colors.green.shade800);
+
       _gotoDashboard();
     } on FirebaseAuthException catch (e) {
-      if (kDebugMode) print(e);
-      Get.snackbar("Google", "Firebase error: ${e.code}",
+      if (kDebugMode) {
+        print('FirebaseAuthException: ${e.code} - ${e.message}');
+      }
+      String errorMessage = "Erreur de connexion Google";
+      switch (e.code) {
+        case 'cancelled-popup-request':
+        case 'popup-closed-by-user':
+          errorMessage = "Connexion annulée";
+          break;
+        case 'network-request-failed':
+          errorMessage = "Erreur réseau - vérifiez votre connexion";
+          break;
+        case 'popup-blocked':
+          errorMessage = "Popup bloqué par le navigateur";
+          break;
+        case 'account-exists-with-different-credential':
+          errorMessage =
+              "Ce compte existe déjà avec un autre mode de connexion";
+          break;
+        case 'user-disabled':
+          errorMessage = "Ce compte a été désactivé";
+          break;
+        default:
+          errorMessage = e.message ?? "Erreur Firebase: ${e.code}";
+      }
+      _snack("Google", errorMessage,
           snackPosition: SnackPosition.BOTTOM,
           colorText: const Color(0xffDA1414));
     } catch (e) {
-      if (kDebugMode) print(e);
-      Get.snackbar("Google", "Unexpected: $e",
+      if (kDebugMode) print('Google sign-in error: $e');
+      _snack("Google", "Erreur de connexion: $e",
           snackPosition: SnackPosition.BOTTOM,
           colorText: const Color(0xffDA1414));
     } finally {
@@ -337,74 +290,9 @@ class SignInScreenController extends GetxController {
     }
   }
 
-  // ===================================================================
-  // GITHUB SIGN-IN via FirebaseAuth
-  // ===================================================================
+  // ===== GitHub (non prioritaire démo) =====
   Future<void> signInWithGitHub() async {
-    if (loading.value) return;
-    loading.value = true;
-    try {
-      final GithubAuthProvider provider = GithubAuthProvider()
-        ..addScope('read:user')
-        ..addScope('user:email')
-        ..setCustomParameters({'allow_signup': 'false'});
-
-      // ⭐⭐ CORRECTION : Utilise signInWithPopup pour MOBILE et WEB ⭐⭐
-      final UserCredential cred = await auth.signInWithPopup(provider);
-
-      final user = cred.user;
-      if (user == null) {
-        Get.snackbar("GitHub", "Sign-in cancelled",
-            snackPosition: SnackPosition.BOTTOM);
-        return;
-      }
-
-      // email parfois masqué côté GitHub
-      String email = user.email ?? '';
-      if (email.isEmpty) {
-        for (final p in user.providerData) {
-          if ((p.email ?? '').isNotEmpty) {
-            email = p.email!;
-            break;
-          }
-        }
-        if (email.isEmpty && cred.additionalUserInfo?.profile is Map) {
-          final map = cred.additionalUserInfo!.profile! as Map;
-          final maybe = map['email'];
-          if (maybe is String && maybe.isNotEmpty) email = maybe;
-        }
-        if (email.isEmpty) email = '${user.uid}@users.noreply.github';
-      }
-
-      await _mergeUserDoc(uid: user.uid, data: {
-        "Email": email,
-        "fullName": user.displayName ?? "",
-        "photoURL": user.photoURL ?? "",
-        "provider": "github",
-        "createdAt": FieldValue.serverTimestamp(),
-        "uid": user.uid,
-      });
-
-      _persistUserPrefs(user, email: email, fullName: user.displayName ?? "");
-      _gotoDashboard();
-    } on FirebaseAuthException catch (e) {
-      if (kDebugMode) print(e);
-      Get.snackbar("GitHub", "Firebase error: ${e.code}",
-          snackPosition: SnackPosition.BOTTOM,
-          colorText: const Color(0xffDA1414));
-    } catch (e) {
-      if (kDebugMode) print(e);
-      Get.snackbar("GitHub", "Unexpected: $e",
-          snackPosition: SnackPosition.BOTTOM,
-          colorText: const Color(0xffDA1414));
-    } finally {
-      loading.value = false;
-    }
-  }
-
-  // ===== Facebook (placeholder pour ne pas casser la build) =====
-  Future<void> faceBookSignIn() async {
-    Get.snackbar("Facebook", "Facebook Sign-In not implemented yet",
+    _snack("GitHub", "GitHub Sign-In not configured for mobile yet",
         snackPosition: SnackPosition.BOTTOM,
         colorText: const Color(0xffDA1414));
   }
@@ -417,3 +305,4 @@ class SignInScreenController extends GetxController {
     super.onClose();
   }
 }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            

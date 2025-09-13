@@ -1,8 +1,8 @@
 plugins {
     id("com.android.application")
-    id("kotlin-android")
+    id("org.jetbrains.kotlin.android")      //  id moderne
     id("dev.flutter.flutter-gradle-plugin")
-    id("com.google.gms.google-services")
+    id("com.google.gms.google-services")    //  applique le plugin (version définie au root)
 }
 
 android {
@@ -11,7 +11,7 @@ android {
     ndkVersion = "27.0.12077973"
 
     defaultConfig {
-        applicationId = "com.example.timeless"        
+        applicationId = "com.example.timeless"
         minSdk = 23
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
@@ -43,13 +43,18 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 
-    // ✅ Firebase (BoM gère les versions)
-    implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
+    //  Firebase BoM: gère les versions de tous les modules Firebase
+    implementation(platform("com.google.firebase:firebase-bom:32.8.1"))
+
+    //  Modules Firebase utilisés par l'app
     implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-storage")
+    implementation("com.google.firebase:firebase-messaging")
 
-    // ✅ Google Sign-In (utile pour google_sign_in)
-    implementation("com.google.android.gms:play-services-auth:21.2.0")
+    //  Google Sign-In (utilisé par le plugin google_sign_in)
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
 
-    // (optionnel mais pratique pour Custom Tabs OAuth)
+    // (Optionnel) Custom Tabs pour OAuth GitHub/Google via navigateur
     implementation("androidx.browser:browser:1.8.0")
 }

@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:timeless/api/api_country.dart';
 import 'package:timeless/screen/introducation_screen/introducation_screen.dart' as intro;
+import 'package:timeless/dev/debug_screen.dart';
 import 'package:timeless/screen/splashScreen/splash_controller.dart';
 import 'package:timeless/service/pref_services.dart';
 import 'package:timeless/utils/asset_res.dart';
@@ -21,6 +22,9 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   final SplashController controller = Get.put(SplashController());
+  int _debugTapCount = 0;
+  bool _debugMode = false;
+  Timer? _navigationTimer;
 
   @override
   void initState() {
@@ -37,17 +41,25 @@ class _SplashScreenState extends State<SplashScreen> {
       await _loadCountryData();
     }
 
-    // Vers l’intro après 3 secondes
-    Timer(const Duration(seconds: 3), () {
-      Get.offAll(() => const intro.IntroductionScreen());
+    // Vers l'intro après 3 secondes (sauf si debug mode)
+    _navigationTimer = Timer(const Duration(seconds: 3), () {
+      if (!_debugMode) {
+        Get.offAll(() => const intro.IntroductionScreen());
+      }
     });
   }
 
-  /// Pré-charge l’image pour éviter le flash blanc
+  /// Pré-charge l'image pour éviter le flash blanc
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     precacheImage(const AssetImage(AssetRes.splashScreenBack), context);
+  }
+
+  @override
+  void dispose() {
+    _navigationTimer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -120,23 +132,39 @@ class _SplashScreenState extends State<SplashScreen> {
 
                   const SizedBox(width: 12),
 
-                  // Bouton loupe
-                  Container(
-                    height: 56,
-                    width: 56,
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.92),
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.18),
-                          blurRadius: 12,
-                          offset: const Offset(0, 6),
-                        ),
-                      ],
+                  // Bouton loupe (secret debug - triple tap)
+                  GestureDetector(
+                    onTap: () {
+                      _debugTapCount++;
+                      if (_debugTapCount >= 3) {
+                        if (kDebugMode) {
+                          _debugMode = true;
+                          _navigationTimer?.cancel();
+                          Get.to(() => const DebugScreen());
+                        }
+                        _debugTapCount = 0;
+                      }
+                    },
+                    child: Container(
+                      height: 56,
+                      width: 56,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.92),
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.18),
+                            blurRadius: 12,
+                            offset: const Offset(0, 6),
+                          ),
+                        ],
+                      ),
+                      child: const Icon(
+                        kDebugMode ? Icons.bug_report : Icons.search, 
+                        size: 28, 
+                        color: Colors.black,
+                      ),
                     ),
-                    child:
-                        const Icon(Icons.search, size: 28, color: Colors.black),
                   ),
                 ],
               ),
