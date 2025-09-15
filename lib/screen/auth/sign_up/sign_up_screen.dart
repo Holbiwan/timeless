@@ -1,110 +1,328 @@
 // lib/screen/auth/sign_up/sign_up_screen.dart
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+import 'package:timeless/common/widgets/common_loader.dart';
+import 'package:timeless/common/widgets/common_text_field.dart';
+import 'package:timeless/utils/asset_res.dart';
+import 'package:timeless/utils/color_res.dart';
+import 'package:timeless/utils/string.dart';
+
 import 'package:timeless/screen/auth/sign_up/sign_up_controller.dart';
 
-class SignUpScreen extends StatelessWidget {
-  SignUpScreen({super.key});
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
 
+  @override
+  State<SignUpScreen> createState() => _SignUpScreenState();
+}
+
+class _SignUpScreenState extends State<SignUpScreen> {
   final SignUpController ctrl = Get.put(SignUpController());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Sign Up')),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
+      backgroundColor: ColorRes.white,
+      appBar: AppBar(
+        title: Text('Create account', style: GoogleFonts.poppins()),
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+      ),
+      body: SafeArea(
         child: Obx(() {
           final isLoading = ctrl.loading.value;
-          return SingleChildScrollView(
-            child: Column(
-              children: [
-                TextField(
-                  controller: ctrl.firstnameController,
-                  textInputAction: TextInputAction.next,
-                  decoration: const InputDecoration(labelText: 'First name'),
-                  onChanged: (_) => ctrl.firstNameValidation(),
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: ctrl.lastnameController,
-                  textInputAction: TextInputAction.next,
-                  decoration: const InputDecoration(labelText: 'Last name'),
-                  onChanged: (_) => ctrl.lastNameValidation(),
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: ctrl.emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  textInputAction: TextInputAction.next,
-                  decoration: const InputDecoration(labelText: 'Email'),
-                  onChanged: (_) => ctrl.emailValidation(),
-                ),
-                const SizedBox(height: 12),
 
-                // Password avec oeil + copier
-                GetBuilder<SignUpController>(
-                  id: 'showPassword',
-                  builder: (_) {
-                    return TextField(
-                      controller: ctrl.passwordController,
-                      obscureText: ctrl.show,
-                      textInputAction: TextInputAction.done,
-                      decoration: InputDecoration(
-                        labelText: 'Password',
-                        suffixIcon: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              tooltip: ctrl.show ? 'Show' : 'Hide',
-                              icon: Icon(
-                                ctrl.show
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
-                              ),
-                              onPressed: ctrl.chang,
-                            ),
-                            IconButton(
-                              tooltip: 'Copy',
-                              icon: const Icon(Icons.copy),
-                              onPressed: () {
-                                Clipboard.setData(
-                                  ClipboardData(
-                                      text: ctrl.passwordController.text),
-                                );
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text('Password copied')),
-                                );
-                              },
-                            ),
-                          ],
+          return Stack(
+            children: [
+              SingleChildScrollView(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Logo
+                    Center(
+                      child: Container(
+                        height: 80,
+                        width: 80,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: ColorRes.logoColor,
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: const Image(image: AssetImage(AssetRes.logo)),
+                      ),
+                    ),
+                    const SizedBox(height: 18),
+
+                    Center(
+                      child: Text(
+                        'Create your account',
+                        style: GoogleFonts.poppins(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: ColorRes.black,
                         ),
                       ),
-                      onChanged: (_) => ctrl.passwordValidation(),
-                    );
-                  },
-                ),
+                    ),
 
-                const SizedBox(height: 24),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: isLoading ? null : () => ctrl.onSignUpBtnTap(),
-                    child: isLoading
-                        ? const SizedBox(
-                            height: 18,
-                            width: 18,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : const Text('Create account'),
-                  ),
+                    const SizedBox(height: 28),
+
+                    // ===== First name =====
+                    _label('First name'),
+                    GetBuilder<SignUpController>(
+                      id: "showFirst",
+                      builder: (_) => _box(
+                        child: commonTextFormField(
+                          controller: ctrl.firstNameCtrl,
+                          onChanged: ctrl.onChanged,
+                          textDecoration: _decoration(hint: 'First name'),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+
+                    // ===== Last name =====
+                    _label('Last name'),
+                    GetBuilder<SignUpController>(
+                      id: "showLast",
+                      builder: (_) => _box(
+                        child: commonTextFormField(
+                          controller: ctrl.lastNameCtrl,
+                          onChanged: ctrl.onChanged,
+                          textDecoration: _decoration(hint: 'Last name'),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+
+                    // ===== Email =====
+                    _label('${Strings.email} *'),
+                    GetBuilder<SignUpController>(
+                      id: "showEmail",
+                      builder: (_) => Column(
+                        children: [
+                          _box(
+                            child: commonTextFormField(
+                              controller: ctrl.emailCtrl,
+                              onChanged: (_) => ctrl.emailValidation(),
+                              textDecoration: _decoration(
+                                hint: 'Email',
+                                suffix: IconButton(
+                                  tooltip: 'Copy email',
+                                  onPressed: () async {
+                                    await Clipboard.setData(
+                                      ClipboardData(text: ctrl.emailCtrl.text),
+                                    );
+                                    Get.snackbar(
+                                        'Copied', 'Email copied to clipboard',
+                                        snackPosition: SnackPosition.BOTTOM);
+                                  },
+                                  icon: Icon(Icons.copy,
+                                      color: Colors.black.withOpacity(0.25)),
+                                ),
+                              ),
+                            ),
+                          ),
+                          if (ctrl.emailError.isNotEmpty)
+                            _errorPill(ctrl.emailError),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 14),
+
+                    // ===== Password =====
+                    _label('${Strings.password} *'),
+                    GetBuilder<SignUpController>(
+                      id: "showPassword",
+                      builder: (_) => Column(
+                        children: [
+                          _box(
+                            child: commonTextFormField(
+                              controller: ctrl.passwordCtrl,
+                              obscureText: ctrl.showPassword,
+                              onChanged: (_) => ctrl.passwordValidation(),
+                              textDecoration: _decoration(
+                                hint: 'Password (min 8 chars)',
+                                suffix: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                      tooltip: 'Copy password',
+                                      onPressed: () async {
+                                        await Clipboard.setData(
+                                          ClipboardData(
+                                              text: ctrl.passwordCtrl.text),
+                                        );
+                                        Get.snackbar('Copied',
+                                            'Password copied to clipboard',
+                                            snackPosition:
+                                                SnackPosition.BOTTOM);
+                                      },
+                                      icon: Icon(Icons.copy,
+                                          color:
+                                              Colors.black.withOpacity(0.25)),
+                                    ),
+                                    IconButton(
+                                      tooltip:
+                                          ctrl.showPassword ? 'Show' : 'Hide',
+                                      onPressed: isLoading
+                                          ? null
+                                          : ctrl.togglePassword,
+                                      icon: Icon(
+                                        ctrl.showPassword
+                                            ? Icons.visibility_off
+                                            : Icons.visibility,
+                                        color: Colors.black.withOpacity(0.25),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          if (ctrl.pwdError.isNotEmpty)
+                            _errorPill(ctrl.pwdError),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    // ===== Create account button =====
+                    GetBuilder<SignUpController>(
+                      id: "colorChange",
+                      builder: (_) => InkWell(
+                        onTap: isLoading ? null : ctrl.onSignUpTap,
+                        child: Container(
+                          height: 50,
+                          width: double.infinity,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            gradient: const LinearGradient(
+                              colors: [
+                                ColorRes.gradientColor,
+                                ColorRes.containerColor
+                              ],
+                            ),
+                          ),
+                          child: Text(
+                            'Create account',
+                            style: GoogleFonts.poppins(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
+                              color: ColorRes.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 28),
+                  ],
                 ),
-              ],
-            ),
+              ),
+
+              // Loader
+              isLoading ? const CommonLoader() : const SizedBox(),
+            ],
           );
         }),
+      ),
+    );
+  }
+
+  // ---------- UI helpers ----------
+  Widget _label(String text) => Padding(
+        padding: const EdgeInsets.only(left: 4, bottom: 6),
+        child: Text(
+          text,
+          style: GoogleFonts.poppins(
+            fontWeight: FontWeight.w500,
+            fontSize: 14,
+            color: Colors.black.withOpacity(0.6),
+          ),
+        ),
+      );
+
+  BoxDecoration _shadowBox() => BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            offset: const Offset(0, 0),
+            color: const Color(0xFF8C8C8C).withOpacity(0.15),
+            spreadRadius: -8,
+            blurRadius: 20,
+          ),
+        ],
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+      );
+
+  Widget _box({required Widget child}) => Container(
+        decoration: _shadowBox(),
+        child: child,
+      );
+
+  InputDecoration _decoration({required String hint, Widget? suffix}) {
+    return InputDecoration(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+      hintText: hint,
+      filled: true,
+      fillColor: Colors.transparent,
+      suffixIcon: suffix,
+      hintStyle: GoogleFonts.poppins(
+        fontSize: 15,
+        fontWeight: FontWeight.w500,
+        color: Colors.black.withOpacity(0.15),
+      ),
+      border: _enableBorder(),
+      focusedBorder: _enableBorder(),
+      enabledBorder: _enableBorder(),
+      disabledBorder: _enableBorder(),
+      errorBorder: _errorBorder(),
+      focusedErrorBorder: _errorBorder(),
+    );
+  }
+
+  OutlineInputBorder _enableBorder() => OutlineInputBorder(
+        borderSide: const BorderSide(color: ColorRes.containerColor),
+        borderRadius: BorderRadius.circular(12),
+      );
+
+  OutlineInputBorder _errorBorder() => OutlineInputBorder(
+        borderSide: const BorderSide(color: ColorRes.starColor),
+        borderRadius: BorderRadius.circular(12),
+      );
+
+  Widget _errorPill(String message) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      width: double.infinity,
+      height: 28,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(50),
+        color: const Color(0xFFFFE6E6), // ColorRes.invalidColor si dispo
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Row(
+        children: [
+          const Icon(Icons.error_outline, size: 14, color: Color(0xFFDA1414)),
+          const SizedBox(width: 10),
+          Text(
+            message,
+            style: GoogleFonts.poppins(
+              fontWeight: FontWeight.w400,
+              fontSize: 9,
+              color: const Color(0xFFDA1414),
+            ),
+          ),
+        ],
       ),
     );
   }

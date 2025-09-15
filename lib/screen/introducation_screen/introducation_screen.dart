@@ -54,20 +54,9 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
   }
 
   void _goToApp() {
-    final String token = PrefService.getString(PrefKeys.userId);
-    final String rol = PrefService.getString(PrefKeys.rol);
-    final bool company = PrefService.getBool(PrefKeys.company);
-
-    final DashBoardController dash = Get.put(DashBoardController());
-    dash.currentTab = 0;
-
-    Get.off(() => token.isEmpty
-        ? DashBoardScreen()
-        : rol == "User"
-            ? DashBoardScreen()
-            : company
-                ? ManagerDashBoardScreen()
-                : const OrganizationProfileScreen());
+    // Redirection directe vers la page de connexion pour démo propre
+    debugPrint('[INTRO] Get Started - Going to Sign In');
+    Get.off(() => const SigninScreenU());
   }
 
   void _goToWelcome() {

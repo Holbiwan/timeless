@@ -8,6 +8,7 @@ import 'firebase_options.dart';
 
 // ===== Screens (User) =====
 import 'package:timeless/screen/splashScreen/splash_screen.dart';
+// Make sure the SplashScreen class exists in splash_screen.dart and is exported as SplashScreen
 import 'package:timeless/screen/first_page/first_screen.dart';
 import 'package:timeless/screen/new_home_page/new_home_page_screen.dart';
 import 'package:timeless/screen/notification_screen/notification_screen.dart' as UserNotification;
@@ -104,8 +105,7 @@ class MyApp extends StatelessWidget {
       ),
 
       // Pas de const ici
-      // ignore: prefer_const_constructors
-      home: SplashScreen(),
+      home: FirstScreen(),
 
       initialRoute: "/",
       getPages: [

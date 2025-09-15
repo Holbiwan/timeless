@@ -65,8 +65,7 @@ class DashBoardScreen extends StatelessWidget {
           },
         ),
 
-        // ⬇️ FAB de test (visible uniquement en mode debug via DevFab)
-        floatingActionButton: const DevFab(),
+        // FAB supprimé pour démo propre
 
         bottomNavigationBar: GetBuilder<DashBoardController>(
           id: "bottom_bar",

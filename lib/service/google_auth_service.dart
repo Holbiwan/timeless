@@ -8,11 +8,11 @@ class GoogleAuthService {
   static final FirebaseAuth _auth = FirebaseAuth.instance;
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   
-  // Configuration Google Sign-In avec WebClientId
+  // Configuration Google Sign-In avec le vrai Web Client ID  
   static final GoogleSignIn _googleSignIn = GoogleSignIn(
     scopes: ['email', 'profile'],
-    // Web client ID depuis firebase_options.dart
-    serverClientId: '266056580802-a2t9a90bf3776on3nhlapvhl37e2dcsk.apps.googleusercontent.com',
+    // Web client ID depuis Firebase Console (pour OAuth)
+    serverClientId: '266056580802-s1n7ha6hvuqoiqsqqri67pprmpg10p4a.apps.googleusercontent.com',
   );
 
   /// Méthode principale pour Google Sign-In
