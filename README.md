@@ -10,7 +10,7 @@ Career Companion
 
 
 <h1 align="center"></h1>
-<p align="center"><em>Digital job search for Europe — find, apply, and grow.</em></p>
+<p align="center"><em>Digital job search — Find, Apply & Grow.</em></p>
 
 <p align="center">
   <a href="https://flutter.dev"><img alt="Flutter" src="https://img.shields.io/badge/Flutter-3.x-02569B?logo=flutter&logoColor=white"></a>
