@@ -1,5 +1,5 @@
 // lib/screen/auth/sign_in_screen/sign_in_screen.dart
-import 'package:flutter/foundation.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,13 +11,14 @@ import 'package:timeless/common/widgets/common_text_field.dart';
 import 'package:timeless/screen/auth/forgot_password_new/forgot_password_new_screen.dart';
 import 'package:timeless/screen/auth/sign_in_screen/sign_in_controller.dart';
 import 'package:timeless/screen/auth/sign_up/sign_up_screen.dart';
-import 'package:timeless/dev/debug_screen.dart';
 
 import 'package:timeless/service/pref_services.dart';
 import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/utils/string.dart';
+import 'package:timeless/service/google_auth_service.dart';
+import 'package:timeless/screen/dashboard/dashboard_screen.dart';
 
 class SigninScreenU extends StatefulWidget {
   const SigninScreenU({super.key});
@@ -36,22 +37,32 @@ class _SigninScreenUState extends State<SigninScreenU> {
     controller.getRememberEmailDataUser();
   }
 
-  void _showSnack(String title, String msg) {
-    Get.snackbar(title, msg, snackPosition: SnackPosition.BOTTOM);
-  }
-
-  Future<void> _tryGoogle() async {
-    if (controller.loading.value) return;
+  Future<void> _onGoogleSignInTap() async {
     try {
-      await controller.signInWithGoogle();
-    } catch (e) {
-      _showSnack('Google', '$e');
-    }
-  }
+      controller.loading.value = true;
+      final cred = await GoogleAuthService.signInWithGoogle();
+      final user = cred?.user;
 
-  Future<void> _tryGitHub() async {
-    if (controller.loading.value) return;
-    await controller.signInWithGitHub();
+      if (user == null) {
+        Get.snackbar("Google Sign-In", "Cancelled",
+            snackPosition: SnackPosition.BOTTOM);
+        return;
+      }
+
+      // Sauvegarde dans Prefs
+      PrefService.setValue(PrefKeys.userId, user.uid);
+      PrefService.setValue(PrefKeys.email, user.email ?? "");
+      PrefService.setValue(PrefKeys.fullName, user.displayName ?? "");
+      PrefService.setValue(PrefKeys.rol, "User");
+
+      // Navigation vers le Dashboard
+      Get.offAll(() => DashBoardScreen());
+    } catch (e) {
+      Get.snackbar("Google Sign-In", e.toString(),
+          snackPosition: SnackPosition.BOTTOM);
+    } finally {
+      controller.loading.value = false;
+    }
   }
 
   @override
@@ -75,7 +86,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                       backButton(),
                       const SizedBox(height: 16),
 
-                      // Logo / Titre
+                      // Logo
                       Center(
                         child: Container(
                           height: 80,
@@ -102,12 +113,10 @@ class _SigninScreenUState extends State<SigninScreenU> {
 
                       SizedBox(height: Get.height * 0.04),
 
-                      // Email
+                      // ===== Email =====
                       Padding(
                         padding: EdgeInsets.only(
-                          left: 4,
-                          bottom: Get.height * 0.008,
-                        ),
+                            left: 4, bottom: Get.height * 0.008),
                         child: Row(
                           children: [
                             Text(
@@ -118,13 +127,9 @@ class _SigninScreenUState extends State<SigninScreenU> {
                                 color: ColorRes.black.withOpacity(0.6),
                               ),
                             ),
-                            const Text(
-                              ' *',
-                              style: TextStyle(
-                                fontSize: 15,
-                                color: ColorRes.starColor,
-                              ),
-                            ),
+                            const Text(' *',
+                                style: TextStyle(
+                                    fontSize: 15, color: ColorRes.starColor)),
                           ],
                         ),
                       ),
@@ -151,9 +156,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                                 controller: controller.emailController,
                                 textDecoration: InputDecoration(
                                   contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: 15,
-                                    vertical: 12,
-                                  ),
+                                      horizontal: 15, vertical: 12),
                                   hintText: 'Email',
                                   filled: true,
                                   fillColor: Colors.transparent,
@@ -163,76 +166,38 @@ class _SigninScreenUState extends State<SigninScreenU> {
                                     color: ColorRes.black.withOpacity(0.15),
                                   ),
                                   border: _inputBorderFor(
-                                    controller.emailController.text,
-                                    controller.emailError,
-                                  ),
+                                      controller.emailController.text,
+                                      controller.emailError),
                                   focusedBorder: _inputBorderFor(
-                                    controller.emailController.text,
-                                    controller.emailError,
-                                  ),
+                                      controller.emailController.text,
+                                      controller.emailError),
                                   enabledBorder: _inputBorderFor(
-                                    controller.emailController.text,
-                                    controller.emailError,
-                                  ),
+                                      controller.emailController.text,
+                                      controller.emailError),
                                   disabledBorder: _inputBorderFor(
-                                    controller.emailController.text,
-                                    controller.emailError,
-                                  ),
+                                      controller.emailController.text,
+                                      controller.emailError),
                                   errorBorder: _inputBorderFor(
-                                    controller.emailController.text,
-                                    controller.emailError,
-                                  ),
+                                      controller.emailController.text,
+                                      controller.emailError),
                                   focusedErrorBorder: _inputBorderFor(
-                                    controller.emailController.text,
-                                    controller.emailError,
-                                  ),
+                                      controller.emailController.text,
+                                      controller.emailError),
                                 ),
                               ),
                             ),
                             if (controller.emailError.isNotEmpty)
-                              Container(
-                                margin: const EdgeInsets.symmetric(
-                                  vertical: 10,
-                                ),
-                                width: double.infinity,
-                                height: 28,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(50),
-                                  color: ColorRes.invalidColor,
-                                ),
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                ),
-                                child: Row(
-                                  children: [
-                                    const Image(
-                                      image: AssetImage(AssetRes.invalid),
-                                      height: 14,
-                                    ),
-                                    const SizedBox(width: 10),
-                                    Text(
-                                      controller.emailError,
-                                      style: GoogleFonts.poppins(
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 9,
-                                        color: ColorRes.starColor,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                              _errorPill(controller.emailError),
                           ],
                         ),
                       ),
 
                       SizedBox(height: Get.height * 0.02),
 
-                      // Password
+                      // ===== Password =====
                       Padding(
                         padding: EdgeInsets.only(
-                          left: 4,
-                          bottom: Get.height * 0.008,
-                        ),
+                            left: 4, bottom: Get.height * 0.008),
                         child: Row(
                           children: [
                             Text(
@@ -243,13 +208,9 @@ class _SigninScreenUState extends State<SigninScreenU> {
                                 color: ColorRes.black.withOpacity(0.6),
                               ),
                             ),
-                            const Text(
-                              ' *',
-                              style: TextStyle(
-                                fontSize: 15,
-                                color: ColorRes.starColor,
-                              ),
-                            ),
+                            const Text(' *',
+                                style: TextStyle(
+                                    fontSize: 15, color: ColorRes.starColor)),
                           ],
                         ),
                       ),
@@ -277,15 +238,14 @@ class _SigninScreenUState extends State<SigninScreenU> {
                                 obscureText: controller.show,
                                 textDecoration: InputDecoration(
                                   contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: 13,
-                                    vertical: 12,
-                                  ),
+                                      horizontal: 13, vertical: 12),
                                   hintText: 'Password',
                                   filled: true,
                                   fillColor: Colors.transparent,
                                   suffixIcon: IconButton(
-                                    onPressed:
-                                        isLoading ? null : controller.chang,
+                                    onPressed: isLoading
+                                        ? null
+                                        : controller.chang,
                                     icon: Icon(
                                       controller.show
                                           ? Icons.visibility_off
@@ -299,70 +259,35 @@ class _SigninScreenUState extends State<SigninScreenU> {
                                     color: ColorRes.black.withOpacity(0.15),
                                   ),
                                   border: _inputBorderFor(
-                                    controller.passwordController.text,
-                                    controller.pwdError,
-                                  ),
+                                      controller.passwordController.text,
+                                      controller.pwdError),
                                   focusedBorder: _inputBorderFor(
-                                    controller.passwordController.text,
-                                    controller.pwdError,
-                                  ),
+                                      controller.passwordController.text,
+                                      controller.pwdError),
                                   enabledBorder: _inputBorderFor(
-                                    controller.passwordController.text,
-                                    controller.pwdError,
-                                  ),
+                                      controller.passwordController.text,
+                                      controller.pwdError),
                                   disabledBorder: _inputBorderFor(
-                                    controller.passwordController.text,
-                                    controller.pwdError,
-                                  ),
+                                      controller.passwordController.text,
+                                      controller.pwdError),
                                   errorBorder: _inputBorderFor(
-                                    controller.passwordController.text,
-                                    controller.pwdError,
-                                  ),
+                                      controller.passwordController.text,
+                                      controller.pwdError),
                                   focusedErrorBorder: _inputBorderFor(
-                                    controller.passwordController.text,
-                                    controller.pwdError,
-                                  ),
+                                      controller.passwordController.text,
+                                      controller.pwdError),
                                 ),
                               ),
                             ),
                             if (controller.pwdError.isNotEmpty)
-                              Container(
-                                width: double.infinity,
-                                height: 28,
-                                margin:
-                                    const EdgeInsets.symmetric(vertical: 10),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(50),
-                                  color: ColorRes.invalidColor,
-                                ),
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                ),
-                                child: Row(
-                                  children: [
-                                    const Image(
-                                      image: AssetImage(AssetRes.invalid),
-                                      height: 14,
-                                    ),
-                                    const SizedBox(width: 10),
-                                    Text(
-                                      controller.pwdError,
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 9,
-                                        fontWeight: FontWeight.w400,
-                                        color: ColorRes.starColor,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                              _errorPill(controller.pwdError),
                           ],
                         ),
                       ),
 
                       const SizedBox(height: 6),
 
-                      // Remember me
+                      // ===== Remember me =====
                       GetBuilder<SignInScreenController>(
                         id: "remember_me",
                         builder: (_) => InkWell(
@@ -370,21 +295,16 @@ class _SigninScreenUState extends State<SigninScreenU> {
                             controller.rememberMe = !controller.rememberMe;
                             if (controller.rememberMe) {
                               PrefService.setValue(
-                                PrefKeys.email,
+                                PrefKeys.emailRememberUser,
                                 controller.emailController.text,
                               );
                               PrefService.setValue(
-                                PrefKeys.password,
+                                PrefKeys.passwordRememberUser,
                                 controller.passwordController.text,
                               );
-                              PrefService.setValue(
-                                PrefKeys.rememberMe,
-                                controller.rememberMe,
-                              );
                             } else {
-                              PrefService.remove(PrefKeys.email);
-                              PrefService.remove(PrefKeys.password);
-                              PrefService.remove(PrefKeys.rememberMe);
+                              PrefService.remove(PrefKeys.emailRememberUser);
+                              PrefService.remove(PrefKeys.passwordRememberUser);
                             }
                             controller.update(["remember_me"]);
                           },
@@ -418,11 +338,12 @@ class _SigninScreenUState extends State<SigninScreenU> {
 
                       SizedBox(height: Get.height * 0.028),
 
-                      // Sign in (email/password)
+                      // ===== Sign in (email/password) =====
                       GetBuilder<SignInScreenController>(
                         id: "colorChange",
                         builder: (_) => InkWell(
-                          onTap: isLoading ? null : controller.onLoginBtnTap,
+                          onTap:
+                              isLoading ? null : controller.onLoginBtnTap,
                           child: Container(
                             height: 50,
                             width: MediaQuery.of(context).size.width,
@@ -450,17 +371,14 @@ class _SigninScreenUState extends State<SigninScreenU> {
 
                       SizedBox(height: Get.height * 0.02),
 
-                      // Forgot password
+                      // ===== Forgot password =====
                       Center(
                         child: InkWell(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => ForgotPasswordScreenU(),
-                              ),
-                            );
-                          },
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => ForgotPasswordScreenU()),
+                          ),
                           child: Text(
                             Strings.forgotThePassword,
                             style: GoogleFonts.poppins(
@@ -474,7 +392,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
 
                       SizedBox(height: Get.height * 0.03),
 
-                      // Or continue
+                      // ===== Or continue =====
                       Center(
                         child: Text(
                           Strings.orContinueWith,
@@ -488,7 +406,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
 
                       SizedBox(height: Get.height * 0.028),
 
-                      // ---------- Social buttons ----------
+                      // ===== Social buttons =====
                       Column(
                         children: [
                           // Google
@@ -496,9 +414,11 @@ class _SigninScreenUState extends State<SigninScreenU> {
                             width: double.infinity,
                             height: 48,
                             child: OutlinedButton.icon(
-                              onPressed: _tryGoogle,
+                              onPressed:
+                                  isLoading ? null : _onGoogleSignInTap,
                               icon: const Icon(Icons.login),
-                              label: const Text('Continue with Google'),
+                              label:
+                                  const Text('Continue with Google'),
                               style: OutlinedButton.styleFrom(
                                 side: const BorderSide(width: 1),
                               ),
@@ -506,14 +426,17 @@ class _SigninScreenUState extends State<SigninScreenU> {
                           ),
                           const SizedBox(height: 12),
 
-                          // GitHub (non prioritaire)
+                          // GitHub (optionnel, non modifié)
                           SizedBox(
                             width: double.infinity,
                             height: 48,
                             child: OutlinedButton.icon(
-                              onPressed: _tryGitHub,
+                              onPressed: isLoading
+                                  ? null
+                                  : controller.signInWithGitHub,
                               icon: const Icon(Icons.code),
-                              label: const Text('Continue with GitHub'),
+                              label:
+                                  const Text('Continue with GitHub'),
                               style: OutlinedButton.styleFrom(
                                 side: const BorderSide(width: 1),
                               ),
@@ -524,7 +447,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
 
                       SizedBox(height: Get.height * 0.03),
 
-                      // Sign up link
+                      // ===== Sign up link =====
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -542,8 +465,8 @@ class _SigninScreenUState extends State<SigninScreenU> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) => SignUpScreen(),
-                                ),
+                                    builder: (_) =>
+                                        const SignUpScreen()),
                               ).then((_) {
                                 controller.emailController.clear();
                                 controller.passwordController.clear();
@@ -561,22 +484,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                         ],
                       ),
 
-                      const SizedBox(height: 20),
-
-                      // Debug button (only in debug mode)
-                      if (kDebugMode)
-                        Center(
-                          child: TextButton(
-                            onPressed: () => Get.to(() => const DebugScreen()),
-                            child: const Text(
-                              '🛠️ DEBUG MODE',
-                              style: TextStyle(
-                                color: Colors.red,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
+                      const SizedBox(height: 24),
                     ],
                   ),
                 ),
@@ -606,4 +514,35 @@ class _SigninScreenUState extends State<SigninScreenU> {
         borderSide: const BorderSide(color: ColorRes.starColor),
         borderRadius: BorderRadius.circular(12),
       );
+
+  Widget _errorPill(String message) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      width: double.infinity,
+      height: 28,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(50),
+        color: ColorRes.invalidColor,
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Row(
+        children: [
+          const Image(image: AssetImage(AssetRes.invalid), height: 14),
+          const SizedBox(width: 10),
+          Text(
+            message,
+            style: GoogleFonts.poppins(
+              fontWeight: FontWeight.w400,
+              fontSize: 9,
+              color: ColorRes.starColor,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+extension on User? {
+   get user => null;
 }

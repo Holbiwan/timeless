@@ -78,7 +78,7 @@ class FirstScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (con) => SignUpScreen(),
+                      builder: (con) => const SignUpScreen(),
                     ),
                   );
                 },

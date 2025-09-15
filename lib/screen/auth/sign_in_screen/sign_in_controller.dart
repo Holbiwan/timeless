@@ -7,11 +7,7 @@ import 'package:get/get.dart';
 
 import 'package:timeless/screen/dashboard/dashboard_screen.dart';
 import 'package:timeless/service/pref_services.dart';
-import 'package:timeless/service/google_auth_service.dart';
 import 'package:timeless/utils/pref_keys.dart';
-
-// ⬇️ pour connaître l'état "succès d'inscription" et étouffer les erreurs tardives
-import 'package:timeless/screen/manager_section/auth_manager/sign_up_new/sign_up_new_controller.dart';
 
 class SignInScreenController extends GetxController {
   // ===== State / Controllers =====
@@ -23,7 +19,7 @@ class SignInScreenController extends GetxController {
   final FirebaseAuth auth = FirebaseAuth.instance;
 
   bool rememberMe = false;
-  bool show = true; // true = caché
+  bool show = true; // affiche/masque le mot de passe
 
   // Erreurs UI
   String emailError = "";
@@ -36,6 +32,7 @@ class SignInScreenController extends GetxController {
     if (email.isNotEmpty) {
       emailController.text = email;
       passwordController.text = pwd;
+      update(["showEmail", "showPassword"]);
     }
   }
 
@@ -74,37 +71,6 @@ class SignInScreenController extends GetxController {
   }
 
   // ===== Helpers =====
-
-  // ⬇️ Supprime les snacks si un sign-up a déjà réussi (évite le "mauvais" popup après succès)
-  bool _suppressAuthErrors() {
-    try {
-      final c = Get.find<SignUpControllerM>();
-      return c.isAuthCompleted; // vrai si succès d'inscription verrouillé
-    } catch (_) {
-      return false;
-    }
-  }
-
-  void _snack(
-    String title,
-    String msg, {
-    Color? colorText,
-    Color? backgroundColor,
-    SnackPosition snackPosition = SnackPosition.BOTTOM,
-  }) {
-    if (_suppressAuthErrors()) {
-      if (kDebugMode) print('[Suppressed Snack] $title: $msg');
-      return;
-    }
-    Get.snackbar(
-      title,
-      msg,
-      snackPosition: snackPosition,
-      colorText: colorText,
-      backgroundColor: backgroundColor,
-    );
-  }
-
   void _persistUserPrefs(User user, {String? email, String? fullName}) {
     PrefService.setValue(PrefKeys.rol, "User");
     PrefService.setValue(PrefKeys.userId, user.uid);
@@ -124,9 +90,7 @@ class SignInScreenController extends GetxController {
         .set(data, SetOptions(merge: true));
   }
 
-  void _gotoDashboard() {
-    Get.offAll(() => DashBoardScreen());
-  }
+  void _gotoDashboard() => Get.offAll(() => DashBoardScreen());
 
   // ===== Email / Password =====
   Future<void> signInWithEmailAndPassword({
@@ -140,42 +104,44 @@ class SignInScreenController extends GetxController {
         email: email,
         password: password,
       );
+
       final user = credential.user;
-      if (user == null) {
-        _snack("Error", "Sign-in failed", colorText: const Color(0xffDA1414));
-        return;
+      if (user != null) {
+        _persistUserPrefs(user, email: email);
+
+        // Récupère quelques champs du profil si présent (facultatif)
+        final snap = await fireStore
+            .collection("Auth")
+            .doc("User")
+            .collection("register")
+            .doc(user.uid)
+            .get();
+
+        final m = snap.data() ?? {};
+        PrefService.setValue(
+            PrefKeys.fullName, (m["fullName"] ?? "") as String);
+        PrefService.setValue(
+            PrefKeys.phoneNumber, (m["Phone"] ?? "") as String);
+        PrefService.setValue(PrefKeys.city, (m["City"] ?? "") as String);
+        PrefService.setValue(PrefKeys.state, (m["State"] ?? "") as String);
+        PrefService.setValue(PrefKeys.country, (m["Country"] ?? "") as String);
+        PrefService.setValue(
+            PrefKeys.occupation, (m["Occupation"] ?? "") as String);
+
+        emailController.clear();
+        passwordController.clear();
+
+        _gotoDashboard();
       }
-
-      // Profil minimal si absent
-      final ref = fireStore
-          .collection("Auth")
-          .doc("User")
-          .collection("register")
-          .doc(user.uid);
-
-      final snap = await ref.get();
-      if (!snap.exists) {
-        await ref.set({
-          "Email": email,
-          "fullName": "",
-          "Phone": "",
-          "City": "",
-          "State": "",
-          "Country": "",
-          "Occupation": "",
-          "createdAt": FieldValue.serverTimestamp(),
-          "provider": "password",
-          "uid": user.uid,
-        });
-      }
-
-      _persistUserPrefs(user, email: email);
-      _gotoDashboard();
     } on FirebaseAuthException catch (e) {
-      _snack("Error", e.message ?? e.code, colorText: const Color(0xffDA1414));
+      Get.snackbar("Error", e.message ?? e.code,
+          snackPosition: SnackPosition.BOTTOM,
+          colorText: const Color(0xffDA1414));
     } catch (e) {
       if (kDebugMode) print(e);
-      _snack("Error", "Sign-in failed", colorText: const Color(0xffDA1414));
+      Get.snackbar("Error", "Sign-in failed",
+          snackPosition: SnackPosition.BOTTOM,
+          colorText: const Color(0xffDA1414));
     } finally {
       loading.value = false;
     }
@@ -196,6 +162,128 @@ class SignInScreenController extends GetxController {
     );
   }
 
+  // ===================================================================
+  // GOOGLE SIGN-IN via FirebaseAuth
+  // - Android/iOS : signInWithProvider(GoogleAuthProvider())
+  // - Web         : signInWithPopup(GoogleAuthProvider())
+  // ===================================================================
+  Future<void> signWithGoogle() async {
+    if (loading.value) return;
+    loading.value = true;
+    try {
+      UserCredential cred;
+      final provider = GoogleAuthProvider()
+        ..addScope('email')
+        ..addScope('profile')
+        ..setCustomParameters({'prompt': 'select_account'});
+
+      if (kIsWeb) {
+        cred = await auth.signInWithPopup(provider);
+      } else {
+        cred = await auth.signInWithProvider(provider);
+      }
+
+      final user = cred.user;
+      if (user == null) {
+        Get.snackbar("Google", "Sign-in cancelled",
+            snackPosition: SnackPosition.BOTTOM);
+        return;
+      }
+
+      await _mergeUserDoc(uid: user.uid, data: {
+        "Email": user.email ?? "",
+        "fullName": user.displayName ?? "",
+        "photoURL": user.photoURL ?? "",
+        "provider": "google",
+        "createdAt": FieldValue.serverTimestamp(),
+        "uid": user.uid,
+      });
+
+      _persistUserPrefs(user,
+          email: user.email ?? "", fullName: user.displayName ?? "");
+      _gotoDashboard();
+    } on FirebaseAuthException catch (e) {
+      if (kDebugMode) print("GoogleAuth error: ${e.code} ${e.message}");
+      Get.snackbar("Google", e.message ?? 'Firebase error: ${e.code}',
+          snackPosition: SnackPosition.BOTTOM,
+          colorText: const Color(0xffDA1414));
+    } catch (e) {
+      if (kDebugMode) print("GoogleAuth error: $e");
+      Get.snackbar("Google", "Unexpected error: $e",
+          snackPosition: SnackPosition.BOTTOM,
+          colorText: const Color(0xffDA1414));
+    } finally {
+      loading.value = false;
+    }
+  }
+
+  // ===== GitHub (optionnel) =====
+  Future<void> signInWithGitHub() async {
+    if (loading.value) return;
+    loading.value = true;
+    try {
+      final provider = GithubAuthProvider()
+        ..addScope('read:user')
+        ..addScope('user:email')
+        ..setCustomParameters({'allow_signup': 'false'});
+
+      UserCredential cred;
+      if (kIsWeb) {
+        cred = await auth.signInWithPopup(provider);
+      } else {
+        cred = await auth.signInWithProvider(provider);
+      }
+
+      final user = cred.user;
+      if (user == null) {
+        Get.snackbar("GitHub", "Sign-in cancelled",
+            snackPosition: SnackPosition.BOTTOM);
+        return;
+      }
+
+      // Récup email si masqué côté GitHub
+      String email = user.email ?? '';
+      if (email.isEmpty) {
+        for (final p in user.providerData) {
+          if ((p.email ?? '').isNotEmpty) {
+            email = p.email!;
+            break;
+          }
+        }
+        if (email.isEmpty && cred.additionalUserInfo?.profile is Map) {
+          final map = cred.additionalUserInfo!.profile! as Map;
+          final maybe = map['email'];
+          if (maybe is String && maybe.isNotEmpty) email = maybe;
+        }
+        if (email.isEmpty) email = '${user.uid}@users.noreply.github';
+      }
+
+      await _mergeUserDoc(uid: user.uid, data: {
+        "Email": email,
+        "fullName": user.displayName ?? "",
+        "photoURL": user.photoURL ?? "",
+        "provider": "github",
+        "createdAt": FieldValue.serverTimestamp(),
+        "uid": user.uid,
+      });
+
+      _persistUserPrefs(user, email: email, fullName: user.displayName ?? "");
+      _gotoDashboard();
+    } on FirebaseAuthException catch (e) {
+      if (kDebugMode) print("GitHubAuth error: ${e.code} ${e.message}");
+      Get.snackbar("GitHub", e.message ?? 'Firebase error: ${e.code}',
+          snackPosition: SnackPosition.BOTTOM,
+          colorText: const Color(0xffDA1414));
+    } catch (e) {
+      if (kDebugMode) print("GitHubAuth error: $e");
+      Get.snackbar("GitHub", "Unexpected error: $e",
+          snackPosition: SnackPosition.BOTTOM,
+          colorText: const Color(0xffDA1414));
+    } finally {
+      loading.value = false;
+    }
+  }
+
   // ===== UI helpers =====
   void chang() {
     show = !show;
@@ -208,94 +296,7 @@ class SignInScreenController extends GetxController {
     update(['remember_me']);
   }
 
-  void button() => update(['color']);
-
-  // ===============================
-  // GOOGLE SIGN-IN (Android/iOS + Web)
-  // ===============================
-  Future<void> signInWithGoogle() async {
-    if (loading.value) return;
-    loading.value = true;
-    try {
-      if (kDebugMode) print('Starting Google Sign-In...');
-
-      // Utiliser le service Google Auth
-      final user = await GoogleAuthService.signInWithGoogle();
-      if (user == null) {
-        if (kDebugMode) print('Google sign-in cancelled or failed');
-        _snack("Google", "Connexion annulée",
-            snackPosition: SnackPosition.BOTTOM,
-            colorText: const Color(0xffDA1414));
-        return;
-      }
-
-      if (kDebugMode) print('User signed in: ${user.email}');
-
-      // Sauvegarder dans Firestore (non bloquant pour l'UX)
-      try {
-        await GoogleAuthService.saveUserToFirestore(user);
-        if (kDebugMode) print('User data saved to Firestore');
-      } catch (firestoreError) {
-        if (kDebugMode) print('Firestore error: $firestoreError');
-        _snack("Info", "Connexion réussie mais sauvegarde partielle",
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.orange.shade100);
-      }
-
-      _persistUserPrefs(user,
-          email: user.email ?? "", fullName: user.displayName ?? "");
-
-      _snack("Succès", "Connexion Google réussie !",
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green.shade100,
-          colorText: Colors.green.shade800);
-
-      _gotoDashboard();
-    } on FirebaseAuthException catch (e) {
-      if (kDebugMode) {
-        print('FirebaseAuthException: ${e.code} - ${e.message}');
-      }
-      String errorMessage = "Erreur de connexion Google";
-      switch (e.code) {
-        case 'cancelled-popup-request':
-        case 'popup-closed-by-user':
-          errorMessage = "Connexion annulée";
-          break;
-        case 'network-request-failed':
-          errorMessage = "Erreur réseau - vérifiez votre connexion";
-          break;
-        case 'popup-blocked':
-          errorMessage = "Popup bloqué par le navigateur";
-          break;
-        case 'account-exists-with-different-credential':
-          errorMessage =
-              "Ce compte existe déjà avec un autre mode de connexion";
-          break;
-        case 'user-disabled':
-          errorMessage = "Ce compte a été désactivé";
-          break;
-        default:
-          errorMessage = e.message ?? "Erreur Firebase: ${e.code}";
-      }
-      _snack("Google", errorMessage,
-          snackPosition: SnackPosition.BOTTOM,
-          colorText: const Color(0xffDA1414));
-    } catch (e) {
-      if (kDebugMode) print('Google sign-in error: $e');
-      _snack("Google", "Erreur de connexion: $e",
-          snackPosition: SnackPosition.BOTTOM,
-          colorText: const Color(0xffDA1414));
-    } finally {
-      loading.value = false;
-    }
-  }
-
-  // ===== GitHub (non prioritaire démo) =====
-  Future<void> signInWithGitHub() async {
-    _snack("GitHub", "GitHub Sign-In not configured for mobile yet",
-        snackPosition: SnackPosition.BOTTOM,
-        colorText: const Color(0xffDA1414));
-  }
+  void button() => update(['colorChange']);
 
   // ===== Lifecycle =====
   @override
@@ -305,4 +306,3 @@ class SignInScreenController extends GetxController {
     super.onClose();
   }
 }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
