@@ -15,6 +15,10 @@ class SignInScreenController extends GetxController {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+  // Données de démo
+  static const String DEMO_EMAIL = "demo@timeless.com";
+  static const String DEMO_PASSWORD = "demo123";
+
   final FirebaseFirestore fireStore = FirebaseFirestore.instance;
   final FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -100,6 +104,12 @@ class SignInScreenController extends GetxController {
     if (loading.value) return;
     loading.value = true;
     try {
+      // Vérification utilisateur démo
+      if (email.trim() == DEMO_EMAIL && password.trim() == DEMO_PASSWORD) {
+        await _setupDemoUser();
+        return;
+      }
+
       final credential = await auth.signInWithEmailAndPassword(
         email: email,
         password: password,
@@ -217,22 +227,197 @@ class SignInScreenController extends GetxController {
     }
   }
 
+  // ===== Configuration utilisateur démo =====
+  Future<void> _setupDemoUser() async {
+    try {
+      // Configurer les préférences utilisateur démo
+      PrefService.setValue(PrefKeys.userId, "demo_user_12345");
+      PrefService.setValue(PrefKeys.email, DEMO_EMAIL);
+      PrefService.setValue(PrefKeys.fullName, "Demo User");
+      PrefService.setValue(PrefKeys.phoneNumber, "+33 6 12 34 56 78");
+      PrefService.setValue(PrefKeys.city, "Paris");
+      PrefService.setValue(PrefKeys.state, "Île-de-France");
+      PrefService.setValue(PrefKeys.country, "France");
+      PrefService.setValue(PrefKeys.occupation, "Flutter Developer");
+
+      // Créer les annonces de démo si elles n'existent pas
+      await _ensureDemoJobsExist();
+
+      // Créer un CV de démo pour l'utilisateur
+      await _createDemoCv();
+
+      Get.snackbar(
+        "Démo activée !",
+        "Connecté en tant que $DEMO_EMAIL",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 3),
+      );
+
+      _gotoDashboard();
+    } catch (e) {
+      if (kDebugMode) print("Erreur setup démo: $e");
+      Get.snackbar(
+        "Erreur démo",
+        "Impossible de configurer la démo: $e",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    } finally {
+      loading.value = false;
+    }
+  }
+
+  Future<void> _ensureDemoJobsExist() async {
+    try {
+      // Vérifier si des jobs existent déjà
+      final existingJobs = await fireStore.collection('allPost').limit(1).get();
+      
+      if (existingJobs.docs.isEmpty) {
+        // Créer les jobs de démo
+        await _createDemoJobsDirectly();
+      }
+    } catch (e) {
+      if (kDebugMode) print("Erreur vérification jobs: $e");
+    }
+  }
+
+  Future<void> _createDemoJobsDirectly() async {
+    final List<Map<String, dynamic>> demoJobs = [
+      {
+        'Position': 'Flutter Developer',
+        'CompanyName': 'TechFlow Solutions',
+        'location': 'Paris, France',
+        'type': 'CDI',
+        'salary': '45000',
+        'RequirementsList': [
+          '2+ years Flutter experience',
+          'Knowledge of Dart programming',
+          'Experience with Firebase',
+          'Understanding of REST APIs',
+          'Git version control'
+        ],
+        'BookMarkUserList': [],
+        'deviceToken': 'demo_token_flutter',
+        'postedAt': FieldValue.serverTimestamp(),
+      },
+      {
+        'Position': 'React Developer',
+        'CompanyName': 'WebCraft Agency',
+        'location': 'Lyon, France',
+        'type': 'CDI',
+        'salary': '42000',
+        'RequirementsList': [
+          '3+ years React experience',
+          'JavaScript/TypeScript proficiency',
+          'Redux or Context API',
+          'CSS/SCSS expertise',
+          'Agile methodology'
+        ],
+        'BookMarkUserList': [],
+        'deviceToken': 'demo_token_react',
+        'postedAt': FieldValue.serverTimestamp(),
+      },
+      {
+        'Position': 'UI/UX Designer',
+        'CompanyName': 'Design Studio Pro',
+        'location': 'Marseille, France',
+        'type': 'CDI',
+        'salary': '38000',
+        'RequirementsList': [
+          'Figma/Sketch proficiency',
+          'User research experience',
+          'Prototyping skills',
+          'Design system knowledge',
+          'Mobile-first design'
+        ],
+        'BookMarkUserList': [],
+        'deviceToken': 'demo_token_design',
+        'postedAt': FieldValue.serverTimestamp(),
+      },
+      {
+        'Position': 'Data Scientist',
+        'CompanyName': 'Analytics Labs',
+        'location': 'Remote',
+        'type': 'CDI',
+        'salary': '55000',
+        'RequirementsList': [
+          'Python/R programming',
+          'Machine Learning algorithms',
+          'SQL database skills',
+          'Statistics knowledge',
+          'Data visualization tools'
+        ],
+        'BookMarkUserList': [],
+        'deviceToken': 'demo_token_data',
+        'postedAt': FieldValue.serverTimestamp(),
+      },
+      {
+        'Position': 'Backend Developer',
+        'CompanyName': 'ServerTech Inc',
+        'location': 'Toulouse, France',
+        'type': 'CDI',
+        'salary': '48000',
+        'RequirementsList': [
+          'Node.js or Java expertise',
+          'Database design (SQL/NoSQL)',
+          'API development',
+          'Cloud platforms (AWS/GCP)',
+          'Microservices architecture'
+        ],
+        'BookMarkUserList': [],
+        'deviceToken': 'demo_token_backend',
+        'postedAt': FieldValue.serverTimestamp(),
+      },
+    ];
+
+    final batch = fireStore.batch();
+    final allPostCollection = fireStore.collection('allPost');
+
+    for (final job in demoJobs) {
+      final docRef = allPostCollection.doc();
+      batch.set(docRef, job);
+    }
+
+    await batch.commit();
+    if (kDebugMode) print('✅ ${demoJobs.length} jobs de démo créés');
+  }
+
+  Future<void> _createDemoCv() async {
+    try {
+      // Simuler un CV uploadé pour l'utilisateur démo
+      PrefService.setValue("demo_cv_url", "https://demo.timeless.com/cv/demo_user_cv.pdf");
+      if (kDebugMode) print("✅ CV de démo configuré");
+    } catch (e) {
+      if (kDebugMode) print("Erreur CV démo: $e");
+    }
+  }
+
   // ===== GitHub (optionnel) =====
   Future<void> signInWithGitHub() async {
     if (loading.value) return;
     loading.value = true;
     try {
+      // Sur Android, GitHub a des problèmes avec Custom Tabs
+      if (!kIsWeb) {
+        Get.snackbar(
+          "GitHub Sign-In", 
+          "GitHub n'est pas supporté sur Android pour cette version.\n"
+          "Utilise Google Sign-In ou Email/Password.",
+          snackPosition: SnackPosition.BOTTOM,
+          duration: const Duration(seconds: 4),
+        );
+        return;
+      }
+
       final provider = GithubAuthProvider()
         ..addScope('read:user')
         ..addScope('user:email')
         ..setCustomParameters({'allow_signup': 'false'});
 
-      UserCredential cred;
-      if (kIsWeb) {
-        cred = await auth.signInWithPopup(provider);
-      } else {
-        cred = await auth.signInWithProvider(provider);
-      }
+      UserCredential cred = await auth.signInWithPopup(provider);
 
       final user = cred.user;
       if (user == null) {

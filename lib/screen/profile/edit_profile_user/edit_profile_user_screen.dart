@@ -28,7 +28,18 @@ class EditProfileUserScreen extends StatelessWidget {
         backgroundColor: ColorRes.containerColor,
       ),
       body: Obx(
-        () => SingleChildScrollView(
+        () => controller.isLoading.value
+            ? const Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(),
+                    SizedBox(height: 16),
+                    Text('Sauvegarde en cours...'),
+                  ],
+                ),
+              )
+            : SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
@@ -59,22 +70,51 @@ class EditProfileUserScreen extends StatelessWidget {
               ),
               const SizedBox(height: 24),
 
-              // -------- Form minimal (exemple) --------
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text('Display name', style: appTextStyle(fontSize: 14)),
+              // -------- Formulaire complet --------
+              _buildFormField(
+                label: 'Nom complet',
+                controller: controller.fullNameController,
+                hint: 'Votre nom complet',
               ),
-              const SizedBox(height: 8),
-              commonTextFormField(
-                textDecoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'Your name',
-                ),
-                controller: TextEditingController(), // brancher ton vrai controller si besoin
+              
+              _buildFormField(
+                label: 'Email',
+                controller: controller.emailController,
+                hint: 'votre.email@example.com',
+                keyboardType: TextInputType.emailAddress,
               ),
-              const SizedBox(height: 12),
-              // Exemple erreur
-              // commonErrorBox("Please enter a valid name"),
+              
+              _buildFormField(
+                label: 'Téléphone',
+                controller: controller.phoneController,
+                hint: '+33 6 12 34 56 78',
+                keyboardType: TextInputType.phone,
+              ),
+              
+              _buildFormField(
+                label: 'Ville',
+                controller: controller.cityController,
+                hint: 'Paris',
+              ),
+              
+              _buildFormField(
+                label: 'Pays',
+                controller: controller.countryController,
+                hint: 'France',
+              ),
+              
+              _buildFormField(
+                label: 'Profession',
+                controller: controller.occupationController,
+                hint: 'Développeur, Designer, etc.',
+              ),
+              
+              _buildFormField(
+                label: 'À propos',
+                controller: controller.bioController,
+                hint: 'Parlez-nous de vous...',
+                maxLines: 3,
+              ),
 
               const SizedBox(height: 24),
 
@@ -102,6 +142,50 @@ class EditProfileUserScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildFormField({
+    required String label,
+    required TextEditingController controller,
+    required String hint,
+    TextInputType? keyboardType,
+    int maxLines = 1,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: appTextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+        const SizedBox(height: 8),
+        maxLines > 1 
+        ? Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: ColorRes.borderColor),
+            ),
+            child: TextField(
+              controller: controller,
+              keyboardType: keyboardType ?? TextInputType.text,
+              maxLines: maxLines,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                hintText: hint,
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+              ),
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          )
+        : commonTextFormField(
+            controller: controller,
+            textDecoration: InputDecoration(
+              border: const OutlineInputBorder(),
+              hintText: hint,
+              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            ),
+            type: keyboardType,
+          ),
+        const SizedBox(height: 16),
+      ],
     );
   }
 

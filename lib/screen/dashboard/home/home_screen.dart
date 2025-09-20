@@ -38,8 +38,7 @@ class HomeScreen extends StatelessWidget {
         children: [
           const SizedBox(height: 60),
           homeAppBar(),
-          SizedBox(
-            height: Get.height - 200,
+          Expanded(
             child: SingleChildScrollView(
               child: Column(
                 children: [

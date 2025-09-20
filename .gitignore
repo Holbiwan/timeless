@@ -90,6 +90,16 @@ accessToken_token.code-search
 *token*.*
 *.code-search
 
+
+
+
+# Ignore les fichiers de démonstration
+demo_*.dart
+demo_*.pdf
+demo_*.flow.dart
+demo_*.jobs.dart
+DEMO_GUIDE.md
+
 # -------- Keep tracked (DO NOT ignore) --------
 # pubspec.yaml and pubspec.lock should be tracked for apps to ensure reproducible builds.
 # /assets/ (except if it contains secrets, then create a separate /assets_private/ and ignore that)

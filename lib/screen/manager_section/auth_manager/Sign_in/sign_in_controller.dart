@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:timeless/screen/manager_section/dashboard/manager_dashboard_screen.dart';
@@ -18,23 +17,20 @@ class SignInScreenControllerM extends GetxController {
   bool isManager = false;
   String emailError = "";
   String pwdError = "";
+  
   @override
-  // ignore: unnecessary_overrides
   void onInit() {
     super.onInit();
   }
 
   getRememberEmailDataManger() {
     if (PrefService.getString(PrefKeys.emailRememberManager) != "") {
-      emailController.text =
-          PrefService.getString(PrefKeys.emailRememberManager);
-      passwordController.text =
-          PrefService.getString(PrefKeys.passwordRememberManager);
+      emailController.text = PrefService.getString(PrefKeys.emailRememberManager);
+      passwordController.text = PrefService.getString(PrefKeys.passwordRememberManager);
     }
   }
 
-  void signInWithEmailAndPassword(
-      {required String email, required String password}) async {
+  void signInWithEmailAndPassword({required String email, required String password}) async {
     loading.value = true;
 
     await fireStore
@@ -44,9 +40,8 @@ class SignInScreenControllerM extends GetxController {
         .get()
         .then((value) async {
       if (value.docs.length.isEqual(0)) {
-        loading.value = true;
-        Get.snackbar(
-            "Error", "Please create account,\n your email is not registered",
+        loading.value = false;
+        Get.snackbar("Error", "Please create account,\n your email is not registered",
             colorText: const Color(0xffDA1414));
       } else {
         for (int i = 0; i < value.docs.length; i++) {
@@ -57,8 +52,7 @@ class SignInScreenControllerM extends GetxController {
           if (value.docs[i]["Email"] == email && value.docs[i]["Email"] != "") {
             isManager = true;
             PrefService.setValue(PrefKeys.rol, "Manager");
-            PrefService.setValue(
-                PrefKeys.totalPost, value.docs[i]["TotalPost"]);
+            PrefService.setValue(PrefKeys.totalPost, value.docs[i]["TotalPost"]);
             PrefService.setValue(PrefKeys.company, value.docs[i]["company"]);
             PrefService.setValue(PrefKeys.userId, value.docs[i].id);
 
@@ -71,8 +65,7 @@ class SignInScreenControllerM extends GetxController {
                 .get()
                 .then((value2) {
               for (int j = 0; j < value2.docs.length; j++) {
-                PrefService.setValue(
-                    PrefKeys.companyName, value2.docs[j]['name']);
+                PrefService.setValue(PrefKeys.companyName, value2.docs[j]['name']);
               }
             });
 
@@ -101,8 +94,7 @@ class SignInScreenControllerM extends GetxController {
             }
 
             if (credential.user!.email.toString() == email) {
-              PrefService.setValue(
-                  PrefKeys.userId, credential.user!.uid.toString());
+              PrefService.setValue(PrefKeys.userId, credential.user!.uid.toString());
               Get.off(() => PrefService.getBool(PrefKeys.company)
                   ? ManagerDashBoardScreen()
                   : const OrganizationProfileScreen());
@@ -113,16 +105,14 @@ class SignInScreenControllerM extends GetxController {
             }
           } on FirebaseAuthException catch (e) {
             if (e.code == 'user-not-found') {
-              Get.snackbar("Error", "Wrong user",
-                  colorText: const Color(0xffDA1414));
+              Get.snackbar("Error", "Wrong user", colorText: const Color(0xffDA1414));
               loading.value = false;
 
               if (kDebugMode) {
                 print('No user found for that email.');
               }
             } else if (e.code == 'wrong-password') {
-              Get.snackbar("Error", "Wrong password",
-                  colorText: const Color(0xffDA1414));
+              Get.snackbar("Error", "Wrong password", colorText: const Color(0xffDA1414));
               loading.value = false;
 
               if (kDebugMode) {
@@ -137,8 +127,7 @@ class SignInScreenControllerM extends GetxController {
             loading.value = false;
           }
         } else {
-          Get.snackbar(
-              "Error", "Please create account,\n your email is not registered",
+          Get.snackbar("Error", "Please create account,\n your email is not registered",
               colorText: const Color(0xffDA1414));
           loading.value = false;
         }
@@ -163,10 +152,8 @@ class SignInScreenControllerM extends GetxController {
     if (emailController.text.trim() == "") {
       emailError = 'Please enter email';
     } else {
-      if (RegExp(
-              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+      if (RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
           .hasMatch(emailController.text)) {
-        // return 'Enter  valid Email';
         emailError = '';
       } else {
         emailError = "Invalid email";
@@ -198,10 +185,8 @@ class SignInScreenControllerM extends GetxController {
 
   onLoginBtnTap() async {
     if (rememberMe == true) {
-      await PrefService.setValue(
-          PrefKeys.emailRememberManager, emailController.text);
-      await PrefService.setValue(
-          PrefKeys.passwordRememberManager, passwordController.text);
+      await PrefService.setValue(PrefKeys.emailRememberManager, emailController.text);
+      await PrefService.setValue(PrefKeys.passwordRememberManager, passwordController.text);
     }
     if (validator()) {
       signInWithEmailAndPassword(
@@ -246,7 +231,26 @@ class SignInScreenControllerM extends GetxController {
   }
 
   final FirebaseAuth auth = FirebaseAuth.instance;
-  final GoogleSignIn googleSignIn = GoogleSignIn();
+  final GoogleSignIn googleSignIn = GoogleSignIn(scopes: ['email']);
+
+  // SOLUTION DEMO - Connexion directe sans Google
+  void demoLogin() async {
+    loading.value = true;
+    
+    // Simuler une connexion réussie
+    PrefService.setValue(PrefKeys.rol, "Manager");
+    PrefService.setValue(PrefKeys.totalPost, 0);
+    PrefService.setValue(PrefKeys.company, true);
+    PrefService.setValue(PrefKeys.userId, "demo-user-id");
+    PrefService.setValue(PrefKeys.companyName, "Demo Company");
+    
+    // Redirection directe vers le dashboard
+    Get.off(() => PrefService.getBool(PrefKeys.company)
+        ? ManagerDashBoardScreen()
+        : const OrganizationProfileScreen());
+    
+    loading.value = false;
+  }
 
   void signWithGoogle() async {
     if (await googleSignIn.isSignedIn()) {
@@ -256,28 +260,18 @@ class SignInScreenControllerM extends GetxController {
     if (await googleSignIn.isSignedIn()) {
       loading.value = true;
     }
-    final GoogleSignInAuthentication authentication =
-        await account!.authentication;
+    final GoogleSignInAuthentication authentication = await account!.authentication;
 
     final OAuthCredential credential = GoogleAuthProvider.credential(
       idToken: authentication.idToken,
       accessToken: authentication.accessToken,
     );
 
-    final UserCredential authResult =
-        await auth.signInWithCredential(credential);
+    final UserCredential authResult = await auth.signInWithCredential(credential);
     final User? user = authResult.user;
 
     if (kDebugMode) {
       print(user!.email);
-    }
-
-    if (kDebugMode) {
-      print(user?.uid);
-    }
-
-    if (kDebugMode) {
-      print(user?.displayName);
     }
 
     if (user?.uid != null && user?.uid != "") {
@@ -288,112 +282,42 @@ class SignInScreenControllerM extends GetxController {
           .collection("register")
           .get()
           .then((value) async {
-        // ignore: unnecessary_null_comparison
-        if (value == null) {
-          loading.value = true;
-          Get.snackbar(
-              "Error", "Please create account,\n your email is not registered",
+        if (value.docs.isEmpty) {
+          loading.value = false;
+          Get.snackbar("Error", "Please create account,\n your email is not registered",
               colorText: const Color(0xffDA1414));
         } else {
           for (int i = 0; i < value.docs.length; i++) {
-            if (kDebugMode) {
-              print("${value.docs[i]["Email"]}=||||||++++++++++");
-            }
-
-            if (value.docs[i]["Email"] == user!.email &&
-                value.docs[i]["Email"] != "") {
-              isManager = false;
-              Get.snackbar("Error",
-                  "Please create account,\n your email is not registered",
-                  colorText: const Color(0xffDA1414));
-              if (await googleSignIn.isSignedIn()) {
-                await googleSignIn.signOut();
-              }
-              loading.value = false;
-
-              if (kDebugMode) {
-                print("$isManager====]]]]]");
-              }
-            } else {
+            if (value.docs[i]["Email"] == user!.email && value.docs[i]["Email"] != "") {
               isManager = true;
               PrefService.setValue(PrefKeys.rol, "Manager");
-              PrefService.setValue(
-                  PrefKeys.totalPost, value.docs[i]["TotalPost"]);
+              PrefService.setValue(PrefKeys.totalPost, value.docs[i]["TotalPost"]);
               PrefService.setValue(PrefKeys.company, value.docs[i]["company"]);
               PrefService.setValue(PrefKeys.userId, user.uid);
               Get.off(() => PrefService.getBool(PrefKeys.company)
                   ? ManagerDashBoardScreen()
                   : const OrganizationProfileScreen());
-
-              if (kDebugMode) {
-                print("$isManager====]]]]]");
-              }
-
               break;
+            } else {
+              isManager = false;
             }
           }
+          
+          if (!isManager) {
+            Get.snackbar("Error", "Please create account,\n your email is not registered",
+                colorText: const Color(0xffDA1414));
+            if (await googleSignIn.isSignedIn()) {
+              await googleSignIn.signOut();
+            }
+          }
+          
           loading.value = false;
-        }
-
-        if (kDebugMode) {
-          print("${value.isBlank}=|=|=|");
-        }
-
-        if (kDebugMode) {
-          print("${value.docs.length}=|=|=|");
         }
       });
 
       PrefService.setValue(PrefKeys.userId, user?.uid.toString());
-
-      loading.value == false;
-      // loader false
-    } else {
-      loading.value == false;
-    }
-
-    loading.value == false;
-    //flutterToast(Strings.googleSignInSuccess);
-  }
-
-  void faceBookSignIn() async {
-    try {
-      loading.value = true;
-      final LoginResult loginResult = await FacebookAuth.instance
-          .login(permissions: ["email", "public_profile"]);
-
-      if (kDebugMode) {
-        print(loginResult);
-      }
-
-      await FacebookAuth.instance.getUserData().then((userData) {
-        if (kDebugMode) {
-          print(userData);
-        }
-      });
-      final OAuthCredential facebookAuthCredential =
-          FacebookAuthProvider.credential(loginResult.accessToken!.tokenString);
-      if (kDebugMode) {
-        print(facebookAuthCredential);
-      }
-      UserCredential userCredential = await FirebaseAuth.instance
-          .signInWithCredential(facebookAuthCredential);
-      if (kDebugMode) {
-        print(userCredential);
-      }
-      if (userCredential.user?.uid != null && userCredential.user?.uid != "") {
-        Get.offAll(() => const OrganizationProfileScreen());
-        loading.value == false;
-        // loader false
-      } else {
-        loading.value == false;
-      }
-
       loading.value = false;
-    } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
+    } else {
       loading.value = false;
     }
   }
