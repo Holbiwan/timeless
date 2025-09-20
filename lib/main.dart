@@ -104,7 +104,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
 
-      // Pas de const ici
+      // home: const SplashScreen(),
       home: FirstScreen(),
 
       initialRoute: "/",
