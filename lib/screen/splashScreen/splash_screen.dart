@@ -1,9 +1,7 @@
+// lib/screen/splashScreen/splash_screen.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import 'package:timeless/utils/asset_res.dart';
-import 'package:timeless/utils/color_res.dart';
-import 'package:timeless/utils/app_res.dart';
+import 'package:timeless/screen/first_page/first_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -12,24 +10,44 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _c =
+      AnimationController(vsync: this, duration: const Duration(milliseconds: 900))
+        ..forward();
+  late final Animation<double> _fade =
+      CurvedAnimation(parent: _c, curve: Curves.easeOut);
+
   @override
   void initState() {
     super.initState();
-    // Petite attente, puis navigation vers la première page
-    Future.microtask(() async {
-      await Future.delayed(const Duration(milliseconds: 1200));
-      Get.offAllNamed(AppRes.firstScreen); // adapte si tu veux aller ailleurs
+    // Navigation vers ta toute première page (carrousel) - 4 secondes
+    Future.delayed(const Duration(milliseconds: 8000), () {
+      Get.offAll(() => FirstScreen());
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final w = MediaQuery.of(context).size.width;
     return Scaffold(
-      backgroundColor: ColorRes.white,
+      backgroundColor: Colors.black,
       body: Center(
-        child: Image.asset(AssetRes.logo, height: 96),
+        child: FadeTransition(
+          opacity: _fade,
+          child: Image.asset(
+            'assets/images/timeless_splash.png', // <-- chemin direct
+            width: w * 0.72,
+            fit: BoxFit.contain,
+          ),
+        ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
   }
 }
