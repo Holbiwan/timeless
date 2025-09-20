@@ -74,7 +74,7 @@ Future<void> main() async {
     statusBarColor: Colors.transparent,
     statusBarIconBrightness: Brightness.light,
     statusBarBrightness: Brightness.dark,
-    systemNavigationBarColor: Colors.black,
+    systemNavigationBarColor: Colors.green,
     systemNavigationBarIconBrightness: Brightness.light,
   ));
 
@@ -98,14 +98,14 @@ class MyApp extends StatelessWidget {
             statusBarColor: Colors.transparent,
             statusBarIconBrightness: Brightness.light,
             statusBarBrightness: Brightness.dark,
-            systemNavigationBarColor: Colors.black,
+            systemNavigationBarColor: Colors.green,
             systemNavigationBarIconBrightness: Brightness.light,
           ),
         ),
       ),
 
-      // home: const SplashScreen(),
-      home: FirstScreen(),
+      home: const SplashScreen(),
+      // home: FirstScreen(),
 
       initialRoute: "/",
       getPages: [
