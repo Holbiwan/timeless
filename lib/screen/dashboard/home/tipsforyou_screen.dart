@@ -12,11 +12,11 @@ class TipsForYouScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        resizeToAvoidBottomInset: false,
-        backgroundColor: ColorRes.backgroundColor,
-        body: Column(
+      backgroundColor: ColorRes.backgroundColor,
+      body: SafeArea(
+        child: Column(
           children: [
-            const SizedBox(height: 50),
+            const SizedBox(height: 8),
             Stack(
               children: [
                 Align(
@@ -24,143 +24,162 @@ class TipsForYouScreen extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(18.0),
                     child: InkWell(
-                      onTap: () {
-                        Get.back();
-                      },
+                      onTap: Get.back,
                       child: backButton(),
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 25.0),
+                const Padding(
+                  padding: EdgeInsets.only(top: 25.0),
                   child: Align(
                     alignment: Alignment.center,
                     child: Text(
+                      // Titre
+                      // ignore: unnecessary_string_interpolations
                       Strings.tipsForYou,
-
-                      style: appTextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w500,
-                          height: 1,
-                          color: ColorRes.black),
+                      // style
+                      // (appTextStyle est un helper fourni par ton projet)
                     ),
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 10),
-            SizedBox(
-              height: Get.height - 145,
+
+            // Contenu scrollable
+            Expanded(
               child: SingleChildScrollView(
+                padding: const EdgeInsets.only(bottom: 24),
                 child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 18),
-                        height: 176,
-                        decoration: BoxDecoration(
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(15)),
-                          gradient: const LinearGradient(colors: [
-                            ColorRes.gradientColor,
-                            ColorRes.containerColor,
-                          ]),
-                          boxShadow: [
-                            BoxShadow(
-                                offset: const Offset(6, 6),
-                                color: ColorRes.containerColor.withOpacity(0.2),
-                                spreadRadius: 0,
-                                blurRadius: 10),
-                            BoxShadow(
-                                offset: const Offset(0, 7),
-                                color: ColorRes.containerColor.withOpacity(0.5),
-                                spreadRadius: 0,
-                                blurRadius: 20),
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Bandeau
+                    Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 18),
+                      height: 176,
+                      decoration: BoxDecoration(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(15)),
+                        gradient: const LinearGradient(
+                          colors: [
+                            Color.fromARGB(255, 5, 5, 5),
+                            ColorRes.containerColor
                           ],
                         ),
-                        child: Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.only(left: 20),
-                              width: Get.width - 180,
-                              height: 180,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(Strings.howToFindAPerfectJob,
-                                      style: appTextStyle(
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 17,
-                                          color: ColorRes.white)),
-                                  const SizedBox(height: 10),
-                                  const Divider(
-                                    height: 10,
+                        boxShadow: [
+                          BoxShadow(
+                            offset: const Offset(6, 6),
+                            color: ColorRes.containerColor.withOpacity(0.2),
+                            blurRadius: 10,
+                          ),
+                          BoxShadow(
+                            offset: const Offset(0, 7),
+                            color: ColorRes.containerColor.withOpacity(0.5),
+                            blurRadius: 20,
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.only(left: 20),
+                            width: Get.width - 180,
+                            height: 180,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  Strings.howToFindAPerfectJob,
+                                  style: appTextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 17,
                                     color: ColorRes.white,
                                   ),
-                                  const SizedBox(height: 10),
-                                  Text(
-                                    'Sarah Bolinas',
-                                    style: appTextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
-                                        color: ColorRes.white),
+                                ),
+                                const SizedBox(height: 10),
+                                const Divider(
+                                    height: 10, color: ColorRes.white),
+                                const SizedBox(height: 10),
+                                Text(
+                                  'Sabrina PAPEAU',
+                                  style: appTextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    color: ColorRes.white,
                                   ),
-                                  Text(
-                                    'Head of Human Capital at Facebook',
-                                    style: appTextStyle(
-                                        fontSize: 8,
-                                        fontWeight: FontWeight.w500,
-                                        color: ColorRes.white),
+                                ),
+                                Text(
+                                  'Creator of Timeless',
+                                  style: appTextStyle(
+                                    fontSize: 8,
+                                    fontWeight: FontWeight.w500,
+                                    color: ColorRes.white,
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                            const Spacer(),
-                            Image.asset(AssetRes.girlImage, height: 175),
-                            const SizedBox(width: 20)
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 5),
-                      Padding(
-                        padding: const EdgeInsets.all(18),
-                        child: Text(
-                          'How to find a perfect job for you',
-                          style: appTextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 18,
-                            color: ColorRes.black,
                           ),
+                          const Spacer(),
+                          Image.asset(AssetRes.girlImage, height: 175),
+                          const SizedBox(width: 20),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 5),
+
+                    // Titre de section
+                    Padding(
+                      padding: const EdgeInsets.all(18),
+                      child: Text(
+                        'How to find a perfect job for you',
+                        style: appTextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 18,
+                          color: ColorRes.black,
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(18.0),
-                        child: Text(
-                          'Lorem ipsum dolor sit amet,consecrated advising elite,sed do emus temper incididunt ut labore et dolore magna aliqua.Urna id volutpat lacus laoreet non curabitur gravida arcu.Amet nisl purus in mollis nunc sed id.Elementum curabitur vitae nunc sed.A pellentesque sit amet porttitor eget.Ac turpis egestas integer eget aliquet nibh.Nibh praesent tristique magna sit amet purus gravida.Sagittis nisl rhoncus mattis rhoncus urna neque viverra.Volutpat sed cras ornare arcu dui vivamus arcu felis bibendum.',
-                          style: appTextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                              color: ColorRes.black.withOpacity(0.5)),
+                    ),
+
+                    // Paragraphe principal (multiligne corrigé)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                      child: Text(
+                        '''Looking for a job in tech can be hard. Timeless makes it easy. Create your profile once and we show you jobs that fit your skills—design, product, data, marketing, development, and more. You can choose city or remote.
+
+See a clean list of good offers, save the ones you like, and get alerts when new jobs match you. Apply in a few taps and follow your applications in one place.
+
+Need help? We give simple tips for your CV and interviews. Whether you want an internship, a first job, or a senior role, Timeless helps you find the right digital job faster.''',
+                        style: appTextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          color: ColorRes.black.withOpacity(0.6),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 15.0,
+                    ),
+
+                    const SizedBox(height: 12),
+
+                    // Petit paragraphe (peut être supprimé si inutile)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                      child: Text(
+                        'Timeless also helps you grow. Add your CV or portfolio, link GitHub/Behance/LinkedIn, and pick the roles you want to learn. You’ll get practice tips, interview guides, and real offers from verified companies with clear salary ranges and remote/hybrid options. Track every step—applied, interview, feedback—and get reminders so you never miss a deadline. One profile, smarter matches, faster results.',
+                        style: appTextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 12,
+                          color: ColorRes.black.withOpacity(0.5),
                         ),
-                        child: Text(
-                          "Sagittis vitae et leo dais ut diam.Et praetor praetor mass mass.Faucibus et molestie ac feugiat.Ac feugiat sed lectus vestibulum.Sagittis eu volutpat odio facilisis. Venenatis urna cursus eget nunc scelerisque viverra mauris.",
-                          style: appTextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 12,
-                              color: ColorRes.black.withOpacity(0.5)),
-                        ),
-                      )
-                    ]),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
-        ));
+        ),
+      ),
+    );
   }
 }
