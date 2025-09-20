@@ -233,7 +233,7 @@ class SignInScreenController extends GetxController {
       // Configurer les préférences utilisateur démo
       PrefService.setValue(PrefKeys.userId, "demo_user_12345");
       PrefService.setValue(PrefKeys.email, DEMO_EMAIL);
-      PrefService.setValue(PrefKeys.fullName, "Demo User");
+      PrefService.setValue(PrefKeys.fullName, "Timeless User");
       PrefService.setValue(PrefKeys.phoneNumber, "+33 6 12 34 56 78");
       PrefService.setValue(PrefKeys.city, "Paris");
       PrefService.setValue(PrefKeys.state, "Île-de-France");

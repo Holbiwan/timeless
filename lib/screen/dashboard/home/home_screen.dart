@@ -42,7 +42,7 @@ class HomeScreen extends StatelessWidget {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  // --- Tips for you (inchangé)
+                  // --- Tips for you section ---
                   InkWell(
                     onTap: () {
                       Navigator.push(
@@ -53,7 +53,7 @@ class HomeScreen extends StatelessWidget {
                     child: tipsForYouSection(),
                   ),
 
-                  // --- NOUVEAU : bouton "See Jobs"
+                  // ---  Bouton "See Jobs"
                   const SizedBox(height: 12),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 18.0),
