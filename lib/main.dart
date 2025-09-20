@@ -39,7 +39,8 @@ import 'package:timeless/service/pref_services.dart';
 import 'package:timeless/utils/app_res.dart';
 import 'package:timeless/utils/pref_keys.dart';
 
-import 'package:timeless/temp_placeholders.dart';
+import 'package:timeless/screen/looking_for_screen/looking_for_screen.dart';
+import 'package:timeless/missing_classes.dart';
 
 
 Future<void> main() async {
@@ -74,7 +75,7 @@ Future<void> main() async {
     statusBarColor: Colors.transparent,
     statusBarIconBrightness: Brightness.light,
     statusBarBrightness: Brightness.dark,
-    systemNavigationBarColor: Colors.green,
+    systemNavigationBarColor: Colors.red,
     systemNavigationBarIconBrightness: Brightness.light,
   ));
 
@@ -98,7 +99,7 @@ class MyApp extends StatelessWidget {
             statusBarColor: Colors.transparent,
             statusBarIconBrightness: Brightness.light,
             statusBarBrightness: Brightness.dark,
-            systemNavigationBarColor: Colors.green,
+            systemNavigationBarColor: Colors.red,
             systemNavigationBarIconBrightness: Brightness.light,
           ),
         ),
@@ -177,6 +178,10 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: AppRes.updateVacanciesRequirementScreen,
           page: () => const UpdateVacanciesRequirementsScreen(),
+        ),
+        GetPage(
+          name: AppRes.lookingForScreen,
+          page: () => const LookingForScreen(),
         ),
       ],
     );

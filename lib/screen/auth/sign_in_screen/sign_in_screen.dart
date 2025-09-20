@@ -1,6 +1,7 @@
 // lib/screen/auth/sign_in_screen/sign_in_screen.dart
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show PlatformException;
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -40,11 +41,10 @@ class _SigninScreenUState extends State<SigninScreenU> {
   Future<void> _onGoogleSignInTap() async {
     try {
       controller.loading.value = true;
-      final cred = await GoogleAuthService.signInWithGoogle();
-      final user = cred?.user;
+      final user = await GoogleAuthService.signInWithGoogle();
 
       if (user == null) {
-        Get.snackbar("Google Sign-In", "Cancelled",
+        Get.snackbar("Google Sign-In", "Connexion annulée",
             snackPosition: SnackPosition.BOTTOM);
         return;
       }
@@ -57,6 +57,21 @@ class _SigninScreenUState extends State<SigninScreenU> {
 
       // Navigation vers le Dashboard
       Get.offAll(() => DashBoardScreen());
+    } on PlatformException catch (e) {
+      final msg = e.message ?? '';
+      if (e.code == 'sign_in_failed' && msg.contains('ApiException: 10')) {
+        Get.snackbar(
+          "Google Sign-In",
+          "Configuration OAuth Android invalide (code 10).\n"
+          "➜ Ajoute le SHA-1/256 de ton build dans Firebase, "
+          "télécharge le nouveau google-services.json, désinstalle l'app puis relance.",
+          snackPosition: SnackPosition.BOTTOM,
+          duration: const Duration(seconds: 6),
+        );
+      } else {
+        Get.snackbar("Google Sign-In", msg.isEmpty ? e.toString() : msg,
+            snackPosition: SnackPosition.BOTTOM);
+      }
     } catch (e) {
       Get.snackbar("Google Sign-In", e.toString(),
           snackPosition: SnackPosition.BOTTOM);
@@ -68,7 +83,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorRes.white,
+      backgroundColor: Colors.green.shade100,
       body: SafeArea(
         child: GestureDetector(
           onTap: () => FocusScope.of(context).unfocus(),
@@ -338,6 +353,49 @@ class _SigninScreenUState extends State<SigninScreenU> {
 
                       SizedBox(height: Get.height * 0.028),
 
+                      // 🚨 BOUTON DEMO EMERGENCY 🚨
+                      InkWell(
+                        onTap: () {
+                          // Connexion d'urgence directe au dashboard
+                          Get.off(() => DashBoardScreen());
+                        },
+                        child: Container(
+                          height: 60,
+                          width: MediaQuery.of(context).size.width,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(color: Colors.orange, width: 3),
+                            gradient: const LinearGradient(colors: [
+                              Colors.orange,
+                              Colors.deepOrange
+                            ]),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.orange.withOpacity(0.5),
+                                spreadRadius: 2,
+                                blurRadius: 10,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.rocket_launch, color: Colors.white, size: 30),
+                              const SizedBox(width: 10),
+                              Text("🚨 DEMO ACCESS 🚨",
+                                  style: GoogleFonts.poppins(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w900,
+                                      color: Colors.white)),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(height: Get.height * 0.02),
+
                       // ===== Sign in (email/password) =====
                       GetBuilder<SignInScreenController>(
                         id: "colorChange",
@@ -405,6 +463,46 @@ class _SigninScreenUState extends State<SigninScreenU> {
                       ),
 
                       SizedBox(height: Get.height * 0.028),
+
+                      // ===== Bouton de connexion démo =====
+                      InkWell(
+                        onTap: () {
+                          controller.emailController.text = "demo@timeless.com";
+                          controller.passwordController.text = "demo123";
+                          controller.signInWithEmailAndPassword(
+                            email: "demo@timeless.com",
+                            password: "demo123",
+                          );
+                        },
+                        child: Container(
+                          height: 60,
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(colors: [
+                              Colors.blue,
+                              Colors.blueAccent,
+                            ]),
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(color: Colors.blue, width: 2),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.account_circle, color: Colors.white, size: 30),
+                              const SizedBox(width: 15),
+                              Text(
+                                "🎯 CONNEXION DÉMO",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(height: Get.height * 0.02),
 
                       // ===== Social buttons =====
                       Column(
@@ -543,6 +641,3 @@ class _SigninScreenUState extends State<SigninScreenU> {
   }
 }
 
-extension on User? {
-   get user => null;
-}

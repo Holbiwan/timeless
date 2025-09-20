@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:timeless/common/widgets/back_button.dart';
 import 'package:timeless/screen/auth/sign_in_screen/sign_in_screen.dart';
 import 'package:timeless/screen/auth/sign_up/sign_up_screen.dart';
+import 'package:timeless/screen/manager_section/auth_manager/Sign_in/sign_in_screen.dart';
 import 'package:timeless/screen/first_page/first_controller.dart';
 import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/color_res.dart';
@@ -143,7 +144,57 @@ class FirstScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: Get.height * 0.03),
+              SizedBox(height: Get.height * 0.02),
+
+              /// 🚨 BOUTON DEMO MANAGER ACCESS 🚨
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (con) => const SignInScreenM(),
+                    ),
+                  );
+                },
+                child: Container(
+                  height: 60,
+                  width: MediaQuery.of(context).size.width,
+                  margin: const EdgeInsets.symmetric(horizontal: 20),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    border: Border.all(color: Colors.orange, width: 3),
+                    gradient: const LinearGradient(colors: [
+                      Colors.orange,
+                      Colors.deepOrange
+                    ]),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.orange.withOpacity(0.5),
+                        spreadRadius: 2,
+                        blurRadius: 10,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.rocket_launch, color: Colors.white, size: 24),
+                      const SizedBox(width: 8),
+                      Text(
+                        "🚨 DEMO MANAGER ACCESS 🚨",
+                        style: GoogleFonts.poppins(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: Get.height * 0.02),
 
               /// CGU
               Padding(

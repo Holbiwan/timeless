@@ -62,6 +62,12 @@ class JobRecommendationController extends GetxController
 
   onTapJobs2(int index) {
     selectedJobs2.value = index;
-    //update(["hList"]);
+    update(); // Mise à jour pour les GetBuilder
+  }
+
+  // Méthode pour mettre à jour le texte de recherche
+  void updateSearchText(String text) {
+    searchText.value = text;
+    update(); // Mise à jour pour déclencher le filtrage
   }
 }

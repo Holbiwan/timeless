@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:timeless/common/widgets/common_loader.dart';
 import 'package:timeless/screen/create_vacancies/create_vacancies_controller.dart';
 import 'package:timeless/screen/dashboard/home/home_controller.dart';
+import 'package:timeless/screen/dashboard/home/widgets/quick_apply_button.dart';
 import 'package:timeless/screen/job_recommendation_screen/job_recommendation_controller.dart';
 import 'package:timeless/service/pref_services.dart';
 import 'package:timeless/utils/app_res.dart';
@@ -54,7 +55,7 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
               padding: const EdgeInsets.all(0),
               itemCount: seeAll! ? total : (total <= 15 ? total : 15),
               shrinkWrap: true,
-              physics: const BouncingScrollPhysics(),
+              physics: const ClampingScrollPhysics(),
               itemBuilder: (context, index) {
                 final revIndex = total - 1 - index;
                 if (kDebugMode) {
@@ -75,62 +76,85 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
                     AppRes.jobDetailScreen,
                     arguments: {"saved": doc, "docId": revIndex},
                   ),
-                  child: Container(
-                    height: 92,
-                    width: Get.width,
-                    margin: const EdgeInsets.symmetric(horizontal: 18, vertical: 4),
-                    padding: const EdgeInsets.all(15),
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(Radius.circular(15)),
-                      border: Border.all(color: const Color(0xffF3ECFF)),
-                      color: ColorRes.white,
-                    ),
-                    child: Row(
+                  child: ClipRect(
+                    child: Container(
+                      width: Get.width,
+                      constraints: const BoxConstraints(minHeight: 70),
+                      margin: const EdgeInsets.symmetric(horizontal: 18, vertical: 4),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.all(Radius.circular(15)),
+                        border: Border.all(color: const Color(0xffF3ECFF)),
+                        color: ColorRes.white,
+                      ),
+                    child: IntrinsicHeight(
+                      child: Row(
                       children: [
-                        (create.url == "")
-                            ? Image(
-                                // ✅ corrige le nom de constante:
-                                image: AssetImage(AssetRes.airBnbLogo),
-                                height: 100,
-                              )
-                            : Image(
-                                image: NetworkImage(create.url),
-                                height: 100,
-                              ),
-                        const SizedBox(width: 20),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              position,
-                              style: appTextStyle(
-                                color: ColorRes.black,
-                                fontSize: 15,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            Text(
-                              company,
-                              style: appTextStyle(
-                                color: ColorRes.black,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                            Text(
-                              "$location  $type",
-                              style: appTextStyle(
-                                color: ColorRes.black,
-                                fontSize: 10,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                          ],
+                        Container(
+                          width: 50,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: Colors.grey.shade200),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: (create.url == "")
+                                ? Image(
+                                    image: AssetImage(AssetRes.airBnbLogo),
+                                    fit: BoxFit.cover,
+                                  )
+                                : Image(
+                                    image: NetworkImage(create.url),
+                                    fit: BoxFit.cover,
+                                  ),
+                          ),
                         ),
-                        const Spacer(),
+                        const SizedBox(width: 15),
+                        Expanded(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                position,
+                                style: appTextStyle(
+                                  color: ColorRes.black,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                company,
+                                style: appTextStyle(
+                                  color: ColorRes.black,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 1),
+                              Text(
+                                "$location  $type",
+                                style: appTextStyle(
+                                  color: ColorRes.grey,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ),
+                        ),
                         Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             InkWell(
@@ -165,19 +189,27 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
                                 },
                               ),
                             ),
-                            const Spacer(),
+                            const SizedBox(height: 4),
+                            // Bouton candidature rapide
+                            QuickApplyButton(
+                              jobData: doc.data() as Map<String, dynamic>,
+                              docId: snapshot.data.docs[revIndex].id,
+                            ),
+                            const SizedBox(height: 4),
                             Text(
                               "\$$salary",
                               style: appTextStyle(
-                                fontSize: 16,
+                                fontSize: 14,
                                 color: ColorRes.containerColor,
-                                fontWeight: FontWeight.w500,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                           ],
                         ),
                         const SizedBox(width: 10),
                       ],
+                    ),
+                    ),
                     ),
                   ),
                 );

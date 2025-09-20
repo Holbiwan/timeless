@@ -3,7 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:timeless/service/pref_services.dart';
 import 'package:timeless/utils/app_res.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -122,59 +124,196 @@ class JobDetailsUploadCvController extends GetxController {
   RxBool isPdfUploadError = false.obs;
   bool uploadingMedia = false;
 
+  // Méthode pour créer un CV de démo rapidement
+  void createDemoCV() {
+    try {
+      filepath.value = "demo_cv.pdf";
+      pdfUrl = "https://demo.timeless.com/cv/demo_user_cv.pdf";
+      filesize = 0.5; // 0.5 MB
+      fileSize?.value = 500; // 500 KB
+      isPdfUploadError.value = false;
+      
+      Get.snackbar(
+        'CV de démo créé',
+        'CV de démonstration configuré avec succès',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 2),
+      );
+    } catch (e) {
+      if (kDebugMode) print('Erreur création CV démo: $e');
+    }
+  }
+
   applyResume() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowMultiple: true,
-      allowedExtensions: ['pdf'],
-    );
+    try {
+      // Simplifier : essayer directement sans permissions complexes
+      Get.snackbar(
+        'Sélection du fichier...',
+        'Veuillez sélectionner votre CV (PDF)',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.blue,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 2),
+      );
 
-    if (result != null) {
-      final PlatformFile file = result.files.first;
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowMultiple: false,
+        allowedExtensions: ['pdf'],
+        withData: false, // Améliore les performances
+        withReadStream: false, // Améliore les performances
+      );
 
-      filepath.value = file.name.toString();
+      if (result != null && result.files.isNotEmpty) {
+        final PlatformFile file = result.files.first;
 
-      final kb = file.size / 1024;
-      final kbVal = kb.ceil().toInt();
-      final mb = kb / 1024;
-      fileSize?.value = kbVal;
-      filesize = mb;
+        // Vérifier la taille du fichier (max 5MB pour être plus rapide)
+        if (file.size > 5 * 1024 * 1024) {
+          Get.snackbar(
+            'Fichier trop volumineux',
+            'Le fichier doit faire moins de 5MB pour un upload rapide',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.orange,
+            colorText: Colors.white,
+            duration: const Duration(seconds: 3),
+          );
+          return;
+        }
 
-      if (kDebugMode) {
-        print(filesize);
-        debugPrint("filepath $filepath FileSize ${fileSize?.value}  $kbVal");
+        filepath.value = file.name;
+        final kb = file.size / 1024;
+        filesize = kb / 1024; // MB
+        fileSize?.value = kb.ceil().toInt();
+
+        if (kDebugMode) {
+          print("Fichier: ${file.name}, Taille: ${filesize}MB");
+        }
+
+        // Afficher indicateur de chargement
+        Get.snackbar(
+          'Upload en cours...',
+          'Veuillez patienter',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.orange,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 5),
+        );
+
+        if (file.path != null) {
+          final File fileForFirebase = File(file.path!);
+          final url = await uploadImage(file: fileForFirebase, path: "cv/${file.name}");
+          
+          if (url != null) {
+            Get.snackbar(
+              'Succès !',
+              'CV uploadé avec succès',
+              snackPosition: SnackPosition.BOTTOM,
+              backgroundColor: Colors.green,
+              colorText: Colors.white,
+              duration: const Duration(seconds: 3),
+            );
+            isPdfUploadError.value = false;
+          } else {
+            throw Exception('URL de téléchargement nulle');
+          }
+        } else {
+          throw Exception('Chemin du fichier non accessible');
+        }
+      } else {
+        // User canceled
+        Get.snackbar(
+          'Annulé',
+          'Sélection de fichier annulée',
+          snackPosition: SnackPosition.BOTTOM,
+          duration: const Duration(seconds: 2),
+        );
+        isPdfUploadError.value = true;
       }
-
-      final File fileForFirebase = File(file.path!);
-      await uploadImage(file: fileForFirebase, path: "files/${file.name}");
-    } else {
-      // User canceled the picker
+    } catch (e) {
+      if (kDebugMode) print('Erreur upload CV: $e');
+      Get.snackbar(
+        'Erreur d\'upload',
+        'Problème lors de l\'upload: ${e.toString().split(': ').last}',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 4),
+      );
       isPdfUploadError.value = true;
     }
   }
 
   Future<String?> uploadImage({File? file, String? path}) async {
     if (file == null || path == null) {
-      if (kDebugMode) {
-        print('No file or path provided');
-      }
+      if (kDebugMode) print('No file or path provided');
       return null;
     }
 
     try {
-      final ref = FirebaseStorage.instance.ref().child(path);
-      await ref.putFile(file);
-      final url = await ref.getDownloadURL();
+      // Pour la démo, simuler un upload rapide si utilisateur démo
+      final userId = PrefService.getString(PrefKeys.userId);
+      if (userId == "demo_user_12345") {
+        // Simuler un délai d'upload court pour la démo
+        await Future.delayed(const Duration(seconds: 1));
+        final fakeUrl = "https://demo.timeless.com/cv/demo_${DateTime.now().millisecondsSinceEpoch}.pdf";
+        pdfUrl = fakeUrl;
+        if (kDebugMode) print("Demo CV URL: $fakeUrl");
+        return fakeUrl;
+      }
+
+      // Vérifier que l'utilisateur est connecté
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        throw Exception('Utilisateur non connecté');
+      }
+
+      // Créer un nom de fichier unique et simple
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      final fileName = '${user.uid}_$timestamp.pdf';
+      final ref = FirebaseStorage.instance.ref().child('cv/$fileName');
+      
+      if (kDebugMode) print('Début upload: $fileName');
+      
+      // Upload optimisé avec timeout
+      final uploadTask = ref.putFile(file);
+      
+      // Timeout de 30 secondes max
+      final snapshot = await uploadTask.timeout(
+        const Duration(seconds: 30),
+        onTimeout: () => throw Exception('Upload timeout - fichier trop volumineux ou connexion lente'),
+      );
+      
+      final url = await snapshot.ref.getDownloadURL();
       pdfUrl = url;
 
-      if (kDebugMode) {
-        print("Download URL: $url");
-      }
+      if (kDebugMode) print("Upload réussi: $url");
       return url;
+      
     } catch (e) {
-      if (kDebugMode) {
-        print('Upload error: $e');
+      if (kDebugMode) print('Upload error: $e');
+      
+      // Messages d'erreur plus clairs
+      String errorMessage = 'Erreur inconnue';
+      if (e.toString().contains('timeout')) {
+        errorMessage = 'Upload trop lent - essayez un fichier plus petit';
+      } else if (e.toString().contains('permission')) {
+        errorMessage = 'Problème de permissions - vérifiez vos autorisations';
+      } else if (e.toString().contains('network')) {
+        errorMessage = 'Problème de connexion internet';
+      } else {
+        errorMessage = 'Erreur upload: ${e.toString().split(': ').last}';
       }
+      
+      Get.snackbar(
+        'Erreur d\'upload',
+        errorMessage,
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 4),
+      );
       return null;
     }
   }
