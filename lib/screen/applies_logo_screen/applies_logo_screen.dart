@@ -36,7 +36,7 @@ class AppliesLogoScreen extends StatelessWidget {
                 style: GoogleFonts.playfairDisplay(
                     fontSize: 22,
                     fontWeight: FontWeight.w700,
-                    color: ColorRes.black),
+                    color: ColorRes.textPrimary),
                 textAlign: TextAlign.center),
           ),
           const SizedBox(height: 15),
@@ -46,7 +46,7 @@ class AppliesLogoScreen extends StatelessWidget {
               style: TextStyle(
                 fontWeight: FontWeight.w400,
                 fontSize: 12,
-                color: ColorRes.black.withOpacity(0.8),
+                color: ColorRes.textColor,
               ),
               textAlign: TextAlign.center,
             ),
@@ -89,7 +89,7 @@ class AppliesLogoScreen extends StatelessWidget {
                 style: appTextStyle(
                     fontWeight: FontWeight.w500,
                     fontSize: 15,
-                    color: const Color(0xff555555)),
+                    color: ColorRes.textPrimary),
               ),
               InkWell(
                 onTap: () {
@@ -101,7 +101,7 @@ class AppliesLogoScreen extends StatelessWidget {
                   style: appTextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 16,
-                      color: ColorRes.containerColor),
+                      color: ColorRes.charcoal),
                 ),
               ),
             ],

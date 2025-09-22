@@ -148,21 +148,26 @@ Widget allChat() {
                           itemBuilder: (context, index) {
                             String? o;
 
-                            snapshot.data!.docs[index]['companyName']
-                                .forEach((element) {
-                              if (element['companyname']
-                                      .toString()
-                                      .toLowerCase() ==
-                                  PrefService.getString(PrefKeys.companyName)
-                                      .toString()
-                                      .toLowerCase()) {
-                                if (kDebugMode) {
-                                  print(element);
-                                }
+                            final companyNameData = snapshot.data!.docs[index]['companyName'];
+                            if (companyNameData is List) {
+                              for (var element in companyNameData) {
+                                if (element['companyname']
+                                        .toString()
+                                        .toLowerCase() ==
+                                    PrefService.getString(PrefKeys.companyName)
+                                        .toString()
+                                        .toLowerCase()) {
+                                  if (kDebugMode) {
+                                    print(element);
+                                  }
 
-                                o = element['companyname'];
+                                  o = element['companyname'];
+                                }
                               }
-                            });
+                            } else if (companyNameData is String) {
+                              // Si c'est un String, on l'utilise directement
+                              o = companyNameData;
+                            }
 
                             return StreamBuilder<
                                 DocumentSnapshot<Map<String, dynamic>>>(
@@ -180,14 +185,14 @@ Widget allChat() {
                                 Map<String, dynamic>? dataM =
                                     snapshotM.data?.data();
                                 controller.dataChat = [];
-                                if (dataM!["countU"] != null) {
+                                if (dataM != null && dataM["countU"] != null) {
                                   controller.dataChat.add({
                                     "name": snapshot.data!.docs[index]
                                         ['userName'],
-                                    "count": dataM['countU'],
+                                    "count": dataM['countU'] ?? 0,
                                     "image": create.url,
                                     "time": dataM['lastMessageTime'],
-                                    "lastMessage": dataM['lastMessage'],
+                                    "lastMessage": dataM['lastMessage'] ?? "",
                                     "id": snapshot.data!.docs[index].id,
                                     "deviceToken": snapshot.data!.docs[index]
                                         ['deviceToken'],
@@ -262,7 +267,7 @@ Widget allChat() {
                                                   ),
                                                   const SizedBox(height: 6),
                                                   Text(
-                                                    dataM['lastMessage'] ?? "",
+                                                    dataM?['lastMessage'] ?? "",
                                                     style: appTextStyle(
                                                         color: ColorRes.black
                                                             .withOpacity(0.8),
@@ -279,9 +284,8 @@ Widget allChat() {
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.end,
                                                 children: [
-                                                  (dataM['countU'] == 0 ||
-                                                          dataM['countU'] ==
-                                                              null)
+                                                  (dataM?['countU'] == 0 ||
+                                                          dataM?['countU'] == null)
                                                       ? const SizedBox()
                                                       : Container(
                                                           height: 22,
@@ -311,7 +315,7 @@ Widget allChat() {
                                                               textAlign:
                                                                   TextAlign
                                                                       .center,
-                                                              "${dataM['countU'] ?? ""}",
+                                                              "${dataM?['countU'] ?? ""}",
                                                               style: appTextStyle(
                                                                   fontSize: 10,
                                                                   fontWeight:
@@ -324,10 +328,9 @@ Widget allChat() {
                                                         ),
                                                   const Spacer(),
                                                   Text(
-                                                    dataM['lastMessageTime'] ==
-                                                            null
+                                                    dataM?['lastMessageTime'] == null
                                                         ? ""
-                                                        : " ${getFormattedTime(dataM['lastMessageTime'].toDate() ?? "")}",
+                                                        : " ${getFormattedTime(dataM!['lastMessageTime']?.toDate() ?? DateTime.now())}",
                                                     style: appTextStyle(
                                                         fontSize: 12,
                                                         color: Colors.grey,
@@ -367,17 +370,22 @@ Widget allChat() {
                           itemBuilder: (context, index) {
                             String? o;
 
-                            snapshot.data!.docs[index]['companyName']
-                                .forEach((element) {
-                              if (element.toString().toLowerCase() ==
-                                  PrefService.getString(PrefKeys.companyName)
-                                      .toString()
-                                      .toLowerCase()) {
-                                //userName.add(snapshot.data!.docs[index]['userName']);
+                            final companyNameData2 = snapshot.data!.docs[index]['companyName'];
+                            if (companyNameData2 is List) {
+                              for (var element in companyNameData2) {
+                                if (element.toString().toLowerCase() ==
+                                    PrefService.getString(PrefKeys.companyName)
+                                        .toString()
+                                        .toLowerCase()) {
+                                  //userName.add(snapshot.data!.docs[index]['userName']);
 
-                                o = element;
+                                  o = element;
+                                }
                               }
-                            });
+                            } else if (companyNameData2 is String) {
+                              // Si c'est un String, on l'utilise directement
+                              o = companyNameData2;
+                            }
 
                             /* userName.forEach((element) {
                             u = element;
@@ -542,10 +550,9 @@ Widget allChat() {
                                                             ),
                                                       const Spacer(),
                                                       Text(
-                                                        dataM?['lastMessageTime'] ==
-                                                                null
+                                                        dataM?['lastMessageTime'] == null
                                                             ? ""
-                                                            : " ${getFormattedTime(dataM?['lastMessageTime'].toDate() ?? "")}",
+                                                            : " ${getFormattedTime(dataM!['lastMessageTime']?.toDate() ?? DateTime.now())}",
                                                         style: appTextStyle(
                                                             fontSize: 12,
                                                             color: Colors.grey,
@@ -662,10 +669,9 @@ Widget unread() {
                                   ),
                                   const Spacer(),
                                   Text(
-                                    getFormattedTime(controller.dataChat[index]
-                                                ["time"]
-                                            .toDate())
-                                        .toString(),
+                                    controller.dataChat[index]["time"] != null
+                                        ? getFormattedTime(controller.dataChat[index]["time"].toDate()).toString()
+                                        : "",
                                     style: appTextStyle(
                                         fontSize: 12,
                                         color: Colors.grey,
@@ -699,17 +705,22 @@ Widget unread() {
                           itemBuilder: (context, index) {
                             String? o;
 
-                            snapshot.data!.docs[index]['companyName']
-                                .forEach((element) {
-                              if (element.toString().toLowerCase() ==
-                                  PrefService.getString(PrefKeys.companyName)
-                                      .toString()
-                                      .toLowerCase()) {
-                                //userName.add(snapshot.data!.docs[index]['userName']);
+                            final companyNameData2 = snapshot.data!.docs[index]['companyName'];
+                            if (companyNameData2 is List) {
+                              for (var element in companyNameData2) {
+                                if (element.toString().toLowerCase() ==
+                                    PrefService.getString(PrefKeys.companyName)
+                                        .toString()
+                                        .toLowerCase()) {
+                                  //userName.add(snapshot.data!.docs[index]['userName']);
 
-                                o = element;
+                                  o = element;
+                                }
                               }
-                            });
+                            } else if (companyNameData2 is String) {
+                              // Si c'est un String, on l'utilise directement
+                              o = companyNameData2;
+                            }
 
                             /* userName.forEach((element) {
                             u = element;
@@ -874,10 +885,9 @@ Widget unread() {
                                                             ),
                                                       const Spacer(),
                                                       Text(
-                                                        dataM?['lastMessageTime'] ==
-                                                                null
+                                                        dataM?['lastMessageTime'] == null
                                                             ? ""
-                                                            : " ${getFormattedTime(dataM?['lastMessageTime'].toDate() ?? "")}",
+                                                            : " ${getFormattedTime(dataM!['lastMessageTime']?.toDate() ?? DateTime.now())}",
                                                         style: appTextStyle(
                                                             fontSize: 12,
                                                             color: Colors.grey,
@@ -926,17 +936,22 @@ Expanded(
                       itemBuilder: (context, index) {
                         String? o;
 
-                        snapshot.data!.docs[index]['companyName']
-                            .forEach((element) {
-                          if (element ==
-                              PrefService.getString(
-                                  PrefKeys.companyName)
-                                  .toString()
-                                  .toLowerCase()) {
-                            print(element);
-                            o = element;
-                          }
-                        });
+                        final companyNameData3 = snapshot.data!.docs[index]['companyName'];
+                        if (companyNameData3 is List) {
+                          companyNameData3.forEach((element) {
+                            if (element ==
+                                PrefService.getString(
+                                    PrefKeys.companyName)
+                                    .toString()
+                                    .toLowerCase()) {
+                              print(element);
+                              o = element;
+                            }
+                          });
+                        } else if (companyNameData3 is String) {
+                          // Si c'est un String, on l'utilise directement
+                          o = companyNameData3;
+                        }
 
                         return Dismissible(
                           confirmDismiss: (DismissDirection direction) async {

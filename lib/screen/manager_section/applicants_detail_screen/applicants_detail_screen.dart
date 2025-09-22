@@ -532,19 +532,22 @@ void settingModalBottomSheet(
                               PrefService.getString(PrefKeys.companyName),
                         });
                         String? position;
-                        args['companyName'].forEach((e) {
-                          if (e['companyname'] ==
-                              PrefService.getString(PrefKeys.companyName)) {
-                            position = e['position'].toString();
+                        final companyNameData = args['companyName'];
+                        if (companyNameData is List) {
+                          for (var e in companyNameData) {
+                            if (e['companyname'] ==
+                                PrefService.getString(PrefKeys.companyName)) {
+                              position = e['position'].toString();
 
-
-                              if (
-                              kDebugMode) {
+                              if (kDebugMode) {
                                 print(position);
                               }
-
+                            }
                           }
-                        });
+                        } else if (companyNameData is String) {
+                          // Si c'est un String, pas de position spécifique
+                          position = "N/A";
+                        }
                         /*   controller.onTapOk();*/
                         await FirebaseFirestore.instance
                             .collection("Applicants")

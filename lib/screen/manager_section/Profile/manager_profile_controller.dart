@@ -8,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:timeless/service/pref_services.dart';
 import 'package:timeless/utils/pref_keys.dart';
+import 'package:timeless/utils/color_res.dart';
 
 class ManagerProfileController extends GetxController {
   // --- Images ---
@@ -156,7 +157,7 @@ class ManagerProfileController extends GetxController {
           'Permission requise', 
           'Autorisez l\'accès à la caméra dans les paramètres de l\'application',
           snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.orange,
+          backgroundColor: ColorRes.appleGreen,
           colorText: Colors.white,
           duration: const Duration(seconds: 4),
         );
@@ -208,7 +209,7 @@ class ManagerProfileController extends GetxController {
           'Permission requise', 
           'Autorisez l\'accès aux photos dans les paramètres de l\'application',
           snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.orange,
+          backgroundColor: ColorRes.appleGreen,
           colorText: Colors.white,
           duration: const Duration(seconds: 4),
         );

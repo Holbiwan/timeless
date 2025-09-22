@@ -64,12 +64,15 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
                 }
 
                 final doc = jrController.documents[revIndex];
-                final position = doc["Position"];
-                final company = doc["CompanyName"];
-                final location = doc["location"];
-                final type = doc["type"];
-                final salary = doc["salary"];
-                final bookmarkList = doc['BookMarkUserList'];
+                final docData = doc.data() as Map<String, dynamic>;
+                final position = docData["Position"] ?? "Non spécifié";
+                final company = docData["CompanyName"] ?? "Entreprise";
+                final location = docData["location"] ?? "Non spécifié";
+                final type = docData["type"] ?? "Non spécifié";
+                final salary = docData["salary"] ?? "0";
+                final bookmarkList = docData.containsKey('BookMarkUserList') 
+                    ? docData['BookMarkUserList'] 
+                    : [];
 
                 return InkWell(
                   onTap: () => Get.toNamed(
@@ -84,8 +87,8 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
                         borderRadius: const BorderRadius.all(Radius.circular(15)),
-                        border: Border.all(color: const Color(0xffF3ECFF)),
-                        color: ColorRes.white,
+                        border: Border.all(color: ColorRes.borderColor, width: 1),
+                        color: ColorRes.cardColor,
                       ),
                     child: IntrinsicHeight(
                       child: Row(
@@ -100,7 +103,7 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(12),
                             child: (create.url == "")
-                                ? Image(
+                                ? const Image(
                                     image: AssetImage(AssetRes.airBnbLogo),
                                     fit: BoxFit.cover,
                                   )
@@ -120,7 +123,7 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
                               Text(
                                 position,
                                 style: appTextStyle(
-                                  color: ColorRes.black,
+                                  color: ColorRes.white,
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -131,7 +134,7 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
                               Text(
                                 company,
                                 style: appTextStyle(
-                                  color: ColorRes.black,
+                                  color: ColorRes.textSecondary,
                                   fontSize: 12,
                                   fontWeight: FontWeight.w400,
                                 ),
@@ -200,7 +203,7 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
                               "\$$salary",
                               style: appTextStyle(
                                 fontSize: 14,
-                                color: ColorRes.containerColor,
+                                color: ColorRes.successColor,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),

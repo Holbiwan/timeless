@@ -38,7 +38,7 @@ class ProfileLogoScreen extends StatelessWidget {
                   style: GoogleFonts.playfairDisplay(
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
-                      color: ColorRes.black),
+                      color: ColorRes.white),
                   textAlign: TextAlign.center),
             ),
             const SizedBox(height: 15),
@@ -54,7 +54,7 @@ class ProfileLogoScreen extends StatelessWidget {
                 style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.w400,
-                    color: ColorRes.black.withOpacity(0.8)),
+                    color: ColorRes.textColor),
               ),
             ),
             const SizedBox(height: 38),

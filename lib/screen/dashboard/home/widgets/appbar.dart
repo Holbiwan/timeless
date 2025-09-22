@@ -9,57 +9,71 @@ import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/utils/string.dart';
 
 Widget homeAppBar() {
-  return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 18),
+  return Container(
+    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+    margin: const EdgeInsets.symmetric(horizontal: 16),
+    decoration: BoxDecoration(
+      color: ColorRes.cardColor,
+      borderRadius: BorderRadius.circular(15),
+      border: Border.all(
+        color: ColorRes.borderColor,
+        width: 1,
+      ),
+    ),
     child: Row(
       children: [
-       logo(),
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: ColorRes.primaryAccent,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: logo(),
+        ),
         Expanded(
           child: Container(
             alignment: Alignment.center,
-            child: Align(
-              alignment: Alignment.center,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 5),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      Strings.hello,
-                      style: appTextStyle(
-                          color: ColorRes.black,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600),
-                    ),
-                    Text(
-                      PrefService.getString(PrefKeys.fullName),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 2,
-                      style: appTextStyle(
-                          color: ColorRes.containerColor,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600),
-                    ),
-                  ],
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  Strings.hello,
+                  style: appTextStyle(
+                      color: ColorRes.textSecondary,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400),
                 ),
-              ),
+                const SizedBox(height: 2),
+                Text(
+                  PrefService.getString(PrefKeys.fullName),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  style: appTextStyle(
+                      color: ColorRes.white,
+                      fontSize: 22,
+                      fontWeight: FontWeight.w700),
+                ),
+              ],
             ),
           ),
         ),
         InkWell(
           onTap: () => Get.toNamed(AppRes.notificationScreen),
           child: Container(
-              height: 40,
-              width: 40,
-              alignment: Alignment.center,
-              decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                  color: ColorRes.logoColor),
-              child: const Icon(
-                Icons.notifications,
-                color: ColorRes.containerColor,
-              )),
+            height: 44,
+            width: 44,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: ColorRes.primaryAccent,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Icon(
+              Icons.notifications_rounded,
+              color: ColorRes.white,
+              size: 22,
+            ),
+          ),
         ),
       ],
     ),

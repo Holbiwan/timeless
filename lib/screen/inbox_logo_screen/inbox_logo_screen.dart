@@ -39,7 +39,7 @@ class InboxLogoScreen extends StatelessWidget {
                   style: GoogleFonts.playfairDisplay(
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
-                      color: ColorRes.black),
+                      color: ColorRes.white),
                   textAlign: TextAlign.center),
             ),
             const SizedBox(height: 15),
@@ -49,7 +49,7 @@ class InboxLogoScreen extends StatelessWidget {
                 style: TextStyle(
                   fontWeight: FontWeight.w400,
                   fontSize: 12,
-                  color: ColorRes.black.withOpacity(0.8),
+                  color: ColorRes.textColor,
                 ),
                 textAlign: TextAlign.center,
               ),

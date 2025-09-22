@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
 import 'package:timeless/screen/chat_box/chat_box_screen.dart';
+import 'package:timeless/screen/employer/employer_profile_screen.dart';
 
 import 'package:timeless/screen/manager_section/dashboard/manager_dashboard_screen_controller.dart';
 import 'package:timeless/screen/manager_section/dashboard/widget.dart';
@@ -42,7 +43,7 @@ class ManagerDashBoardScreen extends StatelessWidget {
             case 2:
               return ChatBoxScreen();
             default:
-              return const ProfileScreen();
+              return const EmployerProfileScreen();
           }
         }),
         bottomNavigationBar: Obx(

@@ -27,14 +27,18 @@ class FirstScreen extends StatelessWidget {
     }
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 234, 239, 164),
+      backgroundColor: ColorRes.backgroundColor,
       body: Container(
         width: Get.width,
         height: Get.height,
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(AssetRes.firstBackScreen),
-            fit: BoxFit.cover,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              ColorRes.backgroundColor,
+              ColorRes.surfaceColor,
+            ],
           ),
         ),
         child: SingleChildScrollView(
@@ -46,19 +50,53 @@ class FirstScreen extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    backButton(),
+                    Container(
+                      height: 40,
+                      width: 40,
+                      decoration: BoxDecoration(
+                        color: ColorRes.brightYellow.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: ColorRes.brightYellow,
+                          width: 2,
+                        ),
+                      ),
+                      child: const Center(
+                        child: Text(
+                          '👋',
+                          style: TextStyle(fontSize: 24),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
-              const SizedBox(height: 110),
-              Text(
-                Strings.logo,
-                style: GoogleFonts.poppins(
-                  fontSize: 44,
-                  fontWeight: FontWeight.w600,
+              const SizedBox(height: 30),
+              // Logo principal agrandi
+              Container(
+                width: 150,
+                height: 150,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: ColorRes.darkBlue.withOpacity(0.1),
+                      spreadRadius: 2,
+                      blurRadius: 10,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Image.asset(
+                    'assets/images/logo.png',
+                    fit: BoxFit.contain,
+                  ),
                 ),
               ),
-              SizedBox(height: Get.height * 0.12),
+              SizedBox(height: Get.height * 0.06),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
@@ -66,8 +104,8 @@ class FirstScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: GoogleFonts.poppins(
                     fontWeight: FontWeight.w400,
-                    fontSize: 26,
-                    color: ColorRes.black.withOpacity(0.7),
+                    fontSize: 20,
+                    color: ColorRes.textPrimary,
                   ),
                 ),
               ),
@@ -84,13 +122,13 @@ class FirstScreen extends StatelessWidget {
                   );
                 },
                 child: Container(
-                  height: 55,
+                  height: 48,
                   width: MediaQuery.of(context).size.width,
                   margin: const EdgeInsets.symmetric(horizontal: 20),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
-                    color: ColorRes.containerColor,
+                    color: ColorRes.primaryAccent,
                   ),
                   child: Text(
                     Strings.createAccount,
@@ -109,7 +147,7 @@ class FirstScreen extends StatelessWidget {
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.w400,
                   fontSize: 18,
-                  color: ColorRes.black.withOpacity(0.6),
+                  color: ColorRes.textSecondary,
                 ),
               ),
               SizedBox(height: Get.height * 0.0344),
@@ -126,20 +164,21 @@ class FirstScreen extends StatelessWidget {
                   );
                 },
                 child: Container(
-                  height: 55,
+                  height: 48,
                   width: 327,
                   margin: const EdgeInsets.symmetric(horizontal: 20),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
-                    border: Border.all(color: ColorRes.containerColor),
+                    border: Border.all(color: ColorRes.borderColor, width: 2),
+                    color: ColorRes.surfaceColor,
                   ),
                   child: Text(
                     Strings.signIn,
                     style: GoogleFonts.poppins(
                       fontWeight: FontWeight.w500,
                       fontSize: 18,
-                      color: ColorRes.containerColor,
+                      color: ColorRes.textPrimary,
                     ),
                   ),
                 ),
@@ -163,31 +202,20 @@ class FirstScreen extends StatelessWidget {
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
-                    border: Border.all(color: Colors.orange, width: 3),
-                    gradient: const LinearGradient(colors: [
-                      Colors.orange,
-                      Colors.deepOrange
-                    ]),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.orange.withOpacity(0.5),
-                        spreadRadius: 2,
-                        blurRadius: 10,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
+                    border: Border.all(color: ColorRes.warningColor, width: 2),
+                    color: ColorRes.cardColor,
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.rocket_launch, color: Colors.white, size: 24),
+                      const Icon(Icons.business_center, color: ColorRes.warningColor, size: 24),
                       const SizedBox(width: 8),
                       Text(
-                        "🚨 DEMO MANAGER ACCESS 🚨",
+                        "Employer Access",
                         style: GoogleFonts.poppins(
                           fontSize: 16,
-                          fontWeight: FontWeight.w900,
-                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          color: ColorRes.textPrimary
                         ),
                       ),
                     ],
@@ -209,7 +237,7 @@ class FirstScreen extends StatelessWidget {
                         style: GoogleFonts.poppins(
                           fontSize: 15,
                           fontWeight: FontWeight.w400,
-                          color: ColorRes.textColor,
+                          color: ColorRes.textSecondary,
                         ),
                       ),
                       TextSpan(
@@ -217,7 +245,7 @@ class FirstScreen extends StatelessWidget {
                         style: GoogleFonts.poppins(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
-                          color: ColorRes.black,
+                          color: ColorRes.infoColor,
                         ),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () async {

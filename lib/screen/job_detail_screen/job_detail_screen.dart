@@ -25,6 +25,7 @@ class JobDetailScreen extends StatelessWidget {
       print(args['saved']['location']);
     }
     return Scaffold(
+      backgroundColor: Colors.black87,
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -53,14 +54,14 @@ class JobDetailScreen extends StatelessWidget {
                                   padding: const EdgeInsets.only(left: 10),
                                   // margin: const EdgeInsets.only(left: 10),
                                   decoration: BoxDecoration(
-                                    color: ColorRes.logoColor,
+                                    color: Colors.grey.withOpacity(0.3),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: const Align(
                                     alignment: Alignment.center,
                                     child: Icon(
                                       Icons.arrow_back_ios,
-                                      color: ColorRes.containerColor,
+                                      color: Colors.white,
                                     ),
                                   ),
                                 ),
@@ -69,7 +70,7 @@ class JobDetailScreen extends StatelessWidget {
                                 height: 40,
                                 width: 40,
                                 decoration: BoxDecoration(
-                                  color: ColorRes.logoColor,
+                                  color: Colors.grey.withOpacity(0.3),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: GetBuilder<JobDetailsController>(
@@ -175,8 +176,9 @@ class JobDetailScreen extends StatelessWidget {
                               child: Text(
                                 Strings.jobDetails,
                                 style: appTextStyle(
-                                  color: ColorRes.black,
+                                  color: Colors.white,
                                   fontSize: 20,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
                             ),
@@ -203,8 +205,16 @@ class JobDetailScreen extends StatelessWidget {
                     decoration: BoxDecoration(
                         borderRadius:
                             const BorderRadius.all(Radius.circular(15)),
-                        border: Border.all(color: ColorRes.borderColor),
-                        color: ColorRes.white),
+                        border: Border.all(color: Colors.grey.withOpacity(0.3)),
+                        color: Colors.black.withOpacity(0.8),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.3),
+                            spreadRadius: 2,
+                            blurRadius: 8,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],),
                     child: Row(
                       children: [
                         Image.asset(AssetRes.airBnbLogo),
@@ -215,14 +225,15 @@ class JobDetailScreen extends StatelessWidget {
                           children: [
                             Text(args["saved"]["Position"],
                                 style: appTextStyle(
-                                    color: ColorRes.black,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w500)),
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600)),
+                            const SizedBox(height: 4),
                             Text(args["saved"]["CompanyName"],
                                 style: appTextStyle(
-                                    color: ColorRes.black,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w400)),
+                                    color: ColorRes.appleGreen,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500)),
                           ],
                         ),
                       ],
@@ -238,8 +249,16 @@ class JobDetailScreen extends StatelessWidget {
                         borderRadius: const BorderRadius.all(
                           Radius.circular(15),
                         ),
-                        border: Border.all(color: ColorRes.borderColor),
-                        color: ColorRes.white),
+                        border: Border.all(color: Colors.grey.withOpacity(0.3)),
+                        color: Colors.black.withOpacity(0.8),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.3),
+                            spreadRadius: 2,
+                            blurRadius: 8,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],),
                     child: Column(
                       children: [
                         Row(
@@ -247,14 +266,14 @@ class JobDetailScreen extends StatelessWidget {
                           children: [
                             Text("Salary",
                                 style: appTextStyle(
-                                    color: ColorRes.black,
+                                    color: Colors.white,
                                     fontSize: 15,
-                                    fontWeight: FontWeight.w500)),
+                                    fontWeight: FontWeight.w600)),
                             Text("\$${args["saved"]["salary"]}",
                                 style: appTextStyle(
-                                    color: ColorRes.containerColor,
+                                    color: ColorRes.appleGreen,
                                     fontSize: 15,
-                                    fontWeight: FontWeight.w400)),
+                                    fontWeight: FontWeight.w600)),
                           ],
                         ),
                         const SizedBox(height: 10),
@@ -263,14 +282,14 @@ class JobDetailScreen extends StatelessWidget {
                           children: [
                             Text("Type",
                                 style: appTextStyle(
-                                    color: ColorRes.black,
+                                    color: Colors.white,
                                     fontSize: 15,
-                                    fontWeight: FontWeight.w500)),
+                                    fontWeight: FontWeight.w600)),
                             Text(args["saved"]["type"],
                                 style: appTextStyle(
-                                    color: ColorRes.containerColor,
+                                    color: ColorRes.appleGreen,
                                     fontSize: 15,
-                                    fontWeight: FontWeight.w400)),
+                                    fontWeight: FontWeight.w600)),
                           ],
                         ),
                         const SizedBox(height: 10),
@@ -279,14 +298,14 @@ class JobDetailScreen extends StatelessWidget {
                           children: [
                             Text("Location",
                                 style: appTextStyle(
-                                    color: ColorRes.black,
+                                    color: Colors.white,
                                     fontSize: 15,
-                                    fontWeight: FontWeight.w500)),
+                                    fontWeight: FontWeight.w600)),
                             Text(args["saved"]["location"],
                                 style: appTextStyle(
-                                    color: ColorRes.containerColor,
+                                    color: ColorRes.appleGreen,
                                     fontSize: 15,
-                                    fontWeight: FontWeight.w400)),
+                                    fontWeight: FontWeight.w600)),
                           ],
                         ),
                       ],
@@ -297,7 +316,10 @@ class JobDetailScreen extends StatelessWidget {
                     padding: const EdgeInsets.only(left: 20, right: 20),
                     child: Text(
                       Strings.requirements,
-                      style: appTextStyle(color: ColorRes.black),
+                      style: appTextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600),
                     ),
                   ),
                   ListView.builder(
@@ -330,7 +352,9 @@ class JobDetailScreen extends StatelessWidget {
                       ),
                       child: Text(Strings.applyNow,
                           style: appTextStyle(
-                              fontSize: 18, fontWeight: FontWeight.w500)),
+                              color: Colors.white,
+                              fontSize: 18, 
+                              fontWeight: FontWeight.w600)),
                     ),
                   ),
                 ],

@@ -1233,17 +1233,22 @@ Widget unread() {
                           itemBuilder: (context, index) {
                             String? o;
 
-                            snapshot.data!.docs[index]['companyName']
-                                .forEach((element) {
-                              if (element.toString().toLowerCase() ==
-                                  PrefService.getString(PrefKeys.companyName)
-                                      .toString()
-                                      .toLowerCase()) {
-                                //userName.add(snapshot.data!.docs[index]['userName']);
+                            final companyNameData = snapshot.data!.docs[index]['companyName'];
+                            if (companyNameData is List) {
+                              for (var element in companyNameData) {
+                                if (element.toString().toLowerCase() ==
+                                    PrefService.getString(PrefKeys.companyName)
+                                        .toString()
+                                        .toLowerCase()) {
+                                  //userName.add(snapshot.data!.docs[index]['userName']);
 
-                                o = element;
+                                  o = element;
+                                }
                               }
-                            });
+                            } else if (companyNameData is String) {
+                              // Si c'est un String, on l'utilise directement
+                              o = companyNameData;
+                            }
 
                             /* userName.forEach((element) {
                             u = element;
@@ -1461,17 +1466,22 @@ Expanded(
                       itemBuilder: (context, index) {
                         String? o;
 
-                        snapshot.data!.docs[index]['companyName']
-                            .forEach((element) {
-                          if (element ==
-                              PrefService.getString(
-                                  PrefKeys.companyName)
-                                  .toString()
-                                  .toLowerCase()) {
-                            print(element);
-                            o = element;
-                          }
-                        });
+                        final companyNameData2 = snapshot.data!.docs[index]['companyName'];
+                        if (companyNameData2 is List) {
+                          companyNameData2.forEach((element) {
+                            if (element ==
+                                PrefService.getString(
+                                    PrefKeys.companyName)
+                                    .toString()
+                                    .toLowerCase()) {
+                              print(element);
+                              o = element;
+                            }
+                          });
+                        } else if (companyNameData2 is String) {
+                          // Si c'est un String, on l'utilise directement
+                          o = companyNameData2;
+                        }
 
                         return Dismissible(
                           confirmDismiss: (DismissDirection direction) async {

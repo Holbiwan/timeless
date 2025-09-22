@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:timeless/service/pref_services.dart';
 import 'package:timeless/utils/app_res.dart';
+import 'package:timeless/utils/color_res.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -175,7 +176,7 @@ class JobDetailsUploadCvController extends GetxController {
             'Fichier trop volumineux',
             'Le fichier doit faire moins de 5MB pour un upload rapide',
             snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.orange,
+            backgroundColor: ColorRes.appleGreen,
             colorText: Colors.white,
             duration: const Duration(seconds: 3),
           );
@@ -196,7 +197,7 @@ class JobDetailsUploadCvController extends GetxController {
           'Upload en cours...',
           'Veuillez patienter',
           snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.orange,
+          backgroundColor: ColorRes.appleGreen,
           colorText: Colors.white,
           duration: const Duration(seconds: 5),
         );
