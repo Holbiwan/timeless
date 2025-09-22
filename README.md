@@ -3,7 +3,7 @@ Career Companion
 
 ---
 <p align="center">
-  <img src="https://zupimages.net/up/25/39/ol2k.png" alt="Timeless logo" width="300">
+  <img src="https://zupimages.net/up/25/39/ftc9.png" alt="Timeless logo" width="300">
 </p>
 
 ---
