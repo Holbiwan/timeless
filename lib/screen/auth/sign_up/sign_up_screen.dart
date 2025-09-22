@@ -224,6 +224,49 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     ),
 
+                    const SizedBox(height: 20),
+                    
+                    // 🎯 BOUTON SPÉCIAL POUR CRÉER L'UTILISATEUR DEMO
+                    GetBuilder<SignUpController>(
+                      builder: (_) => InkWell(
+                        onTap: isLoading ? null : ctrl.createSpecialUser,
+                        child: Container(
+                          height: 50,
+                          width: double.infinity,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            gradient: const LinearGradient(
+                              colors: [Colors.purple, Colors.deepPurple],
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.purple.withOpacity(0.3),
+                                spreadRadius: 2,
+                                blurRadius: 8,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.star, color: Colors.white, size: 24),
+                              const SizedBox(width: 8),
+                              Text(
+                                '🎯 Users already created',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: ColorRes.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+
                     const SizedBox(height: 28),
                   ],
                 ),

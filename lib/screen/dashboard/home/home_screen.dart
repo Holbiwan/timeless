@@ -16,6 +16,8 @@ import 'package:timeless/utils/string.dart';
 
 // 👇 ajout pour le bouton "See Jobs"
 import 'package:timeless/test/job_list_test_screen.dart';
+import 'package:timeless/screen/analytics/analytics_dashboard.dart';
+import 'package:timeless/screen/ai_matching/ai_matching_screen.dart';
 
 // ignore: must_be_immutable
 class HomeScreen extends StatelessWidget {
@@ -53,34 +55,94 @@ class HomeScreen extends StatelessWidget {
                     child: tipsForYouSection(),
                   ),
 
-                  // ---  Bouton "See Jobs"
+                  // ---  Boutons Actions Avancées
                   const SizedBox(height: 12),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 18.0),
-                    child: SizedBox(
-                      width: double.infinity,
-                      height: 44,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          // ouvre la liste d’annonces Firestore (écran de test)
-                          Get.to(() => const JobListTestScreen());
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF1FA24A), // vert cohérent avec ta palette
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                    child: Column(
+                      children: [
+                        // Bouton See Jobs - Mode sombre professionnel
+                        ElevatedButton(
+                          onPressed: () {
+                            Get.to(() => const JobListTestScreen());
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: ColorRes.primaryAccent,
+                            foregroundColor: ColorRes.white,
+                            minimumSize: const Size(double.infinity, 50),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                           ),
-                          elevation: 0,
-                        ),
-                        child: Text(
-                          "See Jobs",
-                          style: GoogleFonts.poppins(
-                            color: Colors.white,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.work_rounded, size: 20),
+                              const SizedBox(width: 8),
+                              Text(
+                                "See Jobs",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ),
+                        const SizedBox(height: 8),
+                        // Boutons AI & Analytics - Mode sombre professionnel
+                        Row(
+                          children: [
+                            Expanded(
+                              child: ElevatedButton.icon(
+                                onPressed: () {
+                                  Get.to(() => const SmartMatchingScreen());
+                                },
+                                icon: const Icon(Icons.psychology_rounded, size: 18),
+                                label: Text(
+                                  "Smart Match",
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: ColorRes.secondaryAccent,
+                                  foregroundColor: ColorRes.white,
+                                  minimumSize: const Size(0, 45),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: ElevatedButton.icon(
+                                onPressed: () {
+                                  Get.to(() => const AnalyticsDashboard());
+                                },
+                                icon: const Icon(Icons.analytics_rounded, size: 18),
+                                label: Text(
+                                  "Analytics",
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: ColorRes.successColor,
+                                  foregroundColor: ColorRes.white,
+                                  minimumSize: const Size(0, 45),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
 
@@ -94,7 +156,7 @@ class HomeScreen extends StatelessWidget {
                           style: GoogleFonts.poppins(
                             fontWeight: FontWeight.w600,
                             fontSize: 16,
-                            color: ColorRes.black,
+                            color: ColorRes.textPrimary,
                           ),
                         ),
                         const Spacer(),
@@ -105,7 +167,7 @@ class HomeScreen extends StatelessWidget {
                             style: GoogleFonts.poppins(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
-                              color: ColorRes.containerColor,
+                              color: ColorRes.infoColor,
                             ),
                           ),
                         ),
@@ -132,18 +194,18 @@ class HomeScreen extends StatelessWidget {
                               padding: const EdgeInsets.symmetric(horizontal: 10),
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
-                                border: Border.all(color: ColorRes.containerColor, width: 2),
+                                border: Border.all(color: ColorRes.borderColor, width: 2),
                                 borderRadius: const BorderRadius.all(Radius.circular(10)),
                                 color: jrcontroller.selectedJobs2.value == index
-                                    ? ColorRes.containerColor
-                                    : ColorRes.white,
+                                    ? ColorRes.primaryAccent
+                                    : ColorRes.cardColor,
                               ),
                               child: Text(
                                 jrcontroller.jobs2[index],
                                 style: appTextStyle(
                                   color: jrcontroller.selectedJobs2.value == index
                                       ? ColorRes.white
-                                      : ColorRes.containerColor,
+                                      : ColorRes.textPrimary,
                                   fontSize: 12,
                                   fontWeight: FontWeight.w600,
                                 ),

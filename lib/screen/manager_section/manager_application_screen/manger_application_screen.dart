@@ -635,8 +635,8 @@ class ManagerApplicationScreen extends StatelessWidget {
                                                                         decoration: BoxDecoration(
                                                                             borderRadius:
                                                                                 const BorderRadius.all(Radius.circular(15)),
-                                                                            border: Border.all(color: const Color(0xffF3ECFF)),
-                                                                            color: ColorRes.white),
+                                                                            border: Border.all(color: ColorRes.borderColor),
+                                                                            color: ColorRes.cardColor),
                                                                         child:
                                                                             Row(
                                                                           children: [
@@ -646,33 +646,34 @@ class ManagerApplicationScreen extends StatelessWidget {
                                                                               width: 62,
                                                                             ),
                                                                             const SizedBox(width: 20),
-                                                                            Padding(
-                                                                              padding: const EdgeInsets.only(top: 15),
-                                                                              child: Column(
-                                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                children: [
-                                                                                  Text(controller.documentData[index]["Position"], style: appTextStyle(color: ColorRes.black, fontSize: 15, fontWeight: FontWeight.w500)),
-                                                                                  const SizedBox(
-                                                                                    height: 2,
-                                                                                  ),
-                                                                                  Text(controller.documentData[index]["CompanyName"], style: appTextStyle(color: ColorRes.black, fontSize: 12, fontWeight: FontWeight.w400)),
-                                                                                  const SizedBox(
-                                                                                    height: 2,
-                                                                                  ),
-                                                                                  Row(
-                                                                                    children: [
-                                                                                      Text(
-                                                                                        controller.documentData[index]["location"],
-                                                                                        style: appTextStyle(color: ColorRes.black, fontSize: 10, fontWeight: FontWeight.w400),
-                                                                                      ),
-                                                                                      const SizedBox(
-                                                                                        width: 10,
-                                                                                        child: Text(" - "),
-                                                                                      ),
-                                                                                      Text(controller.documentData[index]["type"], style: appTextStyle(color: ColorRes.black, fontSize: 10, fontWeight: FontWeight.w400)),
-                                                                                    ],
-                                                                                  ),
-                                                                                ],
+                                                                            Expanded(
+                                                                              child: Padding(
+                                                                                padding: const EdgeInsets.only(top: 15),
+                                                                                child: Column(
+                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                  children: [
+                                                                                    Text(
+                                                                                      controller.documentData[index]["Position"],
+                                                                                      style: appTextStyle(color: ColorRes.white, fontSize: 15, fontWeight: FontWeight.w500),
+                                                                                      maxLines: 1,
+                                                                                      overflow: TextOverflow.ellipsis,
+                                                                                    ),
+                                                                                    const SizedBox(height: 2),
+                                                                                    Text(
+                                                                                      controller.documentData[index]["CompanyName"],
+                                                                                      style: appTextStyle(color: ColorRes.textSecondary, fontSize: 12, fontWeight: FontWeight.w400),
+                                                                                      maxLines: 1,
+                                                                                      overflow: TextOverflow.ellipsis,
+                                                                                    ),
+                                                                                    const SizedBox(height: 2),
+                                                                                    Text(
+                                                                                      "${controller.documentData[index]["location"]} - ${controller.documentData[index]["type"]}",
+                                                                                      style: appTextStyle(color: ColorRes.textTertiary, fontSize: 10, fontWeight: FontWeight.w400),
+                                                                                      maxLines: 1,
+                                                                                      overflow: TextOverflow.ellipsis,
+                                                                                    ),
+                                                                                  ],
+                                                                                ),
                                                                               ),
                                                                             ),
                                                                             const Spacer(),
@@ -693,7 +694,7 @@ class ManagerApplicationScreen extends StatelessWidget {
                                                                                       ),
                                                                                       child: Text(
                                                                                         controller.documentData[index]["Status"],
-                                                                                        style: appTextStyle(color: controller.documentData[index]["Status"] == "Active" ? ColorRes.darkGreen : ColorRes.starColor, fontSize: 12),
+                                                                                        style: appTextStyle(color: ColorRes.white, fontSize: 12),
                                                                                       ),
                                                                                     ),
                                                                                   ),
@@ -702,7 +703,7 @@ class ManagerApplicationScreen extends StatelessWidget {
                                                                                   ),
                                                                                   Text(
                                                                                     controller.documentData[index]["salary"],
-                                                                                    style: appTextStyle(fontSize: 16, color: ColorRes.containerColor, fontWeight: FontWeight.w500),
+                                                                                    style: appTextStyle(fontSize: 16, color: ColorRes.successColor, fontWeight: FontWeight.w500),
                                                                                   ),
                                                                                   const SizedBox(
                                                                                     height: 10,

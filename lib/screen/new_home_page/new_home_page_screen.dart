@@ -2,9 +2,12 @@
 // \lib\screen\new_home_page\new_home_page_screen.dart
 
 import 'package:flutter/material.dart';
+import 'package:timeless/service/auto_translation_service.dart';
 
 class HomePageNewScreenU extends StatelessWidget {
   const HomePageNewScreenU({super.key});
+  
+  AutoTranslationService get _autoTranslateService => AutoTranslationService.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -43,33 +46,13 @@ class HomePageNewScreenU extends StatelessWidget {
 
               const SizedBox(height: 20),
 
-              /// Variante slogan en RichText
-              RichText(
-                textAlign: TextAlign.center,
-                text: const TextSpan(
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  children: [
-                    TextSpan(
-                      text: "Find ",
-                      style: TextStyle(color: Colors.green),
-                    ),
-                    TextSpan(
-                      text: "your ",
-                      style: TextStyle(color: Color(0xFFFED100)),
-                    ),
-                    TextSpan(
-                      text: "future",
-                      style: TextStyle(color: Colors.black),
-                    ),
-                    TextSpan(
-                      text: " today.",
-                      style: TextStyle(
-                          color: Colors.white, backgroundColor: Colors.black),
-                    ),
-                  ],
+              /// Variante slogan avec auto-traduction
+              _autoTranslateService.autoTranslateText(
+                "Find your future today.",
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.white,
                 ),
               ),
 
@@ -89,9 +72,9 @@ class HomePageNewScreenU extends StatelessWidget {
                   elevation: 6,
                 ),
                 onPressed: null,
-                child: const Text(
+                child: _autoTranslateService.autoTranslateText(
                   "Start your journey today",
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
                     color: Color.fromARGB(255, 255, 255, 0), // texte jaune

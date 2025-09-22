@@ -10,17 +10,23 @@ Widget detailBox(text, values) {
     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
     margin: const EdgeInsets.symmetric(horizontal: 18, vertical: 4),
     decoration: BoxDecoration(
-      gradient: LinearGradient(colors: [
-        const Color(0xFFF3F0F8),
-        const Color(0xFFF3F0F8).withOpacity(0.1),
-      ], begin: Alignment.centerLeft, end: Alignment.centerRight),
+      color: Colors.black.withOpacity(0.8),
+      border: Border.all(color: Colors.grey.withOpacity(0.3)),
       borderRadius: BorderRadius.circular(13),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.3),
+          spreadRadius: 1,
+          blurRadius: 4,
+          offset: const Offset(0, 2),
+        ),
+      ],
     ),
     child: Row(
       children: [
         const Icon(
           Icons.check_circle_outline,
-          color: ColorRes.containerColor,
+          color: ColorRes.appleGreen,
           size: 30,
         ),
         const SizedBox(
@@ -31,7 +37,7 @@ Widget detailBox(text, values) {
           child: Text(
             text,
             style: appTextStyle(
-                color: Colors.black, fontSize: 12, fontWeight: FontWeight.w400),
+                color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
           ),
         ),
      /*   PopupMenuButton(

@@ -5,66 +5,62 @@ import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/string.dart';
 
+/// Petit modèle simple et non-nullable pour éviter tout crash.
+class _NotifItem {
+  final String title;
+  final String body;
+  final String time;
+
+  const _NotifItem({
+    required this.title,
+    required this.body,
+    required this.time,
+  });
+}
+
 class NotificationScreenU extends StatelessWidget {
   const NotificationScreenU({super.key});
 
+  // Données factices pour la démo (aucun null ici)
+  List<_NotifItem> get _demoNotifications => const [
+        _NotifItem(
+          title: 'Application sent',
+          body: 'Your application for “UI Designer” has been sent.',
+          time: '2m ago',
+        ),
+        _NotifItem(
+          title: 'New match',
+          body: 'Timeless found 3 new jobs matching your profile.',
+          time: '10m ago',
+        ),
+        _NotifItem(
+          title: 'Interview',
+          body: 'Recruiter proposed an interview for next week.',
+          time: 'Yesterday',
+        ),
+        _NotifItem(
+          title: 'Profile tip',
+          body: 'Add your portfolio to get more matches.',
+          time: '2 days ago',
+        ),
+      ];
+
   @override
   Widget build(BuildContext context) {
-    // On accepte une liste venant de Get.arguments (optionnel)
-    // Ex: Get.to(NotificationScreenU(), arguments: {'items': [{'title':'..','body':'..','image':'..','date':'..'}]});
-    final args = Get.arguments as Map<String, dynamic>?;
-
-    final List<dynamic> rawItems =
-        (args?['items'] as List<dynamic>?) ?? const [];
-
-    // Normalisation null-safe
-    final items = rawItems
-        .map<Map<String, String>>((e) {
-          final m = (e as Map?)?.cast<String, dynamic>() ?? const {};
-          return {
-            'title': (m['title'] as String?)?.trim() ?? 'Untitled',
-            'body': (m['body'] as String?)?.trim() ?? '',
-            'image': (m['image'] as String?)?.trim() ?? '',
-            'date': (m['date'] as String?)?.trim() ?? '',
-          };
-        })
-        .toList();
-
-    // Démo/fallback si aucune donnée n’est fournie
-    final demo = <Map<String, String>>[
-      {
-        'title': 'New job match',
-        'body': 'A React Developer role matches your skills.',
-        'image': '',
-        'date': 'Today',
-      },
-      {
-        'title': 'Interview tip',
-        'body': 'Bring 1–2 portfolio pieces for the product round.',
-        'image': '',
-        'date': 'Yesterday',
-      },
-      {
-        'title': 'Saved job updated',
-        'body': 'Timeless Labs increased the salary range.',
-        'image': '',
-        'date': '2 days ago',
-      },
-    ];
-
-    final data = items.isNotEmpty ? items : demo;
+    final items = _demoNotifications; // jamais vide/null pour la démo
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: ColorRes.backgroundColor,
       body: SafeArea(
         child: Column(
           children: [
-            const SizedBox(height: 8),
+            const SizedBox(height: 12),
             SizedBox(
               height: 50,
               width: Get.width,
               child: Stack(
                 children: [
+                  // Back
                   GestureDetector(
                     onTap: Get.back,
                     child: Container(
@@ -77,46 +73,45 @@ class NotificationScreenU extends StatelessWidget {
                       ),
                       child: const Icon(
                         Icons.arrow_back_ios,
-                        color: ColorRes.containerColor,
                         size: 18,
+                        color: Colors.black,
                       ),
                     ),
                   ),
+                  // Title
                   Align(
                     alignment: Alignment.center,
                     child: Text(
-                      Strings.notification,
+                      "Notifications",
                       style: appTextStyle(
-                        color: ColorRes.black,
+                        color: ColorRes.textPrimary,
                         fontSize: 20,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 12),
-            Expanded(
-              child: ListView.separated(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                itemCount: data.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 10),
-                itemBuilder: (_, i) {
-                  final item = data[i];
-                  final title = item['title'] ?? '';
-                  final body = item['body'] ?? '';
-                  final date = item['date'] ?? '';
-                  final image = item['image'] ?? '';
 
-                  return _NotificationTile(
-                    title: title,
-                    body: body,
-                    date: date,
-                    imageUrl: image,
-                  );
-                },
-              ),
+            const SizedBox(height: 12),
+
+            // Liste (Expanded évite les overflow)
+            Expanded(
+              child: items.isEmpty
+                  ? _EmptyState()
+                  : ListView.separated(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      itemCount: items.length,
+                      separatorBuilder: (_, __) => const SizedBox(height: 8),
+                      itemBuilder: (_, i) {
+                        final n = items[i];
+                        return _NotifTile(item: n);
+                      },
+                    ),
             ),
           ],
         ),
@@ -125,112 +120,113 @@ class NotificationScreenU extends StatelessWidget {
   }
 }
 
-class _NotificationTile extends StatelessWidget {
-  const _NotificationTile({
-    required this.title,
-    required this.body,
-    required this.date,
-    required this.imageUrl,
-  });
-
-  final String title;
-  final String body;
-  final String date;
-  final String imageUrl;
+class _NotifTile extends StatelessWidget {
+  const _NotifTile({required this.item});
+  final _NotifItem item;
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: const Color(0xFFF7F7F7),
-      borderRadius: BorderRadius.circular(12),
-      child: InkWell(
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+      decoration: BoxDecoration(
+        color: Colors.black87,
         borderRadius: BorderRadius.circular(12),
-        onTap: () {
-          // Ouvre le détail avec les mêmes données (toujours null-safe)
-          Get.to(
-            () => const NotificationScreenU(),
-            arguments: {
-              'items': [
-                {
-                  'title': title,
-                  'body': body,
-                  'date': date,
-                  'image': imageUrl,
-                }
-              ],
-            },
-          );
-        },
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Row(
+        border: Border.all(color: Colors.grey.withOpacity(0.3)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.3),
+            spreadRadius: 2,
+            blurRadius: 8,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        leading: Container(
+          height: 45,
+          width: 45,
+          decoration: BoxDecoration(
+            color: ColorRes.brightYellow.withOpacity(0.2),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: const Icon(
+            Icons.notifications_active_rounded,
+            color: ColorRes.brightYellow,
+            size: 24,
+          ),
+        ),
+        title: Text(
+          item.title,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: appTextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+          ),
+        ),
+        subtitle: Padding(
+          padding: const EdgeInsets.only(top: 6.0),
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (imageUrl.isNotEmpty)
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Image.network(
-                    imageUrl,
-                    width: 48,
-                    height: 48,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => const SizedBox(width: 48, height: 48),
-                  ),
-                )
-              else
-                Container(
-                  width: 48,
-                  height: 48,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Icon(Icons.notifications, size: 22, color: Colors.black54),
+              Text(
+                item.body,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: appTextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.white.withOpacity(0.8),
                 ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title.isNotEmpty ? title : 'Untitled',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: appTextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: ColorRes.black,
-                      ),
-                    ),
-                    if (body.isNotEmpty) ...[
-                      const SizedBox(height: 4),
-                      Text(
-                        body,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: appTextStyle(
-                          fontSize: 12,
-                          color: ColorRes.black.withOpacity(.7),
-                        ),
-                      ),
-                    ],
-                    if (date.isNotEmpty) ...[
-                      const SizedBox(height: 6),
-                      Text(
-                        date,
-                        style: appTextStyle(
-                          fontSize: 11,
-                          color: ColorRes.black.withOpacity(.5),
-                        ),
-                      ),
-                    ],
-                  ],
+              ),
+              const SizedBox(height: 6),
+              Text(
+                item.time,
+                style: appTextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: ColorRes.brightYellow,
                 ),
               ),
             ],
           ),
         ),
+        onTap: () {},
+      ),
+    );
+  }
+}
+
+class _EmptyState extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.notifications_none_rounded,
+              size: 52, color: ColorRes.grey),
+          const SizedBox(height: 8),
+          Text(
+            'No notifications yet',
+            style: appTextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: ColorRes.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            'We\'ll keep you posted here.',
+            style: appTextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: ColorRes.textSecondary,
+            ),
+          ),
+        ],
       ),
     );
   }

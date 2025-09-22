@@ -321,14 +321,14 @@ class _SignInScreenMState extends State<SignInScreenM> {
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15),
-                            border: Border.all(color: Colors.orange, width: 3),
+                            border: Border.all(color: ColorRes.appleGreen, width: 3),
                             gradient: const LinearGradient(colors: [
-                              Colors.orange,
-                              Colors.deepOrange
+                              ColorRes.appleGreen,
+                              ColorRes.darkGreen
                             ]),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.orange.withOpacity(0.5),
+                                color: ColorRes.appleGreen.withOpacity(0.5),
                                 spreadRadius: 2,
                                 blurRadius: 10,
                                 offset: const Offset(0, 3),

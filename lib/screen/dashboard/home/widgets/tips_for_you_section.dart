@@ -19,7 +19,7 @@ Widget tipsForYouSection() {
               style: appTextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 16,
-                color: Colors.black,
+                color: ColorRes.textPrimary,
               ),
             ),
             const Spacer(),
@@ -40,18 +40,18 @@ Widget tipsForYouSection() {
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(15)),
           gradient: const LinearGradient(colors: [
-            ColorRes.gradientColor,
-            ColorRes.containerColor,
+            Colors.black87,
+            Colors.black,
           ]),
           boxShadow: [
             BoxShadow(
                 offset: const Offset(6, 6),
-                color: ColorRes.containerColor.withOpacity(0.2),
+                color: Colors.grey.withOpacity(0.3),
                 spreadRadius: 0,
                 blurRadius: 10),
             BoxShadow(
                 offset: const Offset(0, 7),
-                color: ColorRes.containerColor.withOpacity(0.5),
+                color: Colors.grey.withOpacity(0.2),
                 spreadRadius: 0,
                 blurRadius: 20),
           ],

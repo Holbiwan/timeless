@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -8,6 +8,7 @@ import 'package:timeless/screen/manager_section/dashboard/manager_dashboard_scre
 import 'package:timeless/screen/organization_profile_screen/organization_profile_screen.dart';
 import 'package:timeless/service/pref_services.dart';
 import 'package:timeless/utils/pref_keys.dart';
+import 'package:timeless/utils/color_res.dart';
 
 class SignInScreenControllerM extends GetxController {
   RxBool loading = false.obs;
@@ -18,10 +19,6 @@ class SignInScreenControllerM extends GetxController {
   String emailError = "";
   String pwdError = "";
   
-  @override
-  void onInit() {
-    super.onInit();
-  }
 
   getRememberEmailDataManger() {
     if (PrefService.getString(PrefKeys.emailRememberManager) != "") {
@@ -233,23 +230,100 @@ class SignInScreenControllerM extends GetxController {
   final FirebaseAuth auth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn(scopes: ['email']);
 
-  // SOLUTION DEMO - Connexion directe sans Google
+  // SOLUTION DEMO - Connexion anonyme + données démo dans Firestore
   void demoLogin() async {
     loading.value = true;
     
-    // Simuler une connexion réussie
-    PrefService.setValue(PrefKeys.rol, "Manager");
-    PrefService.setValue(PrefKeys.totalPost, 0);
-    PrefService.setValue(PrefKeys.company, true);
-    PrefService.setValue(PrefKeys.userId, "demo-user-id");
-    PrefService.setValue(PrefKeys.companyName, "Demo Company");
-    
-    // Redirection directe vers le dashboard
-    Get.off(() => PrefService.getBool(PrefKeys.company)
-        ? ManagerDashBoardScreen()
-        : const OrganizationProfileScreen());
+    try {
+      // Connexion anonyme Firebase (pas besoin de compte)
+      UserCredential credential = await auth.signInAnonymously();
+      
+      if (credential.user != null) {
+        // Créer un profil démo temporaire
+        await _createDemoProfile(credential.user!.uid);
+        
+        Get.off(() => ManagerDashBoardScreen());
+        
+        Get.snackbar(
+          "Demo Mode", 
+          "✅ Connecté en mode démo sécurisé!", 
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+      }
+    } catch (e) {
+      // Si l'anonyme échoue, connexion locale
+      debugPrint('Firebase Demo Error: $e');
+      await _localDemoLogin();
+    }
     
     loading.value = false;
+  }
+
+  Future<void> _localDemoLogin() async {
+    // Mode démo local si Firebase échoue
+    final demoUserId = "demo-${DateTime.now().millisecondsSinceEpoch}";
+    
+    // Définir les préférences locales
+    await PrefService.setValue(PrefKeys.rol, "Manager");
+    await PrefService.setValue(PrefKeys.totalPost, 0);
+    await PrefService.setValue(PrefKeys.company, true);
+    await PrefService.setValue(PrefKeys.userId, demoUserId);
+    await PrefService.setValue(PrefKeys.companyName, "Timeless Demo Corp");
+    
+    Get.off(() => ManagerDashBoardScreen());
+    
+    Get.snackbar(
+      "Demo Mode Local", 
+      "✅ Mode démo local activé!", 
+      backgroundColor: ColorRes.appleGreen,
+      colorText: Colors.white,
+    );
+  }
+
+  Future<void> _createDemoProfile(String userId) async {
+    try {
+      // Créer le profil manager dans Firestore
+      await fireStore
+          .collection("Auth")
+          .doc("Manager")
+          .collection("register")
+          .doc(userId)
+          .set({
+        "Email": "demo@timeless.app",
+        "CompanyName": "Timeless Demo Corp",
+        "TotalPost": 0,
+        "company": true,
+        "CreatedAt": FieldValue.serverTimestamp(),
+        "DemoAccount": true,
+        "Anonymous": true,
+      });
+
+      // Créer les infos de l'entreprise
+      await fireStore
+          .collection("Auth")
+          .doc("Manager")
+          .collection("register")
+          .doc(userId)
+          .collection("company")
+          .add({
+        "name": "Timeless Demo Corp",
+        "website": "https://demo.timeless.app",
+        "location": "Paris, France",
+        "description": "Entreprise de démonstration pour Timeless - Session temporaire",
+        "CreatedAt": FieldValue.serverTimestamp(),
+      });
+
+      // Définir les préférences
+      await PrefService.setValue(PrefKeys.rol, "Manager");
+      await PrefService.setValue(PrefKeys.totalPost, 0);
+      await PrefService.setValue(PrefKeys.company, true);
+      await PrefService.setValue(PrefKeys.userId, userId);
+      await PrefService.setValue(PrefKeys.companyName, "Timeless Demo Corp");
+    } catch (e) {
+      debugPrint('Erreur création profil démo: $e');
+      // Continue quand même avec les données locales
+    }
   }
 
   void signWithGoogle() async {

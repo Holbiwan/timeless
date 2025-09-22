@@ -54,11 +54,11 @@ class JobRecommendationScreen extends StatelessWidget {
                   ),
                   child: TextField(
                     onChanged: (value) => controller.updateSearchText(value),
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: 'Rechercher un emploi...',
-                      prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                      prefixIcon: Icon(Icons.search, color: Colors.grey),
                       border: InputBorder.none,
-                      contentPadding: const EdgeInsets.symmetric(
+                      contentPadding: EdgeInsets.symmetric(
                         horizontal: 16,
                         vertical: 12,
                       ),

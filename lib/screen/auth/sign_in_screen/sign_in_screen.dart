@@ -83,7 +83,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.green.shade100,
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: GestureDetector(
           onTap: () => FocusScope.of(context).unfocus(),
@@ -139,7 +139,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                               style: GoogleFonts.poppins(
                                 fontWeight: FontWeight.w500,
                                 fontSize: 14,
-                                color: ColorRes.black.withOpacity(0.6),
+                                color: ColorRes.textPrimary,
                               ),
                             ),
                             const Text(' *',
@@ -220,7 +220,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                               style: GoogleFonts.poppins(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
-                                color: ColorRes.black.withOpacity(0.6),
+                                color: ColorRes.textPrimary,
                               ),
                             ),
                             const Text(' *',
@@ -343,7 +343,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                                 style: GoogleFonts.poppins(
                                   fontWeight: FontWeight.w500,
                                   fontSize: 13,
-                                  color: ColorRes.black,
+                                  color: ColorRes.textPrimary,
                                 ),
                               ),
                             ],
@@ -365,14 +365,14 @@ class _SigninScreenUState extends State<SigninScreenU> {
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15),
-                            border: Border.all(color: Colors.orange, width: 3),
+                            border: Border.all(color: ColorRes.appleGreen, width: 3),
                             gradient: const LinearGradient(colors: [
-                              Colors.orange,
-                              Colors.deepOrange
+                              ColorRes.appleGreen,
+                              ColorRes.darkGreen
                             ]),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.orange.withOpacity(0.5),
+                                color: ColorRes.appleGreen.withOpacity(0.5),
                                 spreadRadius: 2,
                                 blurRadius: 10,
                                 offset: const Offset(0, 3),
@@ -384,7 +384,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                             children: [
                               const Icon(Icons.rocket_launch, color: Colors.white, size: 30),
                               const SizedBox(width: 10),
-                              Text("🚨 DEMO ACCESS 🚨",
+                              Text("🚨 DEMO SIGN IN 🚨",
                                   style: GoogleFonts.poppins(
                                       fontSize: 20,
                                       fontWeight: FontWeight.w900,

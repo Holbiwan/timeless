@@ -23,6 +23,16 @@ class ApplicationsScreen extends StatelessWidget {
 
   final applicationController = Get.put(ApplicationsController());
 
+  // Helper function pour accès sécurisé aux champs Firestore
+  String getFieldSafely(DocumentSnapshot doc, String field, [String defaultValue = 'Pending']) {
+    try {
+      final data = doc.data() as Map<String, dynamic>?;
+      return data?[field]?.toString() ?? defaultValue;
+    } catch (e) {
+      return defaultValue;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (kDebugMode) {
@@ -52,7 +62,7 @@ class ApplicationsScreen extends StatelessWidget {
                         style: appTextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.w600,
-                            color: ColorRes.black),
+                            color: ColorRes.textPrimary),
                       ),
                     ),
                   ),
@@ -199,11 +209,18 @@ class ApplicationsScreen extends StatelessWidget {
                                                             Radius.circular(15),
                                                           ),
                                                           border: Border.all(
-                                                            color: const Color(
-                                                                0xffF3ECFF),
+                                                            color: Colors.grey.withOpacity(0.3),
                                                           ),
-                                                          color:
-                                                              ColorRes.white),
+                                                          color: Colors.black87,
+                                                          boxShadow: [
+                                                            BoxShadow(
+                                                              color: Colors.black.withOpacity(0.3),
+                                                              spreadRadius: 2,
+                                                              blurRadius: 8,
+                                                              offset: const Offset(0, 3),
+                                                            ),
+                                                          ],
+                                                        ),
                                                       child: Column(
                                                         children: [
                                                           Padding(
@@ -232,23 +249,21 @@ class ApplicationsScreen extends StatelessWidget {
                                                                             [
                                                                             'position'],
                                                                         style: appTextStyle(
-                                                                            color: ColorRes
-                                                                                .black,
+                                                                            color: Colors.white,
                                                                             fontSize:
-                                                                                15,
+                                                                                16,
                                                                             fontWeight:
-                                                                                FontWeight.w500)),
+                                                                                FontWeight.w600)),
                                                                     Text(
                                                                         snapshot.data!.docs[index]
                                                                             [
                                                                             'companyName'],
                                                                         style: appTextStyle(
-                                                                            color: ColorRes
-                                                                                .black,
+                                                                            color: ColorRes.appleGreen,
                                                                             fontSize:
-                                                                                12,
+                                                                                14,
                                                                             fontWeight:
-                                                                                FontWeight.w400)),
+                                                                                FontWeight.w500)),
                                                                   ],
                                                                 ),
                                                               ],
@@ -256,17 +271,14 @@ class ApplicationsScreen extends StatelessWidget {
                                                           ),
                                                           const Divider(
                                                             color:
-                                                                ColorRes.grey,
+                                                                Colors.grey,
                                                           ),
                                                           const SizedBox(
                                                               height: 10),
                                                           InkWell(
                                                             onTap: () {
-                                                              (snapshot2.data!.docs[
-                                                                              index2]
-                                                                          [
-                                                                          'status'] ==
-                                                                      'Sent')
+                                                              final status = getFieldSafely(snapshot2.data!.docs[index2], 'status');
+                                                              (status == 'Sent')
                                                                   ? Navigator
                                                                       .push(
                                                                       context,
@@ -295,10 +307,7 @@ class ApplicationsScreen extends StatelessWidget {
                                                                         ),
                                                                       ),
                                                                     )
-                                                                  : (snapshot2.data!.docs[index2]
-                                                                              [
-                                                                              'status'] ==
-                                                                          'Rejected')
+                                                                  : (status == 'Rejected')
                                                                       ? Navigator
                                                                           .push(
                                                                           context,
@@ -314,8 +323,7 @@ class ApplicationsScreen extends StatelessWidget {
                                                                             ),
                                                                           ),
                                                                         )
-                                                                      : (snapshot2.data!.docs[index2]['status'] ==
-                                                                              'Accepted')
+                                                                      : (status == 'Accepted')
                                                                           ? Navigator
                                                                               .push(
                                                                               context,
@@ -337,20 +345,13 @@ class ApplicationsScreen extends StatelessWidget {
                                                               width: Get.width,
                                                               decoration:
                                                                   BoxDecoration(
-                                                                color: snapshot2.data!.docs[index2]
-                                                                            [
-                                                                            'status'] ==
-                                                                        'Schedule Interview'
-                                                                    ? const Color(
-                                                                        0xffFFFBED)
-                                                                    : snapshot2.data!.docs[index2]['status'] ==
-                                                                            'Sent'
-                                                                        ? const Color(
-                                                                            0xffEEF2FA)
-                                                                        : snapshot2.data!.docs[index2]['status'] ==
-                                                                                'Rejected'
+                                                                color: getFieldSafely(snapshot2.data!.docs[index2], 'status') == 'Schedule Interview'
+                                                                    ? const Color(0xffFFFBED)
+                                                                    : getFieldSafely(snapshot2.data!.docs[index2], 'status') == 'Sent'
+                                                                        ? const Color(0xffEEF2FA)
+                                                                        : getFieldSafely(snapshot2.data!.docs[index2], 'status') == 'Rejected'
                                                                             ? const Color(0xffFEEFEF)
-                                                                            : snapshot2.data!.docs[index2]['status'] == 'Accepted'
+                                                                            : getFieldSafely(snapshot2.data!.docs[index2], 'status') == 'Accepted'
                                                                                 ? const Color(0xffEDF9F0)
                                                                                 : const Color(0xffFFFBED),
                                                                 borderRadius:
@@ -360,17 +361,13 @@ class ApplicationsScreen extends StatelessWidget {
                                                               ),
                                                               child: Center(
                                                                 child: Text(
-                                                                  snapshot2.data!.docs[index2]
-                                                                              [
-                                                                              'status'] ==
-                                                                          'Schedule Interview'
+                                                                  getFieldSafely(snapshot2.data!.docs[index2], 'status') == 'Schedule Interview'
                                                                       ? "Schedule Interview"
-                                                                      : snapshot2.data!.docs[index2]['status'] ==
-                                                                              'Sent'
+                                                                      : getFieldSafely(snapshot2.data!.docs[index2], 'status') == 'Sent'
                                                                           ? "Application Sent"
-                                                                          : snapshot2.data!.docs[index2]['status'] == 'Rejected'
+                                                                          : getFieldSafely(snapshot2.data!.docs[index2], 'status') == 'Rejected'
                                                                               ? "Application Rejected"
-                                                                              : snapshot2.data!.docs[index2]['status'] == 'Accepted'
+                                                                              : getFieldSafely(snapshot2.data!.docs[index2], 'status') == 'Accepted'
                                                                                   ? "Application Accepted"
                                                                                   : "Application Pending",
                                                                   style:
@@ -380,16 +377,13 @@ class ApplicationsScreen extends StatelessWidget {
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .w500,
-                                                                    color: snapshot2.data!.docs[index2]['status'] ==
-                                                                            'Schedule Interview'
-                                                                        ? const Color(
-                                                                            0xffF1C100)
-                                                                        : snapshot2.data!.docs[index2]['status'] ==
-                                                                                'Sent'
+                                                                    color: getFieldSafely(snapshot2.data!.docs[index2], 'status') == 'Schedule Interview'
+                                                                        ? const Color(0xffF1C100)
+                                                                        : getFieldSafely(snapshot2.data!.docs[index2], 'status') == 'Sent'
                                                                             ? const Color(0xff2E5AAC)
-                                                                            : snapshot2.data!.docs[index2]['status'] == 'Rejected'
+                                                                            : getFieldSafely(snapshot2.data!.docs[index2], 'status') == 'Rejected'
                                                                                 ? const Color(0xffDA1414)
-                                                                                : snapshot2.data!.docs[index2]['status'] == 'Accepted'
+                                                                                : getFieldSafely(snapshot2.data!.docs[index2], 'status') == 'Accepted'
                                                                                     ? const Color(0xff23A757)
                                                                                     : const Color(0xffF1C100),
                                                                   ),
@@ -404,10 +398,7 @@ class ApplicationsScreen extends StatelessWidget {
                                               (applicationController
                                                           .selectedJobs.value ==
                                                       2)
-                                                  ? (snapshot2.data!
-                                                                  .docs[index2]
-                                                              ['status'] ==
-                                                          'Schedule Interview')
+                                                  ? (getFieldSafely(snapshot2.data!.docs[index2], 'status') == 'Schedule Interview')
                                                       ? Container(
                                                           height: 135,
                                                           width: Get.width,
@@ -427,10 +418,17 @@ class ApplicationsScreen extends StatelessWidget {
                                                                       Radius.circular(
                                                                           15)),
                                                               border: Border.all(
-                                                                  color: const Color(
-                                                                      0xffF3ECFF)),
-                                                              color: ColorRes
-                                                                  .white),
+                                                                  color: Colors.grey.withOpacity(0.3)),
+                                                              color: Colors.black87,
+                                                              boxShadow: [
+                                                                BoxShadow(
+                                                                  color: Colors.black.withOpacity(0.3),
+                                                                  spreadRadius: 2,
+                                                                  blurRadius: 8,
+                                                                  offset: const Offset(0, 3),
+                                                                ),
+                                                              ],
+                                                            ),
                                                           child: Column(
                                                             children: [
                                                               Padding(
@@ -461,24 +459,23 @@ class ApplicationsScreen extends StatelessWidget {
                                                                             snapshot2.data!.docs[index2][
                                                                                 'position'],
                                                                             style: appTextStyle(
-                                                                                color: ColorRes.black,
-                                                                                fontSize: 15,
-                                                                                fontWeight: FontWeight.w500)),
+                                                                                color: Colors.white,
+                                                                                fontSize: 16,
+                                                                                fontWeight: FontWeight.w600)),
                                                                         Text(
                                                                             snapshot.data!.docs[index][
                                                                                 'companyName'],
                                                                             style: appTextStyle(
-                                                                                color: ColorRes.black,
-                                                                                fontSize: 12,
-                                                                                fontWeight: FontWeight.w400)),
+                                                                                color: ColorRes.appleGreen,
+                                                                                fontSize: 14,
+                                                                                fontWeight: FontWeight.w500)),
                                                                       ],
                                                                     ),
                                                                   ],
                                                                 ),
                                                               ),
                                                               const Divider(
-                                                                color: ColorRes
-                                                                    .grey,
+                                                                color: Colors.grey,
                                                               ),
                                                               const SizedBox(
                                                                   height: 10),
@@ -550,10 +547,7 @@ class ApplicationsScreen extends StatelessWidget {
                                               (applicationController
                                                           .selectedJobs.value ==
                                                       1)
-                                                  ? (snapshot2.data!
-                                                                  .docs[index2]
-                                                              ['status'] ==
-                                                          'Accepted')
+                                                  ? (getFieldSafely(snapshot2.data!.docs[index2], 'status') == 'Accepted')
                                                       ? Container(
                                                           height: 135,
                                                           width: Get.width,
@@ -610,24 +604,23 @@ class ApplicationsScreen extends StatelessWidget {
                                                                             snapshot2.data!.docs[index2][
                                                                                 'position'],
                                                                             style: appTextStyle(
-                                                                                color: ColorRes.black,
-                                                                                fontSize: 15,
-                                                                                fontWeight: FontWeight.w500)),
+                                                                                color: Colors.white,
+                                                                                fontSize: 16,
+                                                                                fontWeight: FontWeight.w600)),
                                                                         Text(
                                                                             snapshot.data!.docs[index][
                                                                                 'companyName'],
                                                                             style: appTextStyle(
-                                                                                color: ColorRes.black,
-                                                                                fontSize: 12,
-                                                                                fontWeight: FontWeight.w400)),
+                                                                                color: ColorRes.appleGreen,
+                                                                                fontSize: 14,
+                                                                                fontWeight: FontWeight.w500)),
                                                                       ],
                                                                     ),
                                                                   ],
                                                                 ),
                                                               ),
                                                               const Divider(
-                                                                color: ColorRes
-                                                                    .grey,
+                                                                color: Colors.grey,
                                                               ),
                                                               const SizedBox(
                                                                   height: 10),
@@ -699,10 +692,7 @@ class ApplicationsScreen extends StatelessWidget {
                                               (applicationController
                                                           .selectedJobs.value ==
                                                       3)
-                                                  ? (snapshot2.data!
-                                                                  .docs[index2]
-                                                              ['status'] ==
-                                                          'Rejected')
+                                                  ? (getFieldSafely(snapshot2.data!.docs[index2], 'status') == 'Rejected')
                                                       ? Container(
                                                           height: 135,
                                                           width: Get.width,
@@ -722,10 +712,17 @@ class ApplicationsScreen extends StatelessWidget {
                                                                       Radius.circular(
                                                                           15)),
                                                               border: Border.all(
-                                                                  color: const Color(
-                                                                      0xffF3ECFF)),
-                                                              color: ColorRes
-                                                                  .white),
+                                                                  color: Colors.grey.withOpacity(0.3)),
+                                                              color: Colors.black87,
+                                                              boxShadow: [
+                                                                BoxShadow(
+                                                                  color: Colors.black.withOpacity(0.3),
+                                                                  spreadRadius: 2,
+                                                                  blurRadius: 8,
+                                                                  offset: const Offset(0, 3),
+                                                                ),
+                                                              ],
+                                                            ),
                                                           child: Column(
                                                             children: [
                                                               Padding(
@@ -757,7 +754,7 @@ class ApplicationsScreen extends StatelessWidget {
                                                                               .data!
                                                                               .docs[index2]['position'],
                                                                           style: appTextStyle(
-                                                                              color: ColorRes.black,
+                                                                              color: ColorRes.white,
                                                                               fontSize: 15,
                                                                               fontWeight: FontWeight.w500),
                                                                         ),
@@ -766,7 +763,7 @@ class ApplicationsScreen extends StatelessWidget {
                                                                               .data!
                                                                               .docs[index]['companyName'],
                                                                           style: appTextStyle(
-                                                                              color: ColorRes.black,
+                                                                              color: ColorRes.white,
                                                                               fontSize: 12,
                                                                               fontWeight: FontWeight.w400),
                                                                         ),
@@ -776,8 +773,7 @@ class ApplicationsScreen extends StatelessWidget {
                                                                 ),
                                                               ),
                                                               const Divider(
-                                                                color: ColorRes
-                                                                    .grey,
+                                                                color: Colors.grey,
                                                               ),
                                                               const SizedBox(
                                                                   height: 10),
@@ -849,10 +845,7 @@ class ApplicationsScreen extends StatelessWidget {
                                               (applicationController
                                                           .selectedJobs.value ==
                                                       4)
-                                                  ? (snapshot2.data!
-                                                                  .docs[index2]
-                                                              ['status'] ==
-                                                          'Sent')
+                                                  ? (getFieldSafely(snapshot2.data!.docs[index2], 'status') == 'Sent')
                                                       ? Container(
                                                           height: 135,
                                                           width: Get.width,
@@ -911,24 +904,23 @@ class ApplicationsScreen extends StatelessWidget {
                                                                             snapshot2.data!.docs[index2][
                                                                                 'position'],
                                                                             style: appTextStyle(
-                                                                                color: ColorRes.black,
-                                                                                fontSize: 15,
-                                                                                fontWeight: FontWeight.w500)),
+                                                                                color: Colors.white,
+                                                                                fontSize: 16,
+                                                                                fontWeight: FontWeight.w600)),
                                                                         Text(
                                                                             snapshot.data!.docs[index][
                                                                                 'companyName'],
                                                                             style: appTextStyle(
-                                                                                color: ColorRes.black,
-                                                                                fontSize: 12,
-                                                                                fontWeight: FontWeight.w400)),
+                                                                                color: ColorRes.appleGreen,
+                                                                                fontSize: 14,
+                                                                                fontWeight: FontWeight.w500)),
                                                                       ],
                                                                     ),
                                                                   ],
                                                                 ),
                                                               ),
                                                               const Divider(
-                                                                color: ColorRes
-                                                                    .grey,
+                                                                color: Colors.grey,
                                                               ),
                                                               const SizedBox(
                                                                   height: 10),

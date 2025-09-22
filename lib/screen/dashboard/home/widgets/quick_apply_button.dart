@@ -65,7 +65,7 @@ class QuickApplyButton extends StatelessWidget {
         "Connexion requise",
         "Veuillez vous connecter pour postuler",
         snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.orange,
+        backgroundColor: ColorRes.appleGreen,
         colorText: Colors.white,
       );
       return;

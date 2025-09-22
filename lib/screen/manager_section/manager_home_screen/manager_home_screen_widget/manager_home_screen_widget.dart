@@ -32,31 +32,37 @@ Widget recentPeopleBox({bool? homeScreen, String? position}) {
               print(contro.userData[0]['companyName'][0]['companyname']);
             }
 
-            if (homeScreen == true) {
-              contro.userData[i]['companyName'].forEach((element) {
-                if (element['companyname'].toString().toLowerCase() ==
-                        PrefService.getString(PrefKeys.companyName)
-                            .toString()
-                            .toLowerCase() &&
-                    element['position'].toString() == position) {
-                  if (kDebugMode) {
-                    print(element);
+            final companyNameData = contro.userData[i]['companyName'];
+            if (companyNameData is List) {
+              if (homeScreen == true) {
+                for (var element in companyNameData) {
+                  if (element['companyname'].toString().toLowerCase() ==
+                          PrefService.getString(PrefKeys.companyName)
+                              .toString()
+                              .toLowerCase() &&
+                      element['position'].toString() == position) {
+                    if (kDebugMode) {
+                      print(element);
+                    }
+                    o = element['companyname'];
                   }
-                  o = element['companyname'];
                 }
-              });
-            } else {
-              contro.userData[i]['companyName'].forEach((element) {
-                if (element['companyname'].toString().toLowerCase() ==
-                    PrefService.getString(PrefKeys.companyName)
-                        .toString()
-                        .toLowerCase()) {
-                  if (kDebugMode) {
-                    print(element);
+              } else {
+                for (var element in companyNameData) {
+                  if (element['companyname'].toString().toLowerCase() ==
+                      PrefService.getString(PrefKeys.companyName)
+                          .toString()
+                          .toLowerCase()) {
+                    if (kDebugMode) {
+                      print(element);
+                    }
+                    o = element['companyname'];
                   }
-                  o = element['companyname'];
                 }
-              });
+              }
+            } else if (companyNameData is String) {
+              // Si c'est un String, on l'utilise directement
+              o = companyNameData;
             }
 
             return (o.toString().toLowerCase() ==
