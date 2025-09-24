@@ -21,45 +21,74 @@ Career Companion
 
 ---
 
-## Overview
+🚀 Timeless – Career Companion
 
-**Timeless** is a mobile app built with **Flutter** that helps candidates discover **digital/tech jobs across Europe**.  
-It focuses on fast search, clean UX, and simple onboarding (Google, GitHub, Email/Password, or **Guest Mode**).  
-For presentations or low-connectivity scenarios, the app includes an **Offline Demo** that loads jobs from a local JSON file.
+Bridging the gap with timeless talent
 
----
+Timeless is a mobile app built with Flutter that helps candidates discover digital/tech jobs across Europe.
+It focuses on fast search, clean UX, and simple onboarding (Google, GitHub, Email/Password, or Guest Mode).
+For presentations or low-connectivity scenarios, the app includes an Offline Demo that loads jobs from a local JSON file.
 
-## Key Features
+✨ Features
 
-- 🔎 **Job Search & Browse**
-  - Search by title, company, location; filter and sort results.
-  - Save favorites for quick access.
+🔐 Authentication – Secure login & signup (Firebase Auth).
 
-- 👤 **Authentication**
-  - Google, GitHub, Email/Password (via Firebase Auth).
-  - **Guest Mode** (Anonymous sign-in) for instant demo access.
-  - Optional **Offline Demo**: load jobs from `assets/jobs.json` (no network required).
+👤 User Profiles – Manage job seeker & employer accounts.
 
-- ☁️ **Data & Storage**
-  - Firestore for user profiles, job data, and preferences.
-  - (Optional) Firebase Storage for CV / attachments.
+📊 Dashboard – Personalized experience with job offers & applications.
 
-- 🛡️ **Privacy & Security**
-  - Demo-friendly Firestore rules with guidance to harden for production.
-  - Secrets kept out of Git via a strict `.gitignore`.
+🔔 Notifications – Real-time alerts for interviews, offers, and updates.
 
----
+🏢 Employer Section – Manage job postings and candidates.
 
-## Quick Start (Android)
 
-### 1) Prerequisites
-- Flutter **3.x** (stable), Android Studio (SDK & platform tools)
-- A Firebase project
+## 📸 Screenshots
 
-### 2) Clone & dependencies
-```bash
-git clone <your-repo-url> timeless
+| Onboarding | Onboarding |
+|---|---|
+| ![Caroussel 1](assets/screenshots/caroussel1.png) | ![Caroussel 2](assets/screenshots/caroussel2.png) |
+
+| Sign In | Create Account |
+|---|---|
+| ![Sign In](assets/screenshots/SIGNIN.png) | ![Create Account](assets/screenshots/CreateAccount.png) |
+
+| Employer | Employer (alt) |
+|---|---|
+| ![Employer Screen](assets/screenshots/Employerscreen.png) | ![Employer Screen 2](assets/screenshots/EmployerScreen.png) |
+
+| Dashboard | Hiring |
+|---|---|
+| ![Dashboard](assets/screenshots/Dashboard.png) | ![Hiring](assets/screenshots/Hiring.png) |
+
+| Notifications |
+|---|
+| ![Notifications](assets/screenshots/Notifs.png) |
+
+	
+
+🛠️ Tech Stack
+
+Frontend: Flutter (Dart)
+
+Backend: Firebase (Auth, Firestore, Storage, Cloud Functions)
+
+State Management: GetX
+
+Platforms: Android, iOS
+
+🚧 Installation
+# Clone the repository
+git clone https://github.com/ton-compte/timeless.git
+
+# Move into the project folder
 cd timeless
 
+# Install dependencies
 flutter pub get
 
+# Run on a connected device or emulator
+flutter run
+
+📜 License
+
+This project is licensed under the MIT License.
