@@ -17,7 +17,7 @@ class LanguageToggle extends StatelessWidget {
         onTap: () {
           translationService.toggleLanguage();
           Get.snackbar(
-            isEnglish ? 'Language Changed' : 'Langue Modifiée',
+            'Language Changed',
             isEnglish ? 'Switched to French' : 'Switched to English',
             backgroundColor: Colors.blue,
             colorText: Colors.white,

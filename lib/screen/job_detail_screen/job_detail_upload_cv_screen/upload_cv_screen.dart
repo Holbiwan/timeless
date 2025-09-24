@@ -280,7 +280,7 @@ class JobDetailsUploadCvScreen extends StatelessWidget {
                       // const Spacer(),
                       const SizedBox(height: 50),
                       GestureDetector(
-                        onTap: () {
+                        onTap: () async {
                           SendNotificationModel notification =
                               SendNotificationModel(
                                   title:
@@ -292,10 +292,16 @@ class JobDetailsUploadCvScreen extends StatelessWidget {
                           NotificationService.sendNotification(notification);
                           if (controller.pdfUrl == null ||
                               controller.pdfUrl == "") {
-                            Get.snackbar("Error", "Upload Your Resume",
-                                colorText: const Color(0xffDA1414));
+                            Get.snackbar(
+                              "❌ CV Required", 
+                              "Please upload your CV before applying",
+                              snackPosition: SnackPosition.BOTTOM,
+                              backgroundColor: Colors.red,
+                              colorText: Colors.white,
+                              duration: const Duration(seconds: 3),
+                            );
                           } else {
-                            controller.onTapApply(args: args["doc"]);
+                            await controller.onTapApply(args: args["doc"]);
                           }
                         },
                         child: Obx(() {

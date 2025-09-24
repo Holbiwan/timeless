@@ -128,15 +128,25 @@ class SignInScreenController extends GetxController {
             .get();
 
         final m = snap.data() ?? {};
-        PrefService.setValue(
-            PrefKeys.fullName, (m["fullName"] ?? "") as String);
-        PrefService.setValue(
-            PrefKeys.phoneNumber, (m["Phone"] ?? "") as String);
-        PrefService.setValue(PrefKeys.city, (m["City"] ?? "") as String);
-        PrefService.setValue(PrefKeys.state, (m["State"] ?? "") as String);
-        PrefService.setValue(PrefKeys.country, (m["Country"] ?? "") as String);
-        PrefService.setValue(
-            PrefKeys.occupation, (m["Occupation"] ?? "") as String);
+        // Only load data if it exists and is not empty, to avoid loading demo data
+        if (m["fullName"] != null && (m["fullName"] as String).isNotEmpty) {
+          PrefService.setValue(PrefKeys.fullName, (m["fullName"] ?? "") as String);
+        }
+        if (m["Phone"] != null && (m["Phone"] as String).isNotEmpty) {
+          PrefService.setValue(PrefKeys.phoneNumber, (m["Phone"] ?? "") as String);
+        }
+        if (m["City"] != null && (m["City"] as String).isNotEmpty) {
+          PrefService.setValue(PrefKeys.city, (m["City"] ?? "") as String);
+        }
+        if (m["State"] != null && (m["State"] as String).isNotEmpty) {
+          PrefService.setValue(PrefKeys.state, (m["State"] ?? "") as String);
+        }
+        if (m["Country"] != null && (m["Country"] as String).isNotEmpty) {
+          PrefService.setValue(PrefKeys.country, (m["Country"] ?? "") as String);
+        }
+        if (m["Occupation"] != null && (m["Occupation"] as String).isNotEmpty) {
+          PrefService.setValue(PrefKeys.occupation, (m["Occupation"] ?? "") as String);
+        }
 
         emailController.clear();
         passwordController.clear();

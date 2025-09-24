@@ -10,6 +10,7 @@ import 'package:timeless/screen/inbox_logo_screen/inbox_logo_screen.dart';
 import 'package:timeless/screen/new_home_page/new_home_page_screen.dart';
 import 'package:timeless/screen/profile_logo_screen/profile_logo_screen.dart';
 import 'package:timeless/screen/profile/edit_profile_user/edit_profile_user_screen.dart';
+import 'package:timeless/screen/profile/profile_view_screen.dart';
 
 import 'package:timeless/service/pref_services.dart';
 import 'package:timeless/utils/app_style.dart';
@@ -59,7 +60,7 @@ class DashBoardScreen extends StatelessWidget {
               default:
                 return token.isEmpty
                     ? const ProfileLogoScreen()
-                    : EditProfileUserScreen();
+                    : const ProfileViewScreen();
             }
           },
         ),

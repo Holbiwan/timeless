@@ -24,6 +24,7 @@ import 'package:timeless/test/upload_cv_test_screen.dart';
 import 'package:timeless/service/translation_service.dart';
 import 'package:timeless/service/accessibility_service.dart';
 import 'package:timeless/service/auto_translation_service.dart';
+import 'package:timeless/service/notification_service.dart' as AppNotificationService;
 
 // ===== Manager =====
 import 'package:timeless/screen/manager_section/Notification/notification_services.dart';
@@ -77,6 +78,7 @@ Future<void> main() async {
   Get.put(TranslationService());
   Get.put(AccessibilityService());
   Get.put(AutoTranslationService());
+  Get.put(AppNotificationService.NotificationService());
   
   runApp(const MyApp());
 }

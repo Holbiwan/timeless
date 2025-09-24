@@ -11,6 +11,7 @@ import 'package:timeless/service/auto_translation_service.dart';
 import 'package:timeless/common/widgets/language_toggle.dart';
 import 'package:timeless/screen/accessibility/accessibility_panel.dart';
 import 'dart:math';
+import 'package:timeless/service/job_matching_service.dart';
 
 class SmartMatchingScreen extends StatefulWidget {
   const SmartMatchingScreen({super.key});
@@ -79,17 +80,9 @@ class _SmartMatchingScreenState extends State<SmartMatchingScreen>
   }
 
   int _calculateMatch(Map<String, dynamic> jobData) {
-    int score = 70;
-    final requirements = jobData['RequirementsList'] as List?;
-    if (requirements != null) {
-      for (String req in requirements) {
-        if (req.toLowerCase().contains('flutter')) score += 15;
-        if (req.toLowerCase().contains('dart')) score += 10;
-        if (req.toLowerCase().contains('firebase')) score += 8;
-        if (req.toLowerCase().contains('api')) score += 5;
-      }
-    }
-    return score > 100 ? 100 : score;
+    // Use new intelligent matching algorithm
+    final score = JobMatchingService.calculateMatchScore(jobData);
+    return score.round();
   }
 
   List<String> _generateReasons(Map<String, dynamic> jobData) {
