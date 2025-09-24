@@ -49,8 +49,10 @@ For presentations or low-connectivity scenarios, the app includes an **Offline D
   <img src="assets/screenshots/CreateAccount.png" alt="Create Account" width="220"/>
 </p>
 <p align="center">
-  <img src="assets/screenshots/Employerscreen.png" alt="Employer Screen" width="220"/>
-   <img src="assets/screenshots/Dashboard.png" alt="Dashboard" width="220"/>
+
+<img src="assets/screenshots/Dashboard.png" alt="Dashboard" width="220"/>
+<img src="assets/screenshots/EmployerScreen.png" alt="Employer Screen 2" width="220"/>
+
   
 <p align="center">
  
@@ -87,3 +89,4 @@ flutter pub get
 flutter run
 📜 License
 This project is licensed under the MIT License.
+
