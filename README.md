@@ -1,13 +1,12 @@
 # 🚀 Timeless  
 Career Companion
 
----
 
 <p align="center">
   <img src="https://zupimages.net/up/25/39/ftc9.png" alt="Timeless logo" width="300">
 </p>
 
----
+
 
 <h1 align="center"></h1>
 <p align="center"><em>Digital job search — Find, Apply & Grow.</em></p>
@@ -63,6 +62,8 @@ For presentations or low-connectivity scenarios, the app includes an **Offline D
   
 </p>
 
+
+
 ---
 
 ## 🛠️ Tech Stack
@@ -87,6 +88,8 @@ flutter pub get
 
 # Run on a connected device or emulator
 flutter run
+```
+
 📜 License
 This project is licensed under the MIT License.
-
+---
