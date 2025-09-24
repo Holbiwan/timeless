@@ -1,7 +1,7 @@
 # 🚀 Timeless  
 Career Companion  
 
-Landing page: [https://holbiwan.github.io/timeless-landing/](https://holbiwan.github.io/timeless-landing/)
+👉 [Visit the Landing Page](https://holbiwan.github.io/timeless-landing/)
 
 
 <p align="center">
@@ -86,4 +86,5 @@ flutter run
 
 📜 License
 This project is licensed under the MIT License.
+
 ---
