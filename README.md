@@ -1,7 +1,7 @@
 # 🚀 Timeless  
 Career Companion  
 
-Landing page :[https://holbiwan.github.io/timeless-landing/]!  
+Landing page: [https://holbiwan.github.io/timeless-landing/](https://holbiwan.github.io/timeless-landing/)
 
 
 <p align="center">
