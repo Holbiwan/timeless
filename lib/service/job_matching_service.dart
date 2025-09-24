@@ -1,9 +1,15 @@
+// ==================================================================
+// JOB MATCHING SERVICE / SERVICE DE CORRESPONDANCE D'EMPLOIS
+// ==================================================================
+
 import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:timeless/service/pref_services.dart';
 import 'package:timeless/utils/pref_keys.dart';
 
+/// EN: Job matching service with multi-criteria scoring algorithm
+/// FR: Service de matching d'emplois avec algorithme de scoring multicritères
 class JobMatchingService {
   /// Enhanced job matching algorithm that uses user profile data
   static double calculateMatchScore(Map<String, dynamic> jobData) {
@@ -35,25 +41,25 @@ class JobMatchingService {
     weightSum += 20;
     if (kDebugMode) print('⭐ Experience Score: ${experienceScore.toStringAsFixed(2)} (weight: 20)');
     
-    // 3. SALARY MATCHING (15% weight)
+    // 3. SALARY MATCHING
     final salaryScore = _calculateSalaryMatch(userSalaryMin, userSalaryMax, jobData);
     totalScore += salaryScore * 15;
     weightSum += 15;
     if (kDebugMode) print('💰 Salary Score: ${salaryScore.toStringAsFixed(2)} (weight: 15)');
     
-    // 4. LOCATION MATCHING (10% weight)  
+    // 4. LOCATION MATCHING
     final locationScore = _calculateLocationMatch(userLocation, jobData);
     totalScore += locationScore * 10;
     weightSum += 10;
     if (kDebugMode) print('📍 Location Score: ${locationScore.toStringAsFixed(2)} (weight: 10)');
     
-    // 5. JOB TYPE MATCHING (10% weight)
+    // 5. JOB TYPE MATCHING 
     final jobTypeScore = _calculateJobTypeMatch(userJobTypes, jobData);
     totalScore += jobTypeScore * 10;
     weightSum += 10;
     if (kDebugMode) print('💼 Job Type Score: ${jobTypeScore.toStringAsFixed(2)} (weight: 10)');
     
-    // 6. INDUSTRY MATCHING (5% weight)
+    // 6. INDUSTRY MATCHING 
     final industryScore = _calculateIndustryMatch(userIndustries, jobData);
     totalScore += industryScore * 5;
     weightSum += 5;
@@ -62,7 +68,7 @@ class JobMatchingService {
     // Calculate final weighted score
     final finalScore = weightSum > 0 ? (totalScore / weightSum) : 0.0;
     
-    // Convert to percentage (0-100)
+    // Convert to percentage
     final percentageScore = min(100.0, max(0.0, finalScore * 100));
     
     if (kDebugMode) {
@@ -76,7 +82,7 @@ class JobMatchingService {
   /// Calculate skills matching score
   static double _calculateSkillsMatch(List<String> userSkills, Map<String, dynamic> jobData) {
     if (userSkills.isEmpty) {
-      // Fallback to legacy algorithm if no user skills
+      // Fallback
       return _legacySkillsMatch(jobData);
     }
     
