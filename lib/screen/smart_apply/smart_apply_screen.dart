@@ -164,11 +164,11 @@ class _SmartApplyScreenState extends State<SmartApplyScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorRes.white,
+      backgroundColor: ColorRes.backgroundColor,
       appBar: AppBar(
         title: Text('📝 Postuler', style: GoogleFonts.poppins()),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        backgroundColor: ColorRes.backgroundColor,
+        foregroundColor: ColorRes.textPrimary,
         elevation: 0,
       ),
       body: SingleChildScrollView(

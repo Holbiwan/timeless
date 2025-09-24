@@ -12,7 +12,6 @@ import 'package:timeless/utils/color_res.dart';
 import 'package:country_picker/country_picker.dart';
 
 
-
 class SignUpController extends GetxController {
   // ===== State / Controllers =====
   final RxBool loading = false.obs;

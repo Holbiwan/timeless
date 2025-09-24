@@ -48,12 +48,13 @@ class _SplashScreenState extends State<SplashScreen>
       'title': 'Find Your',
       'subtitle': 'Dream Job',
       'description': 'Discover opportunities that match your skills',
-      'icon': '😍'
+      'isImage': true,
+      'imagePath': 'assets/images/love_emoji.png'
     },
     {
       'title': 'Smart Job',
       'subtitle': 'Applications',
-      'description': 'Apply with algorithm-powered matching technology',
+      'description': 'Apply matching offers with a single click',
       'isImage': true,
       'imagePath': 'assets/images/search_job.jpg'
     },
@@ -113,9 +114,9 @@ class _SplashScreenState extends State<SplashScreen>
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
+              ColorRes.backgroundColor,
+              Color(0xFFB2EBF2),
               ColorRes.darkBlue,
-              Color(0xFF1E3A8A),
-              ColorRes.deepBordeaux,
             ],
           ),
         ),
@@ -155,39 +156,68 @@ class _SplashScreenState extends State<SplashScreen>
                   }),
                   
                   // Main content
-                  Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
+                  Positioned.fill(
+                    child: Center(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
                         // Icon/Logo with scale animation
-                        SlideTransition(
-                          position: _slideAnimation,
-                          child: ScaleTransition(
-                            scale: _fadeAnimation,
-                            child: currentSlideData['isLogo'] == true
-                                ? ScaleTransition(
-                                    scale: _logoScaleAnimation,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: ColorRes.brightYellow.withOpacity(0.3),
-                                            blurRadius: 20,
-                                            spreadRadius: 10,
-                                          ),
+                        currentSlideData['isLogo'] == true
+                            ? FadeTransition(
+                                opacity: _fadeAnimation,
+                                child: ScaleTransition(
+                                  scale: _logoScaleAnimation,
+                                  child: Container(
+                                    width: 320,
+                                    height: 160,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(25),
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: [
+                                          ColorRes.darkBlue,
+                                          ColorRes.darkBlue.withOpacity(0.9),
                                         ],
                                       ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: ColorRes.brightYellow.withOpacity(0.4),
+                                          blurRadius: 25,
+                                          spreadRadius: 5,
+                                          offset: const Offset(0, 5),
+                                        ),
+                                        BoxShadow(
+                                          color: ColorRes.darkBlue.withOpacity(0.2),
+                                          blurRadius: 15,
+                                          spreadRadius: 2,
+                                          offset: const Offset(0, 8),
+                                        ),
+                                      ],
+                                      border: Border.all(
+                                        color: ColorRes.brightYellow.withOpacity(0.6),
+                                        width: 3,
+                                      ),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(15.0),
                                       child: Image.asset(
                                         'assets/images/logo.png',
-                                        width: 250,
-                                        height: 250,
                                         fit: BoxFit.contain,
                                       ),
                                     ),
-                                  )
-                                : Container(
-                                    width: 180,
-                                    height: 180,
+                                  ),
+                                ),
+                              )
+                            : FadeTransition(
+                                opacity: _fadeAnimation,
+                                child: ScaleTransition(
+                                  scale: _fadeAnimation,
+                                  child: Container(
+                                    width: 150,
+                                    height: 150,
                                     decoration: BoxDecoration(
                                       color: ColorRes.brightYellow.withOpacity(0.1),
                                       shape: BoxShape.circle,
@@ -202,35 +232,32 @@ class _SplashScreenState extends State<SplashScreen>
                                               borderRadius: BorderRadius.circular(20),
                                               child: Image.asset(
                                                 currentSlideData['imagePath']!,
-                                                width: 120,
-                                                height: 120,
+                                                width: 100,
+                                                height: 100,
                                                 fit: BoxFit.cover,
                                               ),
                                             )
                                           : Text(
                                               currentSlideData['icon']!,
-                                              style: const TextStyle(fontSize: 50),
+                                              style: const TextStyle(fontSize: 40),
                                             ),
                                     ),
                                   ),
-                          ),
-                        ),
+                                ),
+                              ),
                         
-                        const SizedBox(height: 40),
+                        const SizedBox(height: 20),
                         
                         // Title animation
-                        SlideTransition(
-                          position: _slideAnimation,
-                          child: FadeTransition(
-                            opacity: _fadeAnimation,
-                            child: Text(
-                              currentSlideData['title']!,
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.poppins(
-                                fontSize: 28,
-                                fontWeight: FontWeight.w300,
-                                color: Colors.white70,
-                              ),
+                        FadeTransition(
+                          opacity: _fadeAnimation,
+                          child: Text(
+                            currentSlideData['title']!,
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.poppins(
+                              fontSize: 24,
+                              fontWeight: FontWeight.w300,
+                              color: ColorRes.textPrimary,
                             ),
                           ),
                         ),
@@ -238,51 +265,47 @@ class _SplashScreenState extends State<SplashScreen>
                         const SizedBox(height: 8),
                         
                         // Subtitle animation
-                        SlideTransition(
-                          position: _slideAnimation,
-                          child: FadeTransition(
-                            opacity: _fadeAnimation,
-                            child: Text(
-                              currentSlideData['subtitle']!,
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.poppins(
-                                fontSize: 42,
-                                fontWeight: FontWeight.w700,
-                                color: ColorRes.brightYellow,
-                                shadows: [
-                                  Shadow(
-                                    color: ColorRes.brightYellow.withOpacity(0.5),
-                                    blurRadius: 10,
-                                  ),
-                                ],
-                              ),
+                        FadeTransition(
+                          opacity: _fadeAnimation,
+                          child: Text(
+                            currentSlideData['subtitle']!,
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.poppins(
+                              fontSize: 36,
+                              fontWeight: FontWeight.w700,
+                              color: ColorRes.brightYellow,
+                              shadows: [
+                                Shadow(
+                                  color: ColorRes.brightYellow.withOpacity(0.5),
+                                  blurRadius: 10,
+                                ),
+                              ],
                             ),
                           ),
                         ),
                         
-                        const SizedBox(height: 24),
+                        const SizedBox(height: 16),
                         
                         // Description animation
-                        SlideTransition(
-                          position: _slideAnimation,
-                          child: FadeTransition(
-                            opacity: _fadeAnimation,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 32),
-                              child: Text(
-                                currentSlideData['description']!,
-                                textAlign: TextAlign.center,
-                                style: GoogleFonts.poppins(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.white60,
-                                  height: 1.5,
-                                ),
+                        FadeTransition(
+                          opacity: _fadeAnimation,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 32),
+                            child: Text(
+                              currentSlideData['description']!,
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.poppins(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                color: ColorRes.textSecondary,
+                                height: 1.5,
                               ),
                             ),
                           ),
                         ),
-                      ],
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                   
@@ -302,7 +325,7 @@ class _SplashScreenState extends State<SplashScreen>
                         child: Text(
                           'Skip',
                           style: GoogleFonts.poppins(
-                            color: Colors.white,
+                            color: ColorRes.textPrimary,
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                           ),

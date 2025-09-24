@@ -40,8 +40,8 @@ Widget tipsForYouSection() {
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(15)),
           gradient: const LinearGradient(colors: [
-            Colors.black87,
-            Colors.black,
+            ColorRes.darkBlue,
+            ColorRes.primaryAccent,
           ]),
           boxShadow: [
             BoxShadow(
@@ -58,27 +58,27 @@ Widget tipsForYouSection() {
         ),
         child: Row(
           children: [
-            Container(
-              padding: const EdgeInsets.only(left: 20),
-              width: Get.width - 160,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                // ignore: prefer_const_literals_to_create_immutables
-                children: [
-                  Text(
-                    Strings.howToFindAPerfectJob,
-                    style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 18,
-                        color: ColorRes.white),
-                  ),
-                  SizedBox(
-                    child: Container(
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 20, right: 10),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      Strings.howToFindAPerfectJob,
+                      style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 15,
+                          color: ColorRes.white),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 12),
+                    Container(
                       height: 32,
-                      width: 110,
-                      margin: const EdgeInsets.only(top: 15),
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      width: 100,
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
                       alignment: Alignment.center,
                       decoration: const BoxDecoration(
                           color: ColorRes.orange,
@@ -87,18 +87,27 @@ Widget tipsForYouSection() {
                         Strings.readMore,
                         style: appTextStyle(
                           fontWeight: FontWeight.w500,
-                          fontSize: 12,
+                          fontSize: 11,
                           color: ColorRes.white,
                         ),
                       ),
                     ),
-                  )
-                ],
+                  ],
+                ),
               ),
             ),
-            const Spacer(),
-            Image.asset(AssetRes.girlImage),
-            const SizedBox(width: 20)
+            Container(
+              height: 120,
+              width: 80,
+              margin: const EdgeInsets.only(right: 10, top: 15, bottom: 15),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.asset(
+                  AssetRes.girlImage,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
           ],
         ),
       ),

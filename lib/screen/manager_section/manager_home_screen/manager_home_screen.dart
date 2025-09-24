@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:timeless/common/widgets/back_button.dart';
 import 'package:timeless/common/widgets/common_loader.dart';
 import 'package:timeless/screen/job_detail_screen/job_detail_upload_cv_screen/upload_cv_controller.dart';
-import 'package:timeless/screen/manager_section/Recent%20People%20Application/recent_application_screen.dart';
+import 'package:timeless/screen/manager_section/received_applications_screen.dart';
 import 'package:timeless/screen/manager_section/manager_home_screen/manager_home_screen_controller.dart';
 import 'package:timeless/screen/manager_section/manager_home_screen/manager_home_screen_widget/manager_home_screen_widget.dart';
 import 'package:timeless/screen/manager_section/notification1/notification1_screen.dart';
@@ -354,7 +355,7 @@ class ManagerHomeScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (con) => RecentApplicationScreen(),
+                        builder: (con) => const ReceivedApplicationsScreen(),
                       ),
                     );
                   },
