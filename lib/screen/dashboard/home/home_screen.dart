@@ -131,8 +131,8 @@ class HomeScreen extends StatelessWidget {
                                   ),
                                 ),
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: ColorRes.successColor,
-                                  foregroundColor: ColorRes.white,
+                                  backgroundColor: Colors.black,
+                                  foregroundColor: Colors.white,
                                   minimumSize: const Size(0, 45),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(12),

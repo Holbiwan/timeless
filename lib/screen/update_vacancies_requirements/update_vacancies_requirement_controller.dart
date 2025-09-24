@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:timeless/screen/manager_section/dashboard/manager_dashboard_screen.dart';
+import 'package:timeless/utils/color_res.dart';
 
 class UpdateVacanciesRequirementController extends GetxController {
   final args = Get.arguments;
@@ -94,7 +95,7 @@ class UpdateVacanciesRequirementController extends GetxController {
     if (addRequirementsList.isEmpty) {
       addRequirementsList.add(TextEditingController());
     } else if (addRequirementsList.isNotEmpty) {
-      Get.snackbar("Error", "Please Fill Up Filed", colorText: Colors.red);
+      Get.snackbar("Error", "Please Fill Up Filed", colorText: ColorRes.errorColor);
     }
     text.value = true;
     update(["more"]);

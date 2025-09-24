@@ -17,7 +17,7 @@ TextStyle appTextStyle(
     TextDecoration? textDecoration}) {
   return GoogleFonts.poppins(
     decoration: textDecoration ?? TextDecoration.none,
-    color: color ?? ColorRes.white,
+    color: color ?? ColorRes.textPrimary,
     fontWeight: fontWeight ?? FontWeight.w500,
     fontSize: fontSize ?? 18,
     letterSpacing: letterSpacing ?? 0,

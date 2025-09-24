@@ -17,14 +17,15 @@ import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/utils/string.dart';
+import 'package:timeless/utils/color_res.dart';
 
 // ⬇️ bouton DEV (debug only)
 import 'package:timeless/test/dev_fab.dart';
 
-/// --- Palette Noir avec icônes Jaunes/Vertes ---
-const _kJBlack = Colors.black; // fond noir
+/// --- Palette Turquoise avec icônes Jaunes/Turquoise ---
+const _kJBlack = Color(0xFF1A1A1A); // fond foncé lisible
 const _kJYellow = Color(0xFFFBBF24); // jaune pour icônes inactives
-const _kJGreen = Color(0xFF32D74B); // vert pour icônes actives
+const _kJGreen = Color(0xFF00ACC1); // turquoise pour icônes actives
 
 class DashBoardScreen extends StatelessWidget {
   DashBoardScreen({super.key});
@@ -41,7 +42,7 @@ class DashBoardScreen extends StatelessWidget {
         return true;
       },
       child: Scaffold(
-        backgroundColor: Colors.black,
+        backgroundColor: ColorRes.backgroundColor,
         resizeToAvoidBottomInset: false,
 
         body: GetBuilder<DashBoardController>(
@@ -74,7 +75,7 @@ class DashBoardScreen extends StatelessWidget {
           builder: (c) {
             return Theme(
               data: Theme.of(context).copyWith(
-                canvasColor: _kJBlack, // fond noir
+                canvasColor: ColorRes.backgroundColor, // fond turquoise
               ),
               child: BottomNavigationBar(
                 currentIndex: c.currentTab,

@@ -74,22 +74,39 @@ class FirstScreen extends StatelessWidget {
               const SizedBox(height: 30),
               // Logo principal agrandi
               Container(
-                width: 150,
-                height: 150,
+                width: 200,
+                height: 100,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      ColorRes.darkBlue,
+                      ColorRes.darkBlue.withOpacity(0.9),
+                    ],
+                  ),
                   borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: ColorRes.brightYellow.withOpacity(0.6),
+                    width: 2,
+                  ),
                   boxShadow: [
                     BoxShadow(
-                      color: ColorRes.darkBlue.withOpacity(0.1),
-                      spreadRadius: 2,
-                      blurRadius: 10,
+                      color: ColorRes.brightYellow.withOpacity(0.3),
+                      spreadRadius: 3,
+                      blurRadius: 15,
                       offset: const Offset(0, 5),
+                    ),
+                    BoxShadow(
+                      color: ColorRes.darkBlue.withOpacity(0.2),
+                      spreadRadius: 1,
+                      blurRadius: 10,
+                      offset: const Offset(0, 8),
                     ),
                   ],
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(15.0),
+                  padding: const EdgeInsets.all(12.0),
                   child: Image.asset(
                     'assets/images/logo.png',
                     fit: BoxFit.contain,
@@ -170,7 +187,7 @@ class FirstScreen extends StatelessWidget {
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
-                    border: Border.all(color: ColorRes.borderColor, width: 2),
+                    border: Border.all(color: ColorRes.warningColor, width: 2),
                     color: ColorRes.surfaceColor,
                   ),
                   child: Text(

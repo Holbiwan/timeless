@@ -15,7 +15,7 @@ class GoogleAuthService {
     serverClientId: '266056580802-s1n7ha6hvuqoiqsqqri67pprmpg10p4a.apps.googleusercontent.com',
   );
 
-  /// Méthode principale pour Google Sign-In
+  /// Main method for Google Sign-In
   /// Utilise google_sign_in package pour Android/iOS et Firebase Auth pour Web
   static Future<User?> signInWithGoogle() async {
     try {
@@ -64,7 +64,7 @@ class GoogleAuthService {
     }
   }
 
-  /// Sauvegarder les données utilisateur dans Firestore
+  /// Save user data to Firestore
   static Future<void> saveUserToFirestore(User user) async {
     try {
       final userDoc = _firestore
@@ -89,7 +89,7 @@ class GoogleAuthService {
     }
   }
 
-  /// Se déconnecter
+  /// Sign out
   static Future<void> signOut() async {
     try {
       await Future.wait([
@@ -103,11 +103,11 @@ class GoogleAuthService {
     }
   }
 
-  /// Vérifier si l'utilisateur est connecté
+  /// Check if user is signed in
   static User? getCurrentUser() {
     return _auth.currentUser;
   }
 
-  /// Stream des changements d'état d'authentification
+  /// Stream of authentication state changes
   static Stream<User?> get authStateChanges => _auth.authStateChanges();
 }

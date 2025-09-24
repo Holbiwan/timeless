@@ -16,8 +16,8 @@ import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'introduction_controller.dart';
 
-const kJYellow = Color(0xFFFED100);
-const kJGreen = Color(0xFF1FA24A);
+const kJYellow = Color(0xFFFFD700);
+const kJGreen = Color(0xFFDC2626);
 
 class IntroductionScreen extends StatefulWidget {
   const IntroductionScreen({super.key});
@@ -54,13 +54,13 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
   }
 
   void _goToApp() {
-    // Redirection directe vers la page de connexion pour démo propre
+    // Direct redirect to sign-in page for clean demo
     debugPrint('[INTRO] Get Started - Going to Sign In');
     Get.off(() => const SigninScreenU());
   }
 
   void _goToWelcome() {
-    // 🛠️ Appelle l’écran de connexion. Si le constructeur n’est pas const, enlève "const".
+    // 🛠️ Calls the sign-in screen. If constructor is not const, remove "const".
     debugPrint('[INTRO] Welcome tapped');
     try {
       Get.to(() => const SigninScreenU());
@@ -77,7 +77,7 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
     final double h = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 10, 10, 10),
+      backgroundColor: const Color(0xFF1E2A78),
       body: Obx(
         () => Column(
           children: [
@@ -93,7 +93,7 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
                     child: Text(
                       "Welcome",
                       style: appTextStyle(
-                        color: kJGreen,
+                        color: Colors.white,
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
                       ),
@@ -106,7 +106,7 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
                       child: Text(
                         "Skip",
                         style: appTextStyle(
-                          color: kJYellow,
+                          color: Colors.white,
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
                         ),
@@ -128,20 +128,23 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
                   _IntroPage(
                     asset: AssetRes.page1,
                     title: "Find Your Job",
-                    subtitle: "Bridging the gap with timeless talent",
-                    subtitleColor: kJGreen,
+                    subtitle: "Bridging the gap with Timeless talent",
+                    subtitleColor: Color(0xFFFFFFFF),
+                    highlightWord: "Timeless",
                   ),
                   _IntroPage(
                     asset: AssetRes.page2,
-                    title: "Apply Job",
+                    title: "Dream Job Applications",
                     subtitle: "Bridging the gap with timeless talent",
-                    subtitleColor: kJYellow,
+                    subtitleColor: Color(0xFFFFFFFF),
+                    highlightWords: ["Dream", "Applications"],
                   ),
                   _IntroPage(
                     asset: AssetRes.page3,
-                    title: "Ready For The Job!",
+                    title: "Start Now!",
                     subtitle: "Bridging the gap with timeless talent",
-                    subtitleColor: kJYellow,
+                    subtitleColor: Color(0xFFFFFFFF),
+                    highlightWord: "Now",
                   ),
                 ],
               ),
@@ -176,8 +179,8 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
                     borderRadius: BorderRadius.circular(10),
                     gradient: const LinearGradient(
                       colors: [
-                        Color.fromARGB(255, 255, 0, 0),
-                        Color.fromARGB(255, 50, 235, 47),
+                        Color(0xFFFFD700),
+                        Color(0xFFDC2626),
                       ],
                     ),
                   ),
@@ -186,7 +189,7 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
                     style: appTextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
-                      color: Colors.white,
+                      color: Colors.black,
                     ),
                   ),
                 ),
@@ -204,12 +207,16 @@ class _IntroPage extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.subtitleColor,
+    this.highlightWord,
+    this.highlightWords,
   });
 
   final String asset;
   final String title;
   final String subtitle;
   final Color subtitleColor;
+  final String? highlightWord;
+  final List<String>? highlightWords;
 
   @override
   Widget build(BuildContext context) {
@@ -236,15 +243,7 @@ class _IntroPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 28),
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: appTextStyle(
-                color: Colors.white,
-                fontSize: 24,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
+            _buildTitleWithHighlight(),
             const SizedBox(height: 8),
             Text(
               subtitle,
@@ -258,6 +257,50 @@ class _IntroPage extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+
+  Widget _buildTitleWithHighlight() {
+    const bordeauxColor = Color(0xFF7C2D12); // Bordeaux profond
+    const defaultColor = Color(0xFF1A1A1A); // Noir
+    
+    List<String> wordsToHighlight = [];
+    if (highlightWord != null) wordsToHighlight.add(highlightWord!);
+    if (highlightWords != null) wordsToHighlight.addAll(highlightWords!);
+    
+    if (wordsToHighlight.isEmpty) {
+      return Text(
+        title,
+        textAlign: TextAlign.center,
+        style: appTextStyle(
+          color: defaultColor,
+          fontSize: 24,
+          fontWeight: FontWeight.w600,
+        ),
+      );
+    }
+    
+    List<TextSpan> spans = [];
+    List<String> words = title.split(' ');
+    
+    for (int i = 0; i < words.length; i++) {
+      String word = words[i];
+      bool isHighlighted = wordsToHighlight.any((highlight) => 
+        word.toLowerCase().contains(highlight.toLowerCase()));
+      
+      spans.add(TextSpan(
+        text: word + (i < words.length - 1 ? ' ' : ''),
+        style: appTextStyle(
+          color: isHighlighted ? bordeauxColor : defaultColor,
+          fontSize: 24,
+          fontWeight: FontWeight.w600,
+        ),
+      ));
+    }
+    
+    return RichText(
+      textAlign: TextAlign.center,
+      text: TextSpan(children: spans),
     );
   }
 }

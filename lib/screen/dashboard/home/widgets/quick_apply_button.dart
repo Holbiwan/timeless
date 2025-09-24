@@ -8,8 +8,8 @@ import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/pref_keys.dart';
 
-/// Widget pour candidature en un clic
-/// Vérifie d'abord si l'utilisateur a un CV uploadé, sinon redirige vers l'upload
+/// Widget for one-click application
+/// First checks if user has uploaded CV, otherwise redirects to upload
 class QuickApplyButton extends StatelessWidget {
   final Map<String, dynamic> jobData;
   final String docId;
@@ -58,20 +58,20 @@ class QuickApplyButton extends StatelessWidget {
   }
 
   void _handleQuickApply(JobDetailsUploadCvController controller, BuildContext context) async {
-    // Vérifier si l'utilisateur est connecté
+    // Check if user is signed in
     final userId = PrefService.getString(PrefKeys.userId);
     if (userId.isEmpty) {
       Get.snackbar(
         "Connexion requise",
         "Veuillez vous connecter pour postuler",
         snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: ColorRes.appleGreen,
+        backgroundColor: ColorRes.darkBlue,
         colorText: Colors.white,
       );
       return;
     }
 
-    // Vérifier si l'utilisateur a déjà un CV uploadé
+    // Check if user already has uploaded CV
     final demoCvUrl = PrefService.getString("demo_cv_url");
     final isDemo = userId == "demo_user_12345";
     final hasCV = (controller.pdfUrl != null && controller.pdfUrl!.isNotEmpty) || 
@@ -84,7 +84,7 @@ class QuickApplyButton extends StatelessWidget {
         "CV requis",
         "Veuillez d'abord uploader votre CV",
         snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.blue,
+        backgroundColor: ColorRes.darkBlue,
         colorText: Colors.white,
       );
       
@@ -108,7 +108,7 @@ class QuickApplyButton extends StatelessWidget {
         "Candidature envoyée !",
         "Votre candidature pour ${jobData['Position']} a été transmise",
         snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green,
+        backgroundColor: ColorRes.successColor,
         colorText: Colors.white,
         duration: const Duration(seconds: 3),
       );
@@ -118,7 +118,7 @@ class QuickApplyButton extends StatelessWidget {
         "Erreur",
         "Impossible d'envoyer la candidature: $e",
         snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
+        backgroundColor: ColorRes.errorColor,
         colorText: Colors.white,
       );
     }
@@ -153,7 +153,7 @@ class QuickApplyButton extends StatelessWidget {
           'Notification envoyée',
           'Le recruteur a été notifié de votre candidature pour $position',
           snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.blue.withOpacity(0.8),
+          backgroundColor: ColorRes.darkBlue.withOpacity(0.8),
           colorText: Colors.white,
           duration: const Duration(seconds: 2),
         );
@@ -184,7 +184,7 @@ class SimpleQuickApplyButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF1FA24A),
+          backgroundColor: ColorRes.successColor,
           padding: const EdgeInsets.symmetric(horizontal: 8),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(6),
