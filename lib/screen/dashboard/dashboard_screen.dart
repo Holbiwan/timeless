@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -19,8 +18,6 @@ import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/utils/string.dart';
 import 'package:timeless/utils/color_res.dart';
 
-// ⬇️ bouton DEV (debug only)
-import 'package:timeless/test/dev_fab.dart';
 
 /// --- Palette Turquoise avec icônes Jaunes/Turquoise ---
 const _kJBlack = Color(0xFF1A1A1A); // fond foncé lisible
@@ -66,9 +63,6 @@ class DashBoardScreen extends StatelessWidget {
             }
           },
         ),
-
-        // FAB de développement (mode debug uniquement)
-        floatingActionButton: kDebugMode ? const DevFab() : null,
 
         bottomNavigationBar: GetBuilder<DashBoardController>(
           id: "bottom_bar",
