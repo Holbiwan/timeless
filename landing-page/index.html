@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Timeless — Student Job Search App</title>
+  <meta name="description" content="Timeless is a small student project. I’m learning Flutter & Firebase and building a simple app to explore job search ideas."/>
+  <link rel="stylesheet" href="styles.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-logo">
+        <img src="../assets/images/logo.png" alt="Timeless logo" class="logo-img"/>
+        <span class="logo-text">Timeless</span>
+      </div>
+      <div class="nav-menu" id="nav-menu">
+        <a href="#home" class="nav-link">Home</a>
+        <a href="#features" class="nav-link">Features</a>
+        <a href="#about" class="nav-link">About</a>
+        <a href="#contact" class="nav-link">Contact</a>
+      </div>
+      <div class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false" role="button" tabindex="0">
+        <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section id="home" class="hero">
+    <div class="hero-container">
+      <div class="hero-content">
+        <h1 class="hero-title">
+          Find your next job simply
+        </h1>
+        <p class="hero-subtitle">
+          Hi! I’m Sabrina a student building a small app to practice Flutter & Firebase.
+          Timeless helps you browse jobs, save what you like, and apply with a clean, simple flow.
+        </p>
+        <div class="hero-buttons">
+          <a href="#features" class="btn btn-primary">
+            See what it does
+          </a>
+          <a href="#about" class="btn btn-secondary">
+            Learn more
+          </a>
+        </div>
+
+        <!-- Keep it honest: no big numbers -->
+        <div class="hero-stats">
+          <div class="stat">
+            <span class="stat-number">Student</span>
+            <span class="stat-label">project</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number">Work</span>
+            <span class="stat-label">in progress</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number">Open</span>
+            <span class="stat-label">to feedback</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="phone-mockup">
+          <img src="../assets/screenshots/Dashboard.png" alt="Timeless app dashboard screenshot" class="app-screenshot"/>
+        </div>
+        <div class="floating-cards">
+          <div class="job-card" aria-hidden="true">
+            <div class="job-title">UI/UX Designer</div>
+            <div class="job-company">DesignStudio</div>
+            <div class="job-match">Apply</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-background" aria-hidden="true">
+      <div class="bg-shape shape-1"></div>
+      <div class="bg-shape shape-2"></div>
+      <div class="bg-shape shape-3"></div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section id="features" class="features">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">What you can do</h2>
+        <p class="section-subtitle">Simple tools I’m building while learning</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-search"></i></div>
+          <h3 class="feature-title">Job browsing</h3>
+          <p class="feature-description">Browse through opportunities that match your profile and preferences.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-heart"></i></div>
+          <h3 class="feature-title">Save favorites</h3>
+          <p class="feature-description">Bookmark interesting positions to come back to later.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-paper-plane"></i></div>
+          <h3 class="feature-title">Easy applications</h3>
+          <p class="feature-description">Apply to jobs with just a few taps - no lengthy forms.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-list-check"></i></div>
+          <h3 class="feature-title">Application tracking</h3>
+          <p class="feature-description">See where you stand with each application you've submitted.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-user-shield"></i></div>
+          <h3 class="feature-title">Your data stays safe</h3>
+          <p class="feature-description">Built with Firebase security - your information is protected.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-mobile-alt"></i></div>
+          <h3 class="feature-title">Mobile-first</h3>
+          <p class="feature-description">Designed for your phone, works smoothly on any device.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="how-it-works">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">How it works</h2>
+        <p class="section-subtitle">Three simple steps</p>
+      </div>
+
+      <div class="steps-container">
+        <div class="step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h3>Create a profile</h3>
+            <p>Add a few details and your CV if you want.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h3>Get matches</h3>
+            <p>See jobs that fit your interests and skills.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h3>Apply & connect</h3>
+            <p>Apply in a few taps and reach out when you’re ready.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="about" class="about">
+    <div class="container">
+      <div class="about-content">
+        <div class="about-text">
+          <h2 class="section-title">About Timeless</h2>
+          <p class="about-description">
+            I started building Timeless because I wanted to learn Flutter and Firebase hands-on. 
+            As a student myself, I know how frustrating job searching can be with all the different platforms and complicated forms.
+            So I'm trying to make something simpler and more straightforward.
+          </p>
+          <div class="about-features">
+            <div class="about-feature"><i class="fas fa-check-circle"></i><span>Clean, intuitive interface</span></div>
+            <div class="about-feature"><i class="fas fa-check-circle"></i><span>Multiple login options</span></div>
+            <div class="about-feature"><i class="fas fa-check-circle"></i><span>Keep track of your applications</span></div>
+            <div class="about-feature"><i class="fas fa-check-circle"></i><span>Works offline for demos</span></div>
+          </div>
+        </div>
+
+        <div class="about-visual">
+          <img src="../assets/images/search_job.jpg" alt="Illustration of searching for a job" class="about-image"/>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Download -->
+  <section id="download" class="download">
+    <div class="container">
+      <div class="download-content">
+        <h2 class="section-title">Thanks for your interest</h2>
+        <p class="section-subtitle">It’s a work in progress. Your feedback helps me improve.</p>
+        <div class="download-buttons">
+          <a href="#" class="download-btn" aria-label="App Store (coming soon)">
+            <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store (coming soon)"/>
+          </a>
+          <a href="#" class="download-btn" aria-label="Google Play (coming soon)">
+            <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play (coming soon)"/>
+          </a>
+        </div>
+        <div class="social-links">
+          <a href="#" class="social-link" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+          <a href="#" class="social-link" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+          <a href="#" class="social-link" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="social-link" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" class="contact">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Contact</h2>
+        <p class="section-subtitle">Questions or ideas? I’m happy to hear them.</p>
+      </div>
+
+      <div class="contact-content">
+        <div class="contact-info">
+          <div class="contact-item">
+            <i class="fas fa-envelope"></i>
+            <div>
+              <h4>Email</h4>
+              <p>contact@timeless.com</p>
+            </div>
+          </div>
+          <div class="contact-item">
+            <i class="fas fa-phone"></i>
+            <div>
+              <h4>Phone</h4>
+              <p>+33 123456789</p>
+            </div>
+          </div>
+          <div class="contact-item">
+            <i class="fas fa-map-marker-alt"></i>
+            <div>
+              <h4>Address</h4>
+              <p>Paris, France</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <div class="footer-logo">
+            <img src="../assets/images/logo.png" alt="Timeless logo" class="footer-logo-img"/>
+            <span class="footer-logo-text">Timeless</span>
+          </div>
+          <p class="footer-description">
+            A small student project about job search. Still learning. Thanks for visiting!
+          </p>
+        </div>
+
+        
+
+      <div class="footer-bottom">
+        <p>&copy; 2025 Timeless — Student project.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
