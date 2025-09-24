@@ -31,7 +31,7 @@ Career Companion
   <img alt="Status" src="https://img.shields.io/badge/Status-Demo%20Day-4CAF50">
 </p>
 
----
+
 ## ✨ Timeless – Career Companion
 
 **Bridging the gap with timeless talent**
@@ -47,7 +47,7 @@ For presentations or low-connectivity scenarios, the app includes an **Offline D
 - 🔔 **Notifications** – Real-time alerts  
 - 🏢 **Employer Section** – Manage job postings and candidates  
 
----
+
 
 ## 📸 Screenshots
 
@@ -67,16 +67,12 @@ For presentations or low-connectivity scenarios, the app includes an **Offline D
 
 
 
-
----
-
 ## 🛠️ Tech Stack
 - **Frontend**: Flutter (Dart)  
 - **Backend**: Firebase (Auth, Firestore, Storage, Cloud Functions)  
 - **State Management**: GetX  
 - **Platforms**: Android, iOS  
 
----
 
 ## 🚧 Installation
 
@@ -96,5 +92,3 @@ flutter run
 
 📜 License
 This project is licensed under the MIT License.
-
----
