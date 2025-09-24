@@ -98,13 +98,3 @@ flutter run
 This project is licensed under the MIT License.
 
 ---
-
-<<<<<<< HEAD
-=======
-
-
-
-
-
-
->>>>>>> d9240f6cd83a599c9a66cc1b6bf3c3b12af6a17d
