@@ -13,6 +13,7 @@ import 'package:timeless/screen/organization_profile_screen/organization_profile
 import 'package:timeless/service/pref_services.dart';
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/asset_res.dart';
+import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'introduction_controller.dart';
 
@@ -77,7 +78,7 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
     final double h = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF1E2A78),
+      backgroundColor: ColorRes.backgroundColor,
       body: Obx(
         () => Column(
           children: [
@@ -93,7 +94,7 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
                     child: Text(
                       "Welcome",
                       style: appTextStyle(
-                        color: Colors.white,
+                        color: ColorRes.royalBlue,
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
                       ),
@@ -106,7 +107,7 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
                       child: Text(
                         "Skip",
                         style: appTextStyle(
-                          color: Colors.white,
+                          color: ColorRes.royalBlue,
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
                         ),
@@ -129,21 +130,21 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
                     asset: AssetRes.page1,
                     title: "Find Your Job",
                     subtitle: "Bridging the gap with Timeless talent",
-                    subtitleColor: Color(0xFFFFFFFF),
+                    subtitleColor: ColorRes.textSecondary,
                     highlightWord: "Timeless",
                   ),
                   _IntroPage(
                     asset: AssetRes.page2,
                     title: "Dream Job Applications",
                     subtitle: "Bridging the gap with timeless talent",
-                    subtitleColor: Color(0xFFFFFFFF),
+                    subtitleColor: ColorRes.textSecondary,
                     highlightWords: ["Dream", "Applications"],
                   ),
                   _IntroPage(
                     asset: AssetRes.page3,
                     title: "Start Now!",
                     subtitle: "Bridging the gap with timeless talent",
-                    subtitleColor: Color(0xFFFFFFFF),
+                    subtitleColor: ColorRes.textSecondary,
                     highlightWord: "Now",
                   ),
                 ],

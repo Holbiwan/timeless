@@ -21,21 +21,21 @@ dependencies:
   salomon_bottom_bar: ^3.3.2
 
   # Firebase 
-  firebase_core: ^2.32.0
-  firebase_auth: ^4.16.0
-  cloud_firestore: ^4.17.5
-  firebase_storage: ^11.6.5
-  firebase_messaging: ^14.7.10
+  firebase_core: ^4.1.0
+  firebase_auth: ^6.0.2
+  cloud_firestore: ^6.0.1
+  firebase_storage: ^13.0.1
+  firebase_messaging: ^16.0.1
 
   # Auth
   # -> Passage en 6.x pour éviter l’erreur Pigeon et garder compatibilité avec firebase_auth 4.x
-  google_sign_in: ^6.2.1
+  google_sign_in: 6.2.1
 
   # Utilitaires
   shared_preferences: ^2.3.2
   intl: ^0.20.2
   url_launcher: ^6.3.2
-  permission_handler: ^11.3.1
+  permission_handler: ^12.0.1
   country_picker: ^2.0.27
   pull_to_refresh: ^2.0.0
   advanced_search: ^2.2.6+1
@@ -48,8 +48,9 @@ dependencies:
   # Notifications
   flutter_local_notifications: ^19.4.0
   pinput: ^5.0.1
-  flutter_facebook_auth: ^7.1.2
-  http: ^1.5.0
+  
+  # Traduction automatique
+  translator: ^1.0.4+1
 
 dependency_overrides:
   
@@ -58,7 +59,7 @@ dependency_overrides:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^3.0.2
+  flutter_lints: ^5.0.0
 
 flutter:
   uses-material-design: true

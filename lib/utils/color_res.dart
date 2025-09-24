@@ -4,7 +4,7 @@ class ColorRes {
   // === TIMELESS PALETTE: ROYAL BLUE, YELLOW, RED ===
   
   // === FONDS PRINCIPAUX ===
-  static const backgroundColor = Color(0xFF1E2A78); // Royal blue background
+  static const backgroundColor = Color(0xFFF8FAFC); // Light background (like carousel)
   static const surfaceColor = Color(0xFFFFFFFF); // Pure white surface
   static const cardColor = Color(0xFFFFFFFF); // White cards
   
@@ -20,29 +20,29 @@ class ColorRes {
   static const grey = Color(0xFF718096); // Gris neutre
   
   // === MAIN THEME COLORS ===
-  static const royalBlue = Color(0xFF1E2A78); // Royal blue primary
+  static const royalBlue = Color(0xFF3B82F6); // Softer royal blue primary
   static const brightYellow = Color(0xFFFFD700); // Bright gold yellow
   static const vibrantRed = Color(0xFFDC2626); // Vibrant red
-  static const darkBlue = Color(0xFF1E2A78); // Royal blue (alias)
+  static const darkBlue = Color(0xFF3B82F6); // Softer blue (alias)
   static const deepBordeaux = Color(0xFF7C2D12); // Deep bordeaux for keywords
   
   // === ACCENT COLORS ===
   static const containerColor = Color(0xFFFFD700); // Bright yellow containers
-  static const primaryAccent = Color(0xFF1E2A78); // Royal blue accent
+  static const primaryAccent = Color(0xFF3B82F6); // Softer blue accent
   static const secondaryAccent = Color(0xFFDC2626); // Red accent
   
   // === FUNCTIONAL COLORS ===
   static const successColor = Color(0xFF16A34A); // Green success
   static const warningColor = Color(0xFFFFD700); // Yellow warning
   static const errorColor = Color(0xFFDC2626); // Red error
-  static const infoColor = Color(0xFF1E2A78); // Royal blue info
+  static const infoColor = Color(0xFF3B82F6); // Softer blue info
   
   // === ACTION COLORS ===
-  static const gradientColor = Color(0xFF1E2A78); // Royal blue gradient
+  static const gradientColor = Color(0xFF3B82F6); // Softer blue gradient
   static const starColor = Color(0xFFFFD700); // Gold yellow stars
   static const red = Color(0xFFDC2626); // Red actions
   static const orange = Color(0xFFFF8C00); // Orange highlights
-  static const blueColor = Color(0xFF1E2A78); // Royal blue actions
+  static const blueColor = Color(0xFF3B82F6); // Softer blue actions
   static const iconColor = Color(0xFFFFD700); // Gold yellow icons
   
   // === BORDURES ET SÉPARATEURS ===
