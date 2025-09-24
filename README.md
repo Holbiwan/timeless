@@ -1,4 +1,4 @@
-# Timeless - AI-Powered Job Matching Platform
+# Timeless Powered Job Matching Platform
 
 <div align="center">
   <img src="assets/images/timeless_splash.png" alt="Timeless Logo" width="200"/>
@@ -263,3 +263,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
   <p><strong>Timeless</strong> - Bridging the gap with timeless talent 🌟</p>
   <p>Made with ❤️ and Flutter</p>
 </div>
+
