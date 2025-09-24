@@ -1,4 +1,5 @@
 /* Timeless Landing Page Styles */
+/* Enhanced for Holberton Portfolio Project Requirements */
 /* Royal Blue, Gold Yellow, Vibrant Red Theme */
 
 :root {
@@ -868,5 +869,123 @@ h4 { font-size: 1.5rem; }
   .about-visual.animate {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* Enhanced Feature Cards for Portfolio Requirements */
+.feature-card.main-feature {
+  padding: 2rem;
+  border-radius: 12px;
+  background: var(--white);
+  box-shadow: var(--shadow-lg);
+  border: 2px solid var(--border);
+  transition: all 0.3s ease;
+  max-width: 350px;
+  margin: 0 auto;
+}
+
+.feature-card.main-feature:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-xl);
+  border-color: var(--royal-blue);
+}
+
+.feature-image {
+  width: 100%;
+  height: 200px;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--border);
+}
+
+.feature-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Social Profiles Links */
+.team-links {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+
+.team-links h3 {
+  color: var(--royal-blue);
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.social-profiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.profile-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--royal-blue);
+  color: var(--white);
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.profile-link:hover {
+  background: var(--vibrant-red);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.project-link {
+  margin-top: 1rem;
+}
+
+.repo-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--bright-yellow);
+  color: var(--royal-blue);
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border: 2px solid var(--royal-blue);
+}
+
+.repo-link:hover {
+  background: var(--royal-blue);
+  color: var(--white);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .social-profiles {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .profile-link,
+  .repo-link {
+    justify-content: center;
+    text-align: center;
+  }
+  
+  .feature-image {
+    height: 180px;
   }
 }
