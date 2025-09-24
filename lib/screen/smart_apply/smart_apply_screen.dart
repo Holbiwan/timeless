@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/service/pref_services.dart';
+import 'package:timeless/service/notification_service.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'dart:io';
 
@@ -79,8 +80,8 @@ class _SmartApplyScreenState extends State<SmartApplyScreen> {
   Future<void> _submitApplication() async {
     if (_selectedCV == null) {
       Get.snackbar(
-        "⚠️ CV Requis", 
-        "Veuillez sélectionner votre CV",
+        "⚠️ CV Required", 
+        "Please select your CV",
         backgroundColor: ColorRes.appleGreen,
         colorText: Colors.white,
       );
@@ -89,8 +90,8 @@ class _SmartApplyScreenState extends State<SmartApplyScreen> {
 
     if (_emailController.text.trim().isEmpty) {
       Get.snackbar(
-        "⚠️ Email Requis", 
-        "Veuillez saisir votre email",
+        "⚠️ Email Required", 
+        "Please enter your email",
         backgroundColor: ColorRes.appleGreen,
         colorText: Colors.white,
       );
@@ -104,7 +105,7 @@ class _SmartApplyScreenState extends State<SmartApplyScreen> {
     try {
       final user = _auth.currentUser;
       if (user == null) {
-        throw Exception("Utilisateur non connecté");
+        throw Exception("User not connected");
       }
 
       // Créer la candidature dans Firebase
@@ -136,21 +137,29 @@ class _SmartApplyScreenState extends State<SmartApplyScreen> {
         });
       }
 
+      // Add notification about successful application
+      final notificationService = Get.find<NotificationService>();
+      await notificationService.addApplicationNotification(
+        jobTitle: widget.jobData['title'] ?? 'Unknown Position',
+        companyName: widget.jobData['company'] ?? 'Unknown Company',
+        jobId: widget.jobData['docId'] ?? '',
+      );
+
       Get.snackbar(
-        "🎉 Candidature Envoyée!", 
-        "Votre candidature pour ${widget.jobData['title']} a été soumise avec succès",
+        "🎉 Application Sent!", 
+        "Your application for ${widget.jobData['title']} has been submitted successfully",
         backgroundColor: Colors.green,
         colorText: Colors.white,
         duration: const Duration(seconds: 4),
       );
 
-      // Retour à l'écran précédent
+      // Navigate back to previous screen
       Get.back();
 
     } catch (e) {
       Get.snackbar(
-        "❌ Erreur", 
-        "Impossible d'envoyer la candidature: $e",
+        "❌ Error", 
+        "Unable to send application: $e",
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );

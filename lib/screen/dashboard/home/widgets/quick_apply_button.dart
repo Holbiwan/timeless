@@ -7,6 +7,7 @@ import 'package:timeless/utils/app_res.dart';
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/pref_keys.dart';
+import 'package:timeless/service/notification_service.dart';
 
 /// Widget for one-click application
 /// First checks if user has uploaded CV, otherwise redirects to upload
@@ -103,10 +104,18 @@ class QuickApplyButton extends StatelessWidget {
       // Envoyer notification au recruteur
       _sendNotificationToRecruiter();
       
-      // Afficher confirmation
+      // Add notification to user's notification list
+      final notificationService = Get.find<NotificationService>();
+      await notificationService.addApplicationNotification(
+        jobTitle: jobData['Position'] ?? 'Unknown Position',
+        companyName: jobData['companyName'] ?? 'Unknown Company',
+        jobId: docId,
+      );
+      
+      // Show confirmation
       Get.snackbar(
-        "Candidature envoyée !",
-        "Votre candidature pour ${jobData['Position']} a été transmise",
+        "Application Sent!",
+        "Your application for ${jobData['Position']} has been submitted",
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: ColorRes.successColor,
         colorText: Colors.white,
@@ -115,8 +124,8 @@ class QuickApplyButton extends StatelessWidget {
       
     } catch (e) {
       Get.snackbar(
-        "Erreur",
-        "Impossible d'envoyer la candidature: $e",
+        "Error",
+        "Unable to send application: $e",
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: ColorRes.errorColor,
         colorText: Colors.white,
@@ -150,8 +159,8 @@ class QuickApplyButton extends StatelessWidget {
         
         // Simple snackbar pour la démo au lieu de notification complexe
         Get.snackbar(
-          'Notification envoyée',
-          'Le recruteur a été notifié de votre candidature pour $position',
+          'Notification Sent',
+          'The recruiter has been notified of your application for $position',
           snackPosition: SnackPosition.TOP,
           backgroundColor: ColorRes.darkBlue.withOpacity(0.8),
           colorText: Colors.white,

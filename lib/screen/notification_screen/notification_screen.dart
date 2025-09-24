@@ -1,54 +1,18 @@
 // lib/screen/notification_screen/notification_screen.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:timeless/service/notification_service.dart';
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/color_res.dart';
-import 'package:timeless/utils/string.dart';
-
-/// Petit modèle simple et non-nullable pour éviter tout crash.
-class _NotifItem {
-  final String title;
-  final String body;
-  final String time;
-
-  const _NotifItem({
-    required this.title,
-    required this.body,
-    required this.time,
-  });
-}
 
 class NotificationScreenU extends StatelessWidget {
   const NotificationScreenU({super.key});
 
-  // Données factices pour la démo (aucun null ici)
-  List<_NotifItem> get _demoNotifications => const [
-        _NotifItem(
-          title: 'Application sent',
-          body: 'Your application for “UI Designer” has been sent.',
-          time: '2m ago',
-        ),
-        _NotifItem(
-          title: 'New match',
-          body: 'Timeless found 3 new jobs matching your profile.',
-          time: '10m ago',
-        ),
-        _NotifItem(
-          title: 'Interview',
-          body: 'Recruiter proposed an interview for next week.',
-          time: 'Yesterday',
-        ),
-        _NotifItem(
-          title: 'Profile tip',
-          body: 'Add your portfolio to get more matches.',
-          time: '2 days ago',
-        ),
-      ];
-
   @override
   Widget build(BuildContext context) {
-    final items = _demoNotifications; // jamais vide/null pour la démo
-
+    // Initialize the notification service
+    final notificationService = Get.put(NotificationService());
+    
     return Scaffold(
       backgroundColor: ColorRes.backgroundColor,
       body: SafeArea(
@@ -60,7 +24,7 @@ class NotificationScreenU extends StatelessWidget {
               width: Get.width,
               child: Stack(
                 children: [
-                  // Back
+                  // Back button
                   GestureDetector(
                     onTap: Get.back,
                     child: Container(
@@ -90,28 +54,74 @@ class NotificationScreenU extends StatelessWidget {
                       ),
                     ),
                   ),
+                  // Clear all button
+                  Positioned(
+                    right: 20,
+                    child: GestureDetector(
+                      onTap: () async {
+                        await notificationService.clearAllNotifications();
+                        Get.snackbar(
+                          'Cleared',
+                          'All notifications removed',
+                          backgroundColor: ColorRes.appleGreen,
+                          colorText: Colors.white,
+                        );
+                      },
+                      child: Container(
+                        height: 40,
+                        width: 40,
+                        decoration: BoxDecoration(
+                          color: ColorRes.red.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Icon(
+                          Icons.clear_all,
+                          size: 18,
+                          color: ColorRes.red,
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
 
             const SizedBox(height: 12),
 
-            // Liste (Expanded évite les overflow)
+            // Notifications list
             Expanded(
-              child: items.isEmpty
-                  ? _EmptyState()
-                  : ListView.separated(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
-                      itemCount: items.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: 8),
-                      itemBuilder: (_, i) {
-                        final n = items[i];
-                        return _NotifTile(item: n);
-                      },
+              child: Obx(() {
+                final notifications = notificationService.notifications;
+                
+                if (notifications.isEmpty) {
+                  return _EmptyState();
+                }
+                
+                return RefreshIndicator(
+                  onRefresh: () async {
+                    await notificationService.loadNotifications();
+                  },
+                  child: ListView.separated(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
                     ),
+                    itemCount: notifications.length,
+                    separatorBuilder: (_, __) => const SizedBox(height: 8),
+                    itemBuilder: (_, i) {
+                      final notification = notifications[i];
+                      return _NotificationTile(
+                        notification: notification,
+                        onTap: () async {
+                          if (notification['id'] != null) {
+                            await notificationService.markAsRead(notification['id']);
+                          }
+                        },
+                      );
+                    },
+                  ),
+                );
+              }),
             ),
           ],
         ),
@@ -120,18 +130,29 @@ class NotificationScreenU extends StatelessWidget {
   }
 }
 
-class _NotifTile extends StatelessWidget {
-  const _NotifTile({required this.item});
-  final _NotifItem item;
+class _NotificationTile extends StatelessWidget {
+  const _NotificationTile({
+    required this.notification,
+    required this.onTap,
+  });
+  
+  final Map<String, dynamic> notification;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
+    final isRead = notification['isRead'] ?? false;
+    final type = notification['type'] ?? 'default';
+    
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
       decoration: BoxDecoration(
-        color: Colors.black87,
+        color: isRead ? Colors.grey[800] : Colors.black87,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.withOpacity(0.3)),
+        border: Border.all(
+          color: isRead ? Colors.grey.withOpacity(0.3) : ColorRes.brightYellow.withOpacity(0.5),
+          width: isRead ? 1 : 2,
+        ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.3),
@@ -147,24 +168,39 @@ class _NotifTile extends StatelessWidget {
           height: 45,
           width: 45,
           decoration: BoxDecoration(
-            color: ColorRes.brightYellow.withOpacity(0.2),
+            color: _getIconColor(type).withOpacity(0.2),
             borderRadius: BorderRadius.circular(12),
           ),
-          child: const Icon(
-            Icons.notifications_active_rounded,
-            color: ColorRes.brightYellow,
+          child: Icon(
+            _getIconData(type),
+            color: _getIconColor(type),
             size: 24,
           ),
         ),
-        title: Text(
-          item.title,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: appTextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: Colors.white,
-          ),
+        title: Row(
+          children: [
+            Expanded(
+              child: Text(
+                notification['title'] ?? 'Notification',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: appTextStyle(
+                  fontSize: 16,
+                  fontWeight: isRead ? FontWeight.w500 : FontWeight.w600,
+                  color: isRead ? Colors.white70 : Colors.white,
+                ),
+              ),
+            ),
+            if (!isRead)
+              Container(
+                width: 8,
+                height: 8,
+                decoration: const BoxDecoration(
+                  color: ColorRes.brightYellow,
+                  shape: BoxShape.circle,
+                ),
+              ),
+          ],
         ),
         subtitle: Padding(
           padding: const EdgeInsets.only(top: 6.0),
@@ -172,30 +208,60 @@ class _NotifTile extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                item.body,
+                notification['body'] ?? 'No details available',
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: appTextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w400,
-                  color: Colors.white.withOpacity(0.8),
+                  color: isRead ? Colors.white60 : Colors.white.withOpacity(0.8),
                 ),
               ),
               const SizedBox(height: 6),
               Text(
-                item.time,
+                notification['timeAgo'] ?? 'Unknown',
                 style: appTextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
-                  color: ColorRes.brightYellow,
+                  color: _getIconColor(type),
                 ),
               ),
             ],
           ),
         ),
-        onTap: () {},
+        onTap: onTap,
       ),
     );
+  }
+  
+  IconData _getIconData(String type) {
+    switch (type) {
+      case 'application_sent':
+        return Icons.send_rounded;
+      case 'match':
+        return Icons.favorite_rounded;
+      case 'interview':
+        return Icons.video_call_rounded;
+      case 'message':
+        return Icons.message_rounded;
+      default:
+        return Icons.notifications_active_rounded;
+    }
+  }
+  
+  Color _getIconColor(String type) {
+    switch (type) {
+      case 'application_sent':
+        return ColorRes.appleGreen;
+      case 'match':
+        return ColorRes.red;
+      case 'interview':
+        return Colors.purple;
+      case 'message':
+        return Colors.blue;
+      default:
+        return ColorRes.brightYellow;
+    }
   }
 }
 

@@ -71,12 +71,12 @@ class DevFab extends StatelessWidget {
                       try {
                         await createDemoJobs();
                         await createCategoryJobs();
-                        Get.snackbar('Succès', '10 jobs démo créés avec succès!',
+                        Get.snackbar('Success', '10 demo jobs created successfully!',
                             snackPosition: SnackPosition.BOTTOM,
                             backgroundColor: Colors.green,
                             colorText: Colors.white);
                       } catch (e) {
-                        Get.snackbar('Erreur', 'Impossible de créer les jobs: $e',
+                        Get.snackbar('Error', 'Unable to create jobs: $e',
                             snackPosition: SnackPosition.BOTTOM,
                             backgroundColor: Colors.red,
                             colorText: Colors.white);
@@ -86,7 +86,7 @@ class DevFab extends StatelessWidget {
                   ListTile(
                     leading: const Icon(Icons.settings),
                     title: const Text('Setup Complete Demo'),
-                    subtitle: const Text('Configuration complète de la démo'),
+                    subtitle: const Text('Complete demo configuration'),
                     onTap: () async {
                       Navigator.pop(context);
                       try {

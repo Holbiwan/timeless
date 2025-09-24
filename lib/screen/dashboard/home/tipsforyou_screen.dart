@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:timeless/common/widgets/back_button.dart';
+import 'package:timeless/common/widgets/logout_menu.dart';
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/string.dart';
+import 'package:timeless/utils/app_res.dart';
 
 class TipsForYouScreen extends StatelessWidget {
   const TipsForYouScreen({super.key});
+
 
   @override
   Widget build(BuildContext context) {
@@ -19,27 +22,46 @@ class TipsForYouScreen extends StatelessWidget {
             const SizedBox(height: 8),
             Stack(
               children: [
+                // Back button
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Padding(
                     padding: const EdgeInsets.all(18.0),
                     child: InkWell(
-                      onTap: Get.back,
+                      onTap: () {
+                        // Multiple options to go back
+                        if (Navigator.canPop(context)) {
+                          Get.back();
+                        } else {
+                          // If can't go back, go to dashboard
+                          Get.offAllNamed(AppRes.dashBoardScreen);
+                        }
+                      },
                       child: backButton(),
                     ),
                   ),
                 ),
-                const Padding(
-                  padding: EdgeInsets.only(top: 25.0),
+                // Title
+                Padding(
+                  padding: const EdgeInsets.only(top: 25.0),
                   child: Align(
                     alignment: Alignment.center,
                     child: Text(
-                      // Titre
-                      // ignore: unnecessary_string_interpolations
                       Strings.tipsForYou,
-                      // style
-                      // (appTextStyle est un helper fourni par ton projet)
+                      style: appTextStyle(
+                        color: ColorRes.textPrimary,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
+                  ),
+                ),
+                // Menu button (logout/home)
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child: LogoutMenu.buildMenuButton(),
                   ),
                 ),
               ],

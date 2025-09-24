@@ -12,6 +12,7 @@ import 'package:timeless/utils/color_res.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:timeless/service/notification_service.dart';
 
 FirebaseFirestore firestore = FirebaseFirestore.instance;
 List<Map<String, dynamic>> companyList = [];
@@ -65,7 +66,7 @@ class JobDetailsUploadCvController extends GetxController {
   String? pdfUrl;
   double filesize = 0;
 
-  onTapApply({var args}) {
+  onTapApply({var args}) async {
     abc = false;
     for (int i = 0; i < companyList.length; i++) {
       // ✅ correction de la typo: companyname
@@ -112,6 +113,28 @@ class JobDetailsUploadCvController extends GetxController {
       "deviceToken": PrefService.getString(PrefKeys.deviceToken),
     });
 
+    // Add notification for application submission
+    try {
+      final notificationService = Get.find<NotificationService>();
+      await notificationService.addApplicationNotification(
+        jobTitle: args['Position'] ?? 'Unknown Position',
+        companyName: args['CompanyName'] ?? 'Unknown Company',
+        jobId: args['id'] ?? 'unknown_id',
+      );
+    } catch (e) {
+      if (kDebugMode) print('Error adding notification: $e');
+    }
+
+    // Show success message before navigation
+    Get.snackbar(
+      '🎉 Application Submitted!',
+      'Your job application has been successfully submitted to ${args['CompanyName']}',
+      snackPosition: SnackPosition.TOP,
+      backgroundColor: Colors.green,
+      colorText: Colors.white,
+      duration: const Duration(seconds: 3),
+    );
+    
     Get.toNamed(AppRes.jobDetailSuccessOrFailed, arguments: [
       {"doc": args},
       {"error": false, "filename": filepath},
@@ -135,8 +158,8 @@ class JobDetailsUploadCvController extends GetxController {
       isPdfUploadError.value = false;
       
       Get.snackbar(
-        'CV de démo créé',
-        'CV de démonstration configuré avec succès',
+        'Demo CV Created',
+        'Demo CV configured successfully',
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.green,
         colorText: Colors.white,
@@ -151,8 +174,8 @@ class JobDetailsUploadCvController extends GetxController {
     try {
       // Simplifier : essayer directement sans permissions complexes
       Get.snackbar(
-        'Sélection du fichier...',
-        'Veuillez sélectionner votre CV (PDF)',
+        'Selecting File...',
+        'Please select your CV (PDF)',
         snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.blue,
         colorText: Colors.white,
@@ -173,10 +196,10 @@ class JobDetailsUploadCvController extends GetxController {
         // Vérifier la taille du fichier (max 5MB pour être plus rapide)
         if (file.size > 5 * 1024 * 1024) {
           Get.snackbar(
-            'Fichier trop volumineux',
-            'Le fichier doit faire moins de 5MB pour un upload rapide',
+            'File Too Large',
+            'File must be less than 5MB for fast upload',
             snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: ColorRes.appleGreen,
+            backgroundColor: Colors.red,
             colorText: Colors.white,
             duration: const Duration(seconds: 3),
           );
@@ -194,10 +217,10 @@ class JobDetailsUploadCvController extends GetxController {
 
         // Afficher indicateur de chargement
         Get.snackbar(
-          'Upload en cours...',
-          'Veuillez patienter',
+          'Uploading CV...',
+          'Please wait while we upload your CV',
           snackPosition: SnackPosition.TOP,
-          backgroundColor: ColorRes.appleGreen,
+          backgroundColor: Colors.blue,
           colorText: Colors.white,
           duration: const Duration(seconds: 5),
         );
@@ -208,12 +231,12 @@ class JobDetailsUploadCvController extends GetxController {
           
           if (url != null) {
             Get.snackbar(
-              'Succès !',
-              'CV uploadé avec succès',
+              '✅ Success!',
+              'Your CV has been uploaded successfully! You can now apply for this job.',
               snackPosition: SnackPosition.BOTTOM,
               backgroundColor: Colors.green,
               colorText: Colors.white,
-              duration: const Duration(seconds: 3),
+              duration: const Duration(seconds: 4),
             );
             isPdfUploadError.value = false;
           } else {
@@ -225,9 +248,11 @@ class JobDetailsUploadCvController extends GetxController {
       } else {
         // User canceled
         Get.snackbar(
-          'Annulé',
-          'Sélection de fichier annulée',
+          'Cancelled',
+          'File selection cancelled',
           snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.grey,
+          colorText: Colors.white,
           duration: const Duration(seconds: 2),
         );
         isPdfUploadError.value = true;
@@ -235,8 +260,8 @@ class JobDetailsUploadCvController extends GetxController {
     } catch (e) {
       if (kDebugMode) print('Erreur upload CV: $e');
       Get.snackbar(
-        'Erreur d\'upload',
-        'Problème lors de l\'upload: ${e.toString().split(': ').last}',
+        'Upload Error',
+        'Problem during upload: ${e.toString().split(': ').last}',
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red,
         colorText: Colors.white,
@@ -298,17 +323,17 @@ class JobDetailsUploadCvController extends GetxController {
       // Messages d'erreur plus clairs
       String errorMessage = 'Erreur inconnue';
       if (e.toString().contains('timeout')) {
-        errorMessage = 'Upload trop lent - essayez un fichier plus petit';
+        errorMessage = 'Upload too slow - try a smaller file';
       } else if (e.toString().contains('permission')) {
-        errorMessage = 'Problème de permissions - vérifiez vos autorisations';
+        errorMessage = 'Permission problem - check your authorization';
       } else if (e.toString().contains('network')) {
-        errorMessage = 'Problème de connexion internet';
+        errorMessage = 'Internet connection problem';
       } else {
-        errorMessage = 'Erreur upload: ${e.toString().split(': ').last}';
+        errorMessage = 'Upload error: ${e.toString().split(': ').last}';
       }
       
       Get.snackbar(
-        'Erreur d\'upload',
+        'Upload Error',
         errorMessage,
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red,

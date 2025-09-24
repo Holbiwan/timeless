@@ -369,18 +369,18 @@ class SignUpController extends GetxController {
             
             <center>
                 <a href="https://timeless.app/login" class="button">
-                    🚀 Accéder à mon compte
+                    🚀 Access my account
                 </a>
             </center>
             
-            <p>Besoin d'aide ? Notre équipe support est disponible 24h/7j.</p>
+            <p>Need help? Our support team is available 24/7.</p>
         </div>
         
         <div class="footer">
-            <p><strong>L'équipe Timeless</strong> 💼</p>
-            <p>Votre succès professionnel, notre priorité</p>
+            <p><strong>The Timeless Team</strong> 💼</p>
+            <p>Your professional success, our priority</p>
             <p style="font-size: 12px; color: #999;">
-                Cet email a été envoyé automatiquement. Ne pas répondre.
+                This email was sent automatically. Do not reply.
             </p>
         </div>
     </div>
@@ -496,7 +496,7 @@ class SignUpController extends GetxController {
             
             <center>
                 <a href="https://timeless.app/login" class="button">
-                    🚀 Accéder à mon compte maintenant
+                    🚀 Access my account maintenant
                 </a>
             </center>
             
@@ -504,8 +504,8 @@ class SignUpController extends GetxController {
         </div>
         
         <div class="footer">
-            <h3>L'équipe Timeless 💼</h3>
-            <p>Votre succès professionnel, notre priorité absolue</p>
+            <h3>The Timeless Team 💼</h3>
+            <p>Your professional success, our priority absolue</p>
             <p>📧 support@timeless.app | 🌐 www.timeless.app</p>
             
             <div class="small-text">
@@ -545,7 +545,10 @@ class SignUpController extends GetxController {
         return;
       }
 
-      // Prefs locales immédiates (succès coté Auth)
+      // Clear any existing profile data first (ensure fresh start)
+      await _clearAllProfileData();
+      
+      // Set only essential data for new user
       PrefService.setValue(PrefKeys.rol, "User");
       PrefService.setValue(PrefKeys.userId, user.uid);
       PrefService.setValue(PrefKeys.email, emailCtrl.text.trim());
@@ -605,6 +608,45 @@ class SignUpController extends GetxController {
           snackPosition: SnackPosition.BOTTOM);
     } finally {
       loading.value = false;
+    }
+  }
+
+  /// Clear all profile data to ensure new user starts fresh
+  Future<void> _clearAllProfileData() async {
+    try {
+      await Future.wait([
+        // Clear personal info (keep only what we just set)
+        PrefService.setValue(PrefKeys.phoneNumber, ''),
+        PrefService.setValue(PrefKeys.dateOfBirth, ''),
+        PrefService.setValue(PrefKeys.city, ''),
+        PrefService.setValue(PrefKeys.state, ''),
+        PrefService.setValue(PrefKeys.country, ''),
+        PrefService.setValue(PrefKeys.occupation, ''),
+        PrefService.setValue(PrefKeys.jobPosition, ''),
+        PrefService.setValue(PrefKeys.bio, ''),
+        PrefService.setValue(PrefKeys.address, ''),
+        PrefService.setValue(PrefKeys.profileImageUrl, ''),
+        PrefService.setValue(PrefKeys.profilePhoto, ''),
+        
+        // Clear job matching preferences
+        PrefService.setValue(PrefKeys.experienceLevel, ''),
+        PrefService.setValue(PrefKeys.skillsList, ''),
+        PrefService.setValue(PrefKeys.salaryRangeMin, ''),
+        PrefService.setValue(PrefKeys.salaryRangeMax, ''),
+        PrefService.setValue(PrefKeys.jobTypes, ''),
+        PrefService.setValue(PrefKeys.industryPreferences, ''),
+        PrefService.setValue(PrefKeys.companyTypes, ''),
+        PrefService.setValue(PrefKeys.maxCommuteDistance, ''),
+        PrefService.setValue(PrefKeys.workLocationPreference, ''),
+      ]);
+      
+      if (kDebugMode) {
+        print('✅ Profile data cleared for new user');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('⚠️ Error clearing profile data: $e');
+      }
     }
   }
 

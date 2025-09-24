@@ -16,4 +16,5 @@ class AppRes {
   static String updateVacanciesRequirementScreen = "/UpdateVacanciesRequirementScreen";
   static String firstPageScreenM = "/FirstPageScreenM";
   static String newHomePageUi = "/NewHomePageUi";
+  static String dashBoardScreen = "/DashBoardScreen";
 }

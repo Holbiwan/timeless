@@ -33,6 +33,19 @@ class PrefKeys {
   static const occupation = "Occupation";
   static const dateOfBirth = 'dateOfBirth';
   static const address = "address";
+  static const bio = "bio";
+  static const profileImageUrl = "profileImageUrl";
+
+  /// Job Matching Preferences
+  static const experienceLevel = "experienceLevel";  // Junior, Mid, Senior, Lead
+  static const skillsList = "skillsList";             // JSON array of skills
+  static const salaryRangeMin = "salaryRangeMin";    // Minimum expected salary
+  static const salaryRangeMax = "salaryRangeMax";    // Maximum expected salary
+  static const jobTypes = "jobTypes";                 // JSON array: Full-time, Contract, Remote
+  static const industryPreferences = "industryPreferences"; // JSON array of industries
+  static const companyTypes = "companyTypes";         // JSON array: Startup, Enterprise, etc.
+  static const maxCommuteDistance = "maxCommuteDistance"; // In kilometers
+  static const workLocationPreference = "workLocationPreference"; // Remote, On-site, Hybrid
 
   ///logout
   static const email = "Email";

@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:holbiwan.github.io)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
