@@ -262,10 +262,10 @@ h4 { font-size: 1.5rem; }
 
 .phone-mockup {
   position: relative;
-  width: 180px;
-  height: 360px;
+  width: 216px;
+  height: 432px;
   background: var(--white);
-  border-radius: 18px;
+  border-radius: 22px;
   padding: 20px;
   box-shadow: var(--shadow-xl);
   overflow: hidden;
@@ -796,8 +796,8 @@ h4 { font-size: 1.5rem; }
   }
   
   .phone-mockup {
-    width: 160px;
-    height: 320px;
+    width: 192px;
+    height: 384px;
   }
   
   .features-grid {
@@ -885,8 +885,8 @@ h4 { font-size: 1.5rem; }
   }
   
   .phone-mockup {
-    width: 140px;
-    height: 280px;
+    width: 168px;
+    height: 336px;
   }
   
   .floating-cards {
