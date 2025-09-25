@@ -49,6 +49,12 @@ ios/Flutter/Flutter.podspec
 /linux/
 /windows/
 
+# -------- Dossiers de développement --------
+/dev-tools/
+/landing-page/
+/docs/
+/scripts/
+
 # -------- Firebase & Secrets --------
 # Clés API et configuration Firebase
 lib/firebase_options.dart
