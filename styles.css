@@ -125,7 +125,7 @@ h4 { font-size: 1.5rem; }
 .nav-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 1rem 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -138,12 +138,12 @@ h4 { font-size: 1.5rem; }
 }
 
 .logo-img {
-  height: 80px;
+  height: 240px;
   width: auto;
 }
 
 .logo-text {
-  font-size: 1.5rem;
+  font-size: 2.5rem;
   font-weight: 700;
   color: var(--royal-blue);
 }
@@ -724,7 +724,7 @@ h4 { font-size: 1.5rem; }
 }
 
 .footer-logo-img {
-  height: 40px;
+  height: 120px;
   width: auto;
 }
 
