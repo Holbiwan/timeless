@@ -14,8 +14,7 @@ import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/string.dart';
 
-// 👇 ajout pour le bouton "See Jobs"
-import 'package:timeless/test/job_list_test_screen.dart';
+// Import supprimé : job_list_test_screen n'existe plus
 import 'package:timeless/screen/analytics/analytics_dashboard.dart';
 import 'package:timeless/screen/ai_matching/ai_matching_screen.dart';
 
@@ -64,7 +63,8 @@ class HomeScreen extends StatelessWidget {
                         // Bouton See Jobs - Mode sombre professionnel
                         ElevatedButton(
                           onPressed: () {
-                            Get.to(() => const JobListTestScreen());
+                            // TODO: Remplacer par un écran de jobs réel
+                            Get.snackbar('Info', 'Fonctionnalité en cours de développement');
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: ColorRes.primaryAccent,

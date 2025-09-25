@@ -1,13 +1,19 @@
-# -------- Flutter / Dart (standard) --------
+# ====================================================================
+# TIMELESS - Gitignore Configuration
+# Configuration professionnelle pour garder le repo propre
+# ====================================================================
+
+# -------- Flutter / Dart (Standard) --------
 .dart_tool/
 .packages
 .flutter-plugins
-.flutter-plugins-dependencies
+.flutter-plugins-dependencies  
 .flutter-versions
 .melos_tool/
 **/build/
 **/.generated/
 .metadata
+pubspec.lock
 
 # -------- IDE / OS --------
 .idea/
@@ -16,6 +22,8 @@
 .DS_Store
 Thumbs.db
 Desktop.ini
+*.tmp
+*.temp
 
 # -------- Android --------
 android/.gradle/
@@ -24,41 +32,40 @@ android/local.properties
 android/key.properties
 android/app/*.keystore
 android/app/*.jks
+android/app/debug/
+android/app/profile/
+android/app/release/
 
-# Hide platforms not used for the demo
+# -------- iOS --------
+ios/Pods/
+ios/Runner.xcworkspace/xcuserdata/
+ios/Runner.xcodeproj/xcuserdata/
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+
+# -------- Plateformes non utilisées --------
 /web/
 /macos/
+/linux/
+/windows/
 
-# If you want to keep Firebase files private on GitHub, ignore them:
-android/app/google-services.json
-android/app/src/**/google-services.json
-android/app/src/**/crashlytics*.properties
-android/app/src/**/fabric.properties
-
-# -------- iOS / macOS --------
-ios/Pods/
-macos/Pods/
-# Xcode user data & DerivedData
-**/DerivedData/
-**/*.xcuserdatad/
-**/*.xcworkspace/xcuserdata/
-# Keep Firebase files private if desired:
-ios/Runner/GoogleService-Info*.plist
-
-# -------- Firebase / Functions / Secrets --------
-# FlutterFire options file (contains API keys – not secret by design, but ignore if you prefer to keep private)
+# -------- Firebase & Secrets --------
+# Clés API et configuration Firebase
 lib/firebase_options.dart
-# Admin service accounts & runtime configs
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
 **/serviceAccount*.json
 **/*firebase-adminsdk*.json
 **/.runtimeconfig.json
-# Dotenv files
+
+# Variables d'environnement
 .env
 .env.*
 *.env
 *.env.local
+*.env.production
 
-# -------- Keys & Certificates --------
+# -------- Certificats & Clés --------
 **/*.keystore
 **/*.jks
 **/*.p12
@@ -69,45 +76,59 @@ lib/firebase_options.dart
 **/*.der
 **/*.asc
 
-# -------- Logs / Reports --------
+# -------- Logs & Debug --------
 *.log
 logs/
 firebase-debug.log
 coverage/
-
-# -------- Web / Messaging --------
-web/.firebase/
-web/firebase-messaging-sw.js
-
-# -------- Desktop (Linux/Windows/macOS build junk) --------
-linux/flutter/ephemeral/
-windows/**/x64/
-windows/**/x86/
-
-# -------- App-specific accidental tokens (from your ZIP) --------
-accessToken_token.code-search
-*accessToken*.*
-*token*.*
 *.code-search
 
+# -------- Fichiers de développement (NON PROD) --------
+# Dossiers de développement
+lib/dev/
+lib/demo/
+lib/test/
+main_demo.dart
+test_*.dart
 
-
-
-# Ignore les fichiers de démonstration
+# Fichiers de démo
 demo_*.dart
 demo_*.pdf
-demo_*.flow.dart
-demo_*.jobs.dart
-DEMO_GUIDE.md
+demo_*.json
+*demo*
+*test*
+*debug*
 
-# -------- Keep tracked (DO NOT ignore) --------
-# pubspec.yaml and pubspec.lock should be tracked for apps to ensure reproducible builds.
-# /assets/ (except if it contains secrets, then create a separate /assets_private/ and ignore that)
-lib.zip
+# Fichiers temporaires
+*.zip
+*.tmp
+*.bak
+*.old
 log.txt
+debug.txt
 
-lib/dev
-main_demo.dart
-demo_cv.pdf
-demo_flow.dart
-seed_jobs.dart
+# -------- Assets temporaires --------
+assets/temp/
+assets/debug/
+assets/demo/
+**/*_temp.*
+**/*_debug.*
+
+# -------- Clean Deploy (GitHub Pages) --------
+# Garder clean-deploy mais ignorer son historique git
+clean-deploy/.git/
+clean-deploy/node_modules/
+
+# ====================================================================
+# IMPORTANT: Fichiers à TOUJOURS tracker
+# ====================================================================
+# Ne jamais ignorer ces fichiers essentiels:
+!pubspec.yaml
+!lib/main.dart
+!lib/utils/
+!lib/screen/
+!lib/service/
+!lib/api/
+!lib/common/
+!assets/images/
+!assets/icons/
