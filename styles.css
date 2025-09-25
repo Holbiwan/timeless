@@ -972,6 +972,49 @@ h4 { font-size: 1.5rem; }
   box-shadow: var(--shadow-md);
 }
 
+/* QR Code Section */
+.qr-code-section {
+  margin: 2rem 0;
+  text-align: center;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+}
+
+.qr-code-section h3 {
+  color: var(--white);
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.qr-code-section p {
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+}
+
+.qr-code-container {
+  display: inline-block;
+  background: var(--white);
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+  transition: transform 0.3s ease;
+}
+
+.qr-code-container:hover {
+  transform: scale(1.05);
+}
+
+.qr-code {
+  width: 150px;
+  height: 150px;
+  border-radius: 8px;
+  display: block;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .social-profiles {
@@ -987,5 +1030,15 @@ h4 { font-size: 1.5rem; }
   
   .feature-image {
     height: 180px;
+  }
+  
+  .qr-code-section {
+    margin: 1.5rem 0;
+    padding: 1.5rem;
+  }
+  
+  .qr-code {
+    width: 120px;
+    height: 120px;
   }
 }
