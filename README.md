@@ -6,9 +6,9 @@ Career Companion
 </p>
 
 <p align="center">
-  <img src="https://zupimages.net/up/25/39/ftc9.png" alt="Timeless logo" width="200">
+  <img src="https://zupimages.net/up/25/39/ftc9.png" alt="Timeless logo" width="280">
   &nbsp;&nbsp;&nbsp;
-  <img src="https://zupimages.net/up/25/39/wwhy.png" alt="Timeless QR code" width="160">
+  <img src="https://zupimages.net/up/25/39/wwhy.png" alt="Timeless QR code" width="220">
 </p>
 
 ## 🎬 Demo (click)
@@ -61,4 +61,5 @@ flutter run
 
 ## 📜 License
 This project is licensed under the MIT License.
+
 
