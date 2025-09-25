@@ -2,7 +2,7 @@
 Career Companion  
 
 <p align="center">
-  👉 <a href="https://holbiwan.github.io/timeless-landing/">Visit the Landing Page</a>
+  👉 <a href="https://holbiwan.github.io/timeless/">Visit the Landing Page</a>
 </p>
 
 <p align="center">
