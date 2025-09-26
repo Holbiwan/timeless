@@ -73,6 +73,23 @@ Career Companion
   </a>
 </p>
 
+## 🛠️ Project Structure (main folders)
+
+```bash
+timeless/
+├── android/         # Android settings
+├── ios/             # iOS settings
+├── assets/          # Images, icons, demo data
+├── lib/             # Main app code
+│   ├── api/         # Data services
+│   ├── common/      # Reusable widgets
+│   ├── screen/      # App screens
+│   ├── service/     # Features (auth, storage…)
+│   ├── utils/       # Helpers, constants
+│   └── main.dart    # Entry point
+├── test/            # Tests
+└── web/             # Web settings
+```
 
 ## 🛠️ Tech Stack
 - **Frontend**: Flutter (Dart)  
@@ -100,6 +117,7 @@ flutter run
 
 ## 📜 License
 This project is licensed under the MIT License.
+
 
 
 
