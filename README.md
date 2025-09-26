@@ -63,15 +63,15 @@ Career Companion
   </a>
 </p>
 
+
 ## 🎬 Demo (click)
 
-<p align="center"><strong>COMING SOON</strong></p>
-
 <p align="center">
-  <a href="">
-    <!-- tu pourras mettre ton GIF ou screenshot ici plus tard -->
+  <a href="https://drive.google.com/file/d/1rluLEb_Vo9qcsesfhSVJpYSz6heZSxV8/view?usp=sharing" target="_blank">
+    <img src="assets/screenshots/Dashboard.png" width="240" alt="Demo thumbnail">
   </a>
 </p>
+
 
 ## 🛠️ Project Structure (main folders)
 
@@ -130,6 +130,7 @@ flutter run
 
 ## 📜 License
 This project is licensed under the MIT License.
+
 
 
 
