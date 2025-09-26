@@ -1,6 +1,7 @@
 # 🚀 Timeless  
 Career Companion  
 
+
 <p align="center">
   👉 <a href="https://holbiwan.github.io/timeless/">Visit the Landing Page</a>
 </p>
@@ -11,13 +12,7 @@ Career Companion
   <img src="https://zupimages.net/up/25/39/b9yj.png" alt="Timeless QR code" width="270">
 </p>
 
-## 🎬 Demo (click)  COMING SOON 
 
-<p align="center">
-  <a href="">
-    <img src="" width="240" alt="Demo thumbnail  COMING SOON ">
-  </a>
-</p>
 
 <h1 align="center"></h1>
 <p align="center"><em>Digital job search — Find, Apply & Grow.</em></p>  
@@ -33,6 +28,50 @@ Career Companion
   <img alt="Status" src="https://img.shields.io/badge/Status-Demo%20Day-4CAF50">
 </p>
 
+
+
+
+## 📸 Screenshots (mini preview)
+
+<p align="center">
+  <a href="assets/screenshots/First_Screen_Connex.png">
+    <img src="assets/screenshots/First_Screen_Connex.png" width="160" alt="First screen">
+  </a>
+  <a href="assets/screenshots/Create_Your_Account.png">
+    <img src="assets/screenshots/Create_Your_Account.png" width="160" alt="Create account">
+  </a>
+  <a href="assets/screenshots/Dashboard.png">
+    <img src="assets/screenshots/Dashboard.png" width="160" alt="Dashboard">
+  </a>
+  <a href="assets/screenshots/Find_My_Matches.png">
+    <img src="assets/screenshots/Find_My_Matches.png" width="160" alt="Find my matches">
+  </a>
+</p>
+
+<p align="center">
+  <a href="assets/screenshots/Matching_system.png">
+    <img src="assets/screenshots/Matching_system.png" width="160" alt="Matching system">
+  </a>
+  <a href="assets/screenshots/Notifs.png">
+    <img src="assets/screenshots/Notifs.png" width="160" alt="Notifications">
+  </a>
+  <a href="assets/screenshots/Employer%20screen.png">
+    <img src="assets/screenshots/Employer%20screen.png" width="160" alt="Employer screen">
+  </a>
+  <a href="assets/screenshots/Hiring.png">
+    <img src="assets/screenshots/Hiring.png" width="160" alt="Hiring">
+  </a>
+</p>
+
+## 🎬 Demo (click)
+
+<p align="center"><strong>COMING SOON</strong></p>
+
+<p align="center">
+  <a href="">
+    <!-- tu pourras mettre ton GIF ou screenshot ici plus tard -->
+  </a>
+</p>
 
 
 ## 🛠️ Tech Stack
@@ -61,6 +100,7 @@ flutter run
 
 ## 📜 License
 This project is licensed under the MIT License.
+
 
 
 
