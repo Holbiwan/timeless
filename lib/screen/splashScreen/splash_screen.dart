@@ -119,6 +119,13 @@ class _SplashScreenState extends State<SplashScreen>
               ColorRes.darkBlue,
             ],
           ),
+          image: DecorationImage(
+            image: AssetImage('assets/images/logo.png'),
+            fit: BoxFit.contain,
+            opacity: 0.05, // Très subtil pour pas gêner le contenu
+            alignment: Alignment.center,
+            scale: 0.8,
+          ),
         ),
         child: SafeArea(
           child: AnimatedBuilder(

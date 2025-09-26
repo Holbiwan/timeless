@@ -40,6 +40,13 @@ class FirstScreen extends StatelessWidget {
               ColorRes.surfaceColor,
             ],
           ),
+          image: const DecorationImage(
+            image: AssetImage('assets/images/logo.png'),
+            fit: BoxFit.contain,
+            opacity: 0.04, // Encore plus subtil sur cet écran
+            alignment: Alignment.center,
+            scale: 1.2,
+          ),
         ),
         child: SingleChildScrollView(
           child: Column(
