@@ -11,11 +11,11 @@ Career Companion
   <img src="https://zupimages.net/up/25/39/b9yj.png" alt="Timeless QR code" width="270">
 </p>
 
-## 🎬 Demo (click)
+## 🎬 Demo (click)  COMING SOON 
 
 <p align="center">
-  <a href="https://drive.google.com/file/d/1UHukB-dhU7S3jspkpAhiETNvIDJF8GEh/view?usp=sharing">
-    <img src="assets/screenshots/SIGNIN.png" width="240" alt="Demo thumbnail">
+  <a href="">
+    <img src="" width="240" alt="Demo thumbnail  COMING SOON ">
   </a>
 </p>
 
@@ -61,6 +61,7 @@ flutter run
 
 ## 📜 License
 This project is licensed under the MIT License.
+
 
 
 
