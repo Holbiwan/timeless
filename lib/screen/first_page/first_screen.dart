@@ -9,6 +9,7 @@ import 'package:timeless/screen/auth/sign_up/sign_up_screen.dart';
 import 'package:timeless/screen/manager_section/auth_manager/Sign_in/sign_in_screen.dart';
 import 'package:timeless/screen/first_page/first_controller.dart';
 import 'package:timeless/screen/accessibility/accessibility_panel.dart';
+import 'package:timeless/screen/guest_access/guest_job_browser.dart';
 import 'package:timeless/service/translation_service.dart';
 import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/color_res.dart';
@@ -153,45 +154,13 @@ class FirstScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 30),
-              // Logo principal agrandi
-              Container(
-                width: 200,
-                height: 100,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      ColorRes.darkBlue,
-                      ColorRes.darkBlue.withOpacity(0.9),
-                    ],
-                  ),
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: ColorRes.brightYellow.withOpacity(0.6),
-                    width: 2,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: ColorRes.brightYellow.withOpacity(0.3),
-                      spreadRadius: 3,
-                      blurRadius: 15,
-                      offset: const Offset(0, 5),
-                    ),
-                    BoxShadow(
-                      color: ColorRes.darkBlue.withOpacity(0.2),
-                      spreadRadius: 1,
-                      blurRadius: 10,
-                      offset: const Offset(0, 8),
-                    ),
-                  ],
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Image.asset(
-                    'assets/images/logo.png',
-                    fit: BoxFit.contain,
-                  ),
+              // Logo principal 2x plus gros
+              SizedBox(
+                width: 400,
+                height: 200,
+                child: Image.asset(
+                  'assets/images/logo.png',
+                  fit: BoxFit.contain,
                 ),
               ),
               SizedBox(height: Get.height * 0.06),
@@ -220,7 +189,7 @@ class FirstScreen extends StatelessWidget {
                   );
                 },
                 child: Container(
-                  height: 48,
+                  height: 42,
                   width: MediaQuery.of(context).size.width,
                   margin: const EdgeInsets.symmetric(horizontal: 20),
                   alignment: Alignment.center,
@@ -232,23 +201,23 @@ class FirstScreen extends StatelessWidget {
                     Strings.createAccount,
                     style: GoogleFonts.poppins(
                       fontWeight: FontWeight.w500,
-                      fontSize: 18,
+                      fontSize: 16,
                       color: ColorRes.white,
                     ),
                   ),
                 ),
               ),
 
-              SizedBox(height: Get.height * 0.03),
+              SizedBox(height: Get.height * 0.02),
               Text(
                 Strings.alreadyHaveAccount,
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.w400,
-                  fontSize: 18,
+                  fontSize: 16,
                   color: ColorRes.textSecondary,
                 ),
               ),
-              SizedBox(height: Get.height * 0.0344),
+              SizedBox(height: Get.height * 0.02),
 
               /// Bouton Se connecter
               InkWell(
@@ -262,7 +231,7 @@ class FirstScreen extends StatelessWidget {
                   );
                 },
                 child: Container(
-                  height: 48,
+                  height: 42,
                   width: 327,
                   margin: const EdgeInsets.symmetric(horizontal: 20),
                   alignment: Alignment.center,
@@ -275,12 +244,63 @@ class FirstScreen extends StatelessWidget {
                     Strings.signIn,
                     style: GoogleFonts.poppins(
                       fontWeight: FontWeight.w500,
-                      fontSize: 18,
+                      fontSize: 16,
                       color: ColorRes.textPrimary,
                     ),
                   ),
                 ),
               ),
+              SizedBox(height: Get.height * 0.02),
+
+              /// Bouton d'accès direct libre
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => GuestJobBrowser(),
+                    ),
+                  );
+                },
+                child: Container(
+                  height: 42,
+                  width: MediaQuery.of(context).size.width,
+                  margin: const EdgeInsets.symmetric(horizontal: 20),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    gradient: LinearGradient(
+                      colors: [
+                        ColorRes.appleGreen,
+                        ColorRes.appleGreen.withOpacity(0.8),
+                      ],
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: ColorRes.appleGreen.withOpacity(0.3),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.visibility, color: Colors.white, size: 20),
+                      const SizedBox(width: 8),
+                      Text(
+                        "Continue as Guest",
+                        style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 13,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
               SizedBox(height: Get.height * 0.02),
 
               /// 🚨 BOUTON DEMO MANAGER ACCESS 🚨
@@ -294,26 +314,25 @@ class FirstScreen extends StatelessWidget {
                   );
                 },
                 child: Container(
-                  height: 60,
+                  height: 50,
                   width: MediaQuery.of(context).size.width,
                   margin: const EdgeInsets.symmetric(horizontal: 20),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
-                    border: Border.all(color: ColorRes.warningColor, width: 2),
-                    color: ColorRes.cardColor,
+                    color: Colors.black,
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.business_center, color: ColorRes.warningColor, size: 24),
+                      const Icon(Icons.business_center, color: ColorRes.brightYellow, size: 22),
                       const SizedBox(width: 8),
                       Text(
                         "Employer Access",
                         style: GoogleFonts.poppins(
-                          fontSize: 16,
+                          fontSize: 15,
                           fontWeight: FontWeight.w600,
-                          color: ColorRes.textPrimary
+                          color: ColorRes.brightYellow
                         ),
                       ),
                     ],
