@@ -15,7 +15,6 @@ import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/string.dart';
 
 // Import supprimé : job_list_test_screen n'existe plus
-import 'package:timeless/screen/analytics/analytics_dashboard.dart';
 import 'package:timeless/screen/ai_matching/ai_matching_screen.dart';
 
 // ignore: must_be_immutable
@@ -116,30 +115,6 @@ class HomeScreen extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: ElevatedButton.icon(
-                                onPressed: () {
-                                  Get.to(() => const AnalyticsDashboard());
-                                },
-                                icon: const Icon(Icons.analytics_rounded, size: 18),
-                                label: Text(
-                                  "Analytics",
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.black,
-                                  foregroundColor: Colors.white,
-                                  minimumSize: const Size(0, 45),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                ),
-                              ),
-                            ),
                           ],
                         ),
                       ],
@@ -222,21 +197,19 @@ class HomeScreen extends StatelessWidget {
                     () => jrcontroller.selectedJobs2.value == 0
                         ? allJobs(fireStore.collection("allPost").snapshots())
                         : jrcontroller.selectedJobs2.value == 1
-                            ? allJobs(fireStore.collection("category").doc("Writer").collection("Writer").snapshots())
+                            ? allJobs(fireStore.collection("category").doc("Design").collection("Design").snapshots())
                             : jrcontroller.selectedJobs2.value == 2
-                                ? allJobs(fireStore.collection("category").doc("Design").collection("Design").snapshots())
+                                ? allJobs(fireStore.collection("category").doc("UX").collection("UX").snapshots())
                                 : jrcontroller.selectedJobs2.value == 3
-                                    ? allJobs(fireStore.collection("category").doc("Finance").collection("Finance").snapshots())
+                                    ? allJobs(fireStore.collection("category").doc("Software").collection("Software").snapshots())
                                     : jrcontroller.selectedJobs2.value == 4
-                                        ? allJobs(fireStore.collection("category").doc("Software").collection("Software").snapshots())
+                                        ? allJobs(fireStore.collection("category").doc("Database Manager").collection("Database Manager").snapshots())
                                         : jrcontroller.selectedJobs2.value == 5
-                                            ? allJobs(fireStore.collection("category").doc("Database Manager").collection("Database Manager").snapshots())
+                                            ? allJobs(fireStore.collection("category").doc("Product Manager").collection("Product Manager").snapshots())
                                             : jrcontroller.selectedJobs2.value == 6
-                                                ? allJobs(fireStore.collection("category").doc("Product Manager").collection("Product Manager").snapshots())
+                                                ? allJobs(fireStore.collection("category").doc("Full-Stack Developer").collection("Full-Stack Developer").snapshots())
                                                 : jrcontroller.selectedJobs2.value == 7
-                                                    ? allJobs(fireStore.collection("category").doc("Full-Stack Developer").collection("Full-Stack Developer").snapshots())
-                                                    : jrcontroller.selectedJobs2.value == 8
-                                                        ? allJobs(fireStore.collection("category").doc("Data Scientist").collection("Data Scientist").snapshots())
+                                                    ? allJobs(fireStore.collection("category").doc("Data Scientist").collection("Data Scientist").snapshots())
                                                         : jrcontroller.selectedJobs2.value == 9
                                                             ? allJobs(
                                                                 fireStore.collection("category").doc("Web Developers").collection("Web Developers").snapshots(),

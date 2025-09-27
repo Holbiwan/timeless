@@ -51,12 +51,6 @@ class DashBoardScreen extends StatelessWidget {
                 return token.isEmpty
                     ? const HomePageNewScreenU()
                     : HomeScreen();
-              case 1:
-                return const AppliesLogoScreen();
-              case 2:
-                return token.isEmpty
-                    ? const InboxLogoScreen()
-                    : ChatBoxUserScreen();
               default:
                 return token.isEmpty
                     ? const ProfileLogoScreen()
@@ -83,22 +77,12 @@ class DashBoardScreen extends StatelessWidget {
                   BottomNavigationBarItem(
                     icon: Image.asset(AssetRes.home,
                         height: 18, width: 18, color: _kGreenOrYellow(c, 0)),
-                    label: "Home",
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Image.asset(AssetRes.applies,
-                        height: 18, width: 18, color: _kGreenOrYellow(c, 1)),
-                    label: "Applies",
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Image.asset(AssetRes.chat,
-                        height: 18, width: 18, color: _kGreenOrYellow(c, 2)),
-                    label: "Inbox",
+                    label: "Jobs",
                   ),
                   BottomNavigationBarItem(
                     icon: Image.asset(AssetRes.profile1,
-                        height: 18, width: 18, color: _kGreenOrYellow(c, 3)),
-                    label: Strings.profile,
+                        height: 18, width: 18, color: _kGreenOrYellow(c, 1)),
+                    label: "Profile",
                   ),
                 ],
               ),
