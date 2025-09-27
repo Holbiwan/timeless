@@ -1,8 +1,10 @@
 // lib/screen/auth/sign_up/sign_up_screen.dart
+import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:timeless/common/widgets/common_loader.dart';
 import 'package:timeless/common/widgets/common_text_field.dart';
@@ -224,50 +226,68 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     ),
 
-                    const SizedBox(height: 20),
-                    
-                    // 🎯 BOUTON SPÉCIAL POUR CRÉER L'UTILISATEUR DEMO
-                    GetBuilder<SignUpController>(
-                      builder: (_) => InkWell(
-                        onTap: isLoading ? null : ctrl.createSpecialUser,
-                        child: Container(
-                          height: 50,
-                          width: double.infinity,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            gradient: const LinearGradient(
-                              colors: [Colors.purple, Colors.deepPurple],
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.purple.withOpacity(0.3),
-                                spreadRadius: 2,
-                                blurRadius: 8,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(Icons.star, color: Colors.white, size: 24),
-                              const SizedBox(width: 8),
-                              Text(
-                                '🎯 Users already created',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  color: ColorRes.white,
-                                ),
-                              ),
-                            ],
-                          ),
+                    const SizedBox(height: 28),
+
+                    // Terms and conditions
+                    RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                        style: GoogleFonts.poppins(
+                          fontSize: 12,
+                          color: Colors.black.withOpacity(0.6),
                         ),
+                        children: [
+                          const TextSpan(text: 'By creating an account, you agree to our '),
+                          TextSpan(
+                            text: 'Terms of Service',
+                            style: GoogleFonts.poppins(
+                              color: ColorRes.primaryAccent,
+                              fontWeight: FontWeight.w600,
+                              decoration: TextDecoration.underline,
+                            ),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () async {
+                                final uri = Uri.parse('https://www.termsfeed.com/live/588c37bc-3594-490a-be8b-d9409af52df7');
+                                if (await canLaunchUrl(uri)) {
+                                  await launchUrl(uri, mode: LaunchMode.externalApplication);
+                                } else {
+                                  Get.snackbar(
+                                    'Error',
+                                    'Could not open Terms of Service',
+                                    backgroundColor: Colors.red,
+                                    colorText: Colors.white,
+                                  );
+                                }
+                              },
+                          ),
+                          const TextSpan(text: ' and '),
+                          TextSpan(
+                            text: 'Privacy Policy',
+                            style: GoogleFonts.poppins(
+                              color: ColorRes.primaryAccent,
+                              fontWeight: FontWeight.w600,
+                              decoration: TextDecoration.underline,
+                            ),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () async {
+                                final uri = Uri.parse('https://www.privacypolicygenerator.info/live.php?token=VQQZx8YfJz2gQh7y3jKb9Rm6XsEr4vNJ');
+                                if (await canLaunchUrl(uri)) {
+                                  await launchUrl(uri, mode: LaunchMode.externalApplication);
+                                } else {
+                                  Get.snackbar(
+                                    'Error',
+                                    'Could not open Privacy Policy',
+                                    backgroundColor: Colors.red,
+                                    colorText: Colors.white,
+                                  );
+                                }
+                              },
+                          ),
+                        ],
                       ),
                     ),
 
-                    const SizedBox(height: 28),
+                    const SizedBox(height: 20),
                   ],
                 ),
               ),

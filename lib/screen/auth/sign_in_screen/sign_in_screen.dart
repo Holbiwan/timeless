@@ -353,49 +353,6 @@ class _SigninScreenUState extends State<SigninScreenU> {
 
                       SizedBox(height: Get.height * 0.028),
 
-                      // 🚨 BOUTON DEMO EMERGENCY 🚨
-                      InkWell(
-                        onTap: () {
-                          // Connexion d'urgence directe au dashboard
-                          Get.off(() => DashBoardScreen());
-                        },
-                        child: Container(
-                          height: 60,
-                          width: MediaQuery.of(context).size.width,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            border: Border.all(color: ColorRes.appleGreen, width: 3),
-                            gradient: const LinearGradient(colors: [
-                              ColorRes.appleGreen,
-                              ColorRes.darkGreen
-                            ]),
-                            boxShadow: [
-                              BoxShadow(
-                                color: ColorRes.appleGreen.withOpacity(0.5),
-                                spreadRadius: 2,
-                                blurRadius: 10,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(Icons.rocket_launch, color: Colors.white, size: 30),
-                              const SizedBox(width: 10),
-                              Text("🚨 DEMO SIGN IN 🚨",
-                                  style: GoogleFonts.poppins(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w900,
-                                      color: Colors.white)),
-                            ],
-                          ),
-                        ),
-                      ),
-
-                      SizedBox(height: Get.height * 0.02),
-
                       // ===== Sign in (email/password) =====
                       GetBuilder<SignInScreenController>(
                         id: "colorChange",
@@ -463,46 +420,6 @@ class _SigninScreenUState extends State<SigninScreenU> {
                       ),
 
                       SizedBox(height: Get.height * 0.028),
-
-                      // ===== Bouton de connexion démo =====
-                      InkWell(
-                        onTap: () {
-                          controller.emailController.text = "demo@timeless.com";
-                          controller.passwordController.text = "demo123";
-                          controller.signInWithEmailAndPassword(
-                            email: "demo@timeless.com",
-                            password: "demo123",
-                          );
-                        },
-                        child: Container(
-                          height: 60,
-                          decoration: BoxDecoration(
-                            gradient: const LinearGradient(colors: [
-                              Colors.blue,
-                              Colors.blueAccent,
-                            ]),
-                            borderRadius: BorderRadius.circular(15),
-                            border: Border.all(color: Colors.blue, width: 2),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(Icons.account_circle, color: Colors.white, size: 30),
-                              const SizedBox(width: 15),
-                              Text(
-                                "🎯 CONNEXION DÉMO",
-                                style: GoogleFonts.poppins(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-
-                      SizedBox(height: Get.height * 0.02),
 
                       // ===== Social buttons =====
                       Column(

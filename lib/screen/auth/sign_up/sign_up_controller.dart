@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:timeless/screen/dashboard/dashboard_screen.dart';
+import 'package:timeless/screen/auth/email_verification/email_verification_screen.dart';
 import 'package:timeless/service/pref_services.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/utils/color_res.dart';
@@ -84,96 +85,30 @@ class SignUpController extends GetxController {
 
   void onChanged(String _) => update(["colorChange"]);
 
-  // ===== FONCTION SPÉCIALE POUR CRÉER L'UTILISATEUR DEMO =====
-  Future<void> createSpecialUser() async {
-    const String specialEmail = "hobiwansabrina@gmail.com";
-    const String specialPassword = "Test12345678!";
-    
-    if (kDebugMode) {
-      print("""
-🎯 DÉMARRAGE CRÉATION UTILISATEUR SPÉCIAL
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📧 Email: $specialEmail
-🔑 Password: $specialPassword
-⏰ Timestamp: ${DateTime.now()}
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      """);
-    }
-    
-    loading.value = true;
+  // ===== Email Verification System =====
+  Future<void> sendEmailVerification(User user) async {
     try {
-      // Créer l'utilisateur dans Firebase Auth
-      final cred = await _auth.createUserWithEmailAndPassword(
-        email: specialEmail,
-        password: specialPassword,
-      );
-
-      if (cred.user != null) {
-        // Créer le profil utilisateur dans Firestore
-        await _db.collection("Auth").doc("User").collection("register").doc(cred.user!.uid).set({
-          "FirstName": "Sabrina",
-          "LastName": "Hobiwan",
-          "Email": specialEmail,
-          "PhoneNumber": "+33123456789",
-          "Country": "France",
-          "CreatedAt": FieldValue.serverTimestamp(),
-          "SpecialUser": true,
-          "WelcomeEmailSent": true,
-        });
-
-        // Sauvegarder dans les préférences
-        await PrefService.setValue(PrefKeys.userId, cred.user!.uid);
-        await PrefService.setValue(PrefKeys.rol, "User");
-
-        if (kDebugMode) print("🎯 Utilisateur créé, envoi email...");
-        
-        // Envoyer l'email de bienvenue (APRÈS connexion)
-        await _sendWelcomeEmail(specialEmail, "Sabrina");
-
-        Get.snackbar(
-          "✅ SABRINA CRÉÉE AVEC SUCCÈS!", 
-          "📧 Email: $specialEmail\n🔑 Password: $specialPassword\n📨 Email de bienvenue envoyé!\n🎯 Utilisateur réel dans Firebase!",
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-          duration: const Duration(seconds: 8),
-          snackPosition: SnackPosition.TOP,
-        );
-
-        // Redirection vers le dashboard
-        Get.offAll(() => DashBoardScreen());
-      }
-    } on FirebaseAuthException catch (e) {
-      if (kDebugMode) {
-        print("❌ Firebase Auth Error: ${e.code} - ${e.message}");
-      }
-      
-      if (e.code == 'email-already-in-use') {
-        // L'email existe déjà, on essaie de se connecter
-        Get.snackbar(
-          "ℹ️ Email existant", 
-          "Connexion avec l'utilisateur existant...",
-          backgroundColor: Colors.blue,
-          colorText: Colors.white,
-        );
-        await _signInExistingUser(specialEmail, specialPassword);
-      } else {
-        // Autres erreurs Firebase, on crée en mode local
-        Get.snackbar(
-          "⚠️ Mode local", 
-          "Création en mode local (Firebase indisponible)",
-          backgroundColor: ColorRes.appleGreen,
-          colorText: Colors.white,
-        );
-        await _createLocalUser(specialEmail);
-      }
+      await user.sendEmailVerification();
+      if (kDebugMode) print('✅ Email verification sent to ${user.email}');
     } catch (e) {
-      if (kDebugMode) {
-        print("❌ Erreur générale: $e");
-      }
-      // En dernier recours, mode local
-      await _createLocalUser(specialEmail);
+      if (kDebugMode) print('❌ Error sending verification email: $e');
+      rethrow;
     }
-    loading.value = false;
+  }
+
+  Future<void> checkEmailVerification() async {
+    try {
+      await _auth.currentUser?.reload();
+      final user = _auth.currentUser;
+      if (user != null && user.emailVerified) {
+        if (kDebugMode) print('✅ Email verified for ${user.email}');
+        return;
+      }
+      throw Exception('Email not verified');
+    } catch (e) {
+      if (kDebugMode) print('❌ Email verification check failed: $e');
+      rethrow;
+    }
   }
 
   Future<void> _signInExistingUser(String email, String password) async {
@@ -230,78 +165,48 @@ class SignUpController extends GetxController {
     }
   }
 
-  Future<void> _sendWelcomeEmail(String email, String firstName) async {
+  Future<void> _sendWelcomeEmailWithVerification(String email, String fullName) async {
     try {
-      if (kDebugMode) print("🚀 DÉBUT _sendWelcomeEmail pour $email");
-      if (kDebugMode) print("🔐 Auth state: ${_auth.currentUser?.uid ?? 'NON CONNECTÉ'}");
+      if (kDebugMode) print("📧 Sending welcome email with verification to $email");
       
-      // VRAI ENVOI D'EMAIL via Firebase Functions/Extension ou API directe
-      // Pour cette démo, on utilise une approche via Firestore qui peut déclencher une Firebase Function
+      // Generate professional welcome email with verification instructions
+      final emailHTML = await _generateVerificationWelcomeEmail(email, fullName);
       
-      // 1. ENVOI RÉEL via Extension Email Firebase
-      if (kDebugMode) print("📧 Création document dans collection mail...");
+      // Send via Firebase Extensions (mail collection)
       final mailDoc = await _db.collection("mail").add({
         "to": [email],
         "message": {
-          "subject": "🎉 Bienvenue chez Timeless !",
-          "html": await _generateWelcomeEmailHTML(email, firstName),
-          "text": "Bienvenue chez Timeless, $firstName ! Votre compte a été créé avec succès."
+          "subject": "🎉 Welcome to Timeless - Please verify your email",
+          "html": emailHTML,
+          "text": "Welcome to Timeless, $fullName! Please verify your email to complete your registration."
         }
       });
-      if (kDebugMode) print("✅ Document mail créé avec ID: ${mailDoc.id}");
-
-      // 2. Backup dans emailQueue pour traçabilité
-      if (kDebugMode) print("📋 Création document dans collection emailQueue...");
-      final queueDoc = await _db.collection("emailQueue").add({
+      
+      // Log email sending attempt
+      await _db.collection("emailQueue").add({
         "to": email,
-        "template": "welcome",
+        "template": "welcome_verification",
         "templateData": {
-          "firstName": firstName,
+          "fullName": fullName,
           "email": email,
-          "loginUrl": "https://timeless.app/login",
+          "verificationRequired": true,
           "appName": "Timeless"
         },
-        "subject": "🎉 Bienvenue chez Timeless !",
+        "subject": "🎉 Welcome to Timeless - Please verify your email",
         "priority": "high",
         "createdAt": FieldValue.serverTimestamp(),
-        "status": "sent_via_extension"
+        "status": "sent",
+        "mailDocId": mailDoc.id
       });
-      if (kDebugMode) print("✅ Document emailQueue créé avec ID: ${queueDoc.id}");
-
-      // 2. Alternative: Envoi direct via service externe (nécessite configuration)
-      await _sendDirectEmail(email, firstName);
       
       if (kDebugMode) {
-        print("""
-✅ EMAIL DE BIENVENUE RÉELLEMENT ENVOYÉ ✅
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📧 À: $email
-👤 Nom: $firstName
-📅 Date: ${DateTime.now().toString()}
-🔥 STATUS: ENVOYÉ AVEC SUCCÈS
-
-📝 EMAIL QUEUE CRÉÉE DANS FIRESTORE
-📧 DEMANDE D'ENVOI ENREGISTRÉE
-🚀 FIREBASE FUNCTION DÉCLENCHÉE (si configurée)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        """);
+        print("✅ Welcome email with verification sent successfully to $email");
       }
     } catch (e) {
       if (kDebugMode) {
-        print("❌ ERREUR ENVOI EMAIL: $e");
-        print("❌ Type d'erreur: ${e.runtimeType}");
-        print("❌ Stack trace: ${StackTrace.current}");
+        print("❌ Error sending welcome email: $e");
       }
-      // Ne pas faire échouer la création du compte pour autant
-      
-      // Montrer l'erreur à l'utilisateur pour debug
-      Get.snackbar(
-        "⚠️ Debug Email", 
-        "Erreur Firestore: $e",
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-        duration: const Duration(seconds: 10),
-      );
+      // Don't fail account creation for email issues
     }
   }
 
@@ -417,6 +322,107 @@ class SignUpController extends GetxController {
     }
   }
 
+  Future<String> _generateVerificationWelcomeEmail(String email, String fullName) async {
+    return """
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Timeless - Verify Your Email</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f5f5; margin: 0; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; background-color: white; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-align: center; padding: 40px 20px; }
+        .header h1 { margin: 0; font-size: 28px; font-weight: 700; }
+        .header p { margin: 10px 0 0 0; opacity: 0.9; font-size: 16px; }
+        .content { padding: 40px 30px; }
+        .content h2 { color: #333; margin-top: 0; font-size: 24px; }
+        .verification-box { background: #f8f9fa; padding: 25px; border-radius: 10px; margin: 25px 0; border-left: 4px solid #667eea; text-align: center; }
+        .verification-notice { background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 15px; margin: 20px 0; }
+        .feature { display: flex; align-items: center; margin: 15px 0; padding: 10px; }
+        .feature-icon { color: #667eea; margin-right: 15px; font-size: 20px; }
+        .feature-text { color: #555; font-size: 16px; }
+        .footer { background-color: #f8f9fa; text-align: center; padding: 30px 20px; border-top: 1px solid #eee; }
+        .footer h3 { color: #333; margin: 0 0 10px 0; }
+        .footer p { color: #666; margin: 5px 0; }
+        .small-text { font-size: 12px; color: #999; margin-top: 20px; }
+        .highlight { color: #667eea; font-weight: 600; }
+        @media (max-width: 600px) {
+            .content { padding: 30px 20px; }
+            .header { padding: 30px 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎉 Welcome to Timeless!</h1>
+            <p>Your professional journey starts here</p>
+        </div>
+        
+        <div class="content">
+            <h2>Hello $fullName,</h2>
+            
+            <p>Welcome to Timeless! We're excited to have you join our community of professionals. Your account has been created successfully, and we just need to verify your email address to get started.</p>
+            
+            <div class="verification-box">
+                <h3 style="margin-top: 0; color: #333;">📧 Email Verification Required</h3>
+                <p><strong>We've sent a verification link to:</strong></p>
+                <p class="highlight" style="font-size: 16px;">$email</p>
+                <p style="margin-bottom: 0; color: #666;">Please check your inbox and click the verification link to activate your account.</p>
+            </div>
+            
+            <div class="verification-notice">
+                <p style="margin: 0; color: #856404;"><strong>⚠️ Important:</strong> You'll need to verify your email before you can access all features of your Timeless account.</p>
+            </div>
+            
+            <h3 style="color: #333;">🚀 What you can do once verified:</h3>
+            
+            <div class="feature">
+                <span class="feature-icon">✨</span>
+                <span class="feature-text">Browse thousands of quality job listings</span>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">⚡</span>
+                <span class="feature-text">Apply to jobs with one-click using your profile</span>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">📊</span>
+                <span class="feature-text">Track your applications in real-time</span>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">🎯</span>
+                <span class="feature-text">Receive personalized job recommendations</span>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">💼</span>
+                <span class="feature-text">Connect directly with employers</span>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">🔔</span>
+                <span class="feature-text">Get notified about application updates</span>
+            </div>
+            
+            <p style="margin-top: 30px; color: #666;">If you don't see the verification email in your inbox, please check your spam folder. If you need assistance, our support team is available 24/7.</p>
+        </div>
+        
+        <div class="footer">
+            <h3>The Timeless Team 💼</h3>
+            <p>Your professional success is our priority</p>
+            <p>📧 support@timeless.app | 🌐 www.timeless.app</p>
+            
+            <div class="small-text">
+                <p>This email was sent automatically after account creation.</p>
+                <p>If you didn't create this account, you can safely ignore this email.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+    """;
+  }
+
   Future<String> _generateWelcomeEmailHTML(String email, String firstName) async {
     return """
 <!DOCTYPE html>
@@ -519,18 +525,20 @@ class SignUpController extends GetxController {
     """;
   }
 
-  // ===== Core: Register Email/Password =====
+  // ===== Core: Register Email/Password with Email Verification =====
   Future<void> onSignUpTap() async {
     if (loading.value) return;
     if (!_basicValidator()) {
-      Get.snackbar("Error", "Please check email & password",
-          colorText: const Color(0xffDA1414),
+      Get.snackbar("Validation Error", "Please check email & password requirements",
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
           snackPosition: SnackPosition.BOTTOM);
       return;
     }
 
     loading.value = true;
     try {
+      // Create user account
       final cred = await _auth.createUserWithEmailAndPassword(
         email: emailCtrl.text.trim(),
         password: passwordCtrl.text.trim(),
@@ -538,74 +546,117 @@ class SignUpController extends GetxController {
 
       final user = cred.user;
       if (user == null) {
-        loading.value = false;
-        Get.snackbar("Error", "Unexpected sign up result",
-            colorText: const Color(0xffDA1414),
-            snackPosition: SnackPosition.BOTTOM);
-        return;
+        throw Exception("Account creation failed - no user returned");
       }
 
-      // Clear any existing profile data first (ensure fresh start)
+      // Clear any existing profile data first
       await _clearAllProfileData();
       
-      // Set only essential data for new user
-      PrefService.setValue(PrefKeys.rol, "User");
-      PrefService.setValue(PrefKeys.userId, user.uid);
-      PrefService.setValue(PrefKeys.email, emailCtrl.text.trim());
-      final full = "${firstNameCtrl.text.trim()} ${lastNameCtrl.text.trim()}".trim();
-      PrefService.setValue(PrefKeys.fullName, full);
-
-      // ✅ Message de succès visible tout de suite
-      Get.snackbar("Success", "Account created successfully!");
-
-      // ✅ Navigue direct (la démo ne dépend pas de Firestore)
-      Get.offAll(() => DashBoardScreen());
-
-      // 🔁 Écriture Firestore en arrière-plan (tolérante)
+      // Create user profile data
+      final fullName = "${firstNameCtrl.text.trim()} ${lastNameCtrl.text.trim()}".trim();
+      final email = emailCtrl.text.trim();
+      
+      // Save to Firestore
       final profile = <String, dynamic>{
         "uid": user.uid,
-        "Email": emailCtrl.text.trim(),
-        "fullName": full,
+        "Email": email,
+        "fullName": fullName,
+        "firstName": firstNameCtrl.text.trim(),
+        "lastName": lastNameCtrl.text.trim(),
         "Phone": "",
         "City": "",
         "State": "",
         "Country": "",
         "Occupation": "",
-        "provider": "password",
+        "provider": "email",
         "imageUrl": "",
+        "emailVerified": false,
+        "accountStatus": "pending_verification",
         "deviceTokenU": PrefService.getString(PrefKeys.deviceToken),
         "createdAt": FieldValue.serverTimestamp(),
       };
 
-      try {
-        await _db
-            .collection("Auth")
-            .doc("User")
-            .collection("register")
-            .doc(user.uid)
-            .set(profile, SetOptions(merge: true));
-      } catch (e) {
-        if (kDebugMode) debugPrint("Firestore profile save failed: $e");
-      }
+      await _db
+          .collection("Auth")
+          .doc("User")
+          .collection("register")
+          .doc(user.uid)
+          .set(profile);
 
-// Valeur par défaut (Canada). Country.from(...) est fourni par country_picker.
-// (Removed unused variable 'countryModel')
+      // Send Firebase verification email (this works immediately)
+      await sendEmailVerification(user);
+      
+      // Also send custom welcome email for better UX
+      await _sendWelcomeEmailWithVerification(email, fullName);
+      
+      // Show instruction for checking Firebase verification email
+      Get.snackbar(
+        "📧 Check Your Email",
+        "Firebase has sent a verification link to $email. Click the link to verify your account.",
+        backgroundColor: Colors.blue,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 5),
+      );
 
+      // Show success message
+      Get.snackbar(
+        "✅ Account Created Successfully!",
+        "📧 Verification email sent to $email\nPlease check your inbox and click the verification link to activate your account.",
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 6),
+        snackPosition: SnackPosition.TOP,
+      );
 
-      // Nettoie les champs (après navigation si besoin)
+      // Navigate to email verification screen instead of dashboard
+      Get.offAll(() => EmailVerificationScreen(
+        email: email,
+        userFullName: fullName,
+      ));
+
+      // Clear form fields
       firstNameCtrl.clear();
       lastNameCtrl.clear();
       emailCtrl.clear();
       passwordCtrl.clear();
+
     } on FirebaseAuthException catch (e) {
-      Get.snackbar("Sign up", e.message ?? 'Firebase error',
-          colorText: const Color(0xffDA1414),
-          snackPosition: SnackPosition.BOTTOM);
+      String errorMessage = "Account creation failed";
+      
+      switch (e.code) {
+        case 'email-already-in-use':
+          errorMessage = "This email is already registered. Please sign in instead.";
+          break;
+        case 'weak-password':
+          errorMessage = "Password is too weak. Please use a stronger password.";
+          break;
+        case 'invalid-email':
+          errorMessage = "Invalid email address format.";
+          break;
+        case 'operation-not-allowed':
+          errorMessage = "Email/password accounts are not enabled.";
+          break;
+        default:
+          errorMessage = e.message ?? "Unknown error occurred";
+      }
+      
+      Get.snackbar(
+        "Account Creation Failed",
+        errorMessage,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 4),
+        snackPosition: SnackPosition.BOTTOM,
+      );
     } catch (e) {
-      if (kDebugMode) debugPrint(e.toString());
-      Get.snackbar("Sign up", "Account creation failed",
-          colorText: const Color(0xffDA1414),
-          snackPosition: SnackPosition.BOTTOM);
+      if (kDebugMode) debugPrint("Sign up error: $e");
+      Get.snackbar(
+        "Account Creation Failed",
+        "An unexpected error occurred. Please try again.",
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.BOTTOM,
+      );
     } finally {
       loading.value = false;
     }
