@@ -46,7 +46,7 @@ class _SplashScreenState extends State<SplashScreen>
     },
     {
       'title': 'Find Your',
-      'subtitle': 'Dream Job',
+      'subtitle': 'Job Offers',
       'description': 'Discover opportunities that match your skills',
       'isImage': true,
       'imagePath': 'assets/images/love_emoji.png'
