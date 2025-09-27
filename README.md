@@ -31,7 +31,7 @@ Career Companion
 
 
 
-## 📸 Screenshots (mini preview)
+## 📸 Screenshots (mini preview of the app pages)
 
 <p align="center">
   <a href="assets/screenshots/First_Screen_Connex.png">
@@ -130,6 +130,7 @@ flutter run
 
 ## 📜 License
 This project is licensed under the MIT License.
+
 
 
 
