@@ -64,7 +64,7 @@ Career Companion
 </p>
 
 
-## 🎬 Demo (click)
+## 🎬 Demo (click on image below)
 
 <p align="center">
   <a href="https://drive.google.com/file/d/1rluLEb_Vo9qcsesfhSVJpYSz6heZSxV8/view?usp=sharing" target="_blank">
@@ -130,6 +130,7 @@ flutter run
 
 ## 📜 License
 This project is licensed under the MIT License.
+
 
 
 
