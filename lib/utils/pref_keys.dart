@@ -46,6 +46,7 @@ class PrefKeys {
   static const companyTypes = "companyTypes";         // JSON array: Startup, Enterprise, etc.
   static const maxCommuteDistance = "maxCommuteDistance"; // In kilometers
   static const workLocationPreference = "workLocationPreference"; // Remote, On-site, Hybrid
+  static const jobPreferencesCompleted = "jobPreferencesCompleted"; // Boolean: true if user completed preferences
 
   ///logout
   static const email = "Email";
