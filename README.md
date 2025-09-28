@@ -58,10 +58,7 @@ Career Companion
   <a href="assets/screenshots/Employer%20screen.png">
     <img src="assets/screenshots/Employer%20screen.png" width="160" alt="Employer screen">
   </a>
-  <a href="assets/screenshots/Hiring.png">
-    <img src="assets/screenshots/Hiring.png" width="160" alt="Hiring">
-  </a>
-</p>
+  </p>
 
 
 ## 🎬 Demo (click on image below)
