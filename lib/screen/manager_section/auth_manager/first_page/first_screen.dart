@@ -142,10 +142,11 @@ class FirstPageScreenM extends StatelessWidget {
                           ),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () async {
-                              // ignore: deprecated_member_use
-                              if (!await launch(
-                                  "https://www.termsfeed.com/live/588c37bc-3594-490a-be8b-d9409af52df7")) {
-                                throw 'Could not launch :https://www.termsfeed.com/live/588c37bc-3594-490a-be8b-d9409af52df7';
+                              final uri = Uri.parse('https://www.termsfeed.com/live/588c37bc-3594-490a-be8b-d9409af52df7');
+                              if (await canLaunchUrl(uri)) {
+                                await launchUrl(uri, mode: LaunchMode.externalApplication);
+                              } else {
+                                throw 'Could not launch Terms of Service';
                               }
                             })
                     ],
