@@ -135,7 +135,7 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
                   ),
                   _IntroPage(
                     asset: AssetRes.page2,
-                    title: "Dream Job Applications",
+                    title: "Job Applications",
                     subtitle: "Bridging the gap with timeless talent",
                     subtitleColor: ColorRes.textSecondary,
                     highlightWords: ["Dream", "Applications"],
