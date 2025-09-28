@@ -5,6 +5,7 @@ import 'package:timeless/service/pref_services.dart';
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/pref_keys.dart';
+import 'package:timeless/screen/job_recommendation_screen/job_recommendation_screen.dart';
 
 class JobPreferencesScreen extends StatefulWidget {
   const JobPreferencesScreen({super.key});
@@ -31,11 +32,11 @@ class _JobPreferencesScreenState extends State<JobPreferencesScreen> {
     'Python', 'Java', 'C#', 'Node.js', 'PHP', 'Ruby', 'Swift', 'Kotlin',
     'Firebase', 'AWS', 'Docker', 'Kubernetes', 'MongoDB', 'PostgreSQL', 'MySQL',
     'UI/UX Design', 'Figma', 'Adobe XD', 'Photoshop', 'Illustrator',
-    'Project Management', 'Agile', 'Scrum', 'Marketing', 'Sales', 'Finance'
+    'Project Management', 'Agile', 'Scrum', 'Marketing', 'Sales', 'UX'
   ];
   final List<String> jobTypeOptions = ['Full-time', 'Part-time', 'Contract', 'Freelance', 'Internship'];
   final List<String> industryOptions = [
-    'Technology', 'Finance', 'Healthcare', 'Education', 'Retail', 'Manufacturing',
+    'Technology', 'UX', 'Healthcare', 'Education', 'Retail', 'Manufacturing',
     'Marketing', 'Design', 'Consulting', 'Media', 'Non-profit', 'Government'
   ];
   final List<String> companyTypeOptions = ['Startup', 'Small Company', 'Medium Company', 'Large Enterprise', 'Non-profit', 'Government'];
@@ -95,7 +96,52 @@ class _JobPreferencesScreenState extends State<JobPreferencesScreen> {
   Future<void> _savePreferences() async {
     print('🚀 Starting to save preferences...');
     
+    // Validation des données avant sauvegarde
+    if (selectedExperience.isEmpty) {
+      Get.snackbar(
+        '⚠️ Missing Information',
+        'Please select your experience level.',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.orange,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 3),
+      );
+      return;
+    }
+    
+    if (selectedSkills.isEmpty) {
+      Get.snackbar(
+        '⚠️ Missing Information',
+        'Please select at least one skill.',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.orange,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 3),
+      );
+      return;
+    }
+    
     try {
+      // Afficher un indicateur de chargement
+      Get.dialog(
+        const Center(
+          child: Card(
+            child: Padding(
+              padding: EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CircularProgressIndicator(),
+                  SizedBox(height: 16),
+                  Text('Saving preferences...'),
+                ],
+              ),
+            ),
+          ),
+        ),
+        barrierDismissible: false,
+      );
+      
       await PrefService.setValue(PrefKeys.experienceLevel, selectedExperience);
       await PrefService.setValue(PrefKeys.workLocationPreference, selectedWorkLocation);
       await PrefService.setValue(PrefKeys.salaryRangeMin, minSalary.toString());
@@ -108,6 +154,12 @@ class _JobPreferencesScreenState extends State<JobPreferencesScreen> {
       await PrefService.setValue(PrefKeys.industryPreferences, jsonEncode(selectedIndustries));
       await PrefService.setValue(PrefKeys.companyTypes, jsonEncode(selectedCompanyTypes));
       
+      // Marquer que les préférences ont été configurées
+      await PrefService.setValue(PrefKeys.jobPreferencesCompleted, true.toString());
+      
+      // Fermer le dialog de chargement
+      Get.back();
+      
       print('✅ All preferences saved successfully!');
       print('Experience: $selectedExperience');
       print('Skills: $selectedSkills');
@@ -115,24 +167,35 @@ class _JobPreferencesScreenState extends State<JobPreferencesScreen> {
       print('Salary: $minSalary - $maxSalary');
       
       Get.snackbar(
-        '✅ Preferences Saved',
-        'Your job matching preferences have been updated! This will help us find better job matches for you.',
+        '✅ Preferences Saved Successfully!',
+        'Your job matching preferences have been updated! Redirecting to job recommendations...',
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.green,
         colorText: Colors.white,
-        duration: const Duration(seconds: 3),
+        duration: const Duration(seconds: 2),
       );
       
-      Get.back();
+      // Attendre un peu pour que l'utilisateur voit le message de succès
+      await Future.delayed(const Duration(milliseconds: 500));
+      
+      // Rediriger vers l'écran de recommandations de jobs
+      Get.back(); // Fermer l'écran des préférences
+      Get.to(() => const JobRecommendationScreen()); // Aller vers l'écran de matching
+      
     } catch (e) {
+      // Fermer le dialog de chargement si ouvert
+      if (Get.isDialogOpen ?? false) {
+        Get.back();
+      }
+      
       print('❌ Error saving preferences: $e');
       Get.snackbar(
-        '❌ Error',
-        'Failed to save preferences: $e',
+        '❌ Save Failed',
+        'Failed to save preferences. Please try again.\nError: ${e.toString()}',
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red,
         colorText: Colors.white,
-        duration: const Duration(seconds: 3),
+        duration: const Duration(seconds: 4),
       );
     }
   }

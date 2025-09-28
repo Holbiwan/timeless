@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/color_res.dart';
@@ -8,16 +9,16 @@ import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/common/widgets/common_text_field.dart';
 import 'package:timeless/common/widgets/common_error_box.dart';
 
-// ⚠️ Importe bien le controller depuis Profile/ (P majuscule)
-import 'package:timeless/screen/manager_section/Profile/manager_profile_controller.dart';
+// Import du contrôleur utilisateur avec champs vides
+import 'package:timeless/screen/profile/edit_profile_user/profile_user_controller.dart';
 
 class EditProfileUserScreen extends StatelessWidget {
   EditProfileUserScreen({super.key});
 
-  final ManagerProfileController controller =
-      Get.isRegistered<ManagerProfileController>()
-          ? Get.find<ManagerProfileController>()
-          : Get.put(ManagerProfileController());
+  final ProfileUserController controller =
+      Get.isRegistered<ProfileUserController>()
+          ? Get.find<ProfileUserController>()
+          : Get.put(ProfileUserController());
 
   @override
   Widget build(BuildContext context) {
@@ -116,6 +117,44 @@ class EditProfileUserScreen extends StatelessWidget {
                 maxLines: 3,
               ),
 
+              // Séparateur pour les données Smart Match
+              const Divider(height: 32),
+              Text(
+                'Informations pour Smart Match',
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: ColorRes.primaryAccent,
+                ),
+              ),
+              const SizedBox(height: 16),
+              
+              _buildFormField(
+                label: 'Compétences (séparées par des virgules)',
+                controller: controller.skillsController,
+                hint: 'Flutter, Dart, JavaScript, Python...',
+              ),
+              
+              _buildFormField(
+                label: 'Niveau d\'expérience',
+                controller: controller.experienceLevelController,
+                hint: 'junior, mid-level, senior, lead...',
+              ),
+              
+              _buildFormField(
+                label: 'Salaire minimum souhaité',
+                controller: controller.salaryMinController,
+                hint: '45000',
+                keyboardType: TextInputType.number,
+              ),
+              
+              _buildFormField(
+                label: 'Salaire maximum souhaité',
+                controller: controller.salaryMaxController,
+                hint: '65000',
+                keyboardType: TextInputType.number,
+              ),
+
               const SizedBox(height: 24),
 
               // -------- Save button --------
@@ -194,35 +233,34 @@ class EditProfileUserScreen extends StatelessWidget {
   /// 2) image local File
   /// 3) placeholder Asset
   Widget _buildAvatar() {
-    final hasFb = controller.fbImageUrl.value.isNotEmpty;
     final hasLocal = controller.image != null;
 
+    // AVATAR VIDE par défaut - Pas de photo pré-chargée
     DecorationImage? img;
-    if (hasFb) {
-      img = DecorationImage(
-        image: NetworkImage(controller.fbImageUrl.value),
-        fit: BoxFit.cover,
-      );
-    } else if (hasLocal) {
+    if (hasLocal) {
       img = DecorationImage(
         image: FileImage(File(controller.image!.path)),
         fit: BoxFit.cover,
       );
-    } else {
-      img = const DecorationImage(
-        image: AssetImage(AssetRes.userImage),
-        fit: BoxFit.cover,
-      );
     }
+    // Pas d'image par défaut - cercle vide avec icône
 
     return Container(
       width: 110,
       height: 110,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: ColorRes.black,
+        color: Colors.grey.shade200,
         image: img,
+        border: Border.all(color: Colors.grey.shade300, width: 2),
       ),
+      child: img == null 
+          ? Icon(
+              Icons.person_add_outlined,
+              size: 40,
+              color: Colors.grey.shade500,
+            )
+          : null,
     );
   }
 

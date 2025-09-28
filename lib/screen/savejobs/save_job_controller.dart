@@ -23,9 +23,9 @@ class SaveJobController extends GetxController implements GetxService {
   RxInt selectedJobs2 = 0.obs;
   RxList jobs2 = [
     "All Job",
-    "Writer",
+    
     "Design",
-    "Finance",
+    "UX",
     'Software',
     'Database Manager',
     'Product Manager',
