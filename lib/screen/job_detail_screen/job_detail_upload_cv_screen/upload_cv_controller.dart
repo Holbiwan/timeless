@@ -113,26 +113,20 @@ class JobDetailsUploadCvController extends GetxController {
       "deviceToken": PrefService.getString(PrefKeys.deviceToken),
     });
 
+    // Send application confirmation email
+    await _sendApplicationConfirmationEmail(args);
+
     // Add notification for application submission
-    try {
-      final notificationService = Get.find<NotificationService>();
-      await notificationService.addApplicationNotification(
-        jobTitle: args['Position'] ?? 'Unknown Position',
-        companyName: args['CompanyName'] ?? 'Unknown Company',
-        jobId: args['id'] ?? 'unknown_id',
-      );
-    } catch (e) {
-      if (kDebugMode) print('Error adding notification: $e');
-    }
+    await _addApplicationNotification(args);
 
     // Show success message before navigation
     Get.snackbar(
-      '🎉 Application Submitted!',
-      'Your job application has been successfully submitted to ${args['CompanyName']}',
+      '🎉 Application Submitted Successfully!',
+      'Your application to ${args['CompanyName']} has been sent.\n📧 Confirmation email sent to your inbox.',
       snackPosition: SnackPosition.TOP,
       backgroundColor: Colors.green,
       colorText: Colors.white,
-      duration: const Duration(seconds: 3),
+      duration: const Duration(seconds: 4),
     );
     
     Get.toNamed(AppRes.jobDetailSuccessOrFailed, arguments: [
@@ -342,5 +336,175 @@ class JobDetailsUploadCvController extends GetxController {
       );
       return null;
     }
+  }
+
+  // Send application confirmation email
+  Future<void> _sendApplicationConfirmationEmail(Map<String, dynamic> jobData) async {
+    try {
+      final userEmail = PrefService.getString(PrefKeys.email);
+      final userName = PrefService.getString(PrefKeys.fullName);
+      
+      if (userEmail.isEmpty) return;
+
+      final emailHTML = _generateApplicationConfirmationEmail(
+        userName: userName,
+        jobTitle: jobData['Position'] ?? 'Position',
+        companyName: jobData['CompanyName'] ?? 'Company',
+        salary: jobData['salary'] ?? 'Not specified',
+        location: jobData['location'] ?? 'Not specified',
+        type: jobData['type'] ?? 'Not specified',
+      );
+
+      // Send via Firebase Extensions
+      final mailDoc = await FirebaseFirestore.instance.collection("mail").add({
+        "to": [userEmail],
+        "message": {
+          "subject": "✅ Application Confirmed - ${jobData['Position']} at ${jobData['CompanyName']}",
+          "html": emailHTML,
+          "text": "Your application for ${jobData['Position']} at ${jobData['CompanyName']} has been successfully submitted."
+        }
+      });
+
+      // Log the application email
+      await FirebaseFirestore.instance.collection("applicationEmails").add({
+        "to": userEmail,
+        "userName": userName,
+        "jobTitle": jobData['Position'],
+        "companyName": jobData['CompanyName'],
+        "applicationDate": FieldValue.serverTimestamp(),
+        "status": "sent",
+        "mailDocId": mailDoc.id,
+        "userId": PrefService.getString(PrefKeys.userId),
+      });
+
+      if (kDebugMode) print('✅ Application confirmation email sent to $userEmail');
+    } catch (e) {
+      if (kDebugMode) print('❌ Error sending application confirmation email: $e');
+    }
+  }
+
+  // Add application notification to user's notifications
+  Future<void> _addApplicationNotification(Map<String, dynamic> jobData) async {
+    try {
+      final userId = PrefService.getString(PrefKeys.userId);
+      if (userId.isEmpty) return;
+
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(userId)
+          .collection("notifications")
+          .add({
+        "type": "application_submitted",
+        "title": "Application Submitted",
+        "message": "Your application for ${jobData['Position']} at ${jobData['CompanyName']} has been submitted successfully.",
+        "jobTitle": jobData['Position'],
+        "companyName": jobData['CompanyName'],
+        "read": false,
+        "createdAt": FieldValue.serverTimestamp(),
+        "icon": "check_circle",
+        "priority": "medium",
+      });
+
+      if (kDebugMode) print('✅ Application notification added');
+    } catch (e) {
+      if (kDebugMode) print('❌ Error adding application notification: $e');
+    }
+  }
+
+  String _generateApplicationConfirmationEmail({
+    required String userName,
+    required String jobTitle,
+    required String companyName,
+    required String salary,
+    required String location,
+    required String type,
+  }) {
+    return """
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Confirmed - $jobTitle</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f5f5; margin: 0; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; background-color: white; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; text-align: center; padding: 30px 20px; }
+        .header h1 { margin: 0; font-size: 26px; font-weight: 700; }
+        .content { padding: 30px; }
+        .job-details { background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #28a745; }
+        .detail-row { display: flex; justify-content: space-between; margin: 8px 0; }
+        .detail-label { font-weight: 600; color: #495057; }
+        .detail-value { color: #28a745; font-weight: 600; }
+        .next-steps { background: #e3f2fd; padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #2196f3; }
+        .footer { background-color: #f8f9fa; text-align: center; padding: 20px; border-top: 1px solid #eee; }
+        .success-icon { font-size: 48px; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="success-icon">✅</div>
+            <h1>Application Submitted!</h1>
+            <p>Your job application has been successfully received</p>
+        </div>
+        
+        <div class="content">
+            <h2>Hello $userName,</h2>
+            
+            <p>Great news! Your application has been successfully submitted and is now being reviewed by the hiring team.</p>
+            
+            <div class="job-details">
+                <h3 style="margin-top: 0; color: #333;">📋 Application Details</h3>
+                <div class="detail-row">
+                    <span class="detail-label">Position:</span>
+                    <span class="detail-value">$jobTitle</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Company:</span>
+                    <span class="detail-value">$companyName</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Location:</span>
+                    <span class="detail-value">$location</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Job Type:</span>
+                    <span class="detail-value">$type</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Salary:</span>
+                    <span class="detail-value">$salary</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Application Date:</span>
+                    <span class="detail-value">${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}</span>
+                </div>
+            </div>
+            
+            <div class="next-steps">
+                <h3 style="margin-top: 0; color: #333;">🎯 What happens next?</h3>
+                <p style="margin: 0;">
+                    • The hiring team will review your application<br>
+                    • You'll receive updates on your application status<br>
+                    • Keep an eye on your email for any communication<br>
+                    • Check your Timeless dashboard for updates
+                </p>
+            </div>
+            
+            <p style="color: #666;">Thank you for using Timeless for your job search. We wish you the best of luck with your application!</p>
+        </div>
+        
+        <div class="footer">
+            <h3>The Timeless Team 💼</h3>
+            <p>Connecting talent with opportunity</p>
+            <p style="font-size: 12px; color: #999;">
+                This is an automated confirmation email.
+            </p>
+        </div>
+    </div>
+</body>
+</html>
+    """;
   }
 }
