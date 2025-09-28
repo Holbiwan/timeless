@@ -119,8 +119,8 @@ class JobRecomandationSearch extends StatelessWidget {
                 /*: controller.selectedJobs2.value == 1
                 ? allJobs(fireStore
                 .collection("category")
-                .doc("Writer")
-                .collection("Writer")
+                .doc("UX")
+                .collection("UX")
                 .snapshots())
                 : controller.selectedJobs2.value == 2
                 ? allJobs(fireStore
@@ -131,8 +131,8 @@ class JobRecomandationSearch extends StatelessWidget {
                 : controller.selectedJobs2.value == 3
                 ? allJobs(fireStore
                 .collection("category")
-                .doc("Finance")
-                .collection("Finance")
+                .doc("UX")
+                .collection("UX")
                 .snapshots())
                 : Center(
               child: Text(controller

@@ -55,7 +55,7 @@ class JobRecommendationScreen extends StatelessWidget {
                   child: TextField(
                     onChanged: (value) => controller.updateSearchText(value),
                     decoration: const InputDecoration(
-                      hintText: 'Rechercher un emploi...',
+                      hintText: 'Browsing jobs offers...',
                       prefixIcon: Icon(Icons.search, color: Colors.grey),
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.symmetric(
@@ -129,32 +129,25 @@ class JobRecommendationScreen extends StatelessWidget {
                     case 1:
                       stream = FirebaseFirestore.instance
                           .collection("category")
-                          .doc("Writer")
-                          .collection("Writer")
+                          .doc("Design")
+                          .collection("Design")
                           .snapshots();
                       break;
                     case 2:
                       stream = FirebaseFirestore.instance
                           .collection("category")
-                          .doc("Design")
-                          .collection("Design")
+                          .doc("UX")
+                          .collection("UX")
                           .snapshots();
                       break;
                     case 3:
-                      stream = FirebaseFirestore.instance
-                          .collection("category")
-                          .doc("Finance")
-                          .collection("Finance")
-                          .snapshots();
-                      break;
-                    case 4:
                       stream = FirebaseFirestore.instance
                           .collection("category")
                           .doc("Software")
                           .collection("Software")
                           .snapshots();
                       break;
-                    case 5:
+                    case 4:
                       stream = FirebaseFirestore.instance
                           .collection("category")
                           .doc("Database Manager")

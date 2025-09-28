@@ -38,7 +38,7 @@ class JobRecommendationController extends GetxController
   RxString searchText = ''.obs;
 
   // RxInt selectedJobs = 0.obs;
-  // RxList jobs = ["All Job", "Writer", "Design", "Finance"].obs;
+  // RxList jobs = ["All Job",  "Design", "UX"].obs;
   // onTapJobs(int index){
   //   debugPrint("OnTAP $index");
   //   selectedJobs.value = index;
@@ -47,9 +47,8 @@ class JobRecommendationController extends GetxController
   RxInt selectedJobs2 = 0.obs;
   RxList jobs2 = [
     "All Job",
-    "Writer",
     "Design",
-    "Finance",
+    "UX",
     'Software',
     'Database Manager',
     'Product Manager',
