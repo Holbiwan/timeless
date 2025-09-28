@@ -97,7 +97,7 @@ timeless/
 ## 🗄️ Data & Services
 ```
 
-| Service                  | Purpose                           |
+| Service                   | Purpose                          |
 |---------------------------|----------------------------------|
 | **Firebase Auth**         | Login / Signup                   |
 | **Firestore**             | Job data, profiles, applications |
@@ -106,7 +106,7 @@ timeless/
 | **SharedPreferences**     | Local settings and tokens        |
 
 ```
-
+ 
 
 
 ## 🚧 Installation
@@ -127,6 +127,7 @@ flutter run
 
 ## 📜 License
 This project is licensed under the MIT License.
+
 
 
 
