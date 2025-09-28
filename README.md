@@ -97,11 +97,11 @@ timeless/
 ## 🗄️ Data & Services
 ```
 
-| Service                  | Purpose                          |
+| Service                  | Purpose                           |
 |---------------------------|----------------------------------|
 | **Firebase Auth**         | Login / Signup                   |
 | **Firestore**             | Job data, profiles, applications |
-| **Firebase Storage**      | CVs and profile pictures          |
+| **Firebase Storage**      | CVs and profile pictures         |
 | **Push Notifications**    | Alerts and updates               |
 | **SharedPreferences**     | Local settings and tokens        |
 
@@ -127,6 +127,7 @@ flutter run
 
 ## 📜 License
 This project is licensed under the MIT License.
+
 
 
 
