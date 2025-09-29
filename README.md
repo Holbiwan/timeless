@@ -91,18 +91,14 @@ timeless/
 - **State Management**: GetX  
 - **Platforms**: Android, iOS
 
-## 🗄️ Data & Services
-```
+| 🚀 Service               | 📝 Purpose                            |
+| ------------------------ | ------------------------------------- |
+| 🔐 **Firebase Auth**     | Login / Signup                        |
+| 📊 **Firestore**         | Job data, user profiles, applications |
+| 📁 **Firebase Storage**  | CVs and profile pictures              |
+| 🔔 **Notifications**     | Real-time alerts & updates            |
+| 💾 **SharedPreferences** | Local settings and tokens             |
 
-| Service                   | Purpose                          |
-|---------------------------|----------------------------------|
-| **Firebase Auth**         | Login / Signup                   |
-| **Firestore**             | Job data, profiles, applications |
-| **Firebase Storage**      | CVs and profile pictures         |
-| **Push Notifications**    | Alerts and updates               |
-| **SharedPreferences**     | Local settings and tokens        |
-
-```
  
 
 
@@ -124,6 +120,7 @@ flutter run
 
 ## 📜 License
 This project is licensed under the MIT License.
+
 
 
 
