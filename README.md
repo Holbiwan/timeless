@@ -55,9 +55,6 @@ Career Companion
   <a href="assets/screenshots/Notifs.png">
     <img src="assets/screenshots/Notifs.png" width="160" alt="Notifications">
   </a>
-  <a href="assets/screenshots/Employer%20screen.png">
-    <img src="assets/screenshots/Employer%20screen.png" width="160" alt="Employer screen">
-  </a>
   </p>
 
 
@@ -127,6 +124,7 @@ flutter run
 
 ## 📜 License
 This project is licensed under the MIT License.
+
 
 
 
