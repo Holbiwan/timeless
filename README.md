@@ -1,5 +1,5 @@
 # 🚀 Timeless  
-Career Companion  
+"Bringing The Gap With Timeless Talent" 
 
 
 <p align="center">
@@ -120,6 +120,7 @@ flutter run
 
 ## 📜 License
 This project is licensed under the MIT License.
+
 
 
 
