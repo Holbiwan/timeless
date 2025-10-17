@@ -25,7 +25,7 @@ class FirstScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     if (kDebugMode) {
       
-      // ignore: avoid_print
+      // ignorer avoid_print
       print('size: ${Get.width} x ${Get.height}');
     }
 
@@ -171,7 +171,7 @@ class FirstScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: GoogleFonts.poppins(
                     fontWeight: FontWeight.w400,
-                    fontSize: 20,
+                    fontSize: 21
                     color: ColorRes.textPrimary,
                   ),
                 ),
@@ -219,7 +219,7 @@ class FirstScreen extends StatelessWidget {
               ),
               SizedBox(height: Get.height * 0.02),
 
-              /// Bouton Se connecter
+              /// Bouton pour se connecter
               InkWell(
                 onTap: () {
                   Navigator.push(
@@ -328,7 +328,7 @@ class FirstScreen extends StatelessWidget {
                       const Icon(Icons.business_center, color: ColorRes.brightYellow, size: 22),
                       const SizedBox(width: 8),
                       Text(
-                        "Employer Access",
+                        "Employerccess",
                         style: GoogleFonts.poppins(
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
@@ -350,7 +350,7 @@ class FirstScreen extends StatelessWidget {
                     children: <TextSpan>[
                       TextSpan(
                         text:
-                            'By creating an account, you are agreeing\n                to our ',
+                            'By creating an account, you are agreeing ',
                         style: GoogleFonts.poppins(
                           fontSize: 15,
                           fontWeight: FontWeight.w400,
