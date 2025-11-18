@@ -1,140 +1,71 @@
-# ====================================================================
-# TIMELESS - Gitignore Configuration
-# Configuration professionnelle pour garder le repo propre
-# ====================================================================
+# TIMELESS Flutter App
 
-# -------- Flutter / Dart (Standard) --------
+# Flutter stuff that gets auto-generated
 .dart_tool/
 .packages
 .flutter-plugins
-.flutter-plugins-dependencies  
-.flutter-versions
-.melos_tool/
+.flutter-plugins-dependencies
 **/build/
-**/.generated/
 .metadata
-pubspec.lock
 
-# -------- IDE / OS --------
+# IDE files - everyone uses different editors
 .idea/
-*.iml
 .vscode/
+*.iml
+
+# OS files
 .DS_Store
 Thumbs.db
-Desktop.ini
 *.tmp
-*.temp
 
-# -------- Android --------
+# Android build files
 android/.gradle/
-.gradle/
 android/local.properties
-android/key.properties
 android/app/*.keystore
 android/app/*.jks
-android/app/debug/
-android/app/profile/
-android/app/release/
 
-# -------- iOS --------
+# iOS build files  
 ios/Pods/
 ios/Runner.xcworkspace/xcuserdata/
 ios/Runner.xcodeproj/xcuserdata/
-ios/Flutter/Flutter.framework
-ios/Flutter/Flutter.podspec
 
-# -------- Plateformes non utilisées --------
+# Don't need these platforms for now
 /web/
 /macos/
 /linux/
 /windows/
 
-# -------- Dossiers de développement --------
-/dev-tools/
-/landing-page/
-/docs/
-/scripts/
-
-# -------- Firebase & Secrets --------
-# Clés API et configuration Firebase
+# Secret files
 lib/firebase_options.dart
 android/app/google-services.json
 ios/Runner/GoogleService-Info.plist
-**/serviceAccount*.json
-**/*firebase-adminsdk*.json
-**/.runtimeconfig.json
-
-# Variables d'environnement
 .env
-.env.*
 *.env
-*.env.local
-*.env.production
 
-# -------- Certificats & Clés --------
+# Certificates and keys
 **/*.keystore
 **/*.jks
-**/*.p12
-**/*.p8
-**/*.pem
 **/*.key
-**/*.crt
-**/*.der
-**/*.asc
+**/*.pem
 
-# -------- Logs & Debug --------
+# Log files and debug stuff
 *.log
 logs/
 firebase-debug.log
 coverage/
-*.code-search
 
-# -------- Fichiers de développement (NON PROD) --------
-# Dossiers de développement
-lib/dev/
-lib/demo/
-lib/test/
-main_demo.dart
-test_*.dart
-
-# Fichiers de démo
-demo_*.dart
-demo_*.pdf
-demo_*.json
+# Temporary files
+*.zip
+*.bak
+*.old
 *demo*
 *test*
 *debug*
 
-# Fichiers temporaires
-*.zip
-*.tmp
-*.bak
-*.old
-log.txt
-debug.txt
-
-# -------- Assets temporaires --------
+# Temp asset folders
 assets/temp/
 assets/debug/
-assets/demo/
-**/*_temp.*
-**/*_debug.*
 
-# -------- Clean Deploy (GitHub Pages) --------
-# Garder clean-deploy mais ignorer son historique git
+# GitHub Pages deploy folder but keep the files
 clean-deploy/.git/
 clean-deploy/node_modules/
-
-# ====================================================================
-# IMPORTANT: Fichiers à TOUJOURS tracker
-# ====================================================================
-# Ne jamais ignorer ces fichiers essentiels:
-!pubspec.yaml
-!lib/main.dart
-!lib/utils/
-!lib/screen/
-!lib/service/
-!lib/api/
-!lib/common/
-!assets/images/
-!assets/icons/
