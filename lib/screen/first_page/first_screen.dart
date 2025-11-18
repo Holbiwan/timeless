@@ -170,7 +170,7 @@ class FirstScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: GoogleFonts.poppins(
                     fontWeight: FontWeight.w400,
-                    fontSize: 21
+                    fontSize: 21,
                     color: ColorRes.textPrimary,
                   ),
                 ),
@@ -324,10 +324,10 @@ class FirstScreen extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.business_center, color: ColorRes.brightYellow, size: 22),
+                      Icon(Icons.business_center, color: ColorRes.brightYellow, size: 22),
                       const SizedBox(width: 8),
                       Text(
-                        "Employerccess",
+                        "Employer Access",
                         style: GoogleFonts.poppins(
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
@@ -384,7 +384,6 @@ class FirstScreen extends StatelessWidget {
         ),
       ),
     );
-  }
   }
 }
 
