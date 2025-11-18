@@ -34,27 +34,13 @@
 ## 📸 Screenshots (mini preview of the app pages)
 
 <p align="center">
-  <a href="assets/screenshots/First_Screen_Connex.png">
-    <img src="assets/screenshots/First_Screen_Connex.png" width="160" alt="First screen">
+  <a href="">
+    <img src="">
   </a>
-  <a href="assets/screenshots/Create_Your_Account.png">
-    <img src="assets/screenshots/Create_Your_Account.png" width="160" alt="Create account">
+  <a href="">
+    <img src="">
   </a>
-  <a href="assets/screenshots/Dashboard.png">
-    <img src="assets/screenshots/Dashboard.png" width="160" alt="Dashboard">
-  </a>
-  <a href="assets/screenshots/Find_My_Matches.png">
-    <img src="assets/screenshots/Find_My_Matches.png" width="160" alt="Find my matches">
-  </a>
-</p>
-
-<p align="center">
-  <a href="assets/screenshots/Matching_system.png">
-    <img src="assets/screenshots/Matching_system.png" width="160" alt="Matching system">
-  </a>
-  <a href="assets/screenshots/Notifs.png">
-    <img src="assets/screenshots/Notifs.png" width="160" alt="Notifications">
-  </a>
+  
   </p>
 
 
@@ -120,6 +106,7 @@ flutter run
 
 ## 📜 License
 This project is licensed under the MIT License.
+
 
 
 
