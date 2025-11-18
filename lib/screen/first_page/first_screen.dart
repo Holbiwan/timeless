@@ -389,7 +389,7 @@ class FirstScreen extends StatelessWidget {
 }
 
 class GuestJobBrowser extends StatelessWidget {
-  const GuestJobBrowser({Key? key}) : super(key: key);
+  const GuestJobBrowser({super.key});
 
   @override
   Widget build(BuildContext context) {
