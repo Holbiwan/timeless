@@ -1,5 +1,3 @@
-# TIMELESS Flutter App
-
 # Flutter stuff that gets auto-generated
 .dart_tool/
 .packages
@@ -8,7 +6,7 @@
 **/build/
 .metadata
 
-# IDE files - everyone uses different editors
+# IDE files
 .idea/
 .vscode/
 *.iml
@@ -29,7 +27,7 @@ ios/Pods/
 ios/Runner.xcworkspace/xcuserdata/
 ios/Runner.xcodeproj/xcuserdata/
 
-# Don't need these platforms for now
+# I Don't need these platforms for now
 /web/
 /macos/
 /linux/
