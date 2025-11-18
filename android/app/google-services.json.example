@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "VOTRE_PROJECT_NUMBER",
+    "project_id": "VOTRE_PROJECT_ID",
+    "storage_bucket": "VOTRE_PROJECT_ID.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "VOTRE_MOBILE_SDK_APP_ID",
+        "android_client_info": {
+          "package_name": "com.example.timeless"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "VOTRE_CLIENT_ID",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.timeless",
+            "certificate_hash": "VOTRE_CERTIFICATE_HASH"
+          }
+        },
+        {
+          "client_id": "VOTRE_WEB_CLIENT_ID",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "VOTRE_API_KEY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "VOTRE_WEB_CLIENT_ID",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

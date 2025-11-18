@@ -1,0 +1,92 @@
+[
+  {
+    "title": "Flutter Developer",
+    "company": "Timeless",
+    "location": "Paris, France",
+    "description": "Develop cross-platform mobile applications with Flutter and Firebase for a school demo project.",
+    "createdAt": {
+      ".sv": "timestamp"
+    }
+  },
+  {
+    "title": "Frontend Engineer (React)",
+    "company": "TechHive",
+    "location": "Berlin, Germany",
+    "description": "Build modern and responsive user interfaces with React.js, focusing on speed and user experience.",
+    "createdAt": {
+      ".sv": "timestamp"
+    }
+  },
+  {
+    "title": "Backend Developer (Node.js)",
+    "company": "CodeWorks",
+    "location": "Amsterdam, Netherlands",
+    "description": "Design and maintain scalable APIs and services using Node.js and Express, connected to MongoDB.",
+    "createdAt": {
+      ".sv": "timestamp"
+    }
+  },
+  {
+    "title": "UI/UX Designer",
+    "company": "DesignFlow",
+    "location": "Barcelona, Spain",
+    "description": "Create clean and user-friendly interfaces, wireframes, and prototypes for mobile and web platforms.",
+    "createdAt": {
+      ".sv": "timestamp"
+    }
+  },
+  {
+    "title": "Data Analyst",
+    "company": "DataVision",
+    "location": "Lisbon, Portugal",
+    "description": "Analyze datasets, prepare reports, and provide insights to support data-driven decisions.",
+    "createdAt": {
+      ".sv": "timestamp"
+    }
+  },
+  {
+    "title": "Cloud Engineer (AWS/GCP)",
+    "company": "CloudBridge",
+    "location": "Dublin, Ireland",
+    "description": "Deploy and manage cloud infrastructure, focusing on scalability, security, and cost optimization.",
+    "createdAt": {
+      ".sv": "timestamp"
+    }
+  },
+  {
+    "title": "Cybersecurity Specialist",
+    "company": "SecureNet",
+    "location": "Warsaw, Poland",
+    "description": "Implement security measures, monitor systems, and protect sensitive data against cyber threats.",
+    "createdAt": {
+      ".sv": "timestamp"
+    }
+  },
+  {
+    "title": "AI/ML Engineer",
+    "company": "DeepTech",
+    "location": "Zurich, Switzerland",
+    "description": "Develop machine learning models, optimize algorithms, and work with large datasets for predictions.",
+    "createdAt": {
+      ".sv": "timestamp"
+    }
+  },
+  {
+    "title": "Product Manager (Digital Platforms)",
+    "company": "NextGen Apps",
+    "location": "Stockholm, Sweden",
+    "description": "Coordinate between tech and business teams to deliver high-quality digital products.",
+    "createdAt": {
+      ".sv": "timestamp"
+    }
+  },
+  {
+    "title": "Full Stack Developer",
+    "company": "InnoDev",
+    "location": "Copenhagen, Denmark",
+    "description": "Work on both frontend and backend systems, from React to Node.js, delivering end-to-end features.",
+    "createdAt": {
+      ".sv": "timestamp"
+    }
+  }
+]
