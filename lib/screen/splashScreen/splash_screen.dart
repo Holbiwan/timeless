@@ -23,10 +23,6 @@ class _SplashScreenState extends State<SplashScreen>
       vsync: this, duration: const Duration(milliseconds: 2500))
     ..repeat(reverse: true);
 
-  late final Animation<Offset> _slideAnimation =
-      Tween<Offset>(begin: const Offset(1, 0), end: Offset.zero).animate(
-          CurvedAnimation(
-              parent: _slideController, curve: Curves.easeOutCubic));
 
   late final Animation<double> _fadeAnimation =
       CurvedAnimation(parent: _textController, curve: Curves.easeIn);
@@ -220,8 +216,8 @@ class _SplashScreenState extends State<SplashScreen>
                                                 child: Image.asset(
                                                   currentSlideData[
                                                       'imagePath']!,
-                                                  width: 150,
-                                                  height: 150,
+                                                  width: 300,
+                                                  height: 300,
                                                   fit: BoxFit.cover,
                                                 ),
                                               )
@@ -244,7 +240,7 @@ class _SplashScreenState extends State<SplashScreen>
                                 currentSlideData['title']!,
                                 textAlign: TextAlign.center,
                                 style: GoogleFonts.poppins(
-                                  fontSize: 28,
+                                  fontSize: 22,
                                   fontWeight: FontWeight.w600,
                                   color: _currentSlide == 0
                                       ? ColorRes.brightYellow
@@ -263,7 +259,7 @@ class _SplashScreenState extends State<SplashScreen>
                                 currentSlideData['subtitle']!,
                                 textAlign: TextAlign.center,
                                 style: GoogleFonts.poppins(
-                                  fontSize: 42,
+                                  fontSize: 32,
                                   fontWeight: FontWeight.w800,
                                   color: ColorRes.darkBlue,
                                   letterSpacing: 1.2,
@@ -296,13 +292,11 @@ class _SplashScreenState extends State<SplashScreen>
                                   currentSlideData['description']!,
                                   textAlign: TextAlign.center,
                                   style: GoogleFonts.poppins(
-                                    fontSize: _currentSlide == 0 ? 20 : 17,
+                                    fontSize: _currentSlide == 0 ? 16 : 15,
                                     fontWeight: _currentSlide == 0
                                         ? FontWeight.w600
                                         : FontWeight.w500,
-                                    color: _currentSlide == 0
-                                        ? ColorRes.darkBlue
-                                        : ColorRes.white,
+                                    color: Colors.white,
                                     height: 1.6,
                                     letterSpacing:
                                         _currentSlide == 0 ? 0.8 : 0.3,
