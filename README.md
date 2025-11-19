@@ -34,11 +34,7 @@
 ## 📸 Screenshots (mini preview of the app pages)
 
 <p align="center">
-  <a href="">
-    <img src="">
-  </a>
-  <a href="">
-    <img src="">
+  
   </a>
   
   </p>
@@ -47,8 +43,8 @@
 ## 🎬 Demo (click on image below)
 
 <p align="center">
-  <a href="https://drive.google.com/file/d/1rluLEb_Vo9qcsesfhSVJpYSz6heZSxV8/view?usp=sharing" target="_blank">
-    <img src="assets/screenshots/caroussel1.png" width="240" alt="Demo thumbnail">
+  <a href="" target="_blank">
+   
   </a>
 </p>
 
@@ -106,20 +102,5 @@ flutter run
 
 ## 📜 License
 This project is licensed under the MIT License.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
