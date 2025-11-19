@@ -37,12 +37,19 @@ class AccessibilityPanel extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: accessibilityService.primaryColor.withOpacity(0.1),
+                color: accessibilityService.cardBackgroundColor,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
                   color: accessibilityService.primaryColor,
-                  width: 2,
+                  width: accessibilityService.isHighContrastMode.value ? 3 : 2,
                 ),
+                boxShadow: accessibilityService.isHighContrastMode.value ? [] : [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
               child: Column(
                 children: [
@@ -85,6 +92,13 @@ class AccessibilityPanel extends StatelessWidget {
                   Icons.contrast,
                   accessibilityService.isHighContrastMode.value,
                   accessibilityService.toggleHighContrast,
+                ),
+                _buildToggleItem(
+                  'Dark Mode',
+                  'Reduces eye strain with dark theme',
+                  Icons.dark_mode,
+                  accessibilityService.isDarkMode.value,
+                  accessibilityService.toggleDarkMode,
                 ),
                 _buildToggleItem(
                   'Large Text',
@@ -196,15 +210,23 @@ class AccessibilityPanel extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: value 
-              ? accessibilityService.primaryColor.withOpacity(0.1)
-              : accessibilityService.backgroundColor,
+              ? accessibilityService.primaryColor.withOpacity(
+                  accessibilityService.isHighContrastMode.value ? 0.3 : 0.1)
+              : accessibilityService.cardBackgroundColor,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: value 
                 ? accessibilityService.primaryColor
-                : accessibilityService.secondaryTextColor,
-            width: value ? 2 : 1,
+                : accessibilityService.borderColor,
+            width: value ? (accessibilityService.isHighContrastMode.value ? 3 : 2) : 1,
           ),
+          boxShadow: accessibilityService.isHighContrastMode.value ? [] : [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 4,
+              offset: const Offset(0, 1),
+            ),
+          ],
         ),
         child: Row(
           children: [
@@ -255,11 +277,19 @@ class AccessibilityPanel extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: accessibilityService.backgroundColor,
+        color: accessibilityService.cardBackgroundColor,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: accessibilityService.secondaryTextColor,
+          color: accessibilityService.borderColor,
+          width: accessibilityService.isHighContrastMode.value ? 2 : 1,
         ),
+        boxShadow: accessibilityService.isHighContrastMode.value ? [] : [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 4,
+            offset: const Offset(0, 1),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -320,11 +350,21 @@ class AccessibilityPanel extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: accessibilityService.primaryColor.withOpacity(0.05),
+        color: accessibilityService.primaryColor.withOpacity(
+          accessibilityService.isHighContrastMode.value ? 0.2 : 0.05),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: accessibilityService.primaryColor.withOpacity(0.3),
+          color: accessibilityService.primaryColor.withOpacity(
+            accessibilityService.isHighContrastMode.value ? 1.0 : 0.3),
+          width: accessibilityService.isHighContrastMode.value ? 2 : 1,
         ),
+        boxShadow: accessibilityService.isHighContrastMode.value ? [] : [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -347,7 +387,9 @@ class AccessibilityPanel extends StatelessWidget {
               accessibilityService.triggerHapticFeedback();
               accessibilityService.showAccessibilityFeedback('Test button pressed!');
             },
-            style: accessibilityService.getAccessibleButtonStyle(),
+            style: accessibilityService.getAccessibleButtonStyle(
+              backgroundColor: accessibilityService.successColor,
+            ),
             child: Text(
               'Test Button',
               style: GoogleFonts.poppins(
@@ -366,7 +408,14 @@ class AccessibilityPanel extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: accessibilityService.backgroundColor,
+        backgroundColor: accessibilityService.cardBackgroundColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: BorderSide(
+            color: accessibilityService.borderColor,
+            width: accessibilityService.isHighContrastMode.value ? 2 : 1,
+          ),
+        ),
         title: Text(
           'Reset Accessibility Settings',
           style: accessibilityService.getAccessibleTextStyle(

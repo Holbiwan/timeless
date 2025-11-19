@@ -142,9 +142,16 @@ class TipsForYouScreen extends StatelessWidget {
                               ],
                             ),
                           ),
-                          const Spacer(),
-                          Image.asset(AssetRes.girlImage, height: 175),
-                          const SizedBox(width: 20),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 15),
+                              child: Image.asset(
+                                AssetRes.girlImage, 
+                                height: 150,
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -164,7 +171,7 @@ class TipsForYouScreen extends StatelessWidget {
                       ),
                     ),
 
-                    // Paragraphe principal (multiligne corrigé)
+                    // Paragraphe principal
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 18.0),
                       child: Text(
@@ -183,7 +190,7 @@ Need help? We give simple tips for your CV and interviews. Whether you want an i
 
                     const SizedBox(height: 12),
 
-                    // Petit paragraphe (peut être supprimé si inutile)
+                    // Petit paragraphe à la fin
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 18.0),
                       child: Text(
@@ -191,7 +198,7 @@ Need help? We give simple tips for your CV and interviews. Whether you want an i
                         style: appTextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: 12,
-                          color: ColorRes.black.withOpacity(0.5),
+                          color: ColorRes.black.withOpacity(0.6),
                         ),
                       ),
                     ),
