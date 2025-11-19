@@ -290,6 +290,7 @@ class _IntroPage extends StatelessWidget {
                               color: Colors.white,
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
+                            ).copyWith(
                               shadows: [
                                 Shadow(
                                   offset: Offset(1, 1),
