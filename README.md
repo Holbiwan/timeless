@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-  <img src="https://zupimages.net/up/25/39/hjun.png" alt="Timeless logo" width="280">
+  <img src="https://zupimages.net/up/25/47/q8n0.png" alt="Timeless logo" width="280">
   &nbsp;&nbsp;&nbsp;
   <img src="https://zupimages.net/up/25/39/b9yj.png" alt="Timeless QR code" width="270">
 </p>
@@ -106,6 +106,7 @@ flutter run
 
 ## 📜 License
 This project is licensed under the MIT License.
+
 
 
 
