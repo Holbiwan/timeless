@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-// 🔑 Assure-toi que ce chemin et cette classe existent bien :
+
 import 'package:timeless/screen/auth/sign_in_screen/sign_in_screen.dart';
 
 import 'package:timeless/screen/dashboard/dashboard_controller.dart';
@@ -121,7 +121,7 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
 
             // Carrousel (3 pages)
             SizedBox(
-              height: h * 0.60,
+              height: h * 0.85,
               child: PageView(
                 controller: _pageController,
                 onPageChanged: _intro.onChangeInd,
@@ -188,7 +188,7 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
                   child: Text(
                     "Get Started",
                     style: appTextStyle(
-                      fontSize: 18,
+                      fontSize: 16,
                       fontWeight: FontWeight.w600,
                       color: Colors.black,
                     ),
@@ -223,8 +223,8 @@ class _IntroPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (ctx, c) {
-        final double imgHeight = c.maxHeight * 0.58;
-        final double horizontalPad = c.maxWidth * 0.08;
+        final double imgHeight = c.maxHeight * 1.0;
+        final double horizontalPad = c.maxWidth * 0.02;
 
         return Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -236,9 +236,56 @@ class _IntroPage extends StatelessWidget {
                 width: double.infinity,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(16),
-                  child: Image.asset(
-                    asset,
-                    fit: BoxFit.cover,
+                  child: Stack(
+                    children: [
+                      Image.asset(
+                        asset,
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: double.infinity,
+                      ),
+                      // Logo en filigrane
+                      Positioned.fill(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage('assets/images/logo.png'),
+                              fit: BoxFit.contain,
+                              opacity: 0.6, // Beaucoup plus visible
+                              alignment: Alignment.center,
+                              scale: 1.2,
+                              colorFilter: ColorFilter.mode(
+                                ColorRes.brightYellow.withOpacity(0.9),
+                                BlendMode.overlay,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      // Texte "Bridging the Gap With Timeless Talent" en blanc sur la première page
+                      if (asset == AssetRes.page1)
+                        Positioned(
+                          bottom: 30,
+                          left: 20,
+                          right: 20,
+                          child: Text(
+                            'Bridging the Gap With Timeless Talent',
+                            textAlign: TextAlign.center,
+                            style: appTextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              shadows: [
+                                Shadow(
+                                  offset: Offset(1, 1),
+                                  blurRadius: 3,
+                                  color: Colors.black.withOpacity(0.7),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
                 ),
               ),
@@ -251,7 +298,7 @@ class _IntroPage extends StatelessWidget {
               textAlign: TextAlign.center,
               style: appTextStyle(
                 color: subtitleColor,
-                fontSize: 15,
+                fontSize: 13,
                 fontWeight: FontWeight.w400,
               ),
             ),
@@ -275,7 +322,7 @@ class _IntroPage extends StatelessWidget {
         textAlign: TextAlign.center,
         style: appTextStyle(
           color: defaultColor,
-          fontSize: 24,
+          fontSize: 20,
           fontWeight: FontWeight.w600,
         ),
       );
@@ -293,7 +340,7 @@ class _IntroPage extends StatelessWidget {
         text: word + (i < words.length - 1 ? ' ' : ''),
         style: appTextStyle(
           color: isHighlighted ? bordeauxColor : defaultColor,
-          fontSize: 24,
+          fontSize: 20,
           fontWeight: FontWeight.w600,
         ),
       ));
