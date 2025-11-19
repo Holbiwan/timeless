@@ -172,20 +172,20 @@ class _SigninScreenUState extends State<SigninScreenU> {
                       backButton(),
                       const SizedBox(height: 16),
 
-                      // Logo
+                      // Logo agrandi
                       Center(
                         child: Container(
-                          height: 80,
-                          width: 80,
+                          height: 120,
+                          width: 120,
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                             color: ColorRes.logoColor,
-                            borderRadius: BorderRadius.circular(15),
+                            borderRadius: BorderRadius.circular(20),
                           ),
                           child: const Image(image: AssetImage(AssetRes.logo)),
                         ),
                       ),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: 10),
                       Center(
                         child: Text(
                           Strings.signInToYourAccount,
@@ -254,9 +254,10 @@ class _SigninScreenUState extends State<SigninScreenU> {
                                   border: _inputBorderFor(
                                       controller.emailController.text,
                                       controller.emailError),
-                                  focusedBorder: _inputBorderFor(
-                                      controller.emailController.text,
-                                      controller.emailError),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: ColorRes.brightYellow, width: 2),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
                                   enabledBorder: _inputBorderFor(
                                       controller.emailController.text,
                                       controller.emailError),
@@ -347,9 +348,10 @@ class _SigninScreenUState extends State<SigninScreenU> {
                                   border: _inputBorderFor(
                                       controller.passwordController.text,
                                       controller.pwdError),
-                                  focusedBorder: _inputBorderFor(
-                                      controller.passwordController.text,
-                                      controller.pwdError),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: ColorRes.brightYellow, width: 2),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
                                   enabledBorder: _inputBorderFor(
                                       controller.passwordController.text,
                                       controller.pwdError),
@@ -373,7 +375,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
 
                       const SizedBox(height: 6),
 
-                      // ===== Remember me =====
+                      // Remember me
                       GetBuilder<SignInScreenController>(
                         id: "remember_me",
                         builder: (_) => InkWell(
@@ -397,11 +399,11 @@ class _SigninScreenUState extends State<SigninScreenU> {
                           child: Row(
                             children: [
                               Checkbox(
-                                activeColor: ColorRes.containerColor,
-                                checkColor: ColorRes.white,
+                                activeColor: ColorRes.brightYellow,
+                                checkColor: ColorRes.black,
                                 side: const BorderSide(
                                   width: 1.2,
-                                  color: ColorRes.containerColor,
+                                  color: ColorRes.brightYellow,
                                 ),
                                 value: controller.rememberMe,
                                 onChanged: controller.onRememberMeChange,
@@ -424,29 +426,29 @@ class _SigninScreenUState extends State<SigninScreenU> {
 
                       SizedBox(height: Get.height * 0.028),
 
-                      // ===== Sign in (email/password) =====
+                      //  Sign in (email/password)
                       GetBuilder<SignInScreenController>(
                         id: "colorChange",
                         builder: (_) => InkWell(
                           onTap:
                               isLoading ? null : controller.onLoginBtnTap,
                           child: Container(
-                            height: 50,
+                            height: 45,
                             width: MediaQuery.of(context).size.width,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
                               gradient: const LinearGradient(
                                 colors: [
-                                  ColorRes.gradientColor,
-                                  ColorRes.containerColor,
+                                  ColorRes.orange,
+                                  ColorRes.brightYellow,
                                 ],
                               ),
                             ),
                             child: Text(
                               Strings.signIn,
                               style: GoogleFonts.poppins(
-                                fontSize: 18,
+                                fontSize: 16,
                                 fontWeight: FontWeight.w500,
                                 color: ColorRes.white,
                               ),
@@ -470,7 +472,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                             style: GoogleFonts.poppins(
                               fontWeight: FontWeight.w500,
                               fontSize: 15,
-                              color: ColorRes.containerColor,
+                              color: ColorRes.darkGold,
                             ),
                           ),
                         ),
@@ -498,15 +500,25 @@ class _SigninScreenUState extends State<SigninScreenU> {
                           // Google - Connexion normale
                           SizedBox(
                             width: double.infinity,
-                            height: 48,
-                            child: OutlinedButton.icon(
+                            height: 45,
+                            child: OutlinedButton(
                               onPressed:
                                   isLoading ? null : _onGoogleSignInTap,
-                              icon: const Icon(Icons.login),
-                              label:
-                                  const Text('Continue with Google'),
                               style: OutlinedButton.styleFrom(
-                                side: const BorderSide(width: 1),
+                                side: BorderSide(color: ColorRes.brightYellow, width: 2),
+                                foregroundColor: ColorRes.black,
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    AssetRes.googleLogo,
+                                    height: 20,
+                                    width: 20,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  const Text('Continue with Google'),
+                                ],
                               ),
                             ),
                           ),
@@ -516,19 +528,19 @@ class _SigninScreenUState extends State<SigninScreenU> {
                           // Google - Changer de compte
                           SizedBox(
                             width: double.infinity,
-                            height: 42,
+                            height: 40,
                             child: TextButton.icon(
                               onPressed: isLoading ? null : _onSwitchGoogleAccount,
-                              icon: Icon(Icons.swap_horiz, size: 18, color: ColorRes.primaryAccent),
+                              icon: Icon(Icons.swap_horiz, size: 18, color: ColorRes.darkGold),
                               label: Text(
-                                'Utiliser un autre compte Google',
+                                'Use an other Google account',
                                 style: GoogleFonts.poppins(
                                   fontSize: 13,
                                   color: ColorRes.primaryAccent,
                                 ),
                               ),
                               style: TextButton.styleFrom(
-                                backgroundColor: ColorRes.primaryAccent.withOpacity(0.1),
+                                backgroundColor: ColorRes.darkGold.withOpacity(0.1),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8),
                                 ),
@@ -540,7 +552,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                           // GitHub (optionnel, non modifié)
                           SizedBox(
                             width: double.infinity,
-                            height: 48,
+                            height: 45,
                             child: OutlinedButton.icon(
                               onPressed: isLoading
                                   ? null
@@ -549,14 +561,15 @@ class _SigninScreenUState extends State<SigninScreenU> {
                               label:
                                   const Text('Continue with GitHub'),
                               style: OutlinedButton.styleFrom(
-                                side: const BorderSide(width: 1),
+                                side: BorderSide(color: ColorRes.orange, width: 2),
+                                foregroundColor: ColorRes.black,
                               ),
                             ),
                           ),
                         ],
                       ),
 
-                      SizedBox(height: Get.height * 0.03),
+                      SizedBox(height: Get.height * 0.025),
 
                       // ===== Sign up link =====
                       Row(
@@ -588,7 +601,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                               style: GoogleFonts.poppins(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 16,
-                                color: ColorRes.containerColor,
+                                color: ColorRes.darkGold,
                               ),
                             ),
                           ),
@@ -617,7 +630,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
   }
 
   OutlineInputBorder _enableBorder() => OutlineInputBorder(
-        borderSide: const BorderSide(color: ColorRes.containerColor),
+        borderSide: const BorderSide(color: ColorRes.orange),
         borderRadius: BorderRadius.circular(12),
       );
 
