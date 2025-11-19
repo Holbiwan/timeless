@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:timeless/service/translation_service.dart';
+import 'package:timeless/utils/color_res.dart';
 
 class LanguageToggle extends StatelessWidget {
   const LanguageToggle({super.key});
@@ -17,26 +18,28 @@ class LanguageToggle extends StatelessWidget {
         onTap: () {
           translationService.toggleLanguage();
           Get.snackbar(
-            'Language Changed',
-            isEnglish ? 'Switched to French' : 'Switched to English',
-            backgroundColor: Colors.blue,
+            translationService.getText('language_switched'),
+            isEnglish 
+              ? translationService.getText('switched_to_french')
+              : translationService.getText('switched_to_english'),
+            backgroundColor: ColorRes.orange,
             colorText: Colors.white,
             duration: const Duration(seconds: 2),
           );
         },
         borderRadius: BorderRadius.circular(20),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.blue.withOpacity(0.3), width: 1.5),
+            border: Border.all(color: ColorRes.darkGold, width: 1.5),
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.withOpacity(0.2),
+                color: ColorRes.darkGold.withOpacity(0.2),
                 spreadRadius: 1,
-                blurRadius: 3,
-                offset: const Offset(0, 1),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
               ),
             ],
           ),
@@ -51,16 +54,16 @@ class LanguageToggle extends StatelessWidget {
               Text(
                 isEnglish ? 'EN' : 'FR',
                 style: GoogleFonts.poppins(
-                  fontSize: 12,
+                  fontSize: 11,
                   fontWeight: FontWeight.w600,
-                  color: Colors.blue,
+                  color: ColorRes.darkGold,
                 ),
               ),
               const SizedBox(width: 4),
               Icon(
                 Icons.swap_horiz,
-                size: 16,
-                color: Colors.blue.withOpacity(0.7),
+                size: 14,
+                color: ColorRes.orange,
               ),
             ],
           ),

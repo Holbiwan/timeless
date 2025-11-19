@@ -34,7 +34,7 @@ class FirstScreen extends StatelessWidget {
       backgroundColor: ColorRes.backgroundColor,
       body: Stack(
         children: [
-          // Arrière-plan avec gradient et filigrane
+          // Arrière-plan avec gradient propre
           Container(
             width: Get.width,
             height: Get.height,
@@ -46,17 +46,6 @@ class FirstScreen extends StatelessWidget {
                   ColorRes.backgroundColor,
                   ColorRes.surfaceColor,
                 ],
-              ),
-              image: DecorationImage(
-                image: AssetImage('assets/images/logo.png'),
-                fit: BoxFit.contain,
-                opacity: 0.15,
-                alignment: Alignment(0, -0.3),
-                scale: 1.8,
-                colorFilter: ColorFilter.mode(
-                  ColorRes.brightYellow.withOpacity(0.5),
-                  BlendMode.modulate,
-                ),
               ),
             ),
           ),
@@ -183,7 +172,7 @@ class FirstScreen extends StatelessWidget {
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
-                    color: const Color.fromARGB(255, 21, 5, 129),
+                    color: const Color.fromARGB(255, 0, 0, 0),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -224,13 +213,16 @@ class FirstScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(15),
                     gradient: LinearGradient(
                       colors: [
-                        ColorRes.appleGreen,
-                        ColorRes.appleGreen.withOpacity(0.8),
+                        ColorRes.brightYellow,
+                        ColorRes.orange,
                       ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
+                    border: Border.all(color: ColorRes.darkGold),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color.fromARGB(255, 155, 111, 0).withOpacity(0.3),
+                        color: ColorRes.darkGold.withOpacity(0.3),
                         blurRadius: 8,
                         offset: const Offset(0, 4),
                       ),
@@ -306,17 +298,6 @@ class FirstScreen extends StatelessWidget {
           right: 0,
           child: Container(
             padding: const EdgeInsets.only(top: 40, left: 18, right: 18, bottom: 10),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  ColorRes.backgroundColor,
-                  ColorRes.backgroundColor.withOpacity(0.9),
-                  Colors.transparent,
-                ],
-              ),
-            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
