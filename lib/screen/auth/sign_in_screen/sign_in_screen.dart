@@ -20,6 +20,7 @@ import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/utils/string.dart';
 import 'package:timeless/service/google_auth_service.dart';
 import 'package:timeless/screen/dashboard/dashboard_screen.dart';
+import 'package:timeless/screen/auth/profile_completion/profile_completion_screen.dart';
 
 class SigninScreenU extends StatefulWidget {
   const SigninScreenU({super.key});
@@ -38,6 +39,36 @@ class _SigninScreenUState extends State<SigninScreenU> {
     controller.getRememberEmailDataUser();
   }
 
+  Future<void> _onSwitchGoogleAccount() async {
+    try {
+      controller.loading.value = true;
+      
+      Get.snackbar(
+        "Changement de compte",
+        "Sélectionnez votre compte Google",
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.blue[100],
+        colorText: Colors.blue[800],
+        duration: const Duration(seconds: 2),
+      );
+      
+      final user = await GoogleAuthService.switchGoogleAccount();
+
+      if (user == null) {
+        Get.snackbar("Google Sign-In", "Changement de compte annulé",
+            snackPosition: SnackPosition.BOTTOM);
+        return;
+      }
+
+      await _handleSuccessfulSignIn(user);
+
+    } catch (e) {
+      _handleSignInError(e);
+    } finally {
+      controller.loading.value = false;
+    }
+  }
+
   Future<void> _onGoogleSignInTap() async {
     try {
       controller.loading.value = true;
@@ -49,15 +80,57 @@ class _SigninScreenUState extends State<SigninScreenU> {
         return;
       }
 
-      // Sauvegarde dans Prefs
-      PrefService.setValue(PrefKeys.userId, user.uid);
-      PrefService.setValue(PrefKeys.email, user.email ?? "");
-      PrefService.setValue(PrefKeys.fullName, user.displayName ?? "");
-      PrefService.setValue(PrefKeys.rol, "User");
+      await _handleSuccessfulSignIn(user);
 
-      // Navigation vers le Dashboard
+    } catch (e) {
+      _handleSignInError(e);
+    } finally {
+      controller.loading.value = false;
+    }
+  }
+
+  Future<void> _handleSuccessfulSignIn(User user) async {
+    // Sauvegarde dans Prefs
+    PrefService.setValue(PrefKeys.userId, user.uid);
+    PrefService.setValue(PrefKeys.email, user.email ?? "");
+    PrefService.setValue(PrefKeys.fullName, user.displayName ?? "");
+    PrefService.setValue(PrefKeys.rol, "User");
+
+    // Sauvegarder les données utilisateur dans Firestore
+    await GoogleAuthService.saveUserToFirestore(user);
+
+    // ⭐ NAVIGATION INTELLIGENTE ⭐
+    // Vérifier si c'est la première connexion ou un utilisateur existant
+    final creationTime = user.metadata.creationTime;
+    final isNewUser = creationTime != null && 
+        creationTime.difference(DateTime.now()).inMinutes.abs() < 5;
+    
+    if (isNewUser) {
+      // Nouvel utilisateur (créé il y a moins de 5 minutes)
+      Get.snackbar(
+        "Bienvenue !",
+        "Compte créé avec succès. Complétez votre profil.",
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.green[100],
+        colorText: Colors.green[800],
+      );
+      // Aller vers l'écran de complétion de profil
+      Get.offAll(() => const ProfileCompletionScreen());
+    } else {
+      // Utilisateur existant
+      Get.snackbar(
+        "Bon retour !",
+        "Connexion réussie.",
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.blue[100],
+        colorText: Colors.blue[800],
+      );
       Get.offAll(() => DashBoardScreen());
-    } on PlatformException catch (e) {
+    }
+  }
+
+  void _handleSignInError(dynamic e) {
+    if (e is PlatformException) {
       final msg = e.message ?? '';
       if (e.code == 'sign_in_failed' && msg.contains('ApiException: 10')) {
         Get.snackbar(
@@ -72,11 +145,9 @@ class _SigninScreenUState extends State<SigninScreenU> {
         Get.snackbar("Google Sign-In", msg.isEmpty ? e.toString() : msg,
             snackPosition: SnackPosition.BOTTOM);
       }
-    } catch (e) {
+    } else {
       Get.snackbar("Google Sign-In", e.toString(),
           snackPosition: SnackPosition.BOTTOM);
-    } finally {
-      controller.loading.value = false;
     }
   }
 
@@ -424,7 +495,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                       // ===== Social buttons =====
                       Column(
                         children: [
-                          // Google
+                          // Google - Connexion normale
                           SizedBox(
                             width: double.infinity,
                             height: 48,
@@ -436,6 +507,31 @@ class _SigninScreenUState extends State<SigninScreenU> {
                                   const Text('Continue with Google'),
                               style: OutlinedButton.styleFrom(
                                 side: const BorderSide(width: 1),
+                              ),
+                            ),
+                          ),
+                          
+                          const SizedBox(height: 8),
+                          
+                          // Google - Changer de compte
+                          SizedBox(
+                            width: double.infinity,
+                            height: 42,
+                            child: TextButton.icon(
+                              onPressed: isLoading ? null : _onSwitchGoogleAccount,
+                              icon: Icon(Icons.swap_horiz, size: 18, color: ColorRes.primaryAccent),
+                              label: Text(
+                                'Utiliser un autre compte Google',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 13,
+                                  color: ColorRes.primaryAccent,
+                                ),
+                              ),
+                              style: TextButton.styleFrom(
+                                backgroundColor: ColorRes.primaryAccent.withOpacity(0.1),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
                               ),
                             ),
                           ),

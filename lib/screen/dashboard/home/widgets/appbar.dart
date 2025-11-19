@@ -24,10 +24,6 @@ Widget homeAppBar() {
       children: [
         Container(
           padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: ColorRes.primaryAccent,
-            borderRadius: BorderRadius.circular(12),
-          ),
           child: logo(),
         ),
         Expanded(
@@ -59,18 +55,19 @@ Widget homeAppBar() {
           ),
         ),
         InkWell(
-          onTap: () => Get.toNamed(AppRes.notificationScreen),
+          onTap: () => Get.offAllNamed('/'), // Retour à l'accueil
           child: Container(
             height: 44,
             width: 44,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: ColorRes.primaryAccent,
+              color: Colors.transparent, // Fond transparent pour plus de discrétion
               borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: ColorRes.primaryAccent, width: 1.5),
             ),
             child: const Icon(
-              Icons.notifications_rounded,
-              color: ColorRes.white,
+              Icons.home_rounded,
+              color: ColorRes.primaryAccent,
               size: 22,
             ),
           ),
