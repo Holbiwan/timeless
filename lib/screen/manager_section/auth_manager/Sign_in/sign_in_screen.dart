@@ -37,7 +37,7 @@ class _SignInScreenMState extends State<SignInScreenM> {
   Widget build(BuildContext context) {
     jobDetailsUploadCvController.init();
     return Scaffold(
-        backgroundColor: Colors.green.shade100,
+        backgroundColor: ColorRes.backgroundColor,
         body: Obx(() {
           return Stack(children: [
             SingleChildScrollView(
@@ -51,11 +51,11 @@ class _SignInScreenMState extends State<SignInScreenM> {
                       Center(
                         child: Container(
                           alignment: Alignment.center,
-                          height: 80,
-                          width: 80,
+                          height: 120,
+                          width: 120,
                           decoration: BoxDecoration(
                             color: ColorRes.logoColor,
-                            borderRadius: BorderRadius.circular(15),
+                            borderRadius: BorderRadius.circular(20),
                           ),
                           child: const Image(
                             image: AssetImage(AssetRes.logo),
@@ -287,10 +287,10 @@ class _SignInScreenMState extends State<SignInScreenM> {
                               child: Row(
                                 children: [
                                   Checkbox(
-                                    activeColor: Colors.red,
-                                    checkColor: ColorRes.white,
+                                    activeColor: ColorRes.brightYellow,
+                                    checkColor: ColorRes.black,
                                     side: const BorderSide(
-                                        width: 1.2, color: Colors.red),
+                                        width: 1.2, color: ColorRes.brightYellow),
                                     value: controller.rememberMe,
                                     onChanged: controller.onRememberMeChange,
                                     shape: RoundedRectangleBorder(
@@ -309,48 +309,6 @@ class _SignInScreenMState extends State<SignInScreenM> {
                       
                       const SizedBox(height: 25),
                       
-                      // 🚨 BOUTON DEMO EMERGENCY - EN HAUT 🚨
-                      InkWell(
-                        onTap: () {
-                          // Connexion d'urgence sans vérification
-                          Get.off(() => ManagerDashBoardScreen());
-                        },
-                        child: Container(
-                          height: 60,
-                          width: MediaQuery.of(context).size.width,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            border: Border.all(color: ColorRes.appleGreen, width: 3),
-                            gradient: const LinearGradient(colors: [
-                              ColorRes.appleGreen,
-                              ColorRes.darkGreen
-                            ]),
-                            boxShadow: [
-                              BoxShadow(
-                                color: ColorRes.appleGreen.withOpacity(0.5),
-                                spreadRadius: 2,
-                                blurRadius: 10,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(Icons.rocket_launch, color: Colors.white, size: 30),
-                              const SizedBox(width: 10),
-                              Text("🚨 DEMO ACCESS 🚨",
-                                  style: appTextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w900,
-                                      color: ColorRes.white)),
-                            ],
-                          ),
-                        ),
-                      ),
-                      
-                      const SizedBox(height: 20),
                       
                       // Sign in button normal
                       GetBuilder<SignInScreenControllerM>(
@@ -364,16 +322,24 @@ class _SignInScreenMState extends State<SignInScreenM> {
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
-                                  gradient: const LinearGradient(colors: [
-                                    Colors.red,
-                                    Colors.redAccent
-                                  ]),
+                                  color: ColorRes.white,
+                                  border: Border.all(
+                                    color: ColorRes.darkGold,
+                                    width: 2,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: ColorRes.darkGold.withOpacity(0.2),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ],
                                 ),
                                 child: Text(Strings.signIn,
                                     style: appTextStyle(
-                                        fontSize: 18,
+                                        fontSize: 16,
                                         fontWeight: FontWeight.w500,
-                                        color: ColorRes.white)),
+                                        color: ColorRes.darkGold)),
                               ),
                             );
                           }),
@@ -393,7 +359,7 @@ class _SignInScreenMState extends State<SignInScreenM> {
                               style: appTextStyle(
                                   fontWeight: FontWeight.w500,
                                   fontSize: 15,
-                                  color: Colors.red)),
+                                  color: ColorRes.darkGold)),
                         ),
                       ),
                       
@@ -417,14 +383,14 @@ class _SignInScreenMState extends State<SignInScreenM> {
                             controller.signWithGoogle();
                           },
                           child: Container(
-                            height: 50,
+                            height: 45,
                             width: double.infinity,
                             decoration: BoxDecoration(
-                                border: Border.all(color: ColorRes.borderColor),
+                                border: Border.all(color: ColorRes.brightYellow, width: 2),
                                 boxShadow: [
                                   BoxShadow(
                                       offset: const Offset(6, 6),
-                                      color: Colors.red.withOpacity(0.08),
+                                      color: ColorRes.orange.withOpacity(0.08),
                                       spreadRadius: 0,
                                       blurRadius: 35),
                                 ],
@@ -436,9 +402,10 @@ class _SignInScreenMState extends State<SignInScreenM> {
                               children: [
                                 const Image(
                                   image: AssetImage(AssetRes.googleLogo),
-                                  height: 27,
+                                  height: 20,
+                                  width: 20,
                                 ),
-                                const SizedBox(width: 15),
+                                const SizedBox(width: 12),
                                 Text(
                                   Strings.google,
                                   style: appTextStyle(
@@ -454,46 +421,6 @@ class _SignInScreenMState extends State<SignInScreenM> {
                       
                       const SizedBox(height: 27),
                       
-                      // BOUTON DEMO - Solution de secours
-                      Center(
-                        child: InkWell(
-                          onTap: () {
-                            controller.demoLogin();
-                          },
-                          child: Container(
-                            height: 50,
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                                border: Border.all(color: Colors.green),
-                                boxShadow: [
-                                  BoxShadow(
-                                      offset: const Offset(6, 6),
-                                      color: Colors.green.withOpacity(0.08),
-                                      spreadRadius: 0,
-                                      blurRadius: 35),
-                                ],
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.green.withOpacity(0.1)),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                const Icon(Icons.security, color: Colors.green, size: 27),
-                                const SizedBox(width: 15),
-                                Text(
-                                  "DEMO LOGIN (Secure Access)",
-                                  style: appTextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 15,
-                                      color: Colors.green),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      
-                      const SizedBox(height: 20),
                       
                       // Sign up link
                       Row(
@@ -524,7 +451,7 @@ class _SignInScreenMState extends State<SignInScreenM> {
                                 style: appTextStyle(
                                     fontWeight: FontWeight.w600,
                                     fontSize: 16,
-                                    color: Colors.red),
+                                    color: ColorRes.darkGold),
                               ),
                             ),
                           ),
@@ -544,7 +471,7 @@ class _SignInScreenMState extends State<SignInScreenM> {
 
   OutlineInputBorder enableBorder() {
     return OutlineInputBorder(
-      borderSide: const BorderSide(color: Colors.red),
+      borderSide: const BorderSide(color: ColorRes.orange),
       borderRadius: BorderRadius.circular(10),
     );
   }

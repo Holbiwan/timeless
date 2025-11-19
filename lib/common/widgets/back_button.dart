@@ -9,15 +9,27 @@ Widget backButton() {
       Get.back();
     },
     child: Container(
-      height: 40,
-      width: 40,
+      height: 36,
+      width: 36,
       decoration: BoxDecoration(
-        color: ColorRes.logoColor,
-        borderRadius: BorderRadius.circular(8),
+        color: ColorRes.white,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: ColorRes.darkGold,
+          width: 2,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: ColorRes.darkGold.withOpacity(0.2),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: const Icon(
         Icons.arrow_back_ios_new_rounded,
-        color: ColorRes.containerColor,
+        color: ColorRes.darkGold,
+        size: 18,
       ),
     ),
   );

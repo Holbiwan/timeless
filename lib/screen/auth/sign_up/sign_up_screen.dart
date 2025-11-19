@@ -46,20 +46,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Logo
+                    // Logo agrandi
                     Center(
                       child: Container(
-                        height: 80,
-                        width: 80,
+                        height: 120,
+                        width: 120,
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
                           color: ColorRes.logoColor,
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(20),
                         ),
                         child: const Image(image: AssetImage(AssetRes.logo)),
                       ),
                     ),
-                    const SizedBox(height: 18),
+                    const SizedBox(height: 16),
 
                     Center(
                       child: Text(
@@ -202,22 +202,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       builder: (_) => InkWell(
                         onTap: isLoading ? null : ctrl.onSignUpTap,
                         child: Container(
-                          height: 50,
+                          height: 45,
                           width: double.infinity,
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                             gradient: const LinearGradient(
                               colors: [
-                                ColorRes.gradientColor,
-                                ColorRes.containerColor
+                                ColorRes.orange,
+                                ColorRes.brightYellow
                               ],
                             ),
                           ),
                           child: Text(
                             'Create account',
                             style: GoogleFonts.poppins(
-                              fontSize: 18,
+                              fontSize: 16,
                               fontWeight: FontWeight.w500,
                               color: ColorRes.white,
                             ),
@@ -226,7 +226,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     ),
 
-                    const SizedBox(height: 28),
+                    const SizedBox(height: 20),
 
                     // Terms and conditions
                     RichText(
@@ -241,7 +241,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           TextSpan(
                             text: 'Terms of Service',
                             style: GoogleFonts.poppins(
-                              color: ColorRes.primaryAccent,
+                              color: ColorRes.darkGold,
                               fontWeight: FontWeight.w600,
                               decoration: TextDecoration.underline,
                             ),
@@ -264,7 +264,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           TextSpan(
                             text: 'Privacy Policy',
                             style: GoogleFonts.poppins(
-                              color: ColorRes.primaryAccent,
+                              color: ColorRes.darkGold,
                               fontWeight: FontWeight.w600,
                               decoration: TextDecoration.underline,
                             ),
@@ -345,7 +345,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
         color: Colors.black.withOpacity(0.15),
       ),
       border: _enableBorder(),
-      focusedBorder: _enableBorder(),
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: ColorRes.brightYellow, width: 2),
+        borderRadius: BorderRadius.circular(12),
+      ),
       enabledBorder: _enableBorder(),
       disabledBorder: _enableBorder(),
       errorBorder: _errorBorder(),
@@ -354,7 +357,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   OutlineInputBorder _enableBorder() => OutlineInputBorder(
-        borderSide: const BorderSide(color: ColorRes.containerColor),
+        borderSide: const BorderSide(color: ColorRes.orange),
         borderRadius: BorderRadius.circular(12),
       );
 

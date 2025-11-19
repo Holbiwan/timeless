@@ -17,8 +17,7 @@ import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'introduction_controller.dart';
 
-const kJYellow = Color(0xFFFFD700);
-const kJGreen = Color(0xFFDC2626);
+// Utilisation des couleurs harmonisées
 
 class IntroductionScreen extends StatefulWidget {
   const IntroductionScreen({super.key});
@@ -94,7 +93,7 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
                     child: Text(
                       "Welcome",
                       style: appTextStyle(
-                        color: ColorRes.royalBlue,
+                        color: ColorRes.darkGold,
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
                       ),
@@ -102,14 +101,30 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
                   ),
                   const Spacer(),
                   if (_intro.selectedIndex.value != 2)
-                    TextButton(
-                      onPressed: _goToApp,
-                      child: Text(
-                        "Skip",
-                        style: appTextStyle(
-                          color: ColorRes.royalBlue,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
+                    InkWell(
+                      onTap: _goToApp,
+                      borderRadius: BorderRadius.circular(20),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              ColorRes.brightYellow,
+                              ColorRes.orange,
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: ColorRes.darkGold),
+                        ),
+                        child: Text(
+                          "Skip",
+                          style: appTextStyle(
+                            color: Colors.black,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     )
@@ -158,10 +173,10 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
               controller: _pageController,
               count: 3,
               effect: SlideEffect(
-                activeDotColor: kJGreen,
-                dotColor: kJYellow.withOpacity(0.25),
-                dotWidth: 9,
-                dotHeight: 9,
+                activeDotColor: ColorRes.orange,
+                dotColor: ColorRes.brightYellow.withOpacity(0.3),
+                dotWidth: 8,
+                dotHeight: 8,
               ),
             ),
 
@@ -172,7 +187,7 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
               InkWell(
                 onTap: _goToApp,
                 child: Container(
-                  height: 50,
+                  height: 45,
                   width: 294,
                   alignment: Alignment.center,
                   margin: const EdgeInsets.symmetric(horizontal: 18),
@@ -180,8 +195,8 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
                     borderRadius: BorderRadius.circular(10),
                     gradient: const LinearGradient(
                       colors: [
-                        Color(0xFFFFD700),
-                        Color(0xFFDC2626),
+                        ColorRes.brightYellow,
+                        ColorRes.orange,
                       ],
                     ),
                   ),
@@ -309,8 +324,8 @@ class _IntroPage extends StatelessWidget {
   }
 
   Widget _buildTitleWithHighlight() {
-    const bordeauxColor = Color(0xFF7C2D12); // Bordeaux profond
-    const defaultColor = Color(0xFF1A1A1A); // Noir
+    const highlightColor = ColorRes.orange; // Orange pour les mots clés
+    const defaultColor = ColorRes.textPrimary; // Noir primaire
     
     List<String> wordsToHighlight = [];
     if (highlightWord != null) wordsToHighlight.add(highlightWord!);
@@ -339,7 +354,7 @@ class _IntroPage extends StatelessWidget {
       spans.add(TextSpan(
         text: word + (i < words.length - 1 ? ' ' : ''),
         style: appTextStyle(
-          color: isHighlighted ? bordeauxColor : defaultColor,
+          color: isHighlighted ? highlightColor : defaultColor,
           fontSize: 20,
           fontWeight: FontWeight.w600,
         ),
