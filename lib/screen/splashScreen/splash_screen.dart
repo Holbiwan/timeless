@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:timeless/screen/first_page/first_screen.dart';
 import 'package:timeless/utils/color_res.dart';
+import 'dart:async';
 import 'dart:math';
 
 class SplashScreen extends StatefulWidget {
@@ -15,23 +16,25 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
-  late final AnimationController _slideController = AnimationController(
-      vsync: this, duration: const Duration(milliseconds: 1500));
-  late final AnimationController _textController = AnimationController(
-      vsync: this, duration: const Duration(milliseconds: 800));
+  late final AnimationController _masterController = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 800),
+  );
+
   late final AnimationController _logoController = AnimationController(
       vsync: this, duration: const Duration(milliseconds: 2500))
     ..repeat(reverse: true);
 
-
-  late final Animation<double> _fadeAnimation =
-      CurvedAnimation(parent: _textController, curve: Curves.easeIn);
+  late final AnimationController _particleController = AnimationController(
+      vsync: this, duration: const Duration(milliseconds: 4000))
+    ..repeat();
 
   late final Animation<double> _logoScaleAnimation =
-      Tween<double>(begin: 1.0, end: 1.2).animate(
+      Tween<double>(begin: 1.0, end: 1.05).animate(
           CurvedAnimation(parent: _logoController, curve: Curves.easeInOut));
 
   int _currentSlide = 0;
+  Timer? _autoSlideTimer;
 
   final List<Map<String, dynamic>> _slides = [
     {
@@ -42,22 +45,22 @@ class _SplashScreenState extends State<SplashScreen>
     },
     {
       'title': 'Find Your',
-      'subtitle': 'Job Offers',
-      'description': 'Discover opportunities that match your skills',
+      'subtitle': 'Dream Job',
+      'description': 'Discover opportunities that match your profile',
       'isImage': true,
       'imagePath': 'assets/images/love_emoji.png'
     },
     {
-      'title': 'Smart Job',
-      'subtitle': 'Apply',
-      'description': 'Apply matching offers with a single click',
+      'title': 'Smart Jobs',
+      'subtitle': 'Applications',
+      'description': 'Apply to multiple offers',
       'isImage': true,
       'imagePath': 'assets/images/search_job.jpg'
     },
     {
       'title': 'Get Started',
       'subtitle': 'Now',
-      'description': 'Join our job seekers',
+      'description': 'Join successful job seekers',
       'icon': '✨'
     },
   ];
@@ -65,37 +68,35 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
-    _startSlideShow();
+    _masterController.forward();
+    _startAutoSlideShow();
   }
 
-  void _startSlideShow() async {
-    for (int i = 0; i < _slides.length; i++) {
-      _currentSlide = i;
+  void _startAutoSlideShow() {
+    _autoSlideTimer = Timer.periodic(
+      Duration(milliseconds: _currentSlide == 0 ? 7000 : 7000),
+      (_) => _nextSlide(),
+    );
+  }
 
-      // Reset and start animations
-      _slideController.reset();
-      _textController.reset();
-
-      // Start slide animation
-      _slideController.forward();
-      await Future.delayed(const Duration(milliseconds: 300));
-
-      // Start text animation
-      _textController.forward();
-
-      // Wait before next slide (except last one)
-      if (i < _slides.length - 1) {
-        // Plus long pour la première slide avec le logo qui tourne
-        final duration = i == 0
-            ? 6500
-            : 3500; // 6.5s pour première slide, 3.5s pour les autres
-        await Future.delayed(Duration(milliseconds: duration));
-      } else {
-        // On last slide, wait then navigate
-        await Future.delayed(const Duration(milliseconds: 4000));
-        Get.offAll(() => FirstScreen());
-      }
+  void _nextSlide() {
+    if (_currentSlide < _slides.length - 1) {
+      setState(() {
+        _currentSlide++;
+      });
+    } else {
+      _autoSlideTimer?.cancel();
+      _navigateToNextScreen();
     }
+  }
+
+  void _navigateToNextScreen() async {
+    await _masterController.reverse();
+    Get.offAll(
+      () => FirstScreen(),
+      transition: Transition.fadeIn,
+      duration: const Duration(milliseconds: 600),
+    );
   }
 
   @override
@@ -105,277 +106,527 @@ class _SplashScreenState extends State<SplashScreen>
 
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Container(
-        width: w,
-        height: h,
-        decoration: const BoxDecoration(
-          color: Colors.transparent,
-          image: DecorationImage(
-            image: AssetImage('assets/images/logo.png'),
-            fit: BoxFit.contain,
-            opacity: 0.08,
-            alignment: Alignment.center,
-            scale: 0.7,
-            colorFilter: ColorFilter.mode(
-              Color(0xFF1E3A8A),
-              BlendMode.modulate,
+      body: FadeTransition(
+        opacity: _masterController,
+        child: Container(
+          width: w,
+          height: h,
+          decoration: const BoxDecoration(
+            color: Colors.transparent,
+            image: DecorationImage(
+              image: AssetImage('assets/images/logo.png'),
+              fit: BoxFit.contain,
+              opacity: 0.08,
+              alignment: Alignment.center,
+              scale: 0.7,
+              colorFilter: ColorFilter.mode(
+                Color(0xFF1E3A8A),
+                BlendMode.modulate,
+              ),
             ),
           ),
-        ),
-        child: SafeArea(
-          child: AnimatedBuilder(
-            animation: Listenable.merge([_slideController, _textController]),
-            builder: (context, child) {
-              final currentSlideData = _slides[_currentSlide];
-
-              return Stack(
-                children: [
-                  // Animated background particles
-                  ...List.generate(20, (index) {
-                    return Positioned(
-                      left: (index * 50) % w,
-                      top: (index * 80) % h,
-                      child: AnimatedBuilder(
-                        animation: _slideController,
-                        builder: (context, child) {
-                          return Transform.translate(
-                            offset: Offset(
-                              sin(_slideController.value * 2 * pi + index) * 10,
-                              cos(_slideController.value * 2 * pi + index) * 10,
-                            ),
+          child: SafeArea(
+            child: Stack(
+              children: [
+                // Enhanced animated background particles
+                AnimatedBuilder(
+                  animation: _particleController,
+                  builder: (context, child) {
+                    return Stack(
+                      children: List.generate(25, (index) {
+                        final delay = index * 0.1;
+                        final animValue =
+                            (_particleController.value + delay) % 1.0;
+                        return Positioned(
+                          left: (index * 60 + animValue * 100) % w,
+                          top: (index * 90 + sin(animValue * 2 * pi) * 50) % h,
+                          child: Transform.scale(
+                            scale: 0.5 + sin(animValue * pi) * 0.5,
                             child: Container(
-                              width: 3,
-                              height: 3,
+                              width: 4,
+                              height: 4,
                               decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.3),
+                                color: [
+                                  ColorRes.brightYellow.withOpacity(0.4),
+                                  ColorRes.orange.withOpacity(0.3),
+                                  Colors.white.withOpacity(0.2),
+                                ][index % 3],
                                 shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.white.withOpacity(0.2),
+                                    blurRadius: 8,
+                                    spreadRadius: 1,
+                                  ),
+                                ],
                               ),
                             ),
-                          );
-                        },
-                      ),
+                          ),
+                        );
+                      }),
                     );
-                  }),
+                  },
+                ),
 
-                  // Main content
-                  Positioned.fill(
-                    child: Center(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                // Contenu avec image animée et texte fixe
+                Center(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // Image qui change avec animation
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 600),
+                          transitionBuilder:
+                              (Widget child, Animation<double> animation) {
+                            return FadeTransition(
+                              opacity: animation,
+                              child: ScaleTransition(
+                                scale: Tween<double>(begin: 0.8, end: 1.0)
+                                    .animate(CurvedAnimation(
+                                        parent: animation,
+                                        curve: Curves.easeOut)),
+                                child: child,
+                              ),
+                            );
+                          },
+                          child: Container(
+                            key: ValueKey(_currentSlide),
+                            child:
+                                _buildMainVisual(_slides[_currentSlide], 1.0),
+                          ),
+                        ),
+
+                        const SizedBox(height: 20),
+
+                        // Texte dynamique qui change avec les images
+                        _buildDynamicText(),
+                      ],
+                    ),
+                  ),
+                ),
+
+                // Enhanced Skip button
+                Positioned(
+                  top: 50,
+                  right: 20,
+                  child: SlideTransition(
+                    position: Tween<Offset>(
+                      begin: const Offset(1, 0),
+                      end: Offset.zero,
+                    ).animate(CurvedAnimation(
+                      parent: _masterController,
+                      curve: Curves.easeOutBack,
+                    )),
+                    child: GestureDetector(
+                      onTap: () {
+                        _autoSlideTimer?.cancel();
+                        _navigateToNextScreen();
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 10),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              ColorRes.brightYellow,
+                              ColorRes.orange,
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(25),
+                          border:
+                              Border.all(color: ColorRes.darkGold, width: 1.5),
+                          boxShadow: [
+                            BoxShadow(
+                              color: ColorRes.orange.withOpacity(0.3),
+                              blurRadius: 12,
+                              spreadRadius: 2,
+                            ),
+                          ],
+                        ),
+                        child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            // Icon/Logo with scale animation
-                            currentSlideData['isLogo'] == true
-                                ? FadeTransition(
-                                    opacity: _fadeAnimation,
-                                    child: ScaleTransition(
-                                      scale: _logoScaleAnimation,
-                                      child: Container(
-                                        width: 380,
-                                        height: 200,
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(30),
-                                          color: Colors.white,
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: ColorRes.darkBlue
-                                                  .withOpacity(0.3),
-                                              blurRadius: 20,
-                                              spreadRadius: 3,
-                                              offset: const Offset(0, 12),
-                                            ),
-                                          ],
-                                          border: Border.all(
-                                            color: ColorRes.darkBlue
-                                                .withOpacity(0.6),
-                                            width: 3,
-                                          ),
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(18.0),
-                                          child: Image.asset(
-                                            'assets/images/logo.png',
-                                            fit: BoxFit.contain,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                : FadeTransition(
-                                    opacity: _fadeAnimation,
-                                    child: ScaleTransition(
-                                      scale: _fadeAnimation,
-                                      child: Center(
-                                        child: currentSlideData['isImage'] ==
-                                                true
-                                            ? ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(20),
-                                                child: Image.asset(
-                                                  currentSlideData[
-                                                      'imagePath']!,
-                                                  width: 300,
-                                                  height: 300,
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              )
-                                            : Text(
-                                                currentSlideData['icon']!,
-                                                style: const TextStyle(
-                                                    fontSize: 60,
-                                                    color: Colors.white),
-                                              ),
-                                      ),
-                                    ),
-                                  ),
-
-                            const SizedBox(height: 20),
-
-                            // Title animation
-                            FadeTransition(
-                              opacity: _fadeAnimation,
-                              child: Text(
-                                currentSlideData['title']!,
-                                textAlign: TextAlign.center,
-                                style: GoogleFonts.poppins(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.w600,
-                                  color: _currentSlide == 0
-                                      ? ColorRes.brightYellow
-                                      : ColorRes.textPrimary,
-                                  letterSpacing: 0.5,
-                                ),
+                            Text(
+                              'Skip',
+                              style: GoogleFonts.poppins(
+                                color: Colors.black,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
-
-                            const SizedBox(height: 8),
-
-                            // Subtitle animation
-                            FadeTransition(
-                              opacity: _fadeAnimation,
-                              child: Text(
-                                currentSlideData['subtitle']!,
-                                textAlign: TextAlign.center,
-                                style: GoogleFonts.poppins(
-                                  fontSize: 32,
-                                  fontWeight: FontWeight.w800,
-                                  color: ColorRes.darkBlue,
-                                  letterSpacing: 1.2,
-                                  shadows: [
-                                    Shadow(
-                                      color: ColorRes.darkBlue.withOpacity(0.3),
-                                      blurRadius: 8,
-                                      offset: const Offset(2, 2),
-                                    ),
-                                    Shadow(
-                                      color: ColorRes.brightYellow
-                                          .withOpacity(0.2),
-                                      blurRadius: 15,
-                                      offset: const Offset(0, 0),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-
-                            const SizedBox(height: 16),
-
-                            // Description animation
-                            FadeTransition(
-                              opacity: _fadeAnimation,
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 32),
-                                child: Text(
-                                  currentSlideData['description']!,
-                                  textAlign: TextAlign.center,
-                                  style: GoogleFonts.poppins(
-                                    fontSize: _currentSlide == 0 ? 16 : 15,
-                                    fontWeight: _currentSlide == 0
-                                        ? FontWeight.w600
-                                        : FontWeight.w500,
-                                    color: Colors.white,
-                                    height: 1.6,
-                                    letterSpacing:
-                                        _currentSlide == 0 ? 0.8 : 0.3,
-                                    fontStyle: _currentSlide == 0
-                                        ? FontStyle.italic
-                                        : FontStyle.normal,
-                                  ),
-                                ),
-                              ),
+                            const SizedBox(width: 4),
+                            const Icon(
+                              Icons.arrow_forward_ios,
+                              size: 12,
+                              color: Colors.black,
                             ),
                           ],
                         ),
                       ),
                     ),
                   ),
+                ),
 
-                  // Skip button
-                  Positioned(
-                    top: 50,
-                    right: 20,
-                    child: InkWell(
-                      onTap: () => Get.offAll(() => FirstScreen()),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: ColorRes.brightYellow,
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: ColorRes.brightYellow),
-                        ),
-                        child: Text(
-                          'Skip',
-                          style: GoogleFonts.poppins(
-                            color: Colors.black,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  // Progress dots
-                  Positioned(
-                    bottom: 80,
-                    left: 0,
-                    right: 0,
+                // Enhanced Progress dots with smooth animations
+                Positioned(
+                  bottom: 80,
+                  left: 0,
+                  right: 0,
+                  child: SlideTransition(
+                    position: Tween<Offset>(
+                      begin: const Offset(0, 1),
+                      end: Offset.zero,
+                    ).animate(CurvedAnimation(
+                      parent: _masterController,
+                      curve: Curves.easeOutCubic,
+                    )),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: List.generate(_slides.length, (index) {
-                        return AnimatedContainer(
-                          duration: const Duration(milliseconds: 300),
-                          margin: const EdgeInsets.symmetric(horizontal: 4),
-                          width: index == _currentSlide ? 24 : 8,
-                          height: 8,
-                          decoration: BoxDecoration(
-                            color: index == _currentSlide
-                                ? ColorRes.brightYellow
-                                : Colors.white30,
-                            borderRadius: BorderRadius.circular(4),
+                        return TweenAnimationBuilder<double>(
+                          duration: const Duration(milliseconds: 400),
+                          tween: Tween(
+                            begin: 0.0,
+                            end: index == _currentSlide ? 1.0 : 0.0,
                           ),
+                          curve: Curves.easeOutCubic,
+                          builder: (context, value, child) {
+                            return Container(
+                              margin: const EdgeInsets.symmetric(horizontal: 6),
+                              width: 8 + (16 * value),
+                              height: 8,
+                              decoration: BoxDecoration(
+                                color: Color.lerp(
+                                  Colors.white30,
+                                  ColorRes.brightYellow,
+                                  value,
+                                ),
+                                borderRadius: BorderRadius.circular(4),
+                                boxShadow: value > 0.5
+                                    ? [
+                                        BoxShadow(
+                                          color: ColorRes.brightYellow
+                                              .withOpacity(0.5),
+                                          blurRadius: 8,
+                                          spreadRadius: 1,
+                                        ),
+                                      ]
+                                    : null,
+                              ),
+                            );
+                          },
                         );
                       }),
                     ),
                   ),
-                ],
-              );
-            },
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
+  Widget _buildDynamicText() {
+    final currentSlide = _slides[_currentSlide];
+
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 400),
+      child: Column(
+        key: ValueKey(_currentSlide),
+        children: [
+          // Titre dynamique
+          Text(
+            currentSlide['title']!,
+            textAlign: TextAlign.center,
+            style: GoogleFonts.poppins(
+              fontSize: 22,
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+              letterSpacing: 0.5,
+            ),
+          ),
+
+          const SizedBox(height: 12),
+
+          // Sous-titre dynamique
+          Text(
+            currentSlide['subtitle']!,
+            textAlign: TextAlign.center,
+            style: GoogleFonts.poppins(
+              fontSize: 32,
+              fontWeight: FontWeight.w800,
+              color: ColorRes.brightYellow,
+              letterSpacing: 1.2,
+              shadows: [
+                Shadow(
+                  color: ColorRes.brightYellow.withOpacity(0.4),
+                  blurRadius: 15,
+                  offset: const Offset(0, 0),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 20),
+
+          // Description dynamique
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: Text(
+              currentSlide['description']!,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.white.withOpacity(0.9),
+                height: 1.6,
+                letterSpacing: 0.8,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<Widget> _buildSimpleContent(Map<String, dynamic> slideData) {
+    return [
+      // Visual principal
+      _buildMainVisual(slideData, 1.0),
+
+      const SizedBox(height: 20),
+
+      // Titre
+      Text(
+        slideData['title']!,
+        textAlign: TextAlign.center,
+        style: GoogleFonts.poppins(
+          fontSize: 22,
+          fontWeight: FontWeight.w600,
+          color: _currentSlide == 0 ? ColorRes.brightYellow : Colors.white,
+          letterSpacing: 0.5,
+        ),
+      ),
+
+      const SizedBox(height: 12),
+
+      // Sous-titre
+      Text(
+        slideData['subtitle']!,
+        textAlign: TextAlign.center,
+        style: GoogleFonts.poppins(
+          fontSize: 32,
+          fontWeight: FontWeight.w800,
+          color: ColorRes.brightYellow,
+          letterSpacing: 1.2,
+          shadows: [
+            Shadow(
+              color: ColorRes.brightYellow.withOpacity(0.4),
+              blurRadius: 15,
+              offset: const Offset(0, 0),
+            ),
+          ],
+        ),
+      ),
+
+      const SizedBox(height: 20),
+
+      // Description
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 32),
+        child: Text(
+          slideData['description']!,
+          textAlign: TextAlign.center,
+          style: GoogleFonts.poppins(
+            fontSize: _currentSlide == 0 ? 16 : 15,
+            fontWeight: _currentSlide == 0 ? FontWeight.w600 : FontWeight.w500,
+            color: Colors.white.withOpacity(0.9),
+            height: 1.6,
+            letterSpacing: _currentSlide == 0 ? 0.8 : 0.3,
+            fontStyle: _currentSlide == 0 ? FontStyle.italic : FontStyle.normal,
+          ),
+        ),
+      ),
+    ];
+  }
+
+  List<Widget> _buildStaggeredContent(
+      Map<String, dynamic> slideData, double animValue) {
+    return [
+      // Main visual with enhanced animation
+      Transform.translate(
+        offset: Offset(0, 50 * (1 - animValue)),
+        child: _buildMainVisual(slideData, animValue),
+      ),
+
+      SizedBox(height: 20 + (10 * (1 - animValue))),
+
+      // Title with stagger delay
+      Transform.translate(
+        offset: Offset(0, 30 * (1 - animValue.clamp(0.0, 1.0))),
+        child: Opacity(
+          opacity: (animValue - 0.2).clamp(0.0, 1.0),
+          child: Text(
+            slideData['title']!,
+            textAlign: TextAlign.center,
+            style: GoogleFonts.poppins(
+              fontSize: 22,
+              fontWeight: FontWeight.w600,
+              color: _currentSlide == 0 ? ColorRes.brightYellow : Colors.white,
+              letterSpacing: 0.5,
+            ),
+          ),
+        ),
+      ),
+
+      const SizedBox(height: 12),
+
+      // Subtitle with more stagger delay
+      Transform.translate(
+        offset: Offset(0, 30 * (1 - (animValue - 0.3).clamp(0.0, 1.0))),
+        child: Opacity(
+          opacity: (animValue - 0.4).clamp(0.0, 1.0),
+          child: Text(
+            slideData['subtitle']!,
+            textAlign: TextAlign.center,
+            style: GoogleFonts.poppins(
+              fontSize: 32,
+              fontWeight: FontWeight.w800,
+              color: ColorRes.brightYellow,
+              letterSpacing: 1.2,
+              shadows: [
+                Shadow(
+                  color: ColorRes.brightYellow.withOpacity(0.4),
+                  blurRadius: 15,
+                  offset: const Offset(0, 0),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+
+      const SizedBox(height: 20),
+
+      // Description with final stagger delay
+      Transform.translate(
+        offset: Offset(0, 30 * (1 - (animValue - 0.5).clamp(0.0, 1.0))),
+        child: Opacity(
+          opacity: (animValue - 0.6).clamp(0.0, 1.0),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: Text(
+              slideData['description']!,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.poppins(
+                fontSize: _currentSlide == 0 ? 16 : 15,
+                fontWeight:
+                    _currentSlide == 0 ? FontWeight.w600 : FontWeight.w500,
+                color: Colors.white.withOpacity(0.9),
+                height: 1.6,
+                letterSpacing: _currentSlide == 0 ? 0.8 : 0.3,
+                fontStyle:
+                    _currentSlide == 0 ? FontStyle.italic : FontStyle.normal,
+              ),
+            ),
+          ),
+        ),
+      ),
+    ];
+  }
+
+  Widget _buildMainVisual(Map<String, dynamic> slideData, double animValue) {
+    if (slideData['isLogo'] == true) {
+      return ScaleTransition(
+        scale: _logoScaleAnimation,
+        child: Container(
+          width: 380,
+          height: 200,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30),
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                blurRadius: 15,
+                spreadRadius: 2,
+                offset: const Offset(0, 8),
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(18.0),
+            child: Image.asset(
+              'assets/images/logo.png',
+              fit: BoxFit.contain,
+            ),
+          ),
+        ),
+      );
+    }
+
+    if (slideData['isImage'] == true) {
+      return Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(25),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              blurRadius: 15,
+              spreadRadius: 2,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(25),
+          child: Image.asset(
+            slideData['imagePath']!,
+            width: 300,
+            height: 300,
+            fit: BoxFit.cover,
+          ),
+        ),
+      );
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: LinearGradient(
+          colors: [
+            Colors.white.withOpacity(0.1),
+            Colors.grey.withOpacity(0.05),
+          ],
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 15,
+            spreadRadius: 2,
+          ),
+        ],
+      ),
+      child: Text(
+        slideData['icon']!,
+        style: const TextStyle(fontSize: 80, color: Colors.white),
+      ),
+    );
+  }
+
   @override
   void dispose() {
-    _slideController.dispose();
-    _textController.dispose();
+    _autoSlideTimer?.cancel();
+    _masterController.dispose();
     _logoController.dispose();
+    _particleController.dispose();
     super.dispose();
   }
 }
