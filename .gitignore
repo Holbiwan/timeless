@@ -64,6 +64,11 @@ coverage/
 assets/temp/
 assets/debug/
 
+# Claude Code settings
+.claude/
+
 # GitHub Pages deploy folder but keep the files
 clean-deploy/.git/
 clean-deploy/node_modules/
+
+timeless/docs
