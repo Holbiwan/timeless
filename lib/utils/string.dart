@@ -1,18 +1,18 @@
 // ignore_for_file: constant_identifier_names
 
 class Strings {
-  ///-----------------------firstScreen-------------------------------------------
+  // First Screen
   static const logo = "";
   static const Timeless = "Timeless";
   // ignore: non_constant_identifier_names
   static get Timelessbooster => 'TIMELESS booster';
 
-  ///-------------------------sentences--------------------------------------------
+  // Sentences
   static const firstScreenSentences = ' We have roles waiting !';
   static const screenSentences =
       'By creating an account, you are agreeing to our ';
 
-  /// -------------------- Home Page -------------------------- ///
+  // Home Page
 
   static const howToFindAPerfectJob = "How to find  a perfect job for you";
   static const tipsForYou = "Tips for you";
@@ -20,10 +20,10 @@ class Strings {
   static const jobRecommendation = "Job Recommendation";
   static const readMore = "Read more";
 
-  /// -------------------- Notification -------------------------- ///
+  // Notification
   static const notification = "Notification";
 
-  /// -------------------- Job Details -------------------------- ///
+  // Job Details
   static const jobDetails = "Job Details";
   static const requirements = "Requirements";
   static const applyNow = "Apply Now";
@@ -141,7 +141,7 @@ class Strings {
   static const updateVacancy = "Update Vacancy";
   static const addNewRequirements = "Add New Requirements";
   static const jobVacancyPosted = "Job Vacancy Posted!";
-  static const oopsFailedToPost = "Oops, Failed to Post";
+  static const oopsFailedToPost = "Failed to Post";
   static const applications = "Applications";
   static const empty = "Empty";
   static const recentPeopleApplication = "Recent People Application";
