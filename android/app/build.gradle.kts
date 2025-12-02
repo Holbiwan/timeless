@@ -1,8 +1,9 @@
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android")      //  id moderne
+    id("org.jetbrains.kotlin.android")
     id("dev.flutter.flutter-gradle-plugin")
-    id("com.google.gms.google-services")    //  applique le plugin (version définie au root)
+    id("com.google.gms.google-services")    // plugin application
+
 }
 
 android {
@@ -43,18 +44,18 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 
-    //  Firebase BoM: gère les versions de tous les modules Firebase
+    //  Firebase BoM: handle versions of the Firebase modules
     implementation(platform("com.google.firebase:firebase-bom:32.8.1"))
 
-    //  Modules Firebase utilisés par l'app
+    //  Firebase modules used in the app
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-storage")
     implementation("com.google.firebase:firebase-messaging")
 
-    //  Google Sign-In (utilisé par le plugin google_sign_in)
+    //  Google Sign-In (used by plugin google_sign_in)
     implementation("com.google.android.gms:play-services-auth:20.7.0")
 
-    // (Optionnel) Custom Tabs pour OAuth GitHub/Google via navigateur
+    // Custom Tabs for OAuth Google via navigator
     implementation("androidx.browser:browser:1.8.0")
 }
