@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:timeless/screen/employer/post_job_screen.dart';
 import 'package:timeless/screen/employer/my_jobs_screen.dart';
 import 'package:timeless/screen/manager_section/auth_manager/Sign_in/sign_in_screen.dart';
-import 'package:timeless/service/pref_services.dart';
+import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/utils/color_res.dart';
 
@@ -40,7 +40,7 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
   }
 
   void _loadCompanyData() async {
-    final userId = PrefService.getString(PrefKeys.userId);
+    final userId = PreferencesService.getString(PrefKeys.userId);
     if (userId.isNotEmpty) {
       try {
         final companyDocs = await FirebaseFirestore.instance
@@ -69,7 +69,7 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
   void _saveProfile() async {
     if (!_formKey.currentState!.validate()) return;
 
-    final userId = PrefService.getString(PrefKeys.userId);
+    final userId = PreferencesService.getString(PrefKeys.userId);
     if (userId.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('❌ Erreur: Utilisateur non connecté')),
@@ -109,7 +109,7 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
       }
 
       // Mettre à jour les préférences locales
-      await PrefService.setValue(PrefKeys.companyName, _companyCtrl.text.trim());
+      await PreferencesService.setValue(PrefKeys.companyName, _companyCtrl.text.trim());
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -122,7 +122,7 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('❌ Erreur: $e'),
-          backgroundColor: Colors.red,
+          backgroundColor: ColorRes.royalBlue,
         ),
       );
     }
@@ -133,11 +133,11 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
     await FirebaseAuth.instance.signOut();
     
     // Effacer toutes les préférences de session
-    await PrefService.setValue(PrefKeys.rol, "");
-    await PrefService.setValue(PrefKeys.totalPost, 0);
-    await PrefService.setValue(PrefKeys.company, false);
-    await PrefService.setValue(PrefKeys.userId, "");
-    await PrefService.setValue(PrefKeys.companyName, "");
+    await PreferencesService.setValue(PrefKeys.rol, "");
+    await PreferencesService.setValue(PrefKeys.totalPost, 0);
+    await PreferencesService.setValue(PrefKeys.company, false);
+    await PreferencesService.setValue(PrefKeys.userId, "");
+    await PreferencesService.setValue(PrefKeys.companyName, "");
     
     // Rediriger vers l'écran de connexion employeur
     Get.offAll(() => const SignInScreenM());
@@ -146,7 +146,17 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
   InputDecoration _dec(String label, {String? hint}) => InputDecoration(
         labelText: label,
         hintText: hint,
-        border: const OutlineInputBorder(),
+        labelStyle: const TextStyle(color: Colors.white),
+        hintStyle: const TextStyle(color: Colors.grey),
+        border: const OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.white),
+        ),
+        enabledBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.white),
+        ),
+        focusedBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.white, width: 2),
+        ),
         isDense: true,
         contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
       );
@@ -154,12 +164,15 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
-        title: const Text('Employer profile'),
+        backgroundColor: Colors.black,
+        title: const Text('Espace Professionnel', style: TextStyle(color: Colors.white)),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios),
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: Get.back,
         ),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -170,6 +183,7 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
               children: [
                 TextFormField(
                   controller: _companyCtrl,
+                  style: const TextStyle(color: Colors.white),
                   decoration: _dec('Company name', hint: 'Ex: Timeless SAS'),
                   validator: (v) =>
                       (v == null || v.trim().isEmpty) ? 'Required' : null,
@@ -177,17 +191,20 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: _websiteCtrl,
+                  style: const TextStyle(color: Colors.white),
                   decoration: _dec('Website', hint: 'https://example.com'),
                   keyboardType: TextInputType.url,
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: _locationCtrl,
+                  style: const TextStyle(color: Colors.white),
                   decoration: _dec('Location', hint: 'City, Country'),
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: _aboutCtrl,
+                  style: const TextStyle(color: Colors.white),
                   minLines: 4,
                   maxLines: 6,
                   decoration: _dec('About the company'),
@@ -199,7 +216,8 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
                   child: ElevatedButton(
                     onPressed: _saveProfile,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: ColorRes.containerColor,
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.black,
                     ),
                     child: const Text('Save profile'),
                   ),
@@ -210,6 +228,10 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
                   height: 48,
                   child: OutlinedButton.icon(
                     onPressed: () => Get.to(() => const PostJobScreen()),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      side: const BorderSide(color: Colors.white),
+                    ),
                     icon: const Icon(Icons.add_box_outlined),
                     label: const Text('Post a job'),
                   ),
@@ -220,11 +242,12 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
                   height: 48,
                   child: OutlinedButton.icon(
                     onPressed: () => Get.to(() => const MyJobsScreen()),
-                    icon: const Icon(Icons.work, color: Colors.blue),
-                    label: const Text('My Jobs Ads', style: TextStyle(color: Colors.blue)),
                     style: OutlinedButton.styleFrom(
-                      side: const BorderSide(color: Colors.blue),
+                      foregroundColor: Colors.white,
+                      side: const BorderSide(color: Colors.white),
                     ),
+                    icon: const Icon(Icons.work),
+                    label: const Text('My Jobs Ads'),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -233,11 +256,12 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
                   height: 48,
                   child: OutlinedButton.icon(
                     onPressed: _logout,
-                    icon: const Icon(Icons.logout, color: Colors.red),
-                    label: const Text('Retour à la connexion', style: TextStyle(color: Colors.red)),
                     style: OutlinedButton.styleFrom(
-                      side: const BorderSide(color: Colors.red),
+                      foregroundColor: ColorRes.royalBlue,
+                      side: const BorderSide(color: ColorRes.royalBlue),
                     ),
+                    icon: const Icon(Icons.logout),
+                    label: const Text('Retour à la connexion'),
                   ),
                 ),
               ],

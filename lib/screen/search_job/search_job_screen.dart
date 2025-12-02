@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:timeless/common/widgets/back_button.dart';
 import 'package:timeless/screen/search_job/search_job_controller.dart';
-import 'package:timeless/service/pref_services.dart';
+import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/color_res.dart';
@@ -77,7 +77,7 @@ class SearchJobScreen extends StatelessWidget {
                             controller.skills = value;
                           },
                           searchItems:
-                              PrefService.getList(PrefKeys.allDesignation),
+                              PreferencesService.getList(PrefKeys.allDesignation),
                         ),
                       ),
                       (controller.skillError != "")
@@ -106,7 +106,7 @@ class SearchJobScreen extends StatelessWidget {
                             controller.location = value;
                           },
                           searchItems:
-                              PrefService.getList(PrefKeys.allCountryData),
+                              PreferencesService.getList(PrefKeys.allCountryData),
                         ),
                       ),
                       (controller.locationError != "")

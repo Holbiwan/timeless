@@ -10,7 +10,7 @@ import 'package:timeless/screen/dashboard/dashboard_controller.dart';
 import 'package:timeless/screen/dashboard/dashboard_screen.dart';
 import 'package:timeless/screen/manager_section/dashboard/manager_dashboard_screen.dart';
 import 'package:timeless/screen/organization_profile_screen/organization_profile_screen.dart';
-import 'package:timeless/service/pref_services.dart';
+import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/color_res.dart';
@@ -34,7 +34,7 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
   @override
   void initState() {
     super.initState();
-    _autoPlay = Timer.periodic(const Duration(seconds: 3), (_) {
+    _autoPlay = Timer.periodic(const Duration(seconds: 2), (_) {
       final int current = _pageController.page?.round() ?? 0;
       final int next = (current + 1) % 3;
       if (!mounted) return;
@@ -60,7 +60,7 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
   }
 
   void _goToWelcome() {
-    // 🛠️ Calls the sign-in screen. If constructor is not const, remove "const".
+    // ️ Calls the sign-in screen. If constructor is not const, remove "const".
     debugPrint('[INTRO] Welcome tapped');
     try {
       Get.to(() => const SigninScreenU());
@@ -93,7 +93,7 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
                     child: Text(
                       "Welcome",
                       style: appTextStyle(
-                        color: ColorRes.darkGold,
+                        color: ColorRes.royalBlue,
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
                       ),
@@ -104,19 +104,23 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
                     InkWell(
                       onTap: _goToApp,
                       borderRadius: BorderRadius.circular(20),
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      focusColor: Colors.transparent,
+                      hoverColor: Colors.transparent,
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
-                              ColorRes.brightYellow,
-                              ColorRes.orange,
+                              ColorRes.royalBlue,
+                              ColorRes.royalBlue,
                             ],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                           ),
                           borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: ColorRes.darkGold),
+                          border: Border.all(color: ColorRes.royalBlue),
                         ),
                         child: Text(
                           "Skip",
@@ -146,14 +150,14 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
                     title: "Find Your Job",
                     subtitle: "Bridging the gap with Timeless talent",
                     subtitleColor: ColorRes.textSecondary,
-                    highlightWord: "Timeless",
+                    highlightWord: "Job",
                   ),
                   _IntroPage(
                     asset: AssetRes.page2,
-                    title: "Job Applications",
+                    title: "Job Search App",
                     subtitle: "Bridging the gap with timeless talent",
                     subtitleColor: ColorRes.textSecondary,
-                    highlightWords: ["Dream", "Applications"],
+                    highlightWords: ["Job", "Applications"],
                   ),
                   _IntroPage(
                     asset: AssetRes.page3,
@@ -169,14 +173,21 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
             const SizedBox(height: 8),
 
             // Indicateurs
-            SmoothPageIndicator(
-              controller: _pageController,
-              count: 3,
-              effect: SlideEffect(
-                activeDotColor: ColorRes.orange,
-                dotColor: ColorRes.brightYellow.withOpacity(0.3),
-                dotWidth: 8,
-                dotHeight: 8,
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.3),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: SmoothPageIndicator(
+                controller: _pageController,
+                count: 3,
+                effect: SlideEffect(
+                  activeDotColor: Colors.white,
+                  dotColor: Colors.white.withOpacity(0.5),
+                  dotWidth: 10,
+                  dotHeight: 10,
+                ),
               ),
             ),
 
@@ -186,6 +197,10 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
             if (_intro.selectedIndex.value == 2)
               InkWell(
                 onTap: _goToApp,
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                focusColor: Colors.transparent,
+                hoverColor: Colors.transparent,
                 child: Container(
                   height: 45,
                   width: 294,
@@ -195,8 +210,8 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
                     borderRadius: BorderRadius.circular(10),
                     gradient: const LinearGradient(
                       colors: [
-                        ColorRes.brightYellow,
-                        ColorRes.orange,
+                        ColorRes.royalBlue,
+                        ColorRes.royalBlue,
                       ],
                     ),
                   ),
@@ -270,7 +285,7 @@ class _IntroPage extends StatelessWidget {
                               alignment: Alignment.center,
                               scale: 1.2,
                               colorFilter: ColorFilter.mode(
-                                ColorRes.brightYellow.withOpacity(0.9),
+                                ColorRes.royalBlue.withOpacity(0.9),
                                 BlendMode.overlay,
                               ),
                             ),
@@ -325,7 +340,7 @@ class _IntroPage extends StatelessWidget {
   }
 
   Widget _buildTitleWithHighlight() {
-    const highlightColor = ColorRes.orange; // Orange pour les mots clés
+    const highlightColor = ColorRes.royalBlue; // Bleu royal pour les mots clés
     const defaultColor = ColorRes.textPrimary; // Noir primaire
     
     List<String> wordsToHighlight = [];

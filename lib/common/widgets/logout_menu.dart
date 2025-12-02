@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/app_res.dart';
-import 'package:timeless/service/pref_services.dart';
+import 'package:timeless/services/preferences_service.dart';
 
 class LogoutMenu extends StatelessWidget {
   const LogoutMenu({super.key});
@@ -78,7 +78,7 @@ class LogoutMenu extends StatelessWidget {
         );
 
         // Clear local data
-        await PrefService.clear();
+        await PreferencesService.clear();
         
         // Sign out from Firebase
         await FirebaseAuth.instance.signOut();
@@ -119,14 +119,19 @@ class LogoutMenu extends StatelessWidget {
   static Widget buildMenuButton() {
     return PopupMenuButton<String>(
       icon: Container(
-        padding: const EdgeInsets.all(8),
+        height: 36,
+        width: 36,
         decoration: BoxDecoration(
-          color: ColorRes.logoColor,
+          color: ColorRes.white,
           borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: const Color(0xFF000647),
+            width: 2,
+          ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 4,
+              color: const Color(0xFF000647).withOpacity(0.2),
+              blurRadius: 6,
               offset: const Offset(0, 2),
             ),
           ],

@@ -3,6 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'firebase_options.dart';
 
@@ -11,12 +12,16 @@ import 'package:timeless/screen/splashScreen/splash_screen.dart';
 import 'package:timeless/screen/first_page/first_screen.dart';
 import 'package:timeless/screen/job_detail_screen/job_detail_screen.dart';
 import 'package:timeless/screen/job_recommendation_screen/job_recommendation_screen.dart';
+import 'package:timeless/screen/jobs/job_application_screen.dart';
 
 // Sercices for global functionalities
-import 'package:timeless/service/translation_service.dart';
-import 'package:timeless/service/accessibility_service.dart';
-import 'package:timeless/service/auto_translation_service.dart';
-import 'package:timeless/service/pref_services.dart';
+import 'package:timeless/services/translation_service.dart';
+import 'package:timeless/services/easy_translation_service.dart';
+import 'package:timeless/services/comprehensive_translation_service.dart';
+import 'package:timeless/services/theme_service.dart';
+import 'package:timeless/services/accessibility_service.dart';
+// Import supprimé : auto_translation_service.dart n'existe plus
+import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/screen/manager_section/Notification/notification_services.dart';
 
 // Screens for the recruiters
@@ -32,6 +37,9 @@ import 'package:timeless/utils/pref_keys.dart';
 Future<void> main() async {
   // Needed for async operations before runApp
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize Easy Localization
+  await EasyLocalization.ensureInitialized();
 
   // Initialize Firebase
   await Firebase.initializeApp(
@@ -39,7 +47,7 @@ Future<void> main() async {
   );
 
   // Configure shared preferences and notification services
-  await PrefService.init();
+  await PreferencesService.init();
   await NotificationService.init();
 
   // Force the app to remain in portrait mode only
@@ -52,7 +60,7 @@ Future<void> main() async {
   try {
     final fcmToken = await FirebaseMessaging.instance.getToken();
     if (fcmToken != null) {
-      await PrefService.setValue(PrefKeys.deviceToken, fcmToken);
+      await PreferencesService.setValue(PrefKeys.deviceToken, fcmToken);
     }
   } catch (e) {
     print('Erreur notifications: $e');
@@ -67,15 +75,29 @@ Future<void> main() async {
   ));
 
   // Initialize global services using GetX
-  Get.put(TranslationService()); // Support français/anglais
+  Get.put(TranslationService()); // Support français/anglais (Legacy)
+  Get.put(EasyTranslationService()); // Nouveau service Easy Localization
+  Get.put(ComprehensiveTranslationService()); // Service complet avec Google Translate
+  Get.put(ThemeService()); // Service de thèmes amélioré
   Get.put(AccessibilityService()); // Accessibilité pour tous
-  Get.put(AutoTranslationService()); // Traduction automatique des offres
+  // AutoTranslationService supprimé - fonctionnalité trop avancée
 
-  // Launch the application
-  runApp(const MyApp());
+  // Launch the application with Easy Localization
+  runApp(
+    EasyLocalization(
+      supportedLocales: const [
+        Locale('en'),
+        Locale('fr'),
+        Locale('es'),
+      ],
+      path: 'assets/translations',
+      fallbackLocale: const Locale('en'),
+      child: const MyApp(),
+    ),
+  );
 }
 
-/// Widget principal of the application
+// Widget principal of the application
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -84,13 +106,26 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Timeless',
       debugShowCheckedModeBanner: false, // Remove debug banner
-      // Theme with Timeless red colors
+      
+      // Easy Localization setup
+      localizationsDelegates: context.localizationDelegates,
+      supportedLocales: context.supportedLocales,
+      locale: context.locale,
+      // Theme with Timeless blue colors - no green focus outlines
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 110, 8, 3),),
+        colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFF3B82F6)), // Royal blue instead of red
+        progressIndicatorTheme: const ProgressIndicatorThemeData(
+          color: Color(0xFF000647), // Bleu foncé pour les indicateurs de chargement
+        ),
         appBarTheme: const AppBarTheme(
           backgroundColor: Colors.transparent,
           elevation: 0,
         ),
+        // Disable focus outlines completely
+        focusColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        splashColor: Colors.transparent,
       ),
 
       // First screen to show when the app starts
@@ -110,6 +145,10 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: AppRes.firstScreen,
           page: () => FirstScreen(),
+        ),
+        GetPage(
+          name: AppRes.jobApplicationScreen,
+          page: () => JobApplicationScreen(job: Get.arguments['job'], docId: Get.arguments['docId']),
         ),
 
         // Login screen for recruiters

@@ -39,14 +39,14 @@ class SignUpScreenM extends StatelessWidget {
                     const SizedBox(height: 50),
                     backButton(),
 
-                    /// Logo
+                    // Logo
                     Center(
                       child: Container(
                         alignment: Alignment.center,
                         height: 80,
                         width: 80,
                         decoration: BoxDecoration(
-                          color: ColorRes.logoColor,
+                          color: ColorRes.royalBlue,
                           borderRadius: BorderRadius.circular(15),
                         ),
                         child: const Image(
@@ -56,7 +56,7 @@ class SignUpScreenM extends StatelessWidget {
                     ),
                     const SizedBox(height: 18),
 
-                    /// Title
+                    // Title
                     Center(
                       child: Text(
                         Strings.signUpForFree,
@@ -70,7 +70,7 @@ class SignUpScreenM extends StatelessWidget {
 
                     const SizedBox(height: 32),
 
-                    /// First name
+                    // First name
                     _label(Strings.firstName),
                     GetBuilder<SignUpControllerM>(
                       id: "showFirstname",
@@ -97,7 +97,7 @@ class SignUpScreenM extends StatelessWidget {
                       ),
                     ),
 
-                    /// Last name
+                    // Last name
                     const SizedBox(height: 10),
                     _label(Strings.lastName),
                     GetBuilder<SignUpControllerM>(
@@ -125,7 +125,7 @@ class SignUpScreenM extends StatelessWidget {
                       ),
                     ),
 
-                    /// Email
+                    // Email
                     const SizedBox(height: 10),
                     _label(Strings.email),
                     GetBuilder<SignUpControllerM>(
@@ -153,7 +153,7 @@ class SignUpScreenM extends StatelessWidget {
                       ),
                     ),
 
-                    /// Phone
+                    // Phone
                     const SizedBox(height: 10),
                     _label(Strings.phoneNumber),
                     GetBuilder<SignUpControllerM>(
@@ -172,14 +172,13 @@ class SignUpScreenM extends StatelessWidget {
                                         .isEmpty
                                     ? ColorRes.borderColor
                                     : controller.phoneError.isEmpty
-                                        ? ColorRes.containerColor
-                                        : ColorRes.starColor,
+                                        ? ColorRes.royalBlue
+                                        : ColorRes.royalBlue,
                               ),
                               boxShadow: [
                                 BoxShadow(
                                   offset: const Offset(6, 6),
-                                  color:
-                                      ColorRes.containerColor.withOpacity(0.10),
+                                  color: ColorRes.royalBlue.withOpacity(0.10),
                                   spreadRadius: 0,
                                   blurRadius: 35,
                                 ),
@@ -191,10 +190,10 @@ class SignUpScreenM extends StatelessWidget {
                                 countryCodePicker(context, padding: 3),
                                 const SizedBox(width: 8),
 
-                                /// ⬇️ Expanded pour empêcher l’overflow
+                                // ⬇️ Expanded pour empêcher l’overflow
                                 Expanded(
                                   child: Material(
-                                    shadowColor: ColorRes.containerColor,
+                                    shadowColor: ColorRes.royalBlue,
                                     borderRadius: BorderRadius.circular(12),
                                     child: TextFormField(
                                       onChanged: controller.onChanged,
@@ -225,7 +224,7 @@ class SignUpScreenM extends StatelessWidget {
                       ),
                     ),
 
-                    /// Password
+                    // Password
                     const SizedBox(height: 10),
                     _label(Strings.password),
                     GetBuilder<SignUpControllerM>(
@@ -265,7 +264,7 @@ class SignUpScreenM extends StatelessWidget {
                       ),
                     ),
 
-                    /// City
+                    // City
                     const SizedBox(height: 10),
                     _label(Strings.city),
                     GetBuilder<SignUpControllerM>(
@@ -293,7 +292,7 @@ class SignUpScreenM extends StatelessWidget {
                       ),
                     ),
 
-                    /// State
+                    // State
                     const SizedBox(height: 10),
                     _label(Strings.state),
                     GetBuilder<SignUpControllerM>(
@@ -321,7 +320,7 @@ class SignUpScreenM extends StatelessWidget {
                       ),
                     ),
 
-                    /// Country
+                    // Country
                     const SizedBox(height: 10),
                     _label(Strings.country),
                     GetBuilder<SignUpControllerM>(
@@ -372,7 +371,7 @@ class SignUpScreenM extends StatelessWidget {
                       ),
                     ),
 
-                    /// Remember me
+                    // Remember me
                     GetBuilder<SignUpControllerM>(
                       id: "remember_me",
                       builder: (_) => InkWell(
@@ -383,10 +382,10 @@ class SignUpScreenM extends StatelessWidget {
                         child: Row(
                           children: [
                             Checkbox(
-                              activeColor: ColorRes.containerColor,
+                              activeColor: ColorRes.royalBlue,
                               checkColor: ColorRes.white,
                               side: const BorderSide(
-                                  width: 1, color: ColorRes.containerColor),
+                                  width: 1, color: ColorRes.royalBlue),
                               value: controller.rememberMe,
                               onChanged: controller.onRememberMeChange,
                               shape: RoundedRectangleBorder(
@@ -407,7 +406,7 @@ class SignUpScreenM extends StatelessWidget {
 
                     const SizedBox(height: 22),
 
-                    /// Sign up button
+                    // Sign up button
                     GetBuilder<SignUpControllerM>(
                       id: "dark",
                       builder: (_) => InkWell(
@@ -421,7 +420,7 @@ class SignUpScreenM extends StatelessWidget {
                             gradient: const LinearGradient(
                               colors: [
                                 ColorRes.gradientColor,
-                                ColorRes.containerColor
+                                ColorRes.royalBlue
                               ],
                             ),
                           ),
@@ -439,7 +438,7 @@ class SignUpScreenM extends StatelessWidget {
 
                     const SizedBox(height: 26),
 
-                    /// Or continue with
+                    // Or continue with
                     Center(
                       child: Text(
                         Strings.orContinueWith,
@@ -453,7 +452,7 @@ class SignUpScreenM extends StatelessWidget {
 
                     const SizedBox(height: 20),
 
-                    /// SOCIAL ROW (Facebook removed) — only Google
+                    // SOCIAL ROW (Facebook removed) — only Google
                     Align(
                       alignment: Alignment.center,
                       child: ConstrainedBox(
@@ -469,8 +468,7 @@ class SignUpScreenM extends StatelessWidget {
                               boxShadow: [
                                 BoxShadow(
                                   offset: const Offset(6, 6),
-                                  color:
-                                      ColorRes.containerColor.withOpacity(0.08),
+                                  color: ColorRes.royalBlue.withOpacity(0.08),
                                   spreadRadius: 0,
                                   blurRadius: 35,
                                 ),
@@ -507,7 +505,7 @@ class SignUpScreenM extends StatelessWidget {
 
                     const SizedBox(height: 18),
 
-                    /// Already have account
+                    // Already have account
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -533,7 +531,7 @@ class SignUpScreenM extends StatelessWidget {
                               style: appTextStyle(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 16,
-                                color: ColorRes.containerColor,
+                                color: ColorRes.royalBlue,
                               ),
                             ),
                           ),
@@ -545,7 +543,7 @@ class SignUpScreenM extends StatelessWidget {
               ),
             ),
 
-            /// Loader
+            // Loader
             controller.loading.isTrue
                 ? const Center(child: CommonLoader())
                 : const SizedBox.shrink(),
@@ -556,7 +554,7 @@ class SignUpScreenM extends StatelessWidget {
   }
 }
 
-/// ---------- UI helpers ----------
+// ---------- UI helpers ----------
 
 Widget _label(String text) {
   return Padding(
@@ -571,7 +569,7 @@ Widget _label(String text) {
             color: ColorRes.black.withOpacity(0.6),
           ),
         ),
-        Text('*', style: appTextStyle(fontSize: 15, color: ColorRes.starColor)),
+        Text('*', style: appTextStyle(fontSize: 15, color: ColorRes.royalBlue)),
       ],
     ),
   );
@@ -584,7 +582,7 @@ Widget _shadowField({required Widget child}) {
       boxShadow: [
         BoxShadow(
           offset: const Offset(6, 6),
-          color: ColorRes.containerColor.withOpacity(0.10),
+          color: ColorRes.royalBlue.withOpacity(0.10),
           spreadRadius: 0,
           blurRadius: 35,
         ),
@@ -592,7 +590,7 @@ Widget _shadowField({required Widget child}) {
       borderRadius: BorderRadius.circular(12),
     ),
     child: Material(
-      shadowColor: ColorRes.containerColor,
+      shadowColor: ColorRes.royalBlue,
       borderRadius: BorderRadius.circular(12),
       child: child,
     ),
@@ -649,7 +647,7 @@ Widget _errorChip(BuildContext context, String message) {
             style: appTextStyle(
               fontWeight: FontWeight.w400,
               fontSize: 9,
-              color: ColorRes.starColor,
+              color: ColorRes.royalBlue,
             ),
           ),
         ),
@@ -660,14 +658,14 @@ Widget _errorChip(BuildContext context, String message) {
 
 OutlineInputBorder enableBorder() {
   return OutlineInputBorder(
-    borderSide: const BorderSide(color: ColorRes.containerColor),
+    borderSide: const BorderSide(color: ColorRes.royalBlue),
     borderRadius: BorderRadius.circular(10),
   );
 }
 
 OutlineInputBorder errorBorder() {
   return OutlineInputBorder(
-    borderSide: const BorderSide(color: ColorRes.starColor),
+    borderSide: const BorderSide(color: ColorRes.royalBlue),
     borderRadius: BorderRadius.circular(10),
   );
 }

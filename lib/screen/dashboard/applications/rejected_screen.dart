@@ -36,9 +36,6 @@ class RejectedScreen extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(18.0),
                   child: InkWell(
-                    onTap: () {
-                      Get.back();
-                    },
                     child: backButton(),
                   ),
                 ),

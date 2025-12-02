@@ -3,15 +3,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:timeless/screen/call/video_receive_screen.dart';
-import 'package:timeless/screen/chat_box/chat_box_screen.dart';
+// Import supprimé : video_receive_screen.dart n'existe plus
+// Import supprimé : chat_box_screen.dart n'existe plus
 import 'package:timeless/screen/manager_section/Notification/notification_services.dart';
 import 'package:timeless/screen/manager_section/applicants_detail_screen/applicants_detail_screen_widget/applicants_details_screen_widget.dart';
 import 'package:timeless/screen/manager_section/applicants_detail_screen/applicants_details_controller.dart';
 import 'package:timeless/screen/manager_section/dashboard/manager_dashboard_screen.dart';
 import 'package:timeless/screen/manager_section/dashboard/manager_dashboard_screen_controller.dart';
 import 'package:timeless/screen/manager_section/manager_home_screen/manager_home_screen_widget/manager_home_screen_widget.dart';
-import 'package:timeless/service/pref_services.dart';
+import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/app_res.dart';
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/asset_res.dart';
@@ -155,12 +155,8 @@ class ApplicantsDetailScreen extends StatelessWidget {
                                 children: [
                                   InkWell(
                                     onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (con) => ChatBoxScreen(),
-                                        ),
-                                      );
+                                      // Fonctionnalité Chat supprimée
+                                      Get.snackbar("Info", "Chat temporairement indisponible");
                                     },
                                     child: Container(
                                       height: 40,
@@ -184,13 +180,8 @@ class ApplicantsDetailScreen extends StatelessWidget {
                                   ),
                                   InkWell(
                                     onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (con) =>
-                                              const VideoReceiveScreen(),
-                                        ),
-                                      );
+                                      // VideoReceiveScreen supprimé - fonctionnalité trop avancée
+                                      Get.snackbar("Info", "Appels vidéo temporairement indisponibles");
                                     },
                                     child: Container(
                                       height: 40,
@@ -508,7 +499,7 @@ void settingModalBottomSheet(
                         SendNotificationModel notification =
                             SendNotificationModel(
                                 title:
-                                    PrefService.getString(PrefKeys.companyName),
+                                    PreferencesService.getString(PrefKeys.companyName),
                                 body: anscontro.selectedValue,
                                 fcmTokens: [
                               args['deviceToken'],
@@ -529,14 +520,14 @@ void settingModalBottomSheet(
                             .doc(FirebaseAuth.instance.currentUser!.uid)
                             .set({
                           'companyName':
-                              PrefService.getString(PrefKeys.companyName),
+                              PreferencesService.getString(PrefKeys.companyName),
                         });
                         String? position;
                         final companyNameData = args['companyName'];
                         if (companyNameData is List) {
                           for (var e in companyNameData) {
                             if (e['companyname'] ==
-                                PrefService.getString(PrefKeys.companyName)) {
+                                PreferencesService.getString(PrefKeys.companyName)) {
                               position = e['position'].toString();
 
                               if (kDebugMode) {

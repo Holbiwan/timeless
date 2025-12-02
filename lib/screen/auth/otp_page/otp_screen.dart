@@ -21,17 +21,11 @@ class OtpScreen extends StatelessWidget {
       backgroundColor: ColorRes.backgroundColor,
       body: Column(children: [
         const SizedBox(height: 50),
-        backButton(),
         Row(
           children: [
             Padding(
               padding: const EdgeInsets.all(12),
-              child: InkWell(
-                onTap: () {
-                  Get.back();
-                },
-                child: backButton(),
-              ),
+              child: backButton(),
             ),
             const SizedBox(width: 46),
             Text(

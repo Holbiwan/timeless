@@ -13,14 +13,15 @@ import 'package:timeless/screen/auth/forgot_password_new/forgot_password_new_scr
 import 'package:timeless/screen/auth/sign_in_screen/sign_in_controller.dart';
 import 'package:timeless/screen/auth/sign_up/sign_up_screen.dart';
 
-import 'package:timeless/service/pref_services.dart';
+import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/utils/string.dart';
-import 'package:timeless/service/google_auth_service.dart';
+import 'package:timeless/services/google_auth_service.dart';
 import 'package:timeless/screen/dashboard/dashboard_screen.dart';
 import 'package:timeless/screen/auth/profile_completion/profile_completion_screen.dart';
+import 'package:timeless/utils/app_theme.dart';
 
 class SigninScreenU extends StatefulWidget {
   const SigninScreenU({super.key});
@@ -43,20 +44,18 @@ class _SigninScreenUState extends State<SigninScreenU> {
     try {
       controller.loading.value = true;
       
-      Get.snackbar(
-        "Changement de compte",
-        "Sélectionnez votre compte Google",
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.blue[100],
-        colorText: Colors.blue[800],
-        duration: const Duration(seconds: 2),
+      AppTheme.showStandardSnackBar(
+        title: "Changement de compte",
+        message: "Sélectionnez votre compte Google",
       );
       
       final user = await GoogleAuthService.switchGoogleAccount();
 
       if (user == null) {
-        Get.snackbar("Google Sign-In", "Changement de compte annulé",
-            snackPosition: SnackPosition.BOTTOM);
+        AppTheme.showStandardSnackBar(
+          title: "Google Sign-In",
+          message: "Changement de compte annulé",
+        );
         return;
       }
 
@@ -75,8 +74,10 @@ class _SigninScreenUState extends State<SigninScreenU> {
       final user = await GoogleAuthService.signInWithGoogle();
 
       if (user == null) {
-        Get.snackbar("Google Sign-In", "Connexion annulée",
-            snackPosition: SnackPosition.BOTTOM);
+        AppTheme.showStandardSnackBar(
+          title: "Google Sign-In",
+          message: "Connexion annulée",
+        );
         return;
       }
 
@@ -91,10 +92,10 @@ class _SigninScreenUState extends State<SigninScreenU> {
 
   Future<void> _handleSuccessfulSignIn(User user) async {
     // Sauvegarde dans Prefs
-    PrefService.setValue(PrefKeys.userId, user.uid);
-    PrefService.setValue(PrefKeys.email, user.email ?? "");
-    PrefService.setValue(PrefKeys.fullName, user.displayName ?? "");
-    PrefService.setValue(PrefKeys.rol, "User");
+    PreferencesService.setValue(PrefKeys.userId, user.uid);
+    PreferencesService.setValue(PrefKeys.email, user.email ?? "");
+    PreferencesService.setValue(PrefKeys.fullName, user.displayName ?? "");
+    PreferencesService.setValue(PrefKeys.rol, "User");
 
     // Sauvegarder les données utilisateur dans Firestore
     await GoogleAuthService.saveUserToFirestore(user);
@@ -107,23 +108,19 @@ class _SigninScreenUState extends State<SigninScreenU> {
     
     if (isNewUser) {
       // Nouvel utilisateur (créé il y a moins de 5 minutes)
-      Get.snackbar(
-        "Bienvenue !",
-        "Compte créé avec succès. Complétez votre profil.",
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.green[100],
-        colorText: Colors.green[800],
+      AppTheme.showStandardSnackBar(
+        title: "Bienvenue !",
+        message: "Compte créé avec succès. Complétez votre profil.",
+        isSuccess: true,
       );
       // Aller vers l'écran de complétion de profil
       Get.offAll(() => const ProfileCompletionScreen());
     } else {
       // Utilisateur existant
-      Get.snackbar(
-        "Bon retour !",
-        "Connexion réussie.",
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.blue[100],
-        colorText: Colors.blue[800],
+      AppTheme.showStandardSnackBar(
+        title: "Bon retour !",
+        message: "Connexion réussie.",
+        isSuccess: true,
       );
       Get.offAll(() => DashBoardScreen());
     }
@@ -133,21 +130,26 @@ class _SigninScreenUState extends State<SigninScreenU> {
     if (e is PlatformException) {
       final msg = e.message ?? '';
       if (e.code == 'sign_in_failed' && msg.contains('ApiException: 10')) {
-        Get.snackbar(
-          "Google Sign-In",
-          "Configuration OAuth Android invalide (code 10).\n"
+        AppTheme.showStandardSnackBar(
+          title: "Google Sign-In",
+          message: "Configuration OAuth Android invalide (code 10).\n"
           "➜ Ajoute le SHA-1/256 de ton build dans Firebase, "
           "télécharge le nouveau google-services.json, désinstalle l'app puis relance.",
-          snackPosition: SnackPosition.BOTTOM,
-          duration: const Duration(seconds: 6),
+          isError: true,
         );
       } else {
-        Get.snackbar("Google Sign-In", msg.isEmpty ? e.toString() : msg,
-            snackPosition: SnackPosition.BOTTOM);
+        AppTheme.showStandardSnackBar(
+          title: "Google Sign-In",
+          message: msg.isEmpty ? e.toString() : msg,
+          isError: true,
+        );
       }
     } else {
-      Get.snackbar("Google Sign-In", e.toString(),
-          snackPosition: SnackPosition.BOTTOM);
+      AppTheme.showStandardSnackBar(
+        title: "Google Sign-In",
+        message: e.toString(),
+        isError: true,
+      );
     }
   }
 
@@ -175,14 +177,13 @@ class _SigninScreenUState extends State<SigninScreenU> {
                       // Logo agrandi
                       Center(
                         child: Container(
-                          height: 120,
-                          width: 120,
+                          height: 180,
+                          width: 180,
                           alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            color: ColorRes.logoColor,
-                            borderRadius: BorderRadius.circular(20),
+                          child: Image.asset(
+                            'assets/images/logo.png',
+                            fit: BoxFit.contain,
                           ),
-                          child: const Image(image: AssetImage(AssetRes.logo)),
                         ),
                       ),
                       const SizedBox(height: 10),
@@ -190,7 +191,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                         child: Text(
                           Strings.signInToYourAccount,
                           style: GoogleFonts.poppins(
-                            fontSize: 20,
+                            fontSize: 16,
                             fontWeight: FontWeight.w600,
                             color: ColorRes.black,
                           ),
@@ -209,7 +210,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                               Strings.email,
                               style: GoogleFonts.poppins(
                                 fontWeight: FontWeight.w500,
-                                fontSize: 14,
+                                fontSize: 12,
                                 color: ColorRes.textPrimary,
                               ),
                             ),
@@ -235,7 +236,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                                   ),
                                 ],
                                 color: Colors.white,
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(10),
                               ),
                               child: commonTextFormField(
                                 onChanged: controller.onChanged,
@@ -251,25 +252,30 @@ class _SigninScreenUState extends State<SigninScreenU> {
                                     fontWeight: FontWeight.w500,
                                     color: ColorRes.black.withOpacity(0.15),
                                   ),
-                                  border: _inputBorderFor(
-                                      controller.emailController.text,
-                                      controller.emailError),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: ColorRes.brightYellow, width: 2),
-                                    borderRadius: BorderRadius.circular(12),
+                                  border: OutlineInputBorder(
+                                    borderSide: BorderSide(color: const Color(0xFF000647), width: 2),
+                                    borderRadius: BorderRadius.circular(10),
                                   ),
-                                  enabledBorder: _inputBorderFor(
-                                      controller.emailController.text,
-                                      controller.emailError),
-                                  disabledBorder: _inputBorderFor(
-                                      controller.emailController.text,
-                                      controller.emailError),
-                                  errorBorder: _inputBorderFor(
-                                      controller.emailController.text,
-                                      controller.emailError),
-                                  focusedErrorBorder: _inputBorderFor(
-                                      controller.emailController.text,
-                                      controller.emailError),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: const Color(0xFF000647), width: 2),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: const Color(0xFF000647), width: 2),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  disabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: const Color(0xFF000647), width: 2),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  errorBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: ColorRes.starColor, width: 2),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  focusedErrorBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: ColorRes.starColor, width: 2),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
                                 ),
                               ),
                             ),
@@ -290,7 +296,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                             Text(
                               Strings.password,
                               style: GoogleFonts.poppins(
-                                fontSize: 14,
+                                fontSize: 12,
                                 fontWeight: FontWeight.w500,
                                 color: ColorRes.textPrimary,
                               ),
@@ -317,7 +323,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                                   ),
                                 ],
                                 color: Colors.white,
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(10),
                               ),
                               child: commonTextFormField(
                                 onChanged: controller.onChanged,
@@ -325,7 +331,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                                 obscureText: controller.show,
                                 textDecoration: InputDecoration(
                                   contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 13, vertical: 12),
+                                      horizontal: 15, vertical: 12),
                                   hintText: 'Password',
                                   filled: true,
                                   fillColor: Colors.transparent,
@@ -345,25 +351,30 @@ class _SigninScreenUState extends State<SigninScreenU> {
                                     fontSize: 15,
                                     color: ColorRes.black.withOpacity(0.15),
                                   ),
-                                  border: _inputBorderFor(
-                                      controller.passwordController.text,
-                                      controller.pwdError),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: ColorRes.brightYellow, width: 2),
-                                    borderRadius: BorderRadius.circular(12),
+                                  border: OutlineInputBorder(
+                                    borderSide: BorderSide(color: const Color(0xFF000647), width: 2),
+                                    borderRadius: BorderRadius.circular(10),
                                   ),
-                                  enabledBorder: _inputBorderFor(
-                                      controller.passwordController.text,
-                                      controller.pwdError),
-                                  disabledBorder: _inputBorderFor(
-                                      controller.passwordController.text,
-                                      controller.pwdError),
-                                  errorBorder: _inputBorderFor(
-                                      controller.passwordController.text,
-                                      controller.pwdError),
-                                  focusedErrorBorder: _inputBorderFor(
-                                      controller.passwordController.text,
-                                      controller.pwdError),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: const Color(0xFF000647), width: 2),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: const Color(0xFF000647), width: 2),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  disabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: const Color(0xFF000647), width: 2),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  errorBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: ColorRes.starColor, width: 2),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  focusedErrorBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: ColorRes.starColor, width: 2),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
                                 ),
                               ),
                             ),
@@ -382,28 +393,28 @@ class _SigninScreenUState extends State<SigninScreenU> {
                           onTap: () {
                             controller.rememberMe = !controller.rememberMe;
                             if (controller.rememberMe) {
-                              PrefService.setValue(
+                              PreferencesService.setValue(
                                 PrefKeys.emailRememberUser,
                                 controller.emailController.text,
                               );
-                              PrefService.setValue(
+                              PreferencesService.setValue(
                                 PrefKeys.passwordRememberUser,
                                 controller.passwordController.text,
                               );
                             } else {
-                              PrefService.remove(PrefKeys.emailRememberUser);
-                              PrefService.remove(PrefKeys.passwordRememberUser);
+                              PreferencesService.remove(PrefKeys.emailRememberUser);
+                              PreferencesService.remove(PrefKeys.passwordRememberUser);
                             }
                             controller.update(["remember_me"]);
                           },
                           child: Row(
                             children: [
                               Checkbox(
-                                activeColor: ColorRes.brightYellow,
+                                activeColor: const Color(0xFF000647),
                                 checkColor: ColorRes.black,
                                 side: const BorderSide(
                                   width: 1.2,
-                                  color: ColorRes.brightYellow,
+                                  color: Color(0xFF000647),
                                 ),
                                 value: controller.rememberMe,
                                 onChanged: controller.onRememberMeChange,
@@ -415,7 +426,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                                 Strings.rememberMe,
                                 style: GoogleFonts.poppins(
                                   fontWeight: FontWeight.w500,
-                                  fontSize: 13,
+                                  fontSize: 11,
                                   color: ColorRes.textPrimary,
                                 ),
                               ),
@@ -429,28 +440,26 @@ class _SigninScreenUState extends State<SigninScreenU> {
                       //  Sign in (email/password)
                       GetBuilder<SignInScreenController>(
                         id: "colorChange",
-                        builder: (_) => InkWell(
-                          onTap:
-                              isLoading ? null : controller.onLoginBtnTap,
-                          child: Container(
-                            height: 45,
-                            width: MediaQuery.of(context).size.width,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              gradient: const LinearGradient(
-                                colors: [
-                                  ColorRes.orange,
-                                  ColorRes.brightYellow,
-                                ],
+                        builder: (_) => SizedBox(
+                          width: double.infinity,
+                          height: 48,
+                          child: OutlinedButton(
+                            onPressed: isLoading ? null : controller.onLoginBtnTap,
+                            style: OutlinedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              side: const BorderSide(color: Color(0xFF000647), width: 2),
+                              foregroundColor: Colors.black,
+                              textStyle: GoogleFonts.poppins(fontSize: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
                               ),
                             ),
                             child: Text(
                               Strings.signIn,
                               style: GoogleFonts.poppins(
-                                fontSize: 16,
+                                fontSize: 12,
                                 fontWeight: FontWeight.w500,
-                                color: ColorRes.white,
+                                color: Colors.black,
                               ),
                             ),
                           ),
@@ -471,7 +480,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                             Strings.forgotThePassword,
                             style: GoogleFonts.poppins(
                               fontWeight: FontWeight.w500,
-                              fontSize: 15,
+                              fontSize: 12,
                               color: ColorRes.darkGold,
                             ),
                           ),
@@ -485,7 +494,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                         child: Text(
                           Strings.orContinueWith,
                           style: GoogleFonts.poppins(
-                            fontSize: 15,
+                            fontSize: 12,
                             fontWeight: FontWeight.w400,
                             color: ColorRes.black,
                           ),
@@ -500,24 +509,29 @@ class _SigninScreenUState extends State<SigninScreenU> {
                           // Google - Connexion normale
                           SizedBox(
                             width: double.infinity,
-                            height: 45,
+                            height: 48,
                             child: OutlinedButton(
                               onPressed:
                                   isLoading ? null : _onGoogleSignInTap,
                               style: OutlinedButton.styleFrom(
-                                side: BorderSide(color: ColorRes.brightYellow, width: 2),
-                                foregroundColor: ColorRes.black,
+                                backgroundColor: Colors.white,
+                                side: const BorderSide(color: Color(0xFF000647), width: 2),
+                                foregroundColor: Colors.black,
+                                textStyle: GoogleFonts.poppins(fontSize: 12),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
                               ),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Image.asset(
                                     AssetRes.googleLogo,
-                                    height: 20,
-                                    width: 20,
+                                    height: 16,
+                                    width: 16,
                                   ),
-                                  const SizedBox(width: 8),
-                                  const Text('Continue with Google'),
+                                  const SizedBox(width: 6),
+                                  Text('Continue with Google', style: GoogleFonts.poppins(fontSize: 12)),
                                 ],
                               ),
                             ),
@@ -528,15 +542,15 @@ class _SigninScreenUState extends State<SigninScreenU> {
                           // Google - Changer de compte
                           SizedBox(
                             width: double.infinity,
-                            height: 40,
+                            height: 48,
                             child: TextButton.icon(
                               onPressed: isLoading ? null : _onSwitchGoogleAccount,
-                              icon: Icon(Icons.swap_horiz, size: 18, color: ColorRes.darkGold),
+                              icon: Icon(Icons.swap_horiz, size: 16, color: ColorRes.darkGold),
                               label: Text(
                                 'Use an other Google account',
                                 style: GoogleFonts.poppins(
-                                  fontSize: 13,
-                                  color: ColorRes.primaryAccent,
+                                  fontSize: 11,
+                                  color: ColorRes.darkGold,
                                 ),
                               ),
                               style: TextButton.styleFrom(
@@ -549,20 +563,34 @@ class _SigninScreenUState extends State<SigninScreenU> {
                           ),
                           const SizedBox(height: 12),
 
-                          // GitHub (optionnel, non modifié)
+                          // GitHub button
                           SizedBox(
                             width: double.infinity,
-                            height: 45,
-                            child: OutlinedButton.icon(
+                            height: 48,
+                            child: OutlinedButton(
                               onPressed: isLoading
                                   ? null
                                   : controller.signInWithGitHub,
-                              icon: const Icon(Icons.code),
-                              label:
-                                  const Text('Continue with GitHub'),
                               style: OutlinedButton.styleFrom(
-                                side: BorderSide(color: ColorRes.orange, width: 2),
-                                foregroundColor: ColorRes.black,
+                                backgroundColor: Colors.white,
+                                side: const BorderSide(color: Color(0xFF000647), width: 2),
+                                foregroundColor: Colors.black,
+                                textStyle: GoogleFonts.poppins(fontSize: 12),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(
+                                    Icons.code,
+                                    size: 16,
+                                    color: Colors.black87,
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Text('Continue with GitHub', style: GoogleFonts.poppins(fontSize: 12)),
+                                ],
                               ),
                             ),
                           ),
@@ -579,7 +607,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                             Strings.donTHaveAccount,
                             style: GoogleFonts.poppins(
                               fontWeight: FontWeight.w500,
-                              fontSize: 15,
+                              fontSize: 12,
                               color: ColorRes.black,
                             ),
                           ),
@@ -600,7 +628,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                               Strings.signUp,
                               style: GoogleFonts.poppins(
                                 fontWeight: FontWeight.w600,
-                                fontSize: 16,
+                                fontSize: 12,
                                 color: ColorRes.darkGold,
                               ),
                             ),
@@ -630,12 +658,12 @@ class _SigninScreenUState extends State<SigninScreenU> {
   }
 
   OutlineInputBorder _enableBorder() => OutlineInputBorder(
-        borderSide: const BorderSide(color: ColorRes.orange),
+        borderSide: const BorderSide(color: Color(0xFF000647), width: 2),
         borderRadius: BorderRadius.circular(12),
       );
 
   OutlineInputBorder _errorBorder() => OutlineInputBorder(
-        borderSide: const BorderSide(color: ColorRes.starColor),
+        borderSide: const BorderSide(color: ColorRes.starColor, width: 2),
         borderRadius: BorderRadius.circular(12),
       );
 

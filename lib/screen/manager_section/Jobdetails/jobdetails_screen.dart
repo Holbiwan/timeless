@@ -4,7 +4,7 @@ import 'package:timeless/screen/create_vacancies/create_vacancies_screen.dart';
 import 'package:timeless/screen/manager_section/Jobdetails/jobdetails_controller.dart';
 import 'package:timeless/screen/manager_section/dashboard/manager_dashboard_screen.dart';
 import 'package:timeless/screen/manager_section/manager_application_screen/manger_application_screen.dart';
-import 'package:timeless/service/pref_services.dart';
+import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/color_res.dart';
@@ -129,7 +129,7 @@ class JobDetailsScreen extends StatelessWidget {
                                 fontWeight: FontWeight.w500),
                           ),
                           Text(
-                            PrefService.getString(PrefKeys.companyName),
+                            PreferencesService.getString(PrefKeys.companyName),
                             style: appTextStyle(
                                 color: ColorRes.black,
                                 fontSize: 12,
@@ -192,13 +192,13 @@ class JobDetailsScreen extends StatelessWidget {
                   child: GestureDetector(
                     onTap: () {
                       if (isError == false) {
-                        ///see applied job list tap event
+                        //see applied job list tap event
                         Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (con) => ManagerApplicationScreen()));
                       } else {
-                        ///try again tap event
+                        //try again tap event
                         Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -232,10 +232,10 @@ class JobDetailsScreen extends StatelessWidget {
                   child: GestureDetector(
                     onTap: () {
                       if (isError == true) {
-                        ///discover more jobs
+                        //discover more jobs
                         Get.offAll(() => const CreateVacanciesScreenM());
                       } else {
-                        ///discover more jobs event
+                        //discover more jobs event
                         Get.offAll(() => ManagerDashBoardScreen());
                       }
                     },

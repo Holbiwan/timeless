@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:timeless/utils/color_res.dart';
-import 'package:timeless/service/pref_services.dart';
+import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/pref_keys.dart';
 
 class ReceivedApplicationsScreen extends StatelessWidget {
@@ -11,7 +11,7 @@ class ReceivedApplicationsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String companyName = PrefService.getString(PrefKeys.companyName);
+    final String companyName = PreferencesService.getString(PrefKeys.companyName);
     
     return Scaffold(
       backgroundColor: ColorRes.backgroundColor,

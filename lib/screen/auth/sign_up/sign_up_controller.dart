@@ -7,28 +7,28 @@ import 'package:get/get.dart';
 
 import 'package:timeless/screen/dashboard/dashboard_screen.dart';
 import 'package:timeless/screen/auth/email_verification/email_verification_screen.dart';
-import 'package:timeless/service/pref_services.dart';
+import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/utils/color_res.dart';
+import 'package:timeless/utils/app_theme.dart';
 import 'package:country_picker/country_picker.dart';
-
 
 class SignUpController extends GetxController {
   // ===== State / Controllers =====
   final RxBool loading = false.obs;
 
   final TextEditingController firstNameCtrl = TextEditingController();
-  final TextEditingController lastNameCtrl  = TextEditingController();
-  final TextEditingController emailCtrl     = TextEditingController();
-  final TextEditingController passwordCtrl  = TextEditingController();
+  final TextEditingController lastNameCtrl = TextEditingController();
+  final TextEditingController emailCtrl = TextEditingController();
+  final TextEditingController passwordCtrl = TextEditingController();
 
   bool showPassword = true;
 
   // Erreurs UI
   String emailError = "";
-  String pwdError   = "";
+  String pwdError = "";
   String firstError = "";
-  String lastError  = "";
+  String lastError = "";
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -117,19 +117,17 @@ class SignUpController extends GetxController {
         email: email,
         password: password,
       );
-      
+
       if (cred.user != null) {
-        await PrefService.setValue(PrefKeys.userId, cred.user!.uid);
-        await PrefService.setValue(PrefKeys.rol, "User");
-        
-        Get.snackbar(
-          "✅ Connexion réussie!", 
-          "Utilisateur existant connecté: $email",
-          backgroundColor: Colors.blue,
-          colorText: Colors.white,
-          duration: const Duration(seconds: 5),
+        await PreferencesService.setValue(PrefKeys.userId, cred.user!.uid);
+        await PreferencesService.setValue(PrefKeys.rol, "User");
+
+        AppTheme.showStandardSnackBar(
+          title: "✅ Connexion réussie!",
+          message: "Utilisateur existant connecté: $email",
+          isSuccess: true,
         );
-        
+
         Get.offAll(() => DashBoardScreen());
       }
     } catch (e) {
@@ -145,43 +143,47 @@ class SignUpController extends GetxController {
     try {
       // Créer un utilisateur local sans Firebase Auth si problème de connexion
       final localUserId = "local-${DateTime.now().millisecondsSinceEpoch}";
-      
-      await PrefService.setValue(PrefKeys.userId, localUserId);
-      await PrefService.setValue(PrefKeys.rol, "User");
-      
-      Get.snackbar(
-        "✅ Utilisateur créé!", 
-        "Mode local: $email\nUtilisateur créé avec succès!",
-        backgroundColor: ColorRes.appleGreen,
-        colorText: Colors.white,
-        duration: const Duration(seconds: 5),
+
+      await PreferencesService.setValue(PrefKeys.userId, localUserId);
+      await PreferencesService.setValue(PrefKeys.rol, "User");
+
+      AppTheme.showStandardSnackBar(
+        title: "✅ Utilisateur créé!",
+        message: "Mode local: $email\nUtilisateur créé avec succès!",
+        isSuccess: true,
       );
-      
+
       Get.offAll(() => DashBoardScreen());
     } catch (e) {
-      Get.snackbar("Erreur", "Impossible de créer l'utilisateur: $e",
-          backgroundColor: Colors.red,
-          colorText: Colors.white);
+      AppTheme.showStandardSnackBar(
+          title: "Erreur",
+          message: "Impossible de créer l'utilisateur: $e",
+          isError: true);
     }
   }
 
-  Future<void> _sendWelcomeEmailWithVerification(String email, String fullName) async {
+  Future<void> _sendWelcomeEmailWithVerification(
+      String email, String fullName) async {
     try {
-      if (kDebugMode) print("📧 Sending welcome email with verification to $email");
-      
+      if (kDebugMode) {
+        print(" Sending welcome email with verification to $email");
+      }
+
       // Generate professional welcome email with verification instructions
-      final emailHTML = await _generateVerificationWelcomeEmail(email, fullName);
-      
+      final emailHTML =
+          await _generateVerificationWelcomeEmail(email, fullName);
+
       // Send via Firebase Extensions (mail collection)
       final mailDoc = await _db.collection("mail").add({
         "to": [email],
         "message": {
-          "subject": "🎉 Welcome to Timeless - Please verify your email",
+          "subject": " Welcome to Timeless - Please verify your email",
           "html": emailHTML,
-          "text": "Welcome to Timeless, $fullName! Please verify your email to complete your registration."
+          "text":
+              "Welcome to Timeless, $fullName! Please verify your email to complete your registration."
         }
       });
-      
+
       // Log email sending attempt
       await _db.collection("emailQueue").add({
         "to": email,
@@ -192,13 +194,13 @@ class SignUpController extends GetxController {
           "verificationRequired": true,
           "appName": "Timeless"
         },
-        "subject": "🎉 Welcome to Timeless - Please verify your email",
+        "subject": " Welcome to Timeless - Please verify your email",
         "priority": "high",
         "createdAt": FieldValue.serverTimestamp(),
         "status": "sent",
         "mailDocId": mailDoc.id
       });
-      
+
       if (kDebugMode) {
         print("✅ Welcome email with verification sent successfully to $email");
       }
@@ -213,7 +215,7 @@ class SignUpController extends GetxController {
   Future<void> _sendDirectEmail(String email, String firstName) async {
     // APPROCHE 1: Via EmailJS (service gratuit pour démo)
     // Nécessite configuration d'un service EmailJS
-    
+
     try {
       // Contenu HTML de l'email
       final String htmlContent = """
@@ -236,20 +238,20 @@ class SignUpController extends GetxController {
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎉 Bienvenue chez Timeless !</h1>
+            <h1> Bienvenue chez Timeless !</h1>
             <p>Votre plateforme d'emploi nouvelle génération</p>
         </div>
         
         <div class="content">
             <h2>Bonjour $firstName,</h2>
             
-            <p>Félicitations ! Votre compte Timeless a été créé avec succès. 🚀</p>
+            <p>Félicitations ! Votre compte Timeless a été créé avec succès. </p>
             
             <p><strong>Vos identifiants de connexion :</strong></p>
-            <p>📧 Email: <strong>$email</strong><br>
-            🔑 Mot de passe: <em>[défini lors de l'inscription]</em></p>
+            <p> Email: <strong>$email</strong><br>
+             Mot de passe: <em>[défini lors de l'inscription]</em></p>
             
-            <h3>🎯 Ce que vous pouvez faire maintenant :</h3>
+            <h3> Ce que vous pouvez faire maintenant :</h3>
             
             <div class="feature">
                 <span class="feature-icon">✅</span>
@@ -260,21 +262,21 @@ class SignUpController extends GetxController {
                 <span>Postuler en un clic avec votre profil</span>
             </div>
             <div class="feature">
-                <span class="feature-icon">📊</span>
+                <span class="feature-icon"></span>
                 <span>Suivre vos candidatures en temps réel</span>
             </div>
             <div class="feature">
-                <span class="feature-icon">🎯</span>
+                <span class="feature-icon"></span>
                 <span>Recevoir des recommandations personnalisées</span>
             </div>
             <div class="feature">
-                <span class="feature-icon">💼</span>
+                <span class="feature-icon"></span>
                 <span>Accéder aux profils d'entreprises exclusifs</span>
             </div>
             
             <center>
                 <a href="https://timeless.app/login" class="button">
-                    🚀 Access my account
+                     Access my account
                 </a>
             </center>
             
@@ -282,7 +284,7 @@ class SignUpController extends GetxController {
         </div>
         
         <div class="footer">
-            <p><strong>The Timeless Team</strong> 💼</p>
+            <p><strong>The Timeless Team</strong> </p>
             <p>Your professional success, our priority</p>
             <p style="font-size: 12px; color: #999;">
                 This email was sent automatically. Do not reply.
@@ -296,7 +298,7 @@ class SignUpController extends GetxController {
       // Sauvegarder l'email HTML dans Firestore pour traçabilité
       await _db.collection("sentEmails").add({
         "to": email,
-        "subject": "🎉 Bienvenue chez Timeless !",
+        "subject": " Bienvenue chez Timeless !",
         "htmlContent": htmlContent,
         "firstName": firstName,
         "sentAt": FieldValue.serverTimestamp(),
@@ -306,7 +308,7 @@ class SignUpController extends GetxController {
 
       if (kDebugMode) {
         print("""
-📧 EMAIL HTML GÉNÉRÉ ET SAUVEGARDÉ
+ EMAIL HTML GÉNÉRÉ ET SAUVEGARDÉ
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ✅ Destinataire: $email
 ✅ Template: Email de bienvenue professionnel
@@ -322,7 +324,8 @@ class SignUpController extends GetxController {
     }
   }
 
-  Future<String> _generateVerificationWelcomeEmail(String email, String fullName) async {
+  Future<String> _generateVerificationWelcomeEmail(
+      String email, String fullName) async {
     return """
 <!DOCTYPE html>
 <html>
@@ -357,7 +360,7 @@ class SignUpController extends GetxController {
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎉 Welcome to Timeless!</h1>
+            <h1> Welcome to Timeless!</h1>
             <p>Your professional journey starts here</p>
         </div>
         
@@ -367,7 +370,7 @@ class SignUpController extends GetxController {
             <p>Welcome to Timeless! We're excited to have you join our community of professionals. Your account has been created successfully, and we just need to verify your email address to get started.</p>
             
             <div class="verification-box">
-                <h3 style="margin-top: 0; color: #333;">📧 Email Verification Required</h3>
+                <h3 style="margin-top: 0; color: #333;"> Email Verification Required</h3>
                 <p><strong>We've sent a verification link to:</strong></p>
                 <p class="highlight" style="font-size: 16px;">$email</p>
                 <p style="margin-bottom: 0; color: #666;">Please check your inbox and click the verification link to activate your account.</p>
@@ -377,7 +380,7 @@ class SignUpController extends GetxController {
                 <p style="margin: 0; color: #856404;"><strong>⚠️ Important:</strong> You'll need to verify your email before you can access all features of your Timeless account.</p>
             </div>
             
-            <h3 style="color: #333;">🚀 What you can do once verified:</h3>
+            <h3 style="color: #333;"> What you can do once verified:</h3>
             
             <div class="feature">
                 <span class="feature-icon">✨</span>
@@ -388,19 +391,19 @@ class SignUpController extends GetxController {
                 <span class="feature-text">Apply to jobs with one-click using your profile</span>
             </div>
             <div class="feature">
-                <span class="feature-icon">📊</span>
+                <span class="feature-icon"></span>
                 <span class="feature-text">Track your applications in real-time</span>
             </div>
             <div class="feature">
-                <span class="feature-icon">🎯</span>
+                <span class="feature-icon"></span>
                 <span class="feature-text">Receive personalized job recommendations</span>
             </div>
             <div class="feature">
-                <span class="feature-icon">💼</span>
+                <span class="feature-icon"></span>
                 <span class="feature-text">Connect directly with employers</span>
             </div>
             <div class="feature">
-                <span class="feature-icon">🔔</span>
+                <span class="feature-icon"></span>
                 <span class="feature-text">Get notified about application updates</span>
             </div>
             
@@ -408,9 +411,9 @@ class SignUpController extends GetxController {
         </div>
         
         <div class="footer">
-            <h3>The Timeless Team 💼</h3>
+            <h3>The Timeless Team </h3>
             <p>Your professional success is our priority</p>
-            <p>📧 support@timeless.app | 🌐 www.timeless.app</p>
+            <p> support@timeless.app |  www.timeless.app</p>
             
             <div class="small-text">
                 <p>This email was sent automatically after account creation.</p>
@@ -423,7 +426,8 @@ class SignUpController extends GetxController {
     """;
   }
 
-  Future<String> _generateWelcomeEmailHTML(String email, String firstName) async {
+  Future<String> _generateWelcomeEmailHTML(
+      String email, String firstName) async {
     return """
 <!DOCTYPE html>
 <html>
@@ -458,22 +462,22 @@ class SignUpController extends GetxController {
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎉 Bienvenue chez Timeless !</h1>
+            <h1> Bienvenue chez Timeless !</h1>
             <p>Votre plateforme d'emploi nouvelle génération</p>
         </div>
         
         <div class="content">
             <h2>Bonjour $firstName,</h2>
             
-            <p>Félicitations ! Votre compte Timeless a été créé avec succès. Nous sommes ravis de vous accueillir dans notre communauté ! 🚀</p>
+            <p>Félicitations ! Votre compte Timeless a été créé avec succès. Nous sommes ravis de vous accueillir dans notre communauté ! </p>
             
             <div class="credentials">
-                <h3 style="margin-top: 0; color: #333;">🔑 Vos identifiants de connexion</h3>
-                <p><strong>📧 Email :</strong> $email</p>
-                <p><strong>🔐 Mot de passe :</strong> <em>Celui que vous avez défini lors de l'inscription</em></p>
+                <h3 style="margin-top: 0; color: #333;"> Vos identifiants de connexion</h3>
+                <p><strong> Email :</strong> $email</p>
+                <p><strong> Mot de passe :</strong> <em>Celui que vous avez défini lors de l'inscription</em></p>
             </div>
             
-            <h3 style="color: #333;">🎯 Découvrez ce que vous pouvez faire :</h3>
+            <h3 style="color: #333;"> Découvrez ce que vous pouvez faire :</h3>
             
             <div class="feature">
                 <span class="feature-icon">✨</span>
@@ -484,25 +488,25 @@ class SignUpController extends GetxController {
                 <span class="feature-text">Postuler en un clic avec votre profil optimisé</span>
             </div>
             <div class="feature">
-                <span class="feature-icon">📊</span>
+                <span class="feature-icon"></span>
                 <span class="feature-text">Suivre vos candidatures en temps réel</span>
             </div>
             <div class="feature">
-                <span class="feature-icon">🎯</span>
+                <span class="feature-icon"></span>
                 <span class="feature-text">Recevoir des recommandations personnalisées</span>
             </div>
             <div class="feature">
-                <span class="feature-icon">💼</span>
+                <span class="feature-icon"></span>
                 <span class="feature-text">Accéder aux profils d'entreprises exclusifs</span>
             </div>
             <div class="feature">
-                <span class="feature-icon">🤝</span>
+                <span class="feature-icon"></span>
                 <span class="feature-text">Connecter avec des recruteurs directement</span>
             </div>
             
             <center>
                 <a href="https://timeless.app/login" class="button">
-                    🚀 Access my account maintenant
+                     Access my account maintenant
                 </a>
             </center>
             
@@ -510,9 +514,9 @@ class SignUpController extends GetxController {
         </div>
         
         <div class="footer">
-            <h3>The Timeless Team 💼</h3>
+            <h3>The Timeless Team </h3>
             <p>Your professional success, our priority absolue</p>
-            <p>📧 support@timeless.app | 🌐 www.timeless.app</p>
+            <p> support@timeless.app |  www.timeless.app</p>
             
             <div class="small-text">
                 <p>Cet email a été envoyé automatiquement suite à la création de votre compte.</p>
@@ -529,10 +533,10 @@ class SignUpController extends GetxController {
   Future<void> onSignUpTap() async {
     if (loading.value) return;
     if (!_basicValidator()) {
-      Get.snackbar("Validation Error", "Please check email & password requirements",
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-          snackPosition: SnackPosition.BOTTOM);
+      AppTheme.showStandardSnackBar(
+          title: "Validation Error",
+          message: "Please check email & password requirements",
+          isError: true);
       return;
     }
 
@@ -551,11 +555,12 @@ class SignUpController extends GetxController {
 
       // Clear any existing profile data first
       await _clearAllProfileData();
-      
+
       // Create user profile data
-      final fullName = "${firstNameCtrl.text.trim()} ${lastNameCtrl.text.trim()}".trim();
+      final fullName =
+          "${firstNameCtrl.text.trim()} ${lastNameCtrl.text.trim()}".trim();
       final email = emailCtrl.text.trim();
-      
+
       // Save to Firestore
       final profile = <String, dynamic>{
         "uid": user.uid,
@@ -572,7 +577,7 @@ class SignUpController extends GetxController {
         "imageUrl": "",
         "emailVerified": false,
         "accountStatus": "pending_verification",
-        "deviceTokenU": PrefService.getString(PrefKeys.deviceToken),
+        "deviceTokenU": PreferencesService.getString(PrefKeys.deviceToken),
         "createdAt": FieldValue.serverTimestamp(),
       };
 
@@ -585,50 +590,47 @@ class SignUpController extends GetxController {
 
       // Send Firebase verification email (this works immediately)
       await sendEmailVerification(user);
-      
+
       // Also send custom welcome email for better UX
       await _sendWelcomeEmailWithVerification(email, fullName);
-      
+
       // Show instruction for checking Firebase verification email
-      Get.snackbar(
-        "📧 Check Your Email",
-        "Firebase has sent a verification link to $email. Click the link to verify your account.",
-        backgroundColor: Colors.blue,
-        colorText: Colors.white,
-        duration: const Duration(seconds: 5),
+      AppTheme.showStandardSnackBar(
+        title: " Check Your Email",
+        message:
+            "Firebase has sent a verification link to $email. Click the link to verify your account.",
       );
 
       // Show success message
-      Get.snackbar(
-        "✅ Account Created Successfully!",
-        "📧 Verification email sent to $email\nPlease check your inbox and click the verification link to activate your account.",
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-        duration: const Duration(seconds: 6),
-        snackPosition: SnackPosition.TOP,
+      AppTheme.showStandardSnackBar(
+        title: "✅ Account Created Successfully!",
+        message:
+            " Verification email sent to $email\nPlease check your inbox and click the verification link to activate your account.",
+        isSuccess: true,
       );
 
       // Navigate to email verification screen instead of dashboard
       Get.offAll(() => EmailVerificationScreen(
-        email: email,
-        userFullName: fullName,
-      ));
+            email: email,
+            userFullName: fullName,
+          ));
 
       // Clear form fields
       firstNameCtrl.clear();
       lastNameCtrl.clear();
       emailCtrl.clear();
       passwordCtrl.clear();
-
     } on FirebaseAuthException catch (e) {
       String errorMessage = "Account creation failed";
-      
+
       switch (e.code) {
         case 'email-already-in-use':
-          errorMessage = "This email is already registered. Please sign in instead.";
+          errorMessage =
+              "This email is already registered. Please sign in instead.";
           break;
         case 'weak-password':
-          errorMessage = "Password is too weak. Please use a stronger password.";
+          errorMessage =
+              "Password is too weak. Please use a stronger password.";
           break;
         case 'invalid-email':
           errorMessage = "Invalid email address format.";
@@ -639,58 +641,53 @@ class SignUpController extends GetxController {
         default:
           errorMessage = e.message ?? "Unknown error occurred";
       }
-      
-      Get.snackbar(
-        "Account Creation Failed",
-        errorMessage,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-        duration: const Duration(seconds: 4),
-        snackPosition: SnackPosition.BOTTOM,
+
+      AppTheme.showStandardSnackBar(
+        title: "Account Creation Failed",
+        message: errorMessage,
+        isError: true,
       );
     } catch (e) {
       if (kDebugMode) debugPrint("Sign up error: $e");
-      Get.snackbar(
-        "Account Creation Failed",
-        "An unexpected error occurred. Please try again.",
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-        snackPosition: SnackPosition.BOTTOM,
+      AppTheme.showStandardSnackBar(
+        title: "Account Creation Failed",
+        message: "An unexpected error occurred. Please try again.",
+        isError: true,
       );
     } finally {
       loading.value = false;
     }
   }
 
-  /// Clear all profile data to ensure new user starts fresh
+  // Clear all profile data to ensure new user starts fresh
   Future<void> _clearAllProfileData() async {
     try {
       await Future.wait([
         // Clear personal info (keep only what we just set)
-        PrefService.setValue(PrefKeys.phoneNumber, ''),
-        PrefService.setValue(PrefKeys.dateOfBirth, ''),
-        PrefService.setValue(PrefKeys.city, ''),
-        PrefService.setValue(PrefKeys.state, ''),
-        PrefService.setValue(PrefKeys.country, ''),
-        PrefService.setValue(PrefKeys.occupation, ''),
-        PrefService.setValue(PrefKeys.jobPosition, ''),
-        PrefService.setValue(PrefKeys.bio, ''),
-        PrefService.setValue(PrefKeys.address, ''),
-        PrefService.setValue(PrefKeys.profileImageUrl, ''),
-        PrefService.setValue(PrefKeys.profilePhoto, ''),
-        
+        PreferencesService.setValue(PrefKeys.phoneNumber, ''),
+        PreferencesService.setValue(PrefKeys.dateOfBirth, ''),
+        PreferencesService.setValue(PrefKeys.city, ''),
+        PreferencesService.setValue(PrefKeys.state, ''),
+        PreferencesService.setValue(PrefKeys.country, ''),
+        PreferencesService.setValue(PrefKeys.occupation, ''),
+        PreferencesService.setValue(PrefKeys.jobPosition, ''),
+        PreferencesService.setValue(PrefKeys.bio, ''),
+        PreferencesService.setValue(PrefKeys.address, ''),
+        PreferencesService.setValue(PrefKeys.profileImageUrl, ''),
+        PreferencesService.setValue(PrefKeys.profilePhoto, ''),
+
         // Clear job matching preferences
-        PrefService.setValue(PrefKeys.experienceLevel, ''),
-        PrefService.setValue(PrefKeys.skillsList, ''),
-        PrefService.setValue(PrefKeys.salaryRangeMin, ''),
-        PrefService.setValue(PrefKeys.salaryRangeMax, ''),
-        PrefService.setValue(PrefKeys.jobTypes, ''),
-        PrefService.setValue(PrefKeys.industryPreferences, ''),
-        PrefService.setValue(PrefKeys.companyTypes, ''),
-        PrefService.setValue(PrefKeys.maxCommuteDistance, ''),
-        PrefService.setValue(PrefKeys.workLocationPreference, ''),
+        PreferencesService.setValue(PrefKeys.experienceLevel, ''),
+        PreferencesService.setValue(PrefKeys.skillsList, ''),
+        PreferencesService.setValue(PrefKeys.salaryRangeMin, ''),
+        PreferencesService.setValue(PrefKeys.salaryRangeMax, ''),
+        PreferencesService.setValue(PrefKeys.jobTypes, ''),
+        PreferencesService.setValue(PrefKeys.industryPreferences, ''),
+        PreferencesService.setValue(PrefKeys.companyTypes, ''),
+        PreferencesService.setValue(PrefKeys.maxCommuteDistance, ''),
+        PreferencesService.setValue(PrefKeys.workLocationPreference, ''),
       ]);
-      
+
       if (kDebugMode) {
         print('✅ Profile data cleared for new user');
       }

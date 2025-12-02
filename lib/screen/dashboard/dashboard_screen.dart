@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:timeless/screen/applies_logo_screen/applies_logo_screen.dart';
-import 'package:timeless/screen/chat_box_user/chat_box_user_screen.dart';
+// Import supprimé : chat_box_user_screen.dart n'existe plus
 import 'package:timeless/screen/dashboard/dashboard_controller.dart';
 import 'package:timeless/screen/dashboard/home/home_screen.dart';
 import 'package:timeless/screen/dashboard/widget.dart';
@@ -12,18 +12,15 @@ import 'package:timeless/screen/profile_logo_screen/profile_logo_screen.dart';
 import 'package:timeless/screen/profile/edit_profile_user/edit_profile_user_screen.dart';
 import 'package:timeless/screen/profile/profile_view_screen.dart';
 
-import 'package:timeless/service/pref_services.dart';
+import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/utils/string.dart';
 import 'package:timeless/utils/color_res.dart';
 
-
-/// --- Palette Turquoise avec icônes Jaunes/Turquoise ---
-const _kJBlack = Color(0xFF1A1A1A); // fond foncé lisible
-const _kJYellow = Color(0xFFFBBF24); // jaune pour icônes inactives
-const _kJGreen = Color(0xFF00ACC1); // turquoise pour icônes actives
+// --- Palette avec icônes noires ---
+const _kBlack = Color(0xFF000000); // noir pour icônes
 
 class DashBoardScreen extends StatelessWidget {
   DashBoardScreen({super.key});
@@ -32,7 +29,7 @@ class DashBoardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String token = PrefService.getString(PrefKeys.userId);
+    final String token = PreferencesService.getString(PrefKeys.userId);
 
     return WillPopScope(
       onWillPop: () async {
@@ -42,7 +39,6 @@ class DashBoardScreen extends StatelessWidget {
       child: Scaffold(
         backgroundColor: ColorRes.backgroundColor,
         resizeToAvoidBottomInset: false,
-
         body: GetBuilder<DashBoardController>(
           id: "bottom_bar",
           builder: (c) {
@@ -58,30 +54,29 @@ class DashBoardScreen extends StatelessWidget {
             }
           },
         ),
-
         bottomNavigationBar: GetBuilder<DashBoardController>(
           id: "bottom_bar",
           builder: (c) {
             return Theme(
               data: Theme.of(context).copyWith(
-                canvasColor: ColorRes.backgroundColor, // fond turquoise
+                canvasColor: Colors.black, // fond noir
               ),
               child: BottomNavigationBar(
                 currentIndex: c.currentTab,
                 onTap: c.onBottomBarChange,
                 type: BottomNavigationBarType.fixed,
-                selectedItemColor: _kJGreen,
-                unselectedItemColor: _kJYellow,
+                selectedItemColor: Colors.white,
+                unselectedItemColor: Colors.white,
                 showUnselectedLabels: true,
                 items: [
                   BottomNavigationBarItem(
                     icon: Image.asset(AssetRes.home,
-                        height: 18, width: 18, color: _kGreenOrYellow(c, 0)),
-                    label: "Jobs",
+                        height: 18, width: 18, color: Colors.white),
+                    label: "Home",
                   ),
                   BottomNavigationBarItem(
                     icon: Image.asset(AssetRes.profile1,
-                        height: 18, width: 18, color: _kGreenOrYellow(c, 1)),
+                        height: 18, width: 18, color: Colors.white),
                     label: "Profile",
                   ),
                 ],
@@ -92,7 +87,4 @@ class DashBoardScreen extends StatelessWidget {
       ),
     );
   }
-
-  Color _kGreenOrYellow(DashBoardController c, int i) =>
-      c.currentTab == i ? _kJGreen : _kJYellow;
 }

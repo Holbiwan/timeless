@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:timeless/screen/dashboard/dashboard_screen.dart';
-import 'package:timeless/service/pref_services.dart';
+import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/pref_keys.dart';
 
 class SignUpController extends GetxController {
@@ -133,10 +133,10 @@ class SignUpController extends GetxController {
       }, SetOptions(merge: true));
 
       // Prefs/navigation
-      PrefService.setValue(PrefKeys.rol, "User");
-      PrefService.setValue(PrefKeys.userId, user.uid);
-      PrefService.setValue(PrefKeys.email, emailController.text.trim());
-      PrefService.setValue(PrefKeys.fullName, fullNameController.text.trim());
+      PreferencesService.setValue(PrefKeys.rol, "User");
+      PreferencesService.setValue(PrefKeys.userId, user.uid);
+      PreferencesService.setValue(PrefKeys.email, emailController.text.trim());
+      PreferencesService.setValue(PrefKeys.fullName, fullNameController.text.trim());
 
       // Nettoyage champs
       fullNameController.clear();
@@ -199,10 +199,10 @@ class SignUpController extends GetxController {
       }, SetOptions(merge: true));
 
       // Prefs/nav
-      PrefService.setValue(PrefKeys.rol, "User");
-      PrefService.setValue(PrefKeys.userId, user.uid);
-      PrefService.setValue(PrefKeys.email, user.email ?? account.email);
-      PrefService.setValue(PrefKeys.fullName, user.displayName ?? account.displayName ?? "");
+      PreferencesService.setValue(PrefKeys.rol, "User");
+      PreferencesService.setValue(PrefKeys.userId, user.uid);
+      PreferencesService.setValue(PrefKeys.email, user.email ?? account.email);
+      PreferencesService.setValue(PrefKeys.fullName, user.displayName ?? account.displayName ?? "");
 
       Get.offAll(() => DashBoardScreen());
     } on FirebaseAuthException catch (e) {

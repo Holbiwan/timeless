@@ -7,7 +7,7 @@ import 'package:timeless/common/widgets/common_loader.dart';
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/string.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:flutter_pdfview/flutter_pdfview.dart';
+// import 'package:flutter_pdfview/flutter_pdfview.dart'; // Package removed
 import 'package:timeless/utils/color_res.dart';
 
 class ResumeScreen extends StatefulWidget {
@@ -25,8 +25,8 @@ class _ResumeScreenState extends State<ResumeScreen> {
 
   //var docFile;
   int? pages = 0;
-  final Completer<PDFViewController> _controller =
-      Completer<PDFViewController>();
+  // final Completer<PDFViewController> _controller =
+  //     Completer<PDFViewController>(); // Package removed
   int? currentPage = 0;
   bool isReady = false;
   String errorMessage = '';
@@ -78,7 +78,7 @@ class _ResumeScreenState extends State<ResumeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //docFile = DefaultCacheManager().getSingleFile("https://firebasestorage.googleapis.com/v0/b/jobseek-5275d.appspot.com/o/files%2FDocument%20from%20Jyot%20Vavadiya?alt=media&token=e8da4c45-8050-4022-bc4d-32b6b6703634");
+    //docFile = DefaultCacheManager().getSingleFile("https://firebasestorage.googleapis.com/v0/b/timeless-app.appspot.com/o/files%2FDocument%20from%20Jyot%20Vavadiya?alt=media&token=e8da4c45-8050-4022-bc4d-32b6b6703634");
     return Scaffold(
       backgroundColor: ColorRes.black,
       body: loader == true
@@ -97,55 +97,45 @@ class _ResumeScreenState extends State<ResumeScreen> {
                   child: SizedBox(
                     height: 600,
                     width: Get.width,
-                    child: PDFView(
-                      filePath: remotePDFpath,
-                      enableSwipe: true,
-                      swipeHorizontal: true,
-                      autoSpacing: false,
-                      pageFling: true,
-                      pageSnap: true,
-                      defaultPage: currentPage!,
-                      fitPolicy: FitPolicy.BOTH,
-                      preventLinkNavigation: false,
-                      // if set to true the link is handled in flutter
-                      onRender: (pages) {
-                        setState(() {
-                          pages = pages;
-                          isReady = true;
-                        });
-                      },
-                      onError: (error) {
-                        setState(() {
-                          errorMessage = error.toString();
-                        });
-                        if (kDebugMode) {
-                          print(error.toString());
-                        }
-                      },
-                      onPageError: (page, error) {
-                        setState(() {
-                          errorMessage = '$page: ${error.toString()}';
-                        });
-                        if (kDebugMode) {
-                          print('$page: ${error.toString()}');
-                        }
-                      },
-                      onViewCreated: (PDFViewController pdfViewController) {
-                        _controller.complete(pdfViewController);
-                      },
-                      onLinkHandler: (String? uri) {
-                        if (kDebugMode) {
-                          print('goto uri: $uri');
-                        }
-                      },
-                      onPageChanged: (int? page, int? total) {
-                        if (kDebugMode) {
-                          print('page change: $page/$total');
-                        }
-                        setState(() {
-                          currentPage = page;
-                        });
-                      },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey[100],
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.picture_as_pdf,
+                              size: 64,
+                              color: Colors.grey[600],
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              'Aperçu PDF\ntemporairement indisponible',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            ElevatedButton.icon(
+                              onPressed: () {
+                                Get.snackbar(
+                                  'Information',
+                                  'Fonctionnalité PDF en cours de développement',
+                                  backgroundColor: Colors.orange,
+                                  colorText: Colors.white,
+                                );
+                              },
+                              icon: const Icon(Icons.download),
+                              label: const Text('Télécharger'),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 ),

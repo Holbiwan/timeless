@@ -10,10 +10,10 @@ class ProfileController extends GetxController {
   final companyAddressController = TextEditingController();
 
   // Flags réactifs utilisés dans le screen
-  final RxBool isLod = false.obs;               // false = prêt, true = loader
+  final RxBool isLod = false.obs; // false = prêt, true = loader
   final RxBool isNameValidate = false.obs;
   final RxBool isEmailValidate = false.obs;
-  final RxBool isDateController = false.obs;    // ton code l’utilise comme bool
+  final RxBool isDateController = false.obs; // ton code l’utilise comme bool
   final RxBool isCountryValidate = false.obs;
   final RxBool isAddressValidate = false.obs;
 
@@ -23,17 +23,25 @@ class ProfileController extends GetxController {
     init();
   }
 
-  /// Appelée par les onglets/dashboards
+  // Appelée par les onglets/dashboards
   void init() {
     // Valeurs par défaut pour éviter null/vides
-    companyNameController.text    = companyNameController.text.isNotEmpty    ? companyNameController.text    : 'Timeless Company';
-    companyEmailController.text   = companyEmailController.text.isNotEmpty   ? companyEmailController.text   : 'hello@timeless.dev';
-    countryController.text        = countryController.text.isNotEmpty        ? countryController.text        : 'France';
-    dateController.text           = dateController.text.isNotEmpty           ? dateController.text           : '2023-01-01';
-    companyAddressController.text = companyAddressController.text.isNotEmpty ? companyAddressController.text : '10 Rue de la Paix, Paris';
+    companyNameController.text = companyNameController.text.isNotEmpty
+        ? companyNameController.text
+        : 'Timeless Company';
+    companyEmailController.text = companyEmailController.text.isNotEmpty
+        ? companyEmailController.text
+        : 'hello@timeless.dev';
+    countryController.text =
+        countryController.text.isNotEmpty ? countryController.text : 'France';
+    dateController.text =
+        dateController.text.isNotEmpty ? dateController.text : '2023-01-01';
+    companyAddressController.text = companyAddressController.text.isNotEmpty
+        ? companyAddressController.text
+        : '10 Rue de la Paix, Paris';
   }
 
-  /// Bouton "Edit" dans le screen
+  // Bouton "Edit" dans le screen
   void onTapEdit() {
     Get.snackbar(
       'Edit',
@@ -46,11 +54,16 @@ class ProfileController extends GetxController {
   }
 
   // Helpers de validation (si tu veux les réactiver)
-  void validateName()    => isNameValidate.value    = companyNameController.text.trim().isEmpty;
-  void validateEmail()   => isEmailValidate.value   = companyEmailController.text.trim().isEmpty;
-  void validateDate()    => isDateController.value  = dateController.text.trim().isEmpty;
-  void validateCountry() => isCountryValidate.value = countryController.text.trim().isEmpty;
-  void validateAddress() => isAddressValidate.value = companyAddressController.text.trim().isEmpty;
+  void validateName() =>
+      isNameValidate.value = companyNameController.text.trim().isEmpty;
+  void validateEmail() =>
+      isEmailValidate.value = companyEmailController.text.trim().isEmpty;
+  void validateDate() =>
+      isDateController.value = dateController.text.trim().isEmpty;
+  void validateCountry() =>
+      isCountryValidate.value = countryController.text.trim().isEmpty;
+  void validateAddress() =>
+      isAddressValidate.value = companyAddressController.text.trim().isEmpty;
 
   @override
   void onClose() {

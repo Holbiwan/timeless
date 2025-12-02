@@ -1,7 +1,7 @@
 // lib/screen/notification_screen/notification_screen.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:timeless/service/notification_service.dart';
+import 'package:timeless/services/notification_service.dart';
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/color_res.dart';
 

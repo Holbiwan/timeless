@@ -37,7 +37,11 @@ class GoogleSignupScreen extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () {
                   // TODO: Ici tu peux pousser vers ton vrai flow (enregistrement Firestore, etc.)
-                  Get.back(); // temporaire : on revient
+                  if (Navigator.canPop(context)) {
+                    Navigator.pop(context);
+                  } else {
+                    Get.offAllNamed('/dashboard');
+                  }
                 },
                 child: const Text('Continue'),
               ),

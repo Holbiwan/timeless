@@ -39,10 +39,11 @@ Widget tipsForYouSection() {
         height: 150,
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(15)),
-          gradient: const LinearGradient(colors: [
-            ColorRes.darkBlue,
-            ColorRes.primaryAccent,
-          ]),
+          color: const Color(0xFF000647),
+          border: Border.all(
+            color: const Color(0xFF000647),
+            width: 2,
+          ),
           boxShadow: [
             BoxShadow(
                 offset: const Offset(6, 6),
@@ -70,7 +71,7 @@ Widget tipsForYouSection() {
                       style: GoogleFonts.poppins(
                           fontWeight: FontWeight.w500,
                           fontSize: 15,
-                          color: ColorRes.white),
+                          color: Colors.white),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -80,15 +81,16 @@ Widget tipsForYouSection() {
                       width: 100,
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                       alignment: Alignment.center,
-                      decoration: const BoxDecoration(
-                          color: ColorRes.orange,
+                      decoration: BoxDecoration(
+                          color: ColorRes.white,
+                          border: Border.all(color: const Color(0xFF000647), width: 1.5),
                           borderRadius: BorderRadius.all(Radius.circular(10))),
                       child: Text(
                         Strings.readMore,
                         style: appTextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: 11,
-                          color: ColorRes.white,
+                          color: Colors.black,
                         ),
                       ),
                     ),

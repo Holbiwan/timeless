@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:timeless/common/widgets/back_button.dart';
-import 'package:timeless/screen/chat_box_user/chat_box_user_screen.dart';
+// Import supprimé : chat_box_user_screen.dart n'existe plus
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/color_res.dart';
@@ -37,9 +37,6 @@ class AcceptedScreen extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(18.0),
                     child: InkWell(
-                      onTap: () {
-                        Get.back();
-                      },
                       child: backButton(),
                     ),
                   ),
@@ -222,12 +219,8 @@ class AcceptedScreen extends StatelessWidget {
                       const SizedBox(height: 55),
                       InkWell(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (con) => ChatBoxUserScreen(),
-                            ),
-                          );
+                          // ChatBoxUserScreen supprimé - fonctionnalité Chat supprimée
+                          Get.snackbar("Info", "Messagerie temporairement indisponible");
                         },
                         child: Container(
                           height: 50,

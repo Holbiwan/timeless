@@ -6,7 +6,7 @@ import 'package:timeless/common/widgets/back_button.dart';
 import 'package:timeless/common/widgets/common_loader.dart';
 import 'package:timeless/screen/create_vacancies/create_vacancies_screen.dart';
 import 'package:timeless/screen/manager_section/manager_application_screen/manager_application_screen_controller.dart';
-import 'package:timeless/service/pref_services.dart';
+import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/app_res.dart';
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/asset_res.dart';
@@ -186,7 +186,7 @@ class ManagerApplicationScreen extends StatelessWidget {
                       }
                       if (snapshot.data != null) {
                         snapshot.data.docs.forEach((e) {
-                          if (PrefService.getString(PrefKeys.companyName) ==
+                          if (PreferencesService.getString(PrefKeys.companyName) ==
                               e["CompanyName"]) {
                             controller.isData = false;
                           }
@@ -320,7 +320,7 @@ class ManagerApplicationScreen extends StatelessWidget {
                                                                       index]
                                                                   ["Status"] ==
                                                               "Active") {
-                                                            return (PrefService.getString(
+                                                            return (PreferencesService.getString(
                                                                         PrefKeys
                                                                             .companyName) !=
                                                                     controller.documentData[
@@ -476,7 +476,7 @@ class ManagerApplicationScreen extends StatelessWidget {
                                                                       [
                                                                       "Status"] ==
                                                                   "Inactive") {
-                                                                return (PrefService.getString(PrefKeys
+                                                                return (PreferencesService.getString(PrefKeys
                                                                             .companyName) !=
                                                                         controller.documentData[index]
                                                                             [
@@ -601,7 +601,7 @@ class ManagerApplicationScreen extends StatelessWidget {
                                                             itemBuilder:
                                                                 (context,
                                                                     index) {
-                                                              return (PrefService.getString(
+                                                              return (PreferencesService.getString(
                                                                           PrefKeys
                                                                               .companyName) !=
                                                                       controller

@@ -1,0 +1,123 @@
+// Règles de sécurité Firestore pour Timeless
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // === FONCTIONS DE VALIDATION ===
+    
+    // Vérifie si l'utilisateur est authentifié
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Vérifie si l'utilisateur est le propriétaire du document
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+    
+    // Vérifie si l'utilisateur a un rôle spécifique
+    function hasRole(role) {
+      return isAuthenticated() && 
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == role;
+    }
+    
+    // Validation des données de profil candidat
+    function isValidCandidateProfile() {
+      return request.resource.data.keys().hasAll(['email', 'fullName', 'role']) &&
+             request.resource.data.role == 'candidate' &&
+             request.resource.data.email is string &&
+             request.resource.data.fullName is string &&
+             request.resource.data.email.matches('.*@.*\\..*');
+    }
+    
+    // Validation des données de CV
+    function isValidCVData() {
+      return request.resource.data.keys().hasAll(['fileName', 'fileSize', 'contentType', 'uploadedAt']) &&
+             request.resource.data.fileSize <= 10485760 && // 10MB max
+             request.resource.data.contentType in ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    }
+    
+    // Validation des candidatures
+    function isValidApplication() {
+      return request.resource.data.keys().hasAll(['jobId', 'candidateId', 'appliedAt', 'status']) &&
+             request.resource.data.status in ['pending', 'reviewed', 'accepted', 'rejected'] &&
+             exists(/databases/$(database)/documents/jobs/$(request.resource.data.jobId));
+    }
+
+    // === COLLECTIONS PRINCIPALES ===
+    
+    // Collection des utilisateurs
+    match /users/{userId} {
+      allow read, write: if isAuthenticated() && isOwner(userId);
+      allow create: if isAuthenticated() && isOwner(userId) && isValidCandidateProfile();
+    }
+    
+    // Collection des profils candidats détaillés
+    match /candidate_profiles/{candidateId} {
+      allow read: if isAuthenticated() && (isOwner(candidateId) || hasRole('recruiter'));
+      allow write: if isAuthenticated() && isOwner(candidateId);
+      allow create: if isAuthenticated() && isOwner(candidateId);
+    }
+    
+    // Collection des CVs
+    match /cvs/{cvId} {
+      allow read: if isAuthenticated() && 
+                    (isOwner(resource.data.candidateId) || hasRole('recruiter'));
+      allow create: if isAuthenticated() && 
+                      isOwner(request.resource.data.candidateId) && 
+                      isValidCVData();
+      allow update: if isAuthenticated() && isOwner(resource.data.candidateId);
+      allow delete: if isAuthenticated() && isOwner(resource.data.candidateId);
+    }
+    
+    // Collection des candidatures
+    match /applications/{applicationId} {
+      allow read: if isAuthenticated() && 
+                    (isOwner(resource.data.candidateId) || hasRole('recruiter'));
+      allow create: if isAuthenticated() && 
+                      isOwner(request.resource.data.candidateId) && 
+                      isValidApplication();
+      allow update: if isAuthenticated() && 
+                      (isOwner(resource.data.candidateId) || hasRole('recruiter'));
+    }
+    
+    // === COLLECTIONS PUBLIQUES (LECTURE SEULE) ===
+    
+    // Annonces d'emploi - lecture publique pour les candidats authentifiés
+    match /jobs/{jobId} {
+      allow read: if isAuthenticated();
+      allow write: if hasRole('recruiter') || hasRole('admin');
+    }
+    
+    // Collections legacy (à migrer progressivement)
+    match /allPost/{postId} {
+      allow read: if isAuthenticated();
+      allow write: if hasRole('recruiter') || hasRole('admin');
+    }
+    
+    match /category/{categoryName}/{jobId} {
+      allow read: if isAuthenticated();
+      allow write: if hasRole('recruiter') || hasRole('admin');
+    }
+    
+    // === COLLECTIONS D'AUTHENTIFICATION ===
+    
+    match /Auth/User/register/{userId} {
+      allow read, write: if isAuthenticated() && isOwner(userId);
+    }
+    
+    // === COLLECTIONS ANALYTICS (ADMIN SEULEMENT) ===
+    
+    match /analytics/{document=**} {
+      allow read, write: if hasRole('admin');
+    }
+    
+    // === RÈGLES PAR DÉFAUT ===
+    
+    // Interdire tout accès par défaut
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

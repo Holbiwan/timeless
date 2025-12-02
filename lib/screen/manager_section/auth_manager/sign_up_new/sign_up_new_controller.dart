@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:timeless/utils/app_res.dart';
+import 'package:timeless/utils/color_res.dart';
 
 class SignUpControllerM extends GetxController {
   final TextEditingController firstnameController = TextEditingController();
@@ -69,7 +70,7 @@ class SignUpControllerM extends GetxController {
     });
 
     _authCompleted = true;
-    _startErrorMuffler(); // 🔇 étouffe les snackbars parasites pendant 6s
+    _startErrorMuffler(); //  étouffe les snackbars parasites pendant 6s
     loading.value = false; update(['dark']);
 
     await _success('Succès','Compte créé pour ${cred.user?.email ?? 'votre compte'}.');
@@ -94,7 +95,7 @@ class SignUpControllerM extends GetxController {
     catch (e) { loading.value = false; update(['dark']); await _error('Erreur','Une erreur inattendue s’est produite : $e'); return; }
 
     _authCompleted = true;
-    _startErrorMuffler(); // 🔇
+    _startErrorMuffler(); // 
     loading.value = false; update(['dark']);
 
     await _success('Succès','Bienvenue ${userCred.user?.email ?? ''}');
@@ -155,7 +156,7 @@ class SignUpControllerM extends GetxController {
       AlertDialog(
         title: Text(title),
         content: Text(message),
-        backgroundColor: Colors.red[50],
+        backgroundColor: ColorRes.royalBlue.withOpacity(0.1),
         actions: [ TextButton(onPressed: () => Get.back(), child: const Text('OK')) ],
       ),
       barrierDismissible: false,

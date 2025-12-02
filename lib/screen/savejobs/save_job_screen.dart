@@ -4,12 +4,13 @@ import 'package:get/get.dart';
 import 'package:timeless/common/widgets/back_button.dart';
 import 'package:timeless/common/widgets/common_loader.dart';
 import 'package:timeless/screen/savejobs/save_job_controller.dart';
-import 'package:timeless/service/pref_services.dart';
+import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/utils/string.dart';
+import 'package:timeless/utils/app_theme.dart';
 
 class SaveJobScreen extends StatelessWidget {
   SaveJobScreen({super.key});
@@ -52,7 +53,7 @@ class SaveJobScreen extends StatelessWidget {
               StreamBuilder(
                   stream: FirebaseFirestore.instance
                       .collection("BookMark")
-                      .doc(PrefService.getString(PrefKeys.userId))
+                      .doc(PreferencesService.getString(PrefKeys.userId))
                       .collection("BookMark1")
                       .snapshots(),
                   builder: (context,
@@ -186,12 +187,13 @@ Future bottom(context, fileds, image, docId) {
     builder: (BuildContext context) {
       return Container(
         height: 290,
-        decoration: const BoxDecoration(
-          color: ColorRes.white,
-          borderRadius: BorderRadius.only(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(45),
             topRight: Radius.circular(45),
           ),
+          border: Border.all(color: AppTheme.buttonBorderColor, width: 2.0),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -291,7 +293,7 @@ Future bottom(context, fileds, image, docId) {
                   onTap: () {
                     FirebaseFirestore.instance
                         .collection("BookMark")
-                        .doc(PrefService.getString(PrefKeys.userId))
+                        .doc(PreferencesService.getString(PrefKeys.userId))
                         .collection('BookMark1')
                         .doc(docId)
                         .delete();

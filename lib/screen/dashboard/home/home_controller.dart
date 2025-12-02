@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:timeless/screen/job_recommendation_screen/job_recommendation_controller.dart';
-import 'package:timeless/service/pref_services.dart';
+import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/pref_keys.dart';
 
 JobRecommendationController jcon = Get.put(JobRecommendationController());
@@ -59,11 +59,11 @@ class HomeController extends GetxController implements GetxService {
       List bookmark = [];
       bookmark = field['BookMarkUserList'];
       if (bookmark.isEmpty) {
-        bookmark.add(PrefService.getString(PrefKeys.userId));
+        bookmark.add(PreferencesService.getString(PrefKeys.userId));
       }
       for (int i = 0; i < bookmark.length; i++) {
-        if (bookmark[i] != PrefService.getString(PrefKeys.userId)) {
-          bookmark.add(PrefService.getString(PrefKeys.userId));
+        if (bookmark[i] != PreferencesService.getString(PrefKeys.userId)) {
+          bookmark.add(PreferencesService.getString(PrefKeys.userId));
         }
       }
       List<String> bookmarkList = List.generate(bookmark.length, (index) {
@@ -78,7 +78,7 @@ class HomeController extends GetxController implements GetxService {
       // ignore: avoid_single_cascade_in_expression_statements
       FirebaseFirestore.instance
           .collection('BookMark')
-          .doc(PrefService.getString(PrefKeys.userId))
+          .doc(PreferencesService.getString(PrefKeys.userId))
           .collection("BookMark1")
         ..doc().set(map);
     }
@@ -86,17 +86,15 @@ class HomeController extends GetxController implements GetxService {
 
   RxInt selectedJobs2 = 0.obs;
   RxList jobs2 = [
-    'All Job',
+    'All Josb',
     "Design",
-    "UX",
+    "UI/UX Designer",
     'Software',
-    'Database Manager',
-    'Product Manager',
-    'Full-Stack Developer',
-    'Data Scientist',
-    'Web Developers',
-    'Networking',
-    'Cyber Security'
+    'Developer',
+    'Data Science',
+    'Web Dev',
+    'Network',
+    'Security'
   ].obs;
 
   onTapJobs2(int index) {
@@ -107,7 +105,7 @@ class HomeController extends GetxController implements GetxService {
   String? firstNAme;
 
   getfirstName() async {
-    firstNAme = PrefService.getString(PrefKeys.firstnameu);
+    firstNAme = PreferencesService.getString(PrefKeys.firstnameu);
   }
 
   locationValidation() {

@@ -1,12 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:timeless/screen/chat_box/chat_box_screen.dart';
+// Import supprimé : chat_box_screen.dart n'existe plus
 import 'package:timeless/screen/create_vacancies/create_vacancies_controller.dart';
 import 'package:timeless/screen/job_detail_screen/job_detail_upload_cv_screen/upload_cv_controller.dart';
-import 'package:timeless/screen/manager_section/call/video_joinig_screen.dart';
+// Import supprimé : video_joinig_screen.dart n'existe plus
 import 'package:timeless/screen/manager_section/manager_home_screen/manager_home_screen_controller.dart';
-import 'package:timeless/service/pref_services.dart';
+import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/app_res.dart';
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/asset_res.dart';
@@ -37,7 +37,7 @@ Widget recentPeopleBox({bool? homeScreen, String? position}) {
               if (homeScreen == true) {
                 for (var element in companyNameData) {
                   if (element['companyname'].toString().toLowerCase() ==
-                          PrefService.getString(PrefKeys.companyName)
+                          PreferencesService.getString(PrefKeys.companyName)
                               .toString()
                               .toLowerCase() &&
                       element['position'].toString() == position) {
@@ -50,7 +50,7 @@ Widget recentPeopleBox({bool? homeScreen, String? position}) {
               } else {
                 for (var element in companyNameData) {
                   if (element['companyname'].toString().toLowerCase() ==
-                      PrefService.getString(PrefKeys.companyName)
+                      PreferencesService.getString(PrefKeys.companyName)
                           .toString()
                           .toLowerCase()) {
                     if (kDebugMode) {
@@ -66,7 +66,7 @@ Widget recentPeopleBox({bool? homeScreen, String? position}) {
             }
 
             return (o.toString().toLowerCase() ==
-                    PrefService.getString(PrefKeys.companyName)
+                    PreferencesService.getString(PrefKeys.companyName)
                         .toString()
                         .toLowerCase())
                 ? Column(
@@ -163,12 +163,8 @@ Widget recentPeopleBox({bool? homeScreen, String? position}) {
                                     children: [
                                       InkWell(
                                         onTap: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (con) => ChatBoxScreen(),
-                                            ),
-                                          );
+                                          // Fonctionnalité Chat supprimée
+                                          Get.snackbar("Info", "Chat temporairement indisponible");
                                         },
                                         // onTap: () => Get.toNamed(
                                         //     AppRes.applicantsDetails,
@@ -195,13 +191,8 @@ Widget recentPeopleBox({bool? homeScreen, String? position}) {
                                       ),
                                       InkWell(
                                         onTap: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (con) =>
-                                                  const VideoJoiningScreen(),
-                                            ),
-                                          );
+                                          // VideoJoiningScreen supprimé - fonctionnalité trop avancée
+                                          Get.snackbar("Info", "Appels vidéo temporairement indisponibles");
                                         },
                                         child: Container(
                                           height: 40,

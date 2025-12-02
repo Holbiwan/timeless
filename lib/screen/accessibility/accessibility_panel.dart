@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:timeless/service/accessibility_service.dart';
-import 'package:timeless/service/translation_service.dart';
+import 'package:timeless/services/accessibility_service.dart';
+import 'package:timeless/services/translation_service.dart';
 import 'package:timeless/utils/color_res.dart';
 
 class AccessibilityPanel extends StatelessWidget {
@@ -18,7 +18,7 @@ class AccessibilityPanel extends StatelessWidget {
       backgroundColor: accessibilityService.backgroundColor,
       appBar: AppBar(
         title: Obx(() => Text(
-          '♿ Accessibility Settings',
+          translationService.getText('accessibility_settings'),
           style: GoogleFonts.poppins(
             color: accessibilityService.textColor,
             fontSize: 18 * accessibilityService.currentFontSize.value,
@@ -40,7 +40,7 @@ class AccessibilityPanel extends StatelessWidget {
                 color: accessibilityService.cardBackgroundColor,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: accessibilityService.primaryColor,
+                  color: Colors.black,
                   width: accessibilityService.isHighContrastMode.value ? 3 : 2,
                 ),
                 boxShadow: accessibilityService.isHighContrastMode.value ? [] : [
@@ -56,26 +56,26 @@ class AccessibilityPanel extends StatelessWidget {
                   Icon(
                     Icons.accessibility,
                     size: 48,
-                    color: accessibilityService.primaryColor,
+                    color: Colors.black,
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    'Accessibility Features',
+                  Obx(() => Text(
+                    translationService.getText('accessibility_features'),
                     style: accessibilityService.getAccessibleTextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
                     textAlign: TextAlign.center,
-                  ),
+                  )),
                   const SizedBox(height: 4),
-                  Text(
-                    'Configure features for better accessibility',
+                  Obx(() => Text(
+                    translationService.getText('accessibility_description'),
                     style: accessibilityService.getAccessibleTextStyle(
                       fontSize: 14,
                       color: accessibilityService.secondaryTextColor,
                     ),
                     textAlign: TextAlign.center,
-                  ),
+                  )),
                 ],
               ),
             ),
@@ -84,25 +84,25 @@ class AccessibilityPanel extends StatelessWidget {
             
             // Visual Accessibility
             _buildSection(
-              '👁️ Visual Accessibility',
+              translationService.getText('visual_accessibility'),
               [
                 _buildToggleItem(
-                  'High Contrast Mode',
-                  'Improves visibility with high contrast colors',
+                  translationService.getText('high_contrast_mode'),
+                  translationService.getText('high_contrast_description'),
                   Icons.contrast,
                   accessibilityService.isHighContrastMode.value,
                   accessibilityService.toggleHighContrast,
                 ),
                 _buildToggleItem(
-                  'Dark Mode',
-                  'Reduces eye strain with dark theme',
+                  translationService.getText('dark_mode'),
+                  translationService.getText('dark_mode_description'),
                   Icons.dark_mode,
                   accessibilityService.isDarkMode.value,
                   accessibilityService.toggleDarkMode,
                 ),
                 _buildToggleItem(
-                  'Large Text',
-                  'Increases text size for better readability',
+                  translationService.getText('large_text'),
+                  translationService.getText('large_text_description'),
                   Icons.text_fields,
                   accessibilityService.isLargeTextMode.value,
                   accessibilityService.toggleLargeText,
@@ -115,25 +115,25 @@ class AccessibilityPanel extends StatelessWidget {
             
             // Hearing Accessibility
             _buildSection(
-              '🔊 Hearing Accessibility',
+              translationService.getText('hearing_accessibility'),
               [
                 _buildToggleItem(
-                  'Vibration Feedback',
-                  'Feel vibrations for audio cues',
+                  translationService.getText('vibration_feedback'),
+                  translationService.getText('vibration_feedback_description'),
                   Icons.vibration,
                   accessibilityService.isVibrationEnabled.value,
                   accessibilityService.toggleVibration,
                 ),
                 _buildToggleItem(
-                  'Visual Feedback',
-                  'See visual notifications instead of audio',
+                  translationService.getText('visual_feedback'),
+                  translationService.getText('visual_feedback_description'),
                   Icons.visibility,
                   accessibilityService.isVisualFeedbackEnabled.value,
                   accessibilityService.toggleVisualFeedback,
                 ),
                 _buildToggleItem(
-                  'Voice Descriptions',
-                  'Enable detailed voice descriptions',
+                  translationService.getText('voice_descriptions'),
+                  translationService.getText('voice_descriptions_description'),
                   Icons.record_voice_over,
                   accessibilityService.isVoiceOverEnabled.value,
                   accessibilityService.toggleVoiceOver,
@@ -156,15 +156,15 @@ class AccessibilityPanel extends StatelessWidget {
                   _showResetDialog(context);
                 },
                 icon: const Icon(Icons.refresh),
-                label: Text(
-                  'Reset to Default',
+                label: Obx(() => Text(
+                  translationService.getText('reset_to_default'),
                   style: GoogleFonts.poppins(
                     fontSize: 16 * accessibilityService.currentFontSize.value,
                     fontWeight: FontWeight.w600,
                   ),
-                ),
+                )),
                 style: accessibilityService.getAccessibleButtonStyle(
-                  backgroundColor: ColorRes.appleGreen,
+                  backgroundColor: const Color.fromARGB(255, 255, 255, 255),
                 ),
               ),
             ),
@@ -272,6 +272,7 @@ class AccessibilityPanel extends StatelessWidget {
 
   Widget _buildFontSizeControls() {
     final accessibilityService = AccessibilityService.instance;
+    final translationService = TranslationService.instance;
     
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -294,21 +295,21 @@ class AccessibilityPanel extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Font Size Control',
+          Obx(() => Text(
+            translationService.getText('font_size_control'),
             style: accessibilityService.getAccessibleTextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
             ),
-          ),
+          )),
           const SizedBox(height: 8),
-          Text(
-            'Adjust text size for better readability',
+          Obx(() => Text(
+            translationService.getText('font_size_description'),
             style: accessibilityService.getAccessibleTextStyle(
               fontSize: 12,
               color: accessibilityService.secondaryTextColor,
             ),
-          ),
+          )),
           const SizedBox(height: 12),
           Row(
             children: [
@@ -346,6 +347,7 @@ class AccessibilityPanel extends StatelessWidget {
 
   Widget _buildTestSection() {
     final accessibilityService = AccessibilityService.instance;
+    final translationService = TranslationService.instance;
     
     return Container(
       padding: const EdgeInsets.all(16),
@@ -369,18 +371,18 @@ class AccessibilityPanel extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            '🧪 Test Your Settings',
+          Obx(() => Text(
+            translationService.getText('test_settings'),
             style: accessibilityService.getAccessibleTextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
-          ),
+          )),
           const SizedBox(height: 12),
-          Text(
-            'This is a sample text to test your accessibility settings. You can see how the contrast, font size, and other features affect readability.',
+          Obx(() => Text(
+            translationService.getText('test_settings_description'),
             style: accessibilityService.getAccessibleTextStyle(fontSize: 14),
-          ),
+          )),
           const SizedBox(height: 12),
           ElevatedButton(
             onPressed: () {
@@ -388,14 +390,15 @@ class AccessibilityPanel extends StatelessWidget {
               accessibilityService.showAccessibilityFeedback('Test button pressed!');
             },
             style: accessibilityService.getAccessibleButtonStyle(
-              backgroundColor: accessibilityService.successColor,
+              backgroundColor: const Color(0xFF000647),
             ),
-            child: Text(
-              'Test Button',
+            child: Obx(() => Text(
+              translationService.getText('test_button'),
               style: GoogleFonts.poppins(
                 fontSize: 14 * accessibilityService.currentFontSize.value,
+                color: Colors.white,
               ),
-            ),
+            )),
           ),
         ],
       ),
@@ -404,6 +407,7 @@ class AccessibilityPanel extends StatelessWidget {
 
   void _showResetDialog(BuildContext context) {
     final accessibilityService = AccessibilityService.instance;
+    final translationService = TranslationService.instance;
     
     showDialog(
       context: context,
@@ -416,24 +420,24 @@ class AccessibilityPanel extends StatelessWidget {
             width: accessibilityService.isHighContrastMode.value ? 2 : 1,
           ),
         ),
-        title: Text(
-          'Reset Accessibility Settings',
+        title: Obx(() => Text(
+          translationService.getText('reset_dialog_title'),
           style: accessibilityService.getAccessibleTextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
-        ),
-        content: Text(
-          'This will reset all accessibility settings to their default values. Continue?',
+        )),
+        content: Obx(() => Text(
+          translationService.getText('reset_dialog_message'),
           style: accessibilityService.getAccessibleTextStyle(fontSize: 14),
-        ),
+        )),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text(
-              'Cancel',
+            child: Obx(() => Text(
+              translationService.getText('cancel'),
               style: TextStyle(color: accessibilityService.primaryColor),
-            ),
+            )),
           ),
           ElevatedButton(
             onPressed: () {
@@ -442,7 +446,7 @@ class AccessibilityPanel extends StatelessWidget {
               accessibilityService.showAccessibilityFeedback('Settings reset to default');
             },
             style: accessibilityService.getAccessibleButtonStyle(),
-            child: const Text('Reset'),
+            child: Obx(() => Text(translationService.getText('reset'))),
           ),
         ],
       ),

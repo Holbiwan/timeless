@@ -32,7 +32,11 @@ class RequirementsScreen extends StatelessWidget {
                       child: InkWell(
                         onTap: () {
                           controller.onTapBack("require");
-                          Get.back();
+                          if (Navigator.canPop(context)) {
+                            Navigator.pop(context);
+                          } else {
+                            Get.offAllNamed('/dashboard');
+                          }
                         },
                         child: backButton(),
                       ),

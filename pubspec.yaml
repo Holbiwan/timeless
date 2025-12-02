@@ -34,23 +34,22 @@ dependencies:
   # Utilitaires
   shared_preferences: ^2.3.2
   intl: ^0.20.2
+  easy_localization: ^3.0.3
   url_launcher: ^6.3.2
   permission_handler: ^12.0.1
   country_picker: ^2.0.27
-  pull_to_refresh: ^2.0.0
   advanced_search: ^2.2.6+1
 
   # Fichiers & Media
   file_picker: ^10.3.2
-  flutter_pdfview: ^1.3.1
   path_provider: ^2.1.4  
 
   # Notifications
   flutter_local_notifications: ^19.4.0
   pinput: ^5.0.1
   
-  # Traduction automatique
-  translator: ^1.0.4+1
+  # HTTP & Translation
+  http: ^1.2.1
 
 dependency_overrides:
   
@@ -69,3 +68,4 @@ flutter:
     - assets/icons/
     - assets/jobs.json
     - assets/cv/demo_cv.pdf
+    - assets/translations/

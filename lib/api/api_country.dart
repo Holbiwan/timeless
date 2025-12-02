@@ -1,10 +1,8 @@
 import 'dart:convert';
-// ignore: depend_on_referenced_packages
 import 'package:flutter/foundation.dart';
-// ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
 import 'package:timeless/api/model/api_country_model.dart';
-import 'package:timeless/service/http_services.dart';
+import 'package:timeless/services/http_service.dart';
 
 class CountrySearch {
   static Future<List<SearchCountry>?> countNotification() async {
@@ -25,3 +23,4 @@ class CountrySearch {
     return null;
   }
 }
+

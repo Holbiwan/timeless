@@ -2,8 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:timeless/service/translation_service.dart';
+import 'package:timeless/services/translation_service.dart';
 import 'package:timeless/utils/color_res.dart';
+import 'package:timeless/utils/app_theme.dart';
 
 class LanguageToggle extends StatelessWidget {
   const LanguageToggle({super.key});
@@ -17,37 +18,26 @@ class LanguageToggle extends StatelessWidget {
       return InkWell(
         onTap: () {
           translationService.toggleLanguage();
-          Get.snackbar(
-            translationService.getText('language_switched'),
-            isEnglish 
+          AppTheme.showStandardSnackBar(
+            title: translationService.getText('language_switched'),
+            message: isEnglish 
               ? translationService.getText('switched_to_french')
               : translationService.getText('switched_to_english'),
-            backgroundColor: ColorRes.orange,
-            colorText: Colors.white,
-            duration: const Duration(seconds: 2),
           );
         },
         borderRadius: BorderRadius.circular(20),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: const Color(0xFF000647),
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: ColorRes.darkGold, width: 1.5),
-            boxShadow: [
-              BoxShadow(
-                color: ColorRes.darkGold.withOpacity(0.2),
-                spreadRadius: 1,
-                blurRadius: 4,
-                offset: const Offset(0, 2),
-              ),
-            ],
+            border: Border.all(color: const Color(0xFF000647), width: 2.0),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                isEnglish ? '🇺🇸' : '🇫🇷',
+                isEnglish ? '' : '',
                 style: const TextStyle(fontSize: 16),
               ),
               const SizedBox(width: 6),
@@ -56,14 +46,14 @@ class LanguageToggle extends StatelessWidget {
                 style: GoogleFonts.poppins(
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
-                  color: ColorRes.darkGold,
+                  color: Colors.white,
                 ),
               ),
               const SizedBox(width: 4),
               Icon(
                 Icons.swap_horiz,
                 size: 14,
-                color: ColorRes.orange,
+                color: Colors.white,
               ),
             ],
           ),

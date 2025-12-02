@@ -85,7 +85,7 @@ class _SignInScreenMState extends State<SignInScreenM> {
                             const Text(
                               '*',
                               style: TextStyle(
-                                  fontSize: 15, color: ColorRes.starColor),
+                                  fontSize: 15, color: ColorRes.royalBlue),
                             ),
                           ],
                         ),
@@ -99,7 +99,7 @@ class _SignInScreenMState extends State<SignInScreenM> {
                                 boxShadow: [
                                   BoxShadow(
                                       offset: const Offset(6, 6),
-                                      color: Colors.red.withOpacity(0.12),
+                                      color: ColorRes.royalBlue.withOpacity(0.12),
                                       spreadRadius: 0,
                                       blurRadius: 35),
                                 ],
@@ -159,7 +159,7 @@ class _SignInScreenMState extends State<SignInScreenM> {
                                               style: appTextStyle(
                                                   fontWeight: FontWeight.w400,
                                                   fontSize: 9,
-                                                  color: ColorRes.starColor))
+                                                  color: ColorRes.royalBlue))
                                         ]),
                                   ),
                           ],
@@ -181,7 +181,7 @@ class _SignInScreenMState extends State<SignInScreenM> {
                             const Text(
                               '*',
                               style: TextStyle(
-                                  fontSize: 15, color: ColorRes.starColor),
+                                  fontSize: 15, color: ColorRes.royalBlue),
                             ),
                           ],
                         ),
@@ -195,7 +195,7 @@ class _SignInScreenMState extends State<SignInScreenM> {
                                 boxShadow: [
                                   BoxShadow(
                                       offset: const Offset(6, 6),
-                                      color: Colors.red.withOpacity(0.13),
+                                      color: ColorRes.royalBlue.withOpacity(0.13),
                                       spreadRadius: 0,
                                       blurRadius: 35),
                                 ],
@@ -265,7 +265,7 @@ class _SignInScreenMState extends State<SignInScreenM> {
                                             style: appTextStyle(
                                                 fontSize: 9,
                                                 fontWeight: FontWeight.w400,
-                                                color: ColorRes.starColor),
+                                                color: ColorRes.royalBlue),
                                           ),
                                         ]),
                                   ),
@@ -287,10 +287,10 @@ class _SignInScreenMState extends State<SignInScreenM> {
                               child: Row(
                                 children: [
                                   Checkbox(
-                                    activeColor: ColorRes.brightYellow,
+                                    activeColor: ColorRes.royalBlue,
                                     checkColor: ColorRes.black,
                                     side: const BorderSide(
-                                        width: 1.2, color: ColorRes.brightYellow),
+                                        width: 1.2, color: ColorRes.royalBlue),
                                     value: controller.rememberMe,
                                     onChanged: controller.onRememberMeChange,
                                     shape: RoundedRectangleBorder(
@@ -322,24 +322,17 @@ class _SignInScreenMState extends State<SignInScreenM> {
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
-                                  color: ColorRes.white,
+                                  color: Colors.black,
                                   border: Border.all(
-                                    color: ColorRes.darkGold,
-                                    width: 2,
+                                    color: Colors.white,
+                                    width: 2.0,
                                   ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: ColorRes.darkGold.withOpacity(0.2),
-                                      blurRadius: 8,
-                                      offset: const Offset(0, 2),
-                                    ),
-                                  ],
                                 ),
                                 child: Text(Strings.signIn,
                                     style: appTextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w500,
-                                        color: ColorRes.darkGold)),
+                                        color: Colors.white)),
                               ),
                             );
                           }),
@@ -359,7 +352,7 @@ class _SignInScreenMState extends State<SignInScreenM> {
                               style: appTextStyle(
                                   fontWeight: FontWeight.w500,
                                   fontSize: 15,
-                                  color: ColorRes.darkGold)),
+                                  color: ColorRes.royalBlue)),
                         ),
                       ),
                       
@@ -386,16 +379,9 @@ class _SignInScreenMState extends State<SignInScreenM> {
                             height: 45,
                             width: double.infinity,
                             decoration: BoxDecoration(
-                                border: Border.all(color: ColorRes.brightYellow, width: 2),
-                                boxShadow: [
-                                  BoxShadow(
-                                      offset: const Offset(6, 6),
-                                      color: ColorRes.orange.withOpacity(0.08),
-                                      spreadRadius: 0,
-                                      blurRadius: 35),
-                                ],
+                                border: Border.all(color: const Color(0xFF000647), width: 2.0),
                                 borderRadius: BorderRadius.circular(10),
-                                color: ColorRes.white),
+                                color: Colors.white),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -451,7 +437,7 @@ class _SignInScreenMState extends State<SignInScreenM> {
                                 style: appTextStyle(
                                     fontWeight: FontWeight.w600,
                                     fontSize: 16,
-                                    color: ColorRes.darkGold),
+                                    color: ColorRes.royalBlue),
                               ),
                             ),
                           ),
@@ -471,14 +457,14 @@ class _SignInScreenMState extends State<SignInScreenM> {
 
   OutlineInputBorder enableBorder() {
     return OutlineInputBorder(
-      borderSide: const BorderSide(color: ColorRes.orange),
+      borderSide: const BorderSide(color: ColorRes.royalBlue),
       borderRadius: BorderRadius.circular(10),
     );
   }
 
   OutlineInputBorder errorBorder() {
     return OutlineInputBorder(
-      borderSide: const BorderSide(color: ColorRes.starColor),
+      borderSide: const BorderSide(color: ColorRes.royalBlue),
       borderRadius: BorderRadius.circular(10),
     );
   }

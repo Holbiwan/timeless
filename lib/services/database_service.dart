@@ -199,7 +199,7 @@ class DatabaseService extends GetxController {
       QuerySnapshot jobsSnapshot = await _firestore.collection('jobs').limit(1).get();
       
       if (jobsSnapshot.docs.isEmpty) {
-        print('🔧 Initialisation de la base de données...');
+        print(' Initialisation de la base de données...');
         await createSampleJobs();
       } else {
         print('✅ Base de données déjà initialisée avec ${jobsSnapshot.docs.length}+ emplois');

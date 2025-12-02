@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:timeless/screen/job_detail_screen/job_detail_controller.dart';
 import 'package:timeless/screen/job_detail_screen/job_detail_widget/job_detail_widget.dart';
 import 'package:timeless/screen/savejobs/save_job_screen.dart';
-import 'package:timeless/service/pref_services.dart';
+import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/app_res.dart';
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/asset_res.dart';
@@ -46,22 +46,32 @@ class JobDetailScreen extends StatelessWidget {
                             children: [
                               InkWell(
                                 onTap: () {
-                                  Get.back();
+                                  if (Navigator.canPop(context)) {
+                                    Navigator.pop(context);
+                                  } else {
+                                    Get.offAllNamed('/dashboard');
+                                  }
                                 },
                                 child: Container(
                                   height: 40,
                                   width: 40,
-                                  padding: const EdgeInsets.only(left: 10),
-                                  // margin: const EdgeInsets.only(left: 10),
                                   decoration: BoxDecoration(
-                                    color: Colors.grey.withOpacity(0.3),
+                                    color: Colors.white,
+                                    border: Border.all(color: const Color(0xFF000647), width: 2),
                                     borderRadius: BorderRadius.circular(10),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: const Color(0xFF000647).withOpacity(0.2),
+                                        blurRadius: 6,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
                                   ),
                                   child: const Align(
                                     alignment: Alignment.center,
                                     child: Icon(
                                       Icons.arrow_back_ios,
-                                      color: Colors.white,
+                                      color: Color(0xFF000647),
                                     ),
                                   ),
                                 ),
@@ -70,8 +80,16 @@ class JobDetailScreen extends StatelessWidget {
                                 height: 40,
                                 width: 40,
                                 decoration: BoxDecoration(
-                                  color: Colors.grey.withOpacity(0.3),
+                                  color: Colors.white,
+                                  border: Border.all(color: const Color(0xFF000647), width: 2),
                                   borderRadius: BorderRadius.circular(10),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: const Color(0xFF000647).withOpacity(0.2),
+                                      blurRadius: 6,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ],
                                 ),
                                 child: GetBuilder<JobDetailsController>(
                                     id: "bookmark",
@@ -80,7 +98,7 @@ class JobDetailScreen extends StatelessWidget {
                                         alignment: Alignment.center,
                                         child: (args['saved']
                                                     ['BookMarkUserList']
-                                                .contains(PrefService.getString(
+                                                .contains(PreferencesService.getString(
                                                     PrefKeys.userId)))
                                             ? InkWell(
                                                 onTap: () {
@@ -116,17 +134,17 @@ class JobDetailScreen extends StatelessWidget {
                                                       ['BookMarkUserList'];
                                                   if (bookmark.isEmpty) {
                                                     bookmark.add(
-                                                        PrefService.getString(
+                                                        PreferencesService.getString(
                                                             PrefKeys.userId));
                                                   }
                                                   for (int i = 0;
                                                       i < bookmark.length;
                                                       i++) {
                                                     if (bookmark[i] !=
-                                                        PrefService.getString(
+                                                        PreferencesService.getString(
                                                             PrefKeys.userId)) {
                                                       bookmark.add(
-                                                          PrefService.getString(
+                                                          PreferencesService.getString(
                                                               PrefKeys.userId));
                                                     }
                                                   }
@@ -151,7 +169,7 @@ class JobDetailScreen extends StatelessWidget {
                                                   FirebaseFirestore.instance
                                                       .collection('BookMark')
                                                       .doc(
-                                                          PrefService.getString(
+                                                          PreferencesService.getString(
                                                               PrefKeys.userId))
                                                       .collection("BookMark1")
                                                     ..doc().set(map);
@@ -337,24 +355,47 @@ class JobDetailScreen extends StatelessWidget {
                       });
                     },
                     child: Container(
-                      height: 50,
+                      height: 60,
                       width: Get.width,
                       alignment: Alignment.center,
-                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
                       margin: const EdgeInsets.only(
-                          right: 18, left: 18, top: 10, bottom: 30),
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        gradient: LinearGradient(colors: [
-                          ColorRes.gradientColor,
-                          ColorRes.containerColor,
-                        ]),
+                          right: 18, left: 18, top: 20, bottom: 30),
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.all(Radius.circular(15)),
+                        gradient: const LinearGradient(
+                          colors: [
+                            ColorRes.gradientColor,
+                            ColorRes.containerColor,
+                          ],
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: ColorRes.gradientColor.withOpacity(0.3),
+                            blurRadius: 10,
+                            offset: const Offset(0, 5),
+                          ),
+                        ],
                       ),
-                      child: Text(Strings.applyNow,
-                          style: appTextStyle(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            Icons.work,
+                            color: Colors.white,
+                            size: 24,
+                          ),
+                          const SizedBox(width: 10),
+                          Text(
+                            "Apply Now",
+                            style: appTextStyle(
                               color: Colors.white,
                               fontSize: 18, 
-                              fontWeight: FontWeight.w600)),
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],

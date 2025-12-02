@@ -6,7 +6,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:timeless/service/pref_services.dart';
+import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/utils/color_res.dart';
 
@@ -59,12 +59,12 @@ class ManagerProfileController extends GetxController {
           final data = doc.data()!;
           
           // Charger les données du profil
-          fullNameController.text = data['fullName'] ?? PrefService.getString(PrefKeys.fullName);
-          emailController.text = data['email'] ?? PrefService.getString(PrefKeys.email);
-          phoneController.text = data['phone'] ?? PrefService.getString(PrefKeys.phoneNumber);
-          cityController.text = data['city'] ?? PrefService.getString(PrefKeys.city);
-          countryController.text = data['country'] ?? PrefService.getString(PrefKeys.country);
-          occupationController.text = data['occupation'] ?? PrefService.getString(PrefKeys.occupation);
+          fullNameController.text = data['fullName'] ?? PreferencesService.getString(PrefKeys.fullName);
+          emailController.text = data['email'] ?? PreferencesService.getString(PrefKeys.email);
+          phoneController.text = data['phone'] ?? PreferencesService.getString(PrefKeys.phoneNumber);
+          cityController.text = data['city'] ?? PreferencesService.getString(PrefKeys.city);
+          countryController.text = data['country'] ?? PreferencesService.getString(PrefKeys.country);
+          occupationController.text = data['occupation'] ?? PreferencesService.getString(PrefKeys.occupation);
           bioController.text = data['bio'] ?? '';
           
           // Charger l'image de profil
@@ -91,20 +91,20 @@ class ManagerProfileController extends GetxController {
     countryController.text = countryController.text.isNotEmpty ? countryController.text : 'France';
     
     // Valeurs depuis les préférences ou par défaut
-    fullNameController.text = PrefService.getString(PrefKeys.fullName).isNotEmpty 
-        ? PrefService.getString(PrefKeys.fullName) 
+    fullNameController.text = PreferencesService.getString(PrefKeys.fullName).isNotEmpty 
+        ? PreferencesService.getString(PrefKeys.fullName) 
         : 'John Doe';
-    emailController.text = PrefService.getString(PrefKeys.email).isNotEmpty 
-        ? PrefService.getString(PrefKeys.email) 
+    emailController.text = PreferencesService.getString(PrefKeys.email).isNotEmpty 
+        ? PreferencesService.getString(PrefKeys.email) 
         : 'john.doe@example.com';
-    phoneController.text = PrefService.getString(PrefKeys.phoneNumber).isNotEmpty 
-        ? PrefService.getString(PrefKeys.phoneNumber) 
+    phoneController.text = PreferencesService.getString(PrefKeys.phoneNumber).isNotEmpty 
+        ? PreferencesService.getString(PrefKeys.phoneNumber) 
         : '+33 6 12 34 56 78';
-    cityController.text = PrefService.getString(PrefKeys.city).isNotEmpty 
-        ? PrefService.getString(PrefKeys.city) 
+    cityController.text = PreferencesService.getString(PrefKeys.city).isNotEmpty 
+        ? PreferencesService.getString(PrefKeys.city) 
         : 'Paris';
-    occupationController.text = PrefService.getString(PrefKeys.occupation).isNotEmpty 
-        ? PrefService.getString(PrefKeys.occupation) 
+    occupationController.text = PreferencesService.getString(PrefKeys.occupation).isNotEmpty 
+        ? PreferencesService.getString(PrefKeys.occupation) 
         : 'Developer';
     bioController.text = bioController.text.isNotEmpty ? bioController.text : 'Passionate about technology and innovation';
   }
@@ -164,7 +164,7 @@ class ManagerProfileController extends GetxController {
       } else {
         Get.snackbar('Erreur', 'Problème avec la caméra: ${e.toString().split(':').last}',
             snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.red,
+            backgroundColor: ColorRes.royalBlue,
             colorText: Colors.white,
             duration: const Duration(seconds: 3));
       }
@@ -216,7 +216,7 @@ class ManagerProfileController extends GetxController {
       } else {
         Get.snackbar('Erreur', 'Problème avec la galerie: ${e.toString().split(':').last}',
             snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.red,
+            backgroundColor: ColorRes.royalBlue,
             colorText: Colors.white,
             duration: const Duration(seconds: 3));
       }
@@ -258,7 +258,7 @@ class ManagerProfileController extends GetxController {
         'Erreur',
         'Impossible de sauvegarder le profil: $e',
         snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
+        backgroundColor: ColorRes.royalBlue,
         colorText: Colors.white,
         duration: const Duration(seconds: 3),
       );
@@ -317,12 +317,12 @@ class ManagerProfileController extends GetxController {
   }
 
   void _updateLocalPreferences() {
-    PrefService.setValue(PrefKeys.fullName, fullNameController.text.trim());
-    PrefService.setValue(PrefKeys.email, emailController.text.trim());
-    PrefService.setValue(PrefKeys.phoneNumber, phoneController.text.trim());
-    PrefService.setValue(PrefKeys.city, cityController.text.trim());
-    PrefService.setValue(PrefKeys.country, countryController.text.trim());
-    PrefService.setValue(PrefKeys.occupation, occupationController.text.trim());
+    PreferencesService.setValue(PrefKeys.fullName, fullNameController.text.trim());
+    PreferencesService.setValue(PrefKeys.email, emailController.text.trim());
+    PreferencesService.setValue(PrefKeys.phoneNumber, phoneController.text.trim());
+    PreferencesService.setValue(PrefKeys.city, cityController.text.trim());
+    PreferencesService.setValue(PrefKeys.country, countryController.text.trim());
+    PreferencesService.setValue(PrefKeys.occupation, occupationController.text.trim());
   }
 
   // --- Validations simples (si tes écrans les utilisent) ---

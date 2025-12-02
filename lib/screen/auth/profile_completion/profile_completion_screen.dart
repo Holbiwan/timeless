@@ -7,11 +7,12 @@ import 'package:timeless/common/widgets/common_loader.dart';
 import 'package:timeless/common/widgets/language_toggle.dart';
 import 'package:timeless/screen/auth/profile_completion/profile_completion_controller.dart';
 import 'package:timeless/screen/dashboard/dashboard_screen.dart';
-import 'package:timeless/service/google_auth_service.dart';
-import 'package:timeless/service/translation_service.dart';
+import 'package:timeless/services/google_auth_service.dart';
+import 'package:timeless/services/translation_service.dart';
 import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/string.dart';
+import 'package:timeless/utils/app_theme.dart';
 
 class ProfileCompletionScreen extends StatefulWidget {
   const ProfileCompletionScreen({super.key});
@@ -47,19 +48,35 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
                   children: [
                     const SizedBox(height: 8),
 
-                    // Header avec langue et options
+                    // Back button + Header avec langue et options
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        // Profile avatar
-                        CircleAvatar(
-                          radius: 30,
-                          backgroundImage: controller.userPhotoUrl.value.isNotEmpty
-                              ? NetworkImage(controller.userPhotoUrl.value)
-                              : null,
-                          child: controller.userPhotoUrl.value.isEmpty
-                              ? const Icon(Icons.person, size: 30)
-                              : null,
+                        // Back button positioned at top-left
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: const Color(0xFF000647), width: 2.0),
+                          ),
+                          child: IconButton(
+                            onPressed: () => Navigator.pop(context),
+                            icon: const Icon(Icons.arrow_back, color: Colors.black),
+                          ),
+                        ),
+                        // Center profile avatar
+                        Expanded(
+                          child: Center(
+                            child: CircleAvatar(
+                              radius: 30,
+                              backgroundImage: controller.userPhotoUrl.value.isNotEmpty
+                                  ? NetworkImage(controller.userPhotoUrl.value)
+                                  : null,
+                              child: controller.userPhotoUrl.value.isEmpty
+                                  ? const Icon(Icons.person, size: 30)
+                                  : null,
+                            ),
+                          ),
                         ),
                         
                         // Language toggle + Menu
@@ -71,7 +88,7 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
                             
                             // Bouton de déconnexion/changement de compte
                             PopupMenuButton<String>(
-                          icon: const Icon(Icons.more_vert, color: ColorRes.primaryAccent),
+                          icon: const Icon(Icons.more_vert, color: Color.fromARGB(255, 246, 246, 59)),
                           onSelected: (String value) async {
                             if (value == 'switch_account') {
                               await _switchAccount();
@@ -263,7 +280,9 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
                           child: OutlinedButton(
                             onPressed: isLoading ? null : _skipForNow,
                             style: OutlinedButton.styleFrom(
-                              side: const BorderSide(color: ColorRes.primaryAccent),
+                              backgroundColor: Colors.white,
+                              foregroundColor: Colors.black,
+                              side: const BorderSide(color: Color(0xFF000647), width: 2.0),
                               padding: const EdgeInsets.symmetric(vertical: 15),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
@@ -274,7 +293,7 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
                               style: GoogleFonts.poppins(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
-                                color: ColorRes.primaryAccent,
+                                color: Colors.black,
                               ),
                             ),
                           ),
@@ -288,7 +307,9 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
                           child: ElevatedButton(
                             onPressed: isLoading ? null : _completeProfile,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: ColorRes.primaryAccent,
+                              backgroundColor: Colors.white,
+                              foregroundColor: Colors.black,
+                              side: const BorderSide(color: Color(0xFF000647), width: 2.0),
                               padding: const EdgeInsets.symmetric(vertical: 15),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
@@ -299,7 +320,7 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
                               style: GoogleFonts.poppins(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
-                                color: Colors.white,
+                                color: Colors.black,
                               ),
                             ),
                           ),
@@ -427,21 +448,17 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
       if (user != null) {
         // Mettre à jour les données avec le nouveau compte
         controller.initializeWithGoogleData();
-        Get.snackbar(
-          "Compte changé",
-          "Connecté avec ${user.email}",
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.blue[100],
-          colorText: Colors.blue[800],
+        AppTheme.showStandardSnackBar(
+          title: "Compte changé",
+          message: "Connecté avec ${user.email}",
+          isSuccess: true,
         );
       }
     } catch (e) {
-      Get.snackbar(
-        "Erreur",
-        "Impossible de changer de compte",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red[100],
-        colorText: Colors.red[800],
+      AppTheme.showStandardSnackBar(
+        title: "Erreur",
+        message: "Impossible de changer de compte",
+        isError: true,
       );
     } finally {
       controller.loading.value = false;
@@ -451,24 +468,50 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
   Future<void> _logout() async {
     final confirmed = await Get.dialog<bool>(
       AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
+          side: BorderSide(color: AppTheme.buttonBorderColor, width: 2.0),
+        ),
         title: Text(
           'Déconnexion',
-          style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+          style: GoogleFonts.poppins(
+            fontWeight: FontWeight.w600,
+            color: Colors.black,
+          ),
         ),
         content: Text(
           'Êtes-vous sûr de vouloir vous déconnecter ?',
-          style: GoogleFonts.poppins(),
+          style: GoogleFonts.poppins(
+            color: Colors.black,
+          ),
         ),
         actions: [
           TextButton(
             onPressed: () => Get.back(result: false),
+            style: TextButton.styleFrom(
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.black,
+              side: BorderSide(color: AppTheme.buttonBorderColor, width: 2.0),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppTheme.radiusRegular),
+              ),
+            ),
             child: Text(
               'Annuler',
-              style: GoogleFonts.poppins(color: ColorRes.textSecondary),
+              style: GoogleFonts.poppins(color: Colors.black),
             ),
           ),
           TextButton(
             onPressed: () => Get.back(result: true),
+            style: TextButton.styleFrom(
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.black,
+              side: BorderSide(color: AppTheme.buttonBorderColor, width: 2.0),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppTheme.radiusRegular),
+              ),
+            ),
             child: Text(
               'Se déconnecter',
               style: GoogleFonts.poppins(color: Colors.red),
@@ -482,18 +525,18 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
       try {
         controller.loading.value = true;
         await GoogleAuthService.signOut();
-        Get.snackbar(
-          "Déconnexion",
-          "Vous avez été déconnecté",
-          snackPosition: SnackPosition.TOP,
+        AppTheme.showStandardSnackBar(
+          title: "Déconnexion",
+          message: "Vous avez été déconnecté",
+          isSuccess: true,
         );
         // Retourner à l'écran de connexion
         Get.offAllNamed('/'); // ou votre route de première page
       } catch (e) {
-        Get.snackbar(
-          "Erreur",
-          "Impossible de se déconnecter",
-          snackPosition: SnackPosition.BOTTOM,
+        AppTheme.showStandardSnackBar(
+          title: "Erreur",
+          message: "Impossible de se déconnecter",
+          isError: true,
         );
       } finally {
         controller.loading.value = false;
@@ -509,12 +552,10 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
   Future<void> _completeProfile() async {
     if (controller.firstNameController.text.trim().isEmpty ||
         controller.lastNameController.text.trim().isEmpty) {
-      Get.snackbar(
-        "Informations manquantes",
-        "Prénom et nom sont requis",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.orange[100],
-        colorText: Colors.orange[800],
+      AppTheme.showStandardSnackBar(
+        title: "Informations manquantes",
+        message: "Prénom et nom sont requis",
+        isError: true,
       );
       return;
     }
@@ -525,23 +566,19 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
       // Sauvegarder les informations complètes
       await controller.saveProfileData();
       
-      Get.snackbar(
-        "Profil complété !",
-        "Bienvenue sur Timeless",
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.green[100],
-        colorText: Colors.green[800],
+      AppTheme.showStandardSnackBar(
+        title: "Profil complété !",
+        message: "Bienvenue sur Timeless",
+        isSuccess: true,
       );
       
       // Aller au dashboard
       Get.offAll(() => DashBoardScreen());
     } catch (e) {
-      Get.snackbar(
-        "Erreur",
-        "Impossible de sauvegarder le profil",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red[100],
-        colorText: Colors.red[800],
+      AppTheme.showStandardSnackBar(
+        title: "Erreur",
+        message: "Impossible de sauvegarder le profil",
+        isError: true,
       );
     } finally {
       controller.loading.value = false;
