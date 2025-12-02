@@ -82,21 +82,20 @@ class TipsForYouScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                         borderRadius:
                             const BorderRadius.all(Radius.circular(15)),
-                        gradient: const LinearGradient(
-                          colors: [
-                            Color.fromARGB(255, 5, 5, 5),
-                            ColorRes.containerColor
-                          ],
+                        color: const Color(0xFF000647),
+                        border: Border.all(
+                          color: const Color(0xFF000647),
+                          width: 2.0,
                         ),
                         boxShadow: [
                           BoxShadow(
                             offset: const Offset(6, 6),
-                            color: ColorRes.containerColor.withOpacity(0.2),
+                            color: const Color(0xFF000647).withOpacity(0.2),
                             blurRadius: 10,
                           ),
                           BoxShadow(
                             offset: const Offset(0, 7),
-                            color: ColorRes.containerColor.withOpacity(0.5),
+                            color: const Color(0xFF000647).withOpacity(0.5),
                             blurRadius: 20,
                           ),
                         ],
@@ -123,22 +122,6 @@ class TipsForYouScreen extends StatelessWidget {
                                 const Divider(
                                     height: 10, color: ColorRes.white),
                                 const SizedBox(height: 10),
-                                Text(
-                                  'Sabrina PAPEAU',
-                                  style: appTextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                    color: ColorRes.white,
-                                  ),
-                                ),
-                                Text(
-                                  'Creator of Timeless',
-                                  style: appTextStyle(
-                                    fontSize: 8,
-                                    fontWeight: FontWeight.w500,
-                                    color: ColorRes.white,
-                                  ),
-                                ),
                               ],
                             ),
                           ),

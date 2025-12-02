@@ -7,8 +7,9 @@ import 'package:get/get.dart';
 
 import 'package:timeless/screen/dashboard/dashboard_screen.dart';
 import 'package:timeless/screen/auth/email_verification/email_verification_screen.dart';
-import 'package:timeless/service/pref_services.dart';
+import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/pref_keys.dart';
+import 'package:timeless/utils/app_theme.dart';
 
 class SignInScreenController extends GetxController {
   // ===== State / Controllers =====
@@ -29,8 +30,8 @@ class SignInScreenController extends GetxController {
 
   // ===== Prefill RememberMe =====
   void getRememberEmailDataUser() {
-    final email = PrefService.getString(PrefKeys.emailRememberUser);
-    final pwd = PrefService.getString(PrefKeys.passwordRememberUser);
+    final email = PreferencesService.getString(PrefKeys.emailRememberUser);
+    final pwd = PreferencesService.getString(PrefKeys.passwordRememberUser);
     if (email.isNotEmpty) {
       emailController.text = email;
       passwordController.text = pwd;
@@ -74,10 +75,10 @@ class SignInScreenController extends GetxController {
 
   // ===== Helpers =====
   void _persistUserPrefs(User user, {String? email, String? fullName}) {
-    PrefService.setValue(PrefKeys.rol, "User");
-    PrefService.setValue(PrefKeys.userId, user.uid);
-    if (email != null) PrefService.setValue(PrefKeys.email, email);
-    if (fullName != null) PrefService.setValue(PrefKeys.fullName, fullName);
+    PreferencesService.setValue(PrefKeys.rol, "User");
+    PreferencesService.setValue(PrefKeys.userId, user.uid);
+    if (email != null) PreferencesService.setValue(PrefKeys.email, email);
+    if (fullName != null) PreferencesService.setValue(PrefKeys.fullName, fullName);
   }
 
   Future<void> _mergeUserDoc({
@@ -112,13 +113,10 @@ class SignInScreenController extends GetxController {
       if (user != null) {
         // Check if email is verified
         if (!user.emailVerified) {
-          Get.snackbar(
-            "Email Not Verified",
-            "Please verify your email address before signing in. Check your inbox for the verification link.",
-            backgroundColor: Colors.orange,
-            colorText: Colors.white,
-            duration: const Duration(seconds: 4),
-            snackPosition: SnackPosition.BOTTOM,
+          AppTheme.showStandardSnackBar(
+            title: "Email Not Verified",
+            message: "Please verify your email address before signing in. Check your inbox for the verification link.",
+            isError: true,
           );
           
           // Navigate to email verification screen
@@ -142,22 +140,22 @@ class SignInScreenController extends GetxController {
         final m = snap.data() ?? {};
         // Load user profile data
         if (m["fullName"] != null && (m["fullName"] as String).isNotEmpty) {
-          PrefService.setValue(PrefKeys.fullName, (m["fullName"] ?? "") as String);
+          PreferencesService.setValue(PrefKeys.fullName, (m["fullName"] ?? "") as String);
         }
         if (m["Phone"] != null && (m["Phone"] as String).isNotEmpty) {
-          PrefService.setValue(PrefKeys.phoneNumber, (m["Phone"] ?? "") as String);
+          PreferencesService.setValue(PrefKeys.phoneNumber, (m["Phone"] ?? "") as String);
         }
         if (m["City"] != null && (m["City"] as String).isNotEmpty) {
-          PrefService.setValue(PrefKeys.city, (m["City"] ?? "") as String);
+          PreferencesService.setValue(PrefKeys.city, (m["City"] ?? "") as String);
         }
         if (m["State"] != null && (m["State"] as String).isNotEmpty) {
-          PrefService.setValue(PrefKeys.state, (m["State"] ?? "") as String);
+          PreferencesService.setValue(PrefKeys.state, (m["State"] ?? "") as String);
         }
         if (m["Country"] != null && (m["Country"] as String).isNotEmpty) {
-          PrefService.setValue(PrefKeys.country, (m["Country"] ?? "") as String);
+          PreferencesService.setValue(PrefKeys.country, (m["Country"] ?? "") as String);
         }
         if (m["Occupation"] != null && (m["Occupation"] as String).isNotEmpty) {
-          PrefService.setValue(PrefKeys.occupation, (m["Occupation"] ?? "") as String);
+          PreferencesService.setValue(PrefKeys.occupation, (m["Occupation"] ?? "") as String);
         }
 
         // Update user's account status to active if verified
@@ -182,25 +180,25 @@ class SignInScreenController extends GetxController {
         passwordController.clear();
 
         // Show welcome back message
-        Get.snackbar(
-          "Welcome Back!",
-          "Successfully signed in to your account.",
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-          duration: const Duration(seconds: 2),
+        AppTheme.showStandardSnackBar(
+          title: "Welcome Back!",
+          message: "Successfully signed in to your account.",
+          isSuccess: true,
         );
 
         _gotoDashboard();
       }
     } on FirebaseAuthException catch (e) {
-      Get.snackbar("Error", e.message ?? e.code,
-          snackPosition: SnackPosition.BOTTOM,
-          colorText: const Color(0xffDA1414));
+      AppTheme.showStandardSnackBar(
+          title: "Error",
+          message: e.message ?? e.code,
+          isError: true);
     } catch (e) {
       if (kDebugMode) print(e);
-      Get.snackbar("Error", "Sign-in failed",
-          snackPosition: SnackPosition.BOTTOM,
-          colorText: const Color(0xffDA1414));
+      AppTheme.showStandardSnackBar(
+          title: "Error",
+          message: "Sign-in failed",
+          isError: true);
     } finally {
       loading.value = false;
     }
@@ -208,9 +206,9 @@ class SignInScreenController extends GetxController {
 
   Future<void> onLoginBtnTap() async {
     if (rememberMe) {
-      await PrefService.setValue(
+      await PreferencesService.setValue(
           PrefKeys.emailRememberUser, emailController.text);
-      await PrefService.setValue(
+      await PreferencesService.setValue(
           PrefKeys.passwordRememberUser, passwordController.text);
     }
     if (!validator()) return;
@@ -244,8 +242,9 @@ class SignInScreenController extends GetxController {
 
       final user = cred.user;
       if (user == null) {
-        Get.snackbar("Google", "Sign-in cancelled",
-            snackPosition: SnackPosition.BOTTOM);
+        AppTheme.showStandardSnackBar(
+            title: "Google",
+            message: "Sign-in cancelled");
         return;
       }
 
@@ -263,14 +262,16 @@ class SignInScreenController extends GetxController {
       _gotoDashboard();
     } on FirebaseAuthException catch (e) {
       if (kDebugMode) print("GoogleAuth error: ${e.code} ${e.message}");
-      Get.snackbar("Google", e.message ?? 'Firebase error: ${e.code}',
-          snackPosition: SnackPosition.BOTTOM,
-          colorText: const Color(0xffDA1414));
+      AppTheme.showStandardSnackBar(
+          title: "Google",
+          message: e.message ?? 'Firebase error: ${e.code}',
+          isError: true);
     } catch (e) {
       if (kDebugMode) print("GoogleAuth error: $e");
-      Get.snackbar("Google", "Unexpected error: $e",
-          snackPosition: SnackPosition.BOTTOM,
-          colorText: const Color(0xffDA1414));
+      AppTheme.showStandardSnackBar(
+          title: "Google",
+          message: "Unexpected error: $e",
+          isError: true);
     } finally {
       loading.value = false;
     }
@@ -284,12 +285,10 @@ class SignInScreenController extends GetxController {
     try {
       // Sur Android, GitHub a des problèmes avec Custom Tabs
       if (!kIsWeb) {
-        Get.snackbar(
-          "GitHub Sign-In", 
-          "GitHub n'est pas supporté sur Android pour cette version.\n"
+        AppTheme.showStandardSnackBar(
+          title: "GitHub Sign-In",
+          message: "GitHub n'est pas supporté sur Android pour cette version.\n"
           "Utilise Google Sign-In ou Email/Password.",
-          snackPosition: SnackPosition.BOTTOM,
-          duration: const Duration(seconds: 4),
         );
         return;
       }
@@ -303,8 +302,9 @@ class SignInScreenController extends GetxController {
 
       final user = cred.user;
       if (user == null) {
-        Get.snackbar("GitHub", "Sign-in cancelled",
-            snackPosition: SnackPosition.BOTTOM);
+        AppTheme.showStandardSnackBar(
+            title: "GitHub",
+            message: "Sign-in cancelled");
         return;
       }
 
@@ -338,14 +338,16 @@ class SignInScreenController extends GetxController {
       _gotoDashboard();
     } on FirebaseAuthException catch (e) {
       if (kDebugMode) print("GitHubAuth error: ${e.code} ${e.message}");
-      Get.snackbar("GitHub", e.message ?? 'Firebase error: ${e.code}',
-          snackPosition: SnackPosition.BOTTOM,
-          colorText: const Color(0xffDA1414));
+      AppTheme.showStandardSnackBar(
+          title: "GitHub",
+          message: e.message ?? 'Firebase error: ${e.code}',
+          isError: true);
     } catch (e) {
       if (kDebugMode) print("GitHubAuth error: $e");
-      Get.snackbar("GitHub", "Unexpected error: $e",
-          snackPosition: SnackPosition.BOTTOM,
-          colorText: const Color(0xffDA1414));
+      AppTheme.showStandardSnackBar(
+          title: "GitHub",
+          message: "Unexpected error: $e",
+          isError: true);
     } finally {
       loading.value = false;
     }

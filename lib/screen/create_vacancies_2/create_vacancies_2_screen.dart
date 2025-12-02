@@ -24,12 +24,7 @@ class CreateVacancies2Screen extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.all(12),
-                child: InkWell(
-                  onTap: () {
-                    Get.back();
-                  },
-                  child: backButton(),
-                ),
+                child: backButton(),
               ),
               const SizedBox(width: 28),
               Text(

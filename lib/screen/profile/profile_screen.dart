@@ -12,7 +12,7 @@ class ManagerDashBoardScreenController extends GetxController
     super.onInit();
   }
 
-  /// Gestion des arguments passés à l'écran
+  // Gestion des arguments passés à l'écran
   void _handleInitialArguments() {
     try {
       final args = Get.arguments;
@@ -28,7 +28,7 @@ class ManagerDashBoardScreenController extends GetxController
     }
   }
 
-  /// Extrait l'index de l'onglet depuis différents formats d'arguments
+  // Extrait l'index de l'onglet depuis différents formats d'arguments
   int? _extractTabIndexFromArguments(dynamic args) {
     if (args is int) {
       return args;
@@ -37,26 +37,26 @@ class ManagerDashBoardScreenController extends GetxController
     } else if (args is Map<String, dynamic>) {
       // Cherche différentes clés possibles pour l'index
       final dynamic value = args['index'] ?? args['tab'] ?? args['currentTab'];
-      
+
       if (value is int) return value;
       if (value is String) return int.tryParse(value);
     }
     return null;
   }
 
-  /// Change l'onglet actuel et exécute la logique spécifique
+  // Change l'onglet actuel et exécute la logique spécifique
   void onBottomBarChange(int index) {
     if (index == currentTab.value) return; // Évite les traitements inutiles
-    
+
     currentTab.value = index;
     _executeTabSpecificLogic(index);
     update(['bottom_bar']);
   }
 
-  /// Exécute la logique spécifique à chaque onglet
+  // Exécute la logique spécifique à chaque onglet
   void _executeTabSpecificLogic(int index) {
     debugPrint("INDEX IS $index");
-    
+
     switch (index) {
       case 0:
         _initHomeTab();
@@ -75,7 +75,7 @@ class ManagerDashBoardScreenController extends GetxController
     }
   }
 
-  /// Méthodes spécifiques à chaque onglet
+  // Méthodes spécifiques à chaque onglet
   void _initHomeTab() {
     debugPrint("Initializing Home Tab");
   }
@@ -91,7 +91,7 @@ class ManagerDashBoardScreenController extends GetxController
   void _initProfileTab() {
     try {
       debugPrint("Initializing Manager Profile Tab");
-      
+
       // UTILISEZ ManagerProfileController au lieu de ProfileController
       if (Get.isRegistered<ManagerProfileController>()) {
         final profileController = Get.find<ManagerProfileController>();
@@ -105,10 +105,10 @@ class ManagerDashBoardScreenController extends GetxController
     }
   }
 
-  /// Méthode utilitaire pour obtenir l'index actuel
+  // Méthode utilitaire pour obtenir l'index actuel
   int get currentIndex => currentTab.value;
 
-  /// Méthode pour forcer le rafraîchissement de la bottom bar
+  // Méthode pour forcer le rafraîchissement de la bottom bar
   void refreshBottomBar() {
     update(['bottom_bar']);
   }

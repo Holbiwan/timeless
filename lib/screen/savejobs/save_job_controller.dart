@@ -22,18 +22,11 @@ class SaveJobController extends GetxController implements GetxService {
 
   RxInt selectedJobs2 = 0.obs;
   RxList jobs2 = [
-    "All Job",
-    
-    "Design",
-    "UX",
-    'Software',
-    'Database Manager',
-    'Product Manager',
-    'Full-Stack Developer',
-    'Data Scientist',
-    'Web Developers',
-    'Networking',
-    'Cyber Security'
+    'All Jobs',   // "UX/UI Designer",
+    'UI/UX',
+    'Data',
+    'Network',
+    'Security'
   ].obs;
 
   onTapJobs2(int index) {

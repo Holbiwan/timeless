@@ -1,12 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:timeless/common/widgets/common_loader.dart';
 import 'package:timeless/screen/create_vacancies/create_vacancies_controller.dart';
 import 'package:timeless/screen/dashboard/home/home_controller.dart';
 import 'package:timeless/screen/dashboard/home/widgets/quick_apply_button.dart';
 import 'package:timeless/screen/job_recommendation_screen/job_recommendation_controller.dart';
-import 'package:timeless/service/pref_services.dart';
+import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/app_res.dart';
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/asset_res.dart';
@@ -33,22 +34,45 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
               return const CommonLoader();
             }
 
+            // Utiliser les filtres du controller
+            final filteredDocs = jrController.getFilteredDocuments();
+            final total = filteredDocs.length;
+            
             controller.jobTypesSaved =
-                List.generate(jrController.documents.length, (index) => false)
-                    .obs;
+                List.generate(total, (index) => false).obs;
 
-            if (jrController.searchText.value.isNotEmpty) {
-              final q = jrController.searchText.value.toLowerCase();
-              jrController.documents = jrController.documents.where((e) {
-                final pos = e.get('Position').toString().toLowerCase();
-                final comp = e.get('CompanyName').toString().toLowerCase();
-                return pos.contains(q) || comp.contains(q);
-              }).toList();
-            }
-
-            final total = jrController.documents.length;
             if (total == 0) {
-              return const Center(child: Text("No jobs found"));
+              return Container(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  children: [
+                    const Icon(
+                      Icons.search_off,
+                      size: 60,
+                      color: Colors.grey,
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      jrController.hasActiveFilters() 
+                          ? "Aucun résultat trouvé avec ces filtres"
+                          : "Aucune offre d'emploi disponible",
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    if (jrController.hasActiveFilters()) ...[
+                      const SizedBox(height: 10),
+                      TextButton(
+                        onPressed: () => jrController.clearAllFilters(),
+                        child: const Text("Réinitialiser les filtres"),
+                      ),
+                    ],
+                  ],
+                ),
+              );
             }
 
             return ListView.builder(
@@ -60,10 +84,10 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
                 final revIndex = total - 1 - index;
                 if (kDebugMode) {
                   print([revIndex]);
-                  print(jrController.documents[revIndex].id);
+                  print(filteredDocs[revIndex].id);
                 }
 
-                final doc = jrController.documents[revIndex];
+                final doc = filteredDocs[revIndex];
                 final docData = doc.data() as Map<String, dynamic>;
                 final position = docData["Position"] ?? "Non spécifié";
                 final company = docData["CompanyName"] ?? "Entreprise";
@@ -74,157 +98,255 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
                     ? docData['BookMarkUserList'] 
                     : [];
 
-                return InkWell(
-                  onTap: () => Get.toNamed(
-                    AppRes.jobDetailScreen,
-                    arguments: {"saved": doc, "docId": revIndex},
-                  ),
-                  child: ClipRect(
-                    child: Container(
-                      width: Get.width,
-                      constraints: const BoxConstraints(minHeight: 70),
-                      margin: const EdgeInsets.symmetric(horizontal: 18, vertical: 4),
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.all(Radius.circular(15)),
-                        border: Border.all(color: ColorRes.borderColor, width: 1),
-                        color: ColorRes.cardColor,
+                // Filtrer les données de démo indésirables
+                if (company.contains('DemoToday') || 
+                    company.contains('FinanceExpert') ||
+                    position.contains('DemoToday') ||
+                    location.contains('DemoToday')) {
+                  return const SizedBox.shrink(); // Ne pas afficher ces annonces
+                }
+
+                return Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15),
+                    border: Border.all(color: const Color(0xFF000647), width: 1.0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.1),
+                        blurRadius: 10,
+                        offset: const Offset(0, 5),
                       ),
-                    child: IntrinsicHeight(
-                      child: Row(
-                      children: [
-                        Container(
-                          width: 50,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: Colors.grey.shade200),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF000647).withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Icon(
+                              Icons.work,
+                              color: const Color(0xFF000647),
+                              size: 20,
+                            ),
                           ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: (create.url == "")
-                                ? const Image(
-                                    image: AssetImage(AssetRes.airBnbLogo),
-                                    fit: BoxFit.cover,
-                                  )
-                                : Image(
-                                    image: NetworkImage(create.url),
-                                    fit: BoxFit.cover,
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  position,
+                                  style: appTextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black,
                                   ),
+                                ),
+                                Text(
+                                  company,
+                                  style: appTextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
+                        ],
+                      ),
+                      const SizedBox(height: 15),
+                      Text(
+                        docData['description'] ?? 'Description non disponible',
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                        style: appTextStyle(
+                          fontSize: 12,
+                          color: Colors.grey[700],
                         ),
-                        const SizedBox(width: 15),
-                        Expanded(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                position,
+                      ),
+                      const SizedBox(height: 15),
+                      Row(
+                        children: [
+                          if (salary != "0" && salary.isNotEmpty)
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: Colors.grey.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Text(
+                                "$salary€",
                                 style: appTextStyle(
-                                  color: ColorRes.white,
-                                  fontSize: 14,
+                                  fontSize: 10,
+                                  color: Colors.black,
                                   fontWeight: FontWeight.w500,
                                 ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              const SizedBox(height: 2),
-                              Text(
-                                company,
-                                style: appTextStyle(
-                                  color: ColorRes.textSecondary,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              const SizedBox(height: 1),
-                              Text(
-                                "$location  $type",
-                                style: appTextStyle(
-                                  color: ColorRes.grey,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
-                          ),
-                        ),
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                final docId = snapshot.data.docs[revIndex].id;
-                                controller.onTapSave(
-                                  revIndex,
-                                  doc,
-                                  docId,
-                                );
-                              },
-                              child: GetBuilder<JobRecommendationController>(
-                                builder: (_) {
-                                  final hasBookmarks = bookmarkList != null &&
-                                                      bookmarkList is List &&
-                                                      bookmarkList.isNotEmpty;
-                                  final isBookmarked = hasBookmarks &&
-                                      bookmarkList.contains(
-                                        PrefService.getString(PrefKeys.userId),
-                                      );
-
-                                  return SizedBox(
-                                    width: 20,
-                                    height: 20,
-                                    child: Image.asset(
-                                      isBookmarked
-                                          ? AssetRes.bookMarkFillIcon
-                                          : AssetRes.bookMarkBorderIcon,
-                                      fit: BoxFit.contain,
-                                    ),
-                                  );
-                                },
                               ),
                             ),
-                            const SizedBox(height: 4),
-                            // Bouton candidature rapide
-                            QuickApplyButton(
-                              jobData: doc.data() as Map<String, dynamic>,
-                              docId: snapshot.data.docs[revIndex].id,
+                          if (salary != "0" && salary.isNotEmpty) const SizedBox(width: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: Colors.blue.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(6),
                             ),
-                            const SizedBox(height: 4),
-                            Text(
-                              "\$$salary",
+                            child: Text(
+                              location,
                               style: appTextStyle(
-                                fontSize: 14,
-                                color: ColorRes.successColor,
-                                fontWeight: FontWeight.w600,
+                                fontSize: 10,
+                                color: Colors.blue[700],
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
-                          ],
-                        ),
-                        const SizedBox(width: 10),
-                      ],
-                    ),
-                    ),
-                    ),
+                          ),
+                          const Spacer(),
+                          InkWell(
+                            onTap: () => _showApplicationDialog(context, docData, doc),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(color: const Color(0xFF000647), width: 2.0),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text(
+                                'Apply',
+                                style: appTextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 );
               },
             );
           } catch (e) {
-            if (kDebugMode) print('🔧 AllJobs error: $e');
+            if (kDebugMode) print(' AllJobs error: $e');
             return const Center(
               child: Text('Chargement des emplois...', style: TextStyle(fontSize: 16)),
             );
           }
         },
+      );
+    },
+  );
+}
+
+void _showApplicationDialog(BuildContext context, Map<String, dynamic> jobData, QueryDocumentSnapshot doc) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        contentPadding: EdgeInsets.all(MediaQuery.of(context).size.width > 600 ? 32 : 20),
+        title: Row(
+          children: [
+            Icon(
+              Icons.work,
+              color: const Color(0xFF000647),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                '${'Postuler pour'.tr} ${jobData["Position"] ?? "ce poste"}',
+                style: appTextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 15,
+                ),
+              ),
+            ),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              '${'Vous allez postuler pour le poste de'.tr} ${jobData["Position"] ?? "Non spécifié"} ${'chez'.tr} ${jobData["CompanyName"] ?? "cette entreprise"}.',
+              textAlign: TextAlign.center,
+              style: appTextStyle(
+                fontSize: 13,
+                color: Colors.grey[700],
+              ),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: const Color(0xFF000647),
+                      side: const BorderSide(color: Color(0xFF000647)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        vertical: MediaQuery.of(context).size.height > 600 ? 16 : 12,
+                      ),
+                    ),
+                    child: Text(
+                      'Annuler'.tr,
+                      style: appTextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: MediaQuery.of(context).size.width > 600 ? 15 : 14,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      // Rediriger vers l'écran de candidature
+                      Get.toNamed(AppRes.jobApplicationScreen, arguments: {
+                        'job': jobData,
+                        'docId': doc.id,
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF000647),
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        vertical: MediaQuery.of(context).size.height > 600 ? 16 : 12,
+                      ),
+                    ),
+                    child: Text(
+                      'Postuler'.tr,
+                      style: appTextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: MediaQuery.of(context).size.width > 600 ? 15 : 14,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       );
     },
   );

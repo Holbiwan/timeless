@@ -5,7 +5,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:timeless/screen/looking_for_screen/looking_for_screen.dart';
 import 'package:timeless/screen/manager_section/appearance/appearance_controller.dart';
 import 'package:timeless/screen/manager_section/appearance/appearance_screen.dart';
-import 'package:timeless/service/pref_services.dart';
+import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/color_res.dart';
@@ -31,7 +31,11 @@ class SettingScreenM extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: () {
-                    Get.back();
+                    if (Navigator.canPop(context)) {
+                      Navigator.pop(context);
+                    } else {
+                      Get.offAllNamed('/dashboard');
+                    }
                   },
                   child: Container(
                     height: 40,
@@ -278,17 +282,17 @@ class SettingScreenM extends StatelessWidget {
                           await googleSignIn.signOut();
                         }
                         await FirebaseAuth.instance.signOut();
-                        /* PrefService.clear();*/
-                        PrefService.setValue(PrefKeys.password, "");
-                        PrefService.setValue(PrefKeys.rememberMe, "");
-                        PrefService.setValue(PrefKeys.registerToken, "");
-                        PrefService.setValue(PrefKeys.userId, "");
-                        PrefService.setValue(PrefKeys.country, "");
-                        PrefService.setValue(PrefKeys.email, "");
-                        PrefService.setValue(PrefKeys.totalPost, "");
-                        PrefService.setValue(PrefKeys.phoneNumber, "");
-                        PrefService.setValue(PrefKeys.city, "");
-                        PrefService.setValue(PrefKeys.state, "");
+                        /* PreferencesService.clear();*/
+                        PreferencesService.setValue(PrefKeys.password, "");
+                        PreferencesService.setValue(PrefKeys.rememberMe, "");
+                        PreferencesService.setValue(PrefKeys.registerToken, "");
+                        PreferencesService.setValue(PrefKeys.userId, "");
+                        PreferencesService.setValue(PrefKeys.country, "");
+                        PreferencesService.setValue(PrefKeys.email, "");
+                        PreferencesService.setValue(PrefKeys.totalPost, "");
+                        PreferencesService.setValue(PrefKeys.phoneNumber, "");
+                        PreferencesService.setValue(PrefKeys.city, "");
+                        PreferencesService.setValue(PrefKeys.state, "");
 
                         // ignore: use_build_context_synchronously
                         Navigator.of(context).pushAndRemoveUntil(

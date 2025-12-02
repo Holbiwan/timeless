@@ -6,20 +6,20 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:timeless/service/pref_services.dart';
+import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/app_res.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:timeless/utils/pref_keys.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:timeless/service/notification_service.dart';
+// import 'package:pull_to_refresh/pull_to_refresh.dart'; // Package removed
+import 'package:timeless/services/notification_service.dart';
 
 FirebaseFirestore firestore = FirebaseFirestore.instance;
 List<Map<String, dynamic>> companyList = [];
 bool abc = false;
 
 class JobDetailsUploadCvController extends GetxController {
-  RefreshController refreshController = RefreshController();
+  // RefreshController refreshController = RefreshController(); // Package removed
 
   init() async {
     companyList = [];
@@ -27,7 +27,7 @@ class JobDetailsUploadCvController extends GetxController {
       final value = await firestore.collection("Apply").get();
 
       for (final element in value.docs) {
-        if (element['uid'] == PrefService.getString(PrefKeys.userId)) {
+        if (element['uid'] == PreferencesService.getString(PrefKeys.userId)) {
           final list = element['companyName'];
           if (list is List) {
             for (int y = 0; y < list.length; y++) {
@@ -59,7 +59,7 @@ class JobDetailsUploadCvController extends GetxController {
     if (kDebugMode) {
       print(companyList);
     }
-    refreshController.refreshCompleted();
+    // refreshController.refreshCompleted(); // Package removed
     update(["searchChat"]);
   }
 
@@ -96,13 +96,13 @@ class JobDetailsUploadCvController extends GetxController {
     firestore.collection("Apply").doc(FirebaseAuth.instance.currentUser!.uid).set({
       'apply': true,
       'companyName': companyNameList,
-      'userName': PrefService.getString(PrefKeys.fullName),
-      'email': PrefService.getString(PrefKeys.email),
-      'phone': PrefService.getString(PrefKeys.phoneNumber),
-      'city': PrefService.getString(PrefKeys.city),
-      'state': PrefService.getString(PrefKeys.state),
-      'country': PrefService.getString(PrefKeys.country),
-      'Occupation': PrefService.getString(PrefKeys.occupation),
+      'userName': PreferencesService.getString(PrefKeys.fullName),
+      'email': PreferencesService.getString(PrefKeys.email),
+      'phone': PreferencesService.getString(PrefKeys.phoneNumber),
+      'city': PreferencesService.getString(PrefKeys.city),
+      'state': PreferencesService.getString(PrefKeys.state),
+      'country': PreferencesService.getString(PrefKeys.country),
+      'Occupation': PreferencesService.getString(PrefKeys.occupation),
       'uid': FirebaseAuth.instance.currentUser!.uid,
       'resumeUrl': pdfUrl,
       'fileName': filepath.value,
@@ -110,7 +110,8 @@ class JobDetailsUploadCvController extends GetxController {
       'salary': args['salary'],
       'location': args['location'],
       'type': args['type'],
-      "deviceToken": PrefService.getString(PrefKeys.deviceToken),
+      'motivationLetter': motivationController.text.trim(), // Lettre de motivation
+      "deviceToken": PreferencesService.getString(PrefKeys.deviceToken),
     });
 
     // Send application confirmation email
@@ -119,15 +120,7 @@ class JobDetailsUploadCvController extends GetxController {
     // Add notification for application submission
     await _addApplicationNotification(args);
 
-    // Show success message before navigation
-    Get.snackbar(
-      '🎉 Application Submitted Successfully!',
-      'Your application to ${args['CompanyName']} has been sent.\n📧 Confirmation email sent to your inbox.',
-      snackPosition: SnackPosition.TOP,
-      backgroundColor: Colors.green,
-      colorText: Colors.white,
-      duration: const Duration(seconds: 4),
-    );
+    // Success message will be shown via popup in the UI
     
     Get.toNamed(AppRes.jobDetailSuccessOrFailed, arguments: [
       {"doc": args},
@@ -135,12 +128,16 @@ class JobDetailsUploadCvController extends GetxController {
     ]);
 
     filepath.value = "";
+    motivationController.clear(); // Reset lettre de motivation
   }
 
   RxString filepath = "".obs;
   RxInt? fileSize;
   RxBool isPdfUploadError = false.obs;
   bool uploadingMedia = false;
+
+  // Controller pour la lettre de motivation
+  TextEditingController motivationController = TextEditingController();
 
   // Méthode pour créer un CV de démo rapidement
   void createDemoCV() {
@@ -162,6 +159,170 @@ class JobDetailsUploadCvController extends GetxController {
     } catch (e) {
       if (kDebugMode) print('Erreur création CV démo: $e');
     }
+  }
+
+  // Liste des CV stockés
+  RxList<Map<String, dynamic>> storedCVs = <Map<String, dynamic>>[].obs;
+
+  // Méthode pour charger les CV stockés depuis Firestore
+  void loadStoredCVs() async {
+    try {
+      final userId = FirebaseAuth.instance.currentUser?.uid;
+      if (userId == null) return;
+
+      // Récupérer les CV stockés depuis la collection "UserCVs"
+      final cvDocs = await firestore
+          .collection("UserCVs")
+          .doc(userId)
+          .collection("CVs")
+          .get();
+
+      storedCVs.clear();
+      for (final doc in cvDocs.docs) {
+        storedCVs.add({
+          'id': doc.id,
+          'fileName': doc.data()['fileName'] ?? 'CV sans nom',
+          'url': doc.data()['url'] ?? '',
+          'uploadDate': doc.data()['uploadDate'] ?? '',
+          'fileSize': doc.data()['fileSize'] ?? 0,
+        });
+      }
+
+      if (storedCVs.isNotEmpty) {
+        _showStoredCVsDialog();
+      } else {
+        Get.snackbar(
+          'Aucun CV stocké',
+          'Vous n\'avez pas encore de CV sauvegardé',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.orange,
+          colorText: Colors.white,
+        );
+      }
+    } catch (e) {
+      if (kDebugMode) print('Erreur chargement CV stockés: $e');
+      Get.snackbar(
+        'Erreur',
+        'Impossible de charger vos CV stockés',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
+  }
+
+  // Afficher la boîte de dialogue avec les CV stockés
+  void _showStoredCVsDialog() {
+    Get.dialog(
+      Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Mes CV stockés',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () => Get.back(),
+                    icon: const Icon(Icons.close),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 15),
+              SizedBox(
+                height: 300,
+                child: ListView.builder(
+                  itemCount: storedCVs.length,
+                  itemBuilder: (context, index) {
+                    final cv = storedCVs[index];
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 10),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF8F9FA),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: const Color(0xFFE9ECEF)),
+                      ),
+                      child: InkWell(
+                        onTap: () => _selectStoredCV(cv),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.picture_as_pdf,
+                              color: Color(0xFF4A90E2),
+                              size: 30,
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    cv['fileName'],
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  Text(
+                                    '${(cv['fileSize'] / 1024).toStringAsFixed(1)} KB',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey[600],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Icon(
+                              Icons.arrow_forward_ios,
+                              size: 16,
+                              color: Color(0xFF4A90E2),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Sélectionner un CV stocké
+  void _selectStoredCV(Map<String, dynamic> cv) {
+    filepath.value = cv['fileName'];
+    pdfUrl = cv['url'];
+    filesize = cv['fileSize'] / (1024 * 1024); // Convert to MB
+    isPdfUploadError.value = false;
+    
+    Get.back(); // Fermer la boîte de dialogue
+    
+    Get.snackbar(
+      'CV sélectionné',
+      'CV "${cv['fileName']}" prêt pour la candidature',
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.green,
+      colorText: Colors.white,
+      duration: const Duration(seconds: 2),
+    );
   }
 
   applyResume() async {
@@ -273,7 +434,7 @@ class JobDetailsUploadCvController extends GetxController {
 
     try {
       // Pour la démo, simuler un upload rapide si utilisateur démo
-      final userId = PrefService.getString(PrefKeys.userId);
+      final userId = PreferencesService.getString(PrefKeys.userId);
       if (userId == "demo_user_12345") {
         // Simuler un délai d'upload court pour la démo
         await Future.delayed(const Duration(seconds: 1));
@@ -341,8 +502,8 @@ class JobDetailsUploadCvController extends GetxController {
   // Send application confirmation email
   Future<void> _sendApplicationConfirmationEmail(Map<String, dynamic> jobData) async {
     try {
-      final userEmail = PrefService.getString(PrefKeys.email);
-      final userName = PrefService.getString(PrefKeys.fullName);
+      final userEmail = PreferencesService.getString(PrefKeys.email);
+      final userName = PreferencesService.getString(PrefKeys.fullName);
       
       if (userEmail.isEmpty) return;
 
@@ -374,7 +535,7 @@ class JobDetailsUploadCvController extends GetxController {
         "applicationDate": FieldValue.serverTimestamp(),
         "status": "sent",
         "mailDocId": mailDoc.id,
-        "userId": PrefService.getString(PrefKeys.userId),
+        "userId": PreferencesService.getString(PrefKeys.userId),
       });
 
       if (kDebugMode) print('✅ Application confirmation email sent to $userEmail');
@@ -386,7 +547,7 @@ class JobDetailsUploadCvController extends GetxController {
   // Add application notification to user's notifications
   Future<void> _addApplicationNotification(Map<String, dynamic> jobData) async {
     try {
-      final userId = PrefService.getString(PrefKeys.userId);
+      final userId = PreferencesService.getString(PrefKeys.userId);
       if (userId.isEmpty) return;
 
       await FirebaseFirestore.instance
@@ -455,7 +616,7 @@ class JobDetailsUploadCvController extends GetxController {
             <p>Great news! Your application has been successfully submitted and is now being reviewed by the hiring team.</p>
             
             <div class="job-details">
-                <h3 style="margin-top: 0; color: #333;">📋 Application Details</h3>
+                <h3 style="margin-top: 0; color: #333;"> Application Details</h3>
                 <div class="detail-row">
                     <span class="detail-label">Position:</span>
                     <span class="detail-value">$jobTitle</span>
@@ -483,7 +644,7 @@ class JobDetailsUploadCvController extends GetxController {
             </div>
             
             <div class="next-steps">
-                <h3 style="margin-top: 0; color: #333;">🎯 What happens next?</h3>
+                <h3 style="margin-top: 0; color: #333;"> What happens next?</h3>
                 <p style="margin: 0;">
                     • The hiring team will review your application<br>
                     • You'll receive updates on your application status<br>
@@ -496,7 +657,7 @@ class JobDetailsUploadCvController extends GetxController {
         </div>
         
         <div class="footer">
-            <h3>The Timeless Team 💼</h3>
+            <h3>The Timeless Team </h3>
             <p>Connecting talent with opportunity</p>
             <p style="font-size: 12px; color: #999;">
                 This is an automated confirmation email.

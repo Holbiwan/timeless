@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:timeless/screen/add_requirements/add_requirements_screen.dart';
 import 'package:timeless/screen/manager_section/Jobdetails/jobdetails_screen.dart';
-import 'package:timeless/service/pref_services.dart';
+import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/pref_keys.dart';
 
 class CreateVacanciesController extends GetxController implements GetxService {
@@ -33,7 +33,7 @@ class CreateVacanciesController extends GetxController implements GetxService {
         .collection("Auth")
         .doc("Manager")
         .collection("register")
-        .doc(PrefService.getString(PrefKeys.userId))
+        .doc(PreferencesService.getString(PrefKeys.userId))
         .collection("company")
         .doc("details");
     docRef.get().then(
@@ -113,8 +113,8 @@ class CreateVacanciesController extends GetxController implements GetxService {
   }
 
   onUpdateVacancyTapNext({String? position}) async {
-    String uid = PrefService.getString(PrefKeys.userId);
-    int totalPost = PrefService.getInt(PrefKeys.totalPost);
+    String uid = PreferencesService.getString(PrefKeys.userId);
+    int totalPost = PreferencesService.getInt(PrefKeys.totalPost);
     String pUid = "$uid*${totalPost + 1}";
 
     List<String> requirementsList = List.generate(
@@ -140,7 +140,7 @@ class CreateVacanciesController extends GetxController implements GetxService {
       "BookMarkUserList": [],
       "Id": uid,
       "imageUrl": url,
-      "deviceToken": PrefService.getString(PrefKeys.deviceToken),
+      "deviceToken": PreferencesService.getString(PrefKeys.deviceToken),
     };
     validate();
     if (isPositionValidate.value == false &&
@@ -175,7 +175,7 @@ class CreateVacanciesController extends GetxController implements GetxService {
             .collection(categoryController.text.trim())
             .doc()
             .set(map);
-        PrefService.setValue(PrefKeys.totalPost, totalPost + 1);
+        PreferencesService.setValue(PrefKeys.totalPost, totalPost + 1);
         onTapBack("");
         Get.off(() => JobDetailsScreen(
               isError: true,
@@ -271,13 +271,10 @@ class CreateVacanciesController extends GetxController implements GetxService {
   String? dropDownValueCategory;
 
   var itemsCategory = [
-    'UX',
     'Design',
     'Software',
-    'Database Manager',
-    'Product Manager',
-    'Full-Stack Developer',
-    'Data Scientist',
+    'Developer',
+    'Data Science',
     'Web Developers',
     'Networking',
     'Cyber Security',

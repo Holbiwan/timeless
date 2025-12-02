@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:timeless/screen/dashboard/dashboard_screen.dart';
-import 'package:timeless/service/pref_services.dart';
+import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/pref_keys.dart';
 
 class GoogleSignupController extends GetxController {
@@ -240,7 +240,7 @@ class GoogleSignupController extends GetxController {
       "City": cityController.text,
       "State": stateController.text,
       "Country": countryController.text,
-      "deviceTokenU": PrefService.getString(PrefKeys.deviceToken),
+      "deviceTokenU": PreferencesService.getString(PrefKeys.deviceToken),
     };
 
     // singUp(emailController.text, passwordController.text);
@@ -251,16 +251,16 @@ class GoogleSignupController extends GetxController {
 
     await addDataInFirebase(userUid: uid, map: map2);
 
-    PrefService.setValue(PrefKeys.fullName,
+    PreferencesService.setValue(PrefKeys.fullName,
         "${firstnameController.text}                ${lastnameController.text}");
-    PrefService.setValue(PrefKeys.email, emailController.text);
-    PrefService.setValue(PrefKeys.phoneNumber, phoneController.text);
-    PrefService.setValue(PrefKeys.city, cityController.text);
-    PrefService.setValue(PrefKeys.state, stateController.text);
-    PrefService.setValue(PrefKeys.country, countryController.text);
-    PrefService.setValue(PrefKeys.occupation, occupationController.text);
-    PrefService.setValue(PrefKeys.userId, uid);
-    PrefService.setValue(PrefKeys.rol, "User");
+    PreferencesService.setValue(PrefKeys.email, emailController.text);
+    PreferencesService.setValue(PrefKeys.phoneNumber, phoneController.text);
+    PreferencesService.setValue(PrefKeys.city, cityController.text);
+    PreferencesService.setValue(PrefKeys.state, stateController.text);
+    PreferencesService.setValue(PrefKeys.country, countryController.text);
+    PreferencesService.setValue(PrefKeys.occupation, occupationController.text);
+    PreferencesService.setValue(PrefKeys.userId, uid);
+    PreferencesService.setValue(PrefKeys.rol, "User");
     Get.offAll(() => DashBoardScreen());
     update(["showEmail"]);
     update(["showLastname"]);

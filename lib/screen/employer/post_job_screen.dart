@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:timeless/service/pref_services.dart';
+import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/utils/color_res.dart';
 
@@ -58,8 +58,8 @@ class _PostJobScreenState extends State<PostJobScreen> {
         'remote': _remote,
         'type': _remote ? 'Remote' : 'On-site',
         'description': _descriptionCtrl.text.trim(),
-        'CompanyName': PrefService.getString(PrefKeys.companyName),
-        'EmployerId': PrefService.getString(PrefKeys.userId),
+        'CompanyName': PreferencesService.getString(PrefKeys.companyName),
+        'EmployerId': PreferencesService.getString(PrefKeys.userId),
         'Status': 'Active',
         'CreatedAt': FieldValue.serverTimestamp(),
         'Applications': 0,
@@ -72,8 +72,8 @@ class _PostJobScreenState extends State<PostJobScreen> {
           .add(jobData);
 
       // Mettre à jour le compteur de posts du manager
-      final currentPosts = PrefService.getInt(PrefKeys.totalPost);
-      await PrefService.setValue(PrefKeys.totalPost, currentPosts + 1);
+      final currentPosts = PreferencesService.getInt(PrefKeys.totalPost);
+      await PreferencesService.setValue(PrefKeys.totalPost, currentPosts + 1);
 
       debugPrint('JOB PUBLISHED TO FIREBASE => '
           'title=${_titleCtrl.text}, cat=$_category, loc=${_locationCtrl.text}, '
@@ -92,7 +92,7 @@ class _PostJobScreenState extends State<PostJobScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('❌ Erreur: $e'),
-          backgroundColor: Colors.red,
+          backgroundColor: ColorRes.royalBlue,
         ),
       );
     }

@@ -8,7 +8,7 @@ import 'package:timeless/common/widgets/common_loader.dart';
 import 'package:timeless/common/widgets/common_text_field.dart';
 import 'package:timeless/screen/looking_for_screen/looking_for_screen.dart';
 import 'package:timeless/screen/organization_profile_screen/organization_profile_screen_controller.dart';
-import 'package:timeless/service/pref_services.dart';
+import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/color_res.dart';
@@ -557,7 +557,7 @@ class OrganizationProfileScreen extends StatelessWidget {
                           await googleSignIn.signOut();
                         }
                         await FirebaseAuth.instance.signOut();
-                        PrefService.clear();
+                        PreferencesService.clear();
                         // ignore: use_build_context_synchronously
                         Navigator.of(context).pushAndRemoveUntil(
                             MaterialPageRoute(

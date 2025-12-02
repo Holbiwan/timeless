@@ -2,7 +2,7 @@ class AssetRes {
   static const icons = 'assets/icons/';
   static const images = 'assets/images/';
 
-  ///------------------------------icons------------------------------------------------------
+  //------------------------------icons------------------------------------------------------
   static const invalid = '${icons}invalid.png';
   static const pdfRemove = "${icons}pdfRemove.png";
   static const inboxLogo = '${icons}inbox_icon.png';
@@ -34,16 +34,10 @@ class AssetRes {
   static const add = '${icons}add.png';
   static const calender = '${icons}calender.png';
   static const time = '${icons}time.png';
-  static const callIcon = '${icons}call_Icon.png';
-  static const callReceive = '${icons}call_receive.png';
   static const seePdf = '${icons}see_pdf.png';
   static const applicationIcon = '${icons}applicationIcon.png';
 
-  ///-----------------------------images------------------------------------------------------
-  static const splashScreenBack = '${images}splashScreenBack.png';
-  static const firstBackScreen = '${images}firstBackScreen.png';
-
-  ///-----------------------------images------------------------------------------------------
+  //-----------------------------images------------------------------------------------------
   static const splashScreen = '${images}splashScreenBack.png';
   static const splashFullImage = '${images}splash.png';
   static const firstScreenBack = '${images}firstBackScreen.png';
@@ -72,11 +66,6 @@ class AssetRes {
   static const add1 = '${images}add.png';
   static const facebook = '${images}facebook.png';
   static const userprofileLogo = '${images}userprofileLogo.png';
-  static const callReject = '${images}callReject.png';
-  static const videoJoinScreen = '${images}videoJoinScreen.png';
-  static const videoReceiveScreen = '${images}videoReceiveScreen.png';
-  static const videoJoinMen = '${images}videoJoinMen.png';
-  static const videoReceivedMen = '${images}videoReceived_men.png';
   static const failedImages = "${images}failedImages.png";
   static const unSave = "${images}unSave.png";
 
@@ -91,4 +80,5 @@ class AssetRes {
   static const page2 = "${images}page2.png";
   static const page3 = "${images}page3.png";
   static const logo = "${images}logo.png";
+  static const searchJobImage = "${images}search_job.jpg";
 }

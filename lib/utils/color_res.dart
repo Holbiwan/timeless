@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ColorRes {
-  // === TIMELESS PALETTE: ROYAL BLUE, YELLOW, RED ===
+  // === TIMELESS PALETTE: ROYAL BLUE, ===
   
   // === FONDS PRINCIPAUX ===
   static const backgroundColor = Color(0xFFF8FAFC); // Light background (like carousel)
@@ -22,26 +22,26 @@ class ColorRes {
   // === MAIN THEME COLORS ===
   static const royalBlue = Color(0xFF3B82F6); // Softer royal blue primary
   static const brightYellow = Color(0xFFFFD700); // Bright gold yellow
-  static const vibrantRed = Color(0xFFDC2626); // Vibrant red
+  static const vibrantRed = Color(0xFF3B82F6); // Vibrant blue (pas de rouge)
   static const darkBlue = Color(0xFF3B82F6); // Softer blue (alias)
   static const deepBordeaux = Color(0xFF7C2D12); // Deep bordeaux for keywords
   
   // === ACCENT COLORS ===
   static const containerColor = Color(0xFFFFD700); // Bright yellow containers
   static const primaryAccent = Color(0xFF3B82F6); // Softer blue accent
-  static const secondaryAccent = Color(0xFFDC2626); // Red accent
+  static const secondaryAccent = Color(0xFF3B82F6); // Blue accent (pas de rouge)
   
   // === FUNCTIONAL COLORS ===
   static const successColor = Color(0xFF16A34A); // Green success
   static const warningColor = Color(0xFFFFD700); // Yellow warning
-  static const errorColor = Color(0xFFDC2626); // Red error
+  static const errorColor = Color(0xFF3B82F6); // Blue error (pas de rouge)
   static const infoColor = Color(0xFF3B82F6); // Softer blue info
   
   // === ACTION COLORS ===
   static const gradientColor = Color(0xFF3B82F6); // Softer blue gradient
   static const starColor = Color(0xFFFFD700); // Gold yellow stars
-  static const red = Color(0xFFDC2626); // Red actions
-  static const orange = Color(0xFFFF8C00); // Orange highlights
+  static const red = Color(0xFF3B82F6); // Blue actions (pas de rouge)
+  static const orange = Color(0xFF000000); // Black pour l'espace employeur
   static const blueColor = Color(0xFF3B82F6); // Softer blue actions
   static const iconColor = Color(0xFFFFD700); // Gold yellow icons
   
@@ -56,8 +56,8 @@ class ColorRes {
   static const invalidColor = Color(0xFFFEF2F2); // Surface invalide rouge clair
   static const splashLogoColor = Color(0xFF00ACC1); // Bleu turquoise splash
   static const lightGrey = Color(0xFFF1F5F9); // Gris très clair
-  static const lightGreen = Color(0xFF059669); // Vert succès
-  static const darkGreen = Color(0xFF047857); // Vert foncé
+  static const lightGreen = Color(0xFF3B82F6); // Bleu remplaçant le vert succès
+  static const darkGreen = Color(0xFF1E40AF); // Bleu foncé remplaçant le vert foncé
   static const appleGreen = Color(0xFFFBBF24); // Replaced with yellow
   static const lightAppleGreen = Color(0xFFFDE047); // Jaune clair
   static const softSand = Color(0xFFFEF3C7); // Jaune très clair

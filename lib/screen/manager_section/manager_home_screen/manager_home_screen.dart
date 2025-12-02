@@ -8,7 +8,7 @@ import 'package:timeless/screen/manager_section/received_applications_screen.dar
 import 'package:timeless/screen/manager_section/manager_home_screen/manager_home_screen_controller.dart';
 import 'package:timeless/screen/manager_section/manager_home_screen/manager_home_screen_widget/manager_home_screen_widget.dart';
 import 'package:timeless/screen/manager_section/notification1/notification1_screen.dart';
-import 'package:timeless/service/pref_services.dart';
+import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/pref_keys.dart';
@@ -79,7 +79,7 @@ class ManagerHomeScreen extends StatelessWidget {
                               fontWeight: FontWeight.w600),
                         ),
                         Text(
-                          PrefService.getString(PrefKeys.companyName),
+                          PreferencesService.getString(PrefKeys.companyName),
                           textAlign: TextAlign.center,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 2,

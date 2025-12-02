@@ -10,7 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:timeless/screen/manager_section/dashboard/manager_dashboard_screen.dart';
-import 'package:timeless/service/pref_services.dart';
+import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/pref_keys.dart';
 
 class OrganizationProfileScreenController extends GetxController
@@ -124,7 +124,7 @@ class OrganizationProfileScreenController extends GetxController
   }
 
   // ============= Upload / Storage =============
-  /// Upload depuis [image] (déjà choisie) et met à jour [url]
+  // Upload depuis [image] (déjà choisie) et met à jour [url]
   Future<void> getUrl() async {
     if (image == null) return;
 
@@ -147,7 +147,7 @@ class OrganizationProfileScreenController extends GetxController
     }
   }
 
-  /// Upload générique d'un fichier [flow] sur un chemin [path] et renvoie l'URL
+  // Upload générique d'un fichier [flow] sur un chemin [path] et renvoie l'URL
   Future<String?> uploadImage({File? flow, required String path}) async {
     if (flow == null) return '';
 
@@ -179,7 +179,7 @@ class OrganizationProfileScreenController extends GetxController
     }
   }
 
-  /// Upload d’une image intégrée aux assets vers un dossier Firestore/Storage
+  // Upload d’une image intégrée aux assets vers un dossier Firestore/Storage
   Future<void> addImg({required String img}) async {
     try {
       final storage = FirebaseStorage.instance;
@@ -244,7 +244,7 @@ class OrganizationProfileScreenController extends GetxController
         return;
       }
 
-      final String uid = PrefService.getString(PrefKeys.userId);
+      final String uid = PreferencesService.getString(PrefKeys.userId);
       final Map<String, dynamic> map = {
         "email": companyEmailController.text.trim(),
         "name": companyNameController.text.trim(),
@@ -252,12 +252,13 @@ class OrganizationProfileScreenController extends GetxController
         "country": countryController.text.trim(),
         "address": companyAddressController.text.trim(),
         "imageUrl": url,
-        "deviceToken": PrefService.getString(PrefKeys.deviceToken),
+        "deviceToken": PreferencesService.getString(PrefKeys.deviceToken),
       };
 
       // Sauvegarde de l’URL image côté prefs
-      PrefService.setValue(PrefKeys.imageManager, url);
-      PrefService.setValue(PrefKeys.companyName, companyNameController.text);
+      PreferencesService.setValue(PrefKeys.imageManager, url);
+      PreferencesService.setValue(
+          PrefKeys.companyName, companyNameController.text);
 
       // Marque "company" = true sur le profil Manager, puis écrit les détails
       await fireStore
@@ -267,7 +268,7 @@ class OrganizationProfileScreenController extends GetxController
           .doc(uid)
           .update({"company": true});
 
-      PrefService.setValue(PrefKeys.company, true);
+      PreferencesService.setValue(PrefKeys.company, true);
 
       await fireStore
           .collection("Auth")

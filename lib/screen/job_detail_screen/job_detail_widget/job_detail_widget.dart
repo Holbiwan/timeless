@@ -5,39 +5,42 @@ import 'package:timeless/utils/color_res.dart';
 
 Widget detailBox(text, values) {
   return Container(
-    // height: 50,
     width: Get.width,
-    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-    margin: const EdgeInsets.symmetric(horizontal: 18, vertical: 4),
+    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+    margin: const EdgeInsets.symmetric(horizontal: 18, vertical: 6),
     decoration: BoxDecoration(
-      color: Colors.black.withOpacity(0.8),
-      border: Border.all(color: Colors.grey.withOpacity(0.3)),
-      borderRadius: BorderRadius.circular(13),
+      color: Colors.white,
+      border: Border.all(color: const Color(0xFF000647), width: 2),
+      borderRadius: BorderRadius.circular(15),
       boxShadow: [
         BoxShadow(
-          color: Colors.black.withOpacity(0.3),
-          spreadRadius: 1,
-          blurRadius: 4,
-          offset: const Offset(0, 2),
+          color: const Color(0xFF000647).withOpacity(0.1),
+          spreadRadius: 0,
+          blurRadius: 6,
+          offset: const Offset(0, 3),
         ),
       ],
     ),
     child: Row(
       children: [
-        const Icon(
-          Icons.check_circle_outline,
-          color: ColorRes.appleGreen,
-          size: 30,
+        Container(
+          padding: const EdgeInsets.all(6),
+          decoration: BoxDecoration(
+            color: const Color(0xFF000647),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: const Icon(
+            Icons.check_circle_outline,
+            color: Colors.white,
+            size: 20,
+          ),
         ),
-        const SizedBox(
-          width: 20,
-        ),
-        SizedBox(
-          width: Get.width * 0.57,
+        const SizedBox(width: 16),
+        Expanded(
           child: Text(
             text,
             style: appTextStyle(
-                color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
+                color: Colors.black, fontSize: 15, fontWeight: FontWeight.w600),
           ),
         ),
      /*   PopupMenuButton(

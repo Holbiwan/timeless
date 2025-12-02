@@ -1,13 +1,12 @@
-
 // \lib\screen\new_home_page\new_home_page_screen.dart
 
 import 'package:flutter/material.dart';
-import 'package:timeless/service/auto_translation_service.dart';
+// Import supprimé : auto_translation_service.dart n'existe plus
 
 class HomePageNewScreenU extends StatelessWidget {
   const HomePageNewScreenU({super.key});
-  
-  AutoTranslationService get _autoTranslateService => AutoTranslationService.instance;
+
+  // AutoTranslationService supprimé - fonctionnalité trop avancée
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +17,7 @@ class HomePageNewScreenU extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              /// Exemple avec RichText multicolore
+              // Exemple avec RichText multicolore
               RichText(
                 textAlign: TextAlign.center,
                 text: const TextSpan(
@@ -38,7 +37,9 @@ class HomePageNewScreenU extends StatelessWidget {
                     ),
                     TextSpan(
                       text: "Search",
-                      style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)), // Noir Jamaïque
+                      style: TextStyle(
+                          color: Color.fromARGB(
+                              255, 255, 255, 255)), // Noir Jamaïque
                     ),
                   ],
                 ),
@@ -46,8 +47,9 @@ class HomePageNewScreenU extends StatelessWidget {
 
               const SizedBox(height: 20),
 
-              /// Variante slogan avec auto-traduction
-              _autoTranslateService.autoTranslateText(
+              // Variante slogan avec auto-traduction
+              // AutoTranslation supprimée - texte statique
+              Text(
                 "Find your future today.",
                 style: const TextStyle(
                   fontSize: 16,
@@ -58,7 +60,7 @@ class HomePageNewScreenU extends StatelessWidget {
 
               const SizedBox(height: 40),
 
-              /// Bouton principal
+              // Bouton principal
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(255, 15, 15, 15), //noir
@@ -72,7 +74,7 @@ class HomePageNewScreenU extends StatelessWidget {
                   elevation: 6,
                 ),
                 onPressed: null,
-                child: _autoTranslateService.autoTranslateText(
+                child: Text(
                   "Start your journey today",
                   style: const TextStyle(
                     fontSize: 18,

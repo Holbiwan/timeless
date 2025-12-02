@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:timeless/service/pref_services.dart';
+import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/pref_keys.dart';
 
 
@@ -32,14 +32,14 @@ class ProfileUserController extends GetxController implements GetxService {
   @override
   void onInit() {
     super.onInit();
-    // Préremplissage depuis PrefService
-    fullNameController.text   = PrefService.getString(PrefKeys.fullName);
-    emailController.text      = PrefService.getString(PrefKeys.email);
-    occupationController.text = PrefService.getString(PrefKeys.occupation);
-    dateOfBirthController.text= PrefService.getString(PrefKeys.dateOfBirth);
-    addressController.text    = PrefService.getString(PrefKeys.address);
+    // Préremplissage depuis PreferencesService
+    fullNameController.text   = PreferencesService.getString(PrefKeys.fullName);
+    emailController.text      = PreferencesService.getString(PrefKeys.email);
+    occupationController.text = PreferencesService.getString(PrefKeys.occupation);
+    dateOfBirthController.text= PreferencesService.getString(PrefKeys.dateOfBirth);
+    addressController.text    = PreferencesService.getString(PrefKeys.address);
 
-    final path = PrefService.getString(PrefKeys.imageId);
+    final path = PreferencesService.getString(PrefKeys.imageId);
     if (path.isNotEmpty) image = File(path);
 
     update();
@@ -71,7 +71,7 @@ class ProfileUserController extends GetxController implements GetxService {
     if (picked != null) {
       dateOfBirthController.text =
           "${picked.month}/${picked.day}/${picked.year}";
-      PrefService.setValue(PrefKeys.dateOfBirth, dateOfBirthController.text);
+      PreferencesService.setValue(PrefKeys.dateOfBirth, dateOfBirthController.text);
     }
     update();
   }
@@ -85,7 +85,7 @@ class ProfileUserController extends GetxController implements GetxService {
       );
       if (img == null) return;
       image = File(img.path);
-      await PrefService.setValue(PrefKeys.imageId, image!.path);
+      await PreferencesService.setValue(PrefKeys.imageId, image!.path);
       imagePicker();
     } catch (e) {
       if (kDebugMode) print(e);
@@ -103,7 +103,7 @@ class ProfileUserController extends GetxController implements GetxService {
       );
       if (gal == null) return;
       image = File(gal.path);
-      await PrefService.setValue(PrefKeys.imageId, image!.path);
+      await PreferencesService.setValue(PrefKeys.imageId, image!.path);
       imagePicker();
     } catch (e) {
       if (kDebugMode) print(e);
@@ -116,7 +116,7 @@ class ProfileUserController extends GetxController implements GetxService {
   Future<void> editTap() async {
     try {
       isLod.value = true;
-      final uid = PrefService.getString(PrefKeys.userId);
+      final uid = PreferencesService.getString(PrefKeys.userId);
 
       final map = <String, dynamic>{
         "fullName": fullNameController.text.trim(),
@@ -136,10 +136,10 @@ class ProfileUserController extends GetxController implements GetxService {
           .set(map, SetOptions(merge: true));
 
       // Mets à jour les Prefs locales
-      await PrefService.setValue(PrefKeys.fullName, fullNameController.text.trim());
-      await PrefService.setValue(PrefKeys.email, emailController.text.trim());
-      await PrefService.setValue(PrefKeys.address, addressController.text.trim());
-      await PrefService.setValue(PrefKeys.occupation, occupationController.text.trim());
+      await PreferencesService.setValue(PrefKeys.fullName, fullNameController.text.trim());
+      await PreferencesService.setValue(PrefKeys.email, emailController.text.trim());
+      await PreferencesService.setValue(PrefKeys.address, addressController.text.trim());
+      await PreferencesService.setValue(PrefKeys.occupation, occupationController.text.trim());
 
       Get.snackbar("Profile", "Updated successfully");
     } catch (e) {

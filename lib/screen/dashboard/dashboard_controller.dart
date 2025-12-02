@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:timeless/screen/dashboard/home/home_controller.dart';
+import 'package:timeless/utils/app_res.dart';
 
 class DashBoardController extends GetxController{
   int currentTab = 0;
   void onBottomBarChange(int index) {
-    currentTab = index;
     if (index == 0) {
-      debugPrint("Jobs tab selected");
-      Get.put(HomeController());
+      debugPrint("Home tab selected - navigating to first screen");
+      Get.offAllNamed(AppRes.firstScreen);
     } else {
+      currentTab = index;
       debugPrint("Profile tab selected");
+      update(['bottom_bar']);
     }
-    update(['bottom_bar']);
   }
 }

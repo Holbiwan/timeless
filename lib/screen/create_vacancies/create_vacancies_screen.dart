@@ -32,7 +32,11 @@ class CreateVacanciesScreenM extends StatelessWidget {
                       child: InkWell(
                         onTap: () {
                           controller.onTapBack("vacancies");
-                          Get.back();
+                          if (Navigator.canPop(context)) {
+                            Navigator.pop(context);
+                          } else {
+                            Get.offAllNamed('/dashboard');
+                          }
                         },
                         child: Container(
                           height: 40,

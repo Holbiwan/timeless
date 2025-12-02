@@ -11,6 +11,7 @@ class AppRes {
   static String applicantsDetails = "/applicantsDetails";
   static String seeDetailsScreen = "/seeDetailsScreen";
   static String applicationsUser = "/applicationsUser";
+  static String jobApplicationScreen = "/job-application";
   static String firstScreen = "/FirstScreen";
   static String lookingForScreen = "/LookingForScreen";
   static String updateVacanciesRequirementScreen = "/UpdateVacanciesRequirementScreen";

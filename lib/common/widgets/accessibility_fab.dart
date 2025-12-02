@@ -1,7 +1,7 @@
 // lib/common/widgets/accessibility_fab.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:timeless/service/accessibility_service.dart';
+import 'package:timeless/services/accessibility_service.dart';
 import 'package:timeless/screen/accessibility/accessibility_panel.dart';
 
 class AccessibilityFAB extends StatelessWidget {

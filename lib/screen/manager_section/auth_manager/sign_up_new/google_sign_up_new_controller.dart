@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:timeless/screen/organization_profile_screen/organization_profile_screen.dart';
-import 'package:timeless/service/pref_services.dart';
+import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/pref_keys.dart';
 
 class GoogleSignUpControllerM extends GetxController {
@@ -224,15 +224,15 @@ class GoogleSignUpControllerM extends GetxController {
       "State": stateController.text,
       "Country": countryController.text,
       "TotalPost": 0,
-      "deviceTokenM": PrefService.getString(PrefKeys.deviceToken),
+      "deviceTokenM": PreferencesService.getString(PrefKeys.deviceToken),
     };
 
     if (kDebugMode) {
       print("GO TO HOME PAGE");
     }
     await addDataInFirebase(userUid: uid, map: map2);
-    PrefService.setValue(PrefKeys.userId, uid);
-    PrefService.setValue(PrefKeys.rol, "Manager");
+    PreferencesService.setValue(PrefKeys.userId, uid);
+    PreferencesService.setValue(PrefKeys.rol, "Manager");
     Get.offAll(() => const OrganizationProfileScreen());
     update(["showEmail"]);
     update(["showLastname"]);

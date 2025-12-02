@@ -9,7 +9,7 @@ import 'package:timeless/screen/dashboard/applications/applications_controller.d
 import 'package:timeless/screen/dashboard/applications/rejected_screen.dart';
 import 'package:timeless/screen/dashboard/home/widgets/search_field.dart';
 import 'package:timeless/screen/savejobs/save_job_screen.dart';
-import 'package:timeless/service/pref_services.dart';
+import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/color_res.dart';
@@ -181,7 +181,7 @@ class ApplicationsScreen extends StatelessWidget {
                                               .toString()
                                               .toLowerCase()
                                               .removeAllWhitespace ==
-                                          PrefService.getString(
+                                          PreferencesService.getString(
                                                   PrefKeys.fullName)
                                               .toString()
                                               .toLowerCase()

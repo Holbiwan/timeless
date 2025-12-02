@@ -165,13 +165,13 @@ class JobDetailsSuccessOrFailedScreen extends StatelessWidget {
                       GestureDetector(
                         onTap: () {
                           if (args[1]["error"] == false) {
-                            ///see applied job list tap event
+                            //see applied job list tap event
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (con) => ApplicationsScreen()));
                           } else {
-                            ///try again tap event
+                            //try again tap event
                           }
                         },
                         child: Container(
@@ -199,10 +199,10 @@ class JobDetailsSuccessOrFailedScreen extends StatelessWidget {
                       GestureDetector(
                         onTap: () {
                           if (args[1]["error"] == false) {
-                            ///discover more jobs
+                            //discover more jobs
                             Get.offAll(() => DashBoardScreen());
                           } else {
-                            ///discover more jobs event
+                            //discover more jobs event
                             Get.offAll(() => DashBoardScreen());
                           }
                         },

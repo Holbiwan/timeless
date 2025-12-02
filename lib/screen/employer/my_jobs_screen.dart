@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:timeless/service/pref_services.dart';
+import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/utils/color_res.dart';
 
@@ -13,8 +13,8 @@ class MyJobsScreen extends StatefulWidget {
 }
 
 class _MyJobsScreenState extends State<MyJobsScreen> {
-  final String currentUserId = PrefService.getString(PrefKeys.userId);
-  final String companyName = PrefService.getString(PrefKeys.companyName);
+  final String currentUserId = PreferencesService.getString(PrefKeys.userId);
+  final String companyName = PreferencesService.getString(PrefKeys.companyName);
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +47,7 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.error, color: Colors.red, size: 50),
+                  const Icon(Icons.error, color: ColorRes.royalBlue, size: 50),
                   const SizedBox(height: 16),
                   Text('Erreur: ${snapshot.error}'),
                   const SizedBox(height: 16),
@@ -337,7 +337,7 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
                   ),
                   IconButton(
                     onPressed: () => _deleteJob(docId, job['Position']),
-                    icon: const Icon(Icons.delete, size: 18, color: Colors.red),
+                    icon: const Icon(Icons.delete, size: 18, color: ColorRes.royalBlue),
                     padding: const EdgeInsets.all(4),
                     constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
                   ),
@@ -379,7 +379,7 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
       Get.snackbar(
         'Erreur', 
         'Impossible de modifier le statut: $e',
-        backgroundColor: Colors.red,
+        backgroundColor: ColorRes.royalBlue,
         colorText: Colors.white,
       );
     }
@@ -414,12 +414,12 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
                 Get.snackbar(
                   'Erreur', 
                   'Impossible de supprimer: $e',
-                  backgroundColor: Colors.red,
+                  backgroundColor: ColorRes.royalBlue,
                   colorText: Colors.white,
                 );
               }
             },
-            child: const Text('Supprimer', style: TextStyle(color: Colors.red)),
+            child: const Text('Supprimer', style: TextStyle(color: ColorRes.royalBlue)),
           ),
         ],
       ),

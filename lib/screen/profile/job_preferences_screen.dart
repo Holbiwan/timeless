@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:timeless/service/pref_services.dart';
+import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/color_res.dart';
+import 'package:timeless/utils/app_theme.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/screen/job_recommendation_screen/job_recommendation_screen.dart';
 
@@ -49,14 +50,14 @@ class _JobPreferencesScreenState extends State<JobPreferencesScreen> {
   }
 
   void _loadPreferences() {
-    selectedExperience = PrefService.getString(PrefKeys.experienceLevel);
-    selectedWorkLocation = PrefService.getString(PrefKeys.workLocationPreference);
-    minSalary = double.tryParse(PrefService.getString(PrefKeys.salaryRangeMin)) ?? 30000;
-    maxSalary = double.tryParse(PrefService.getString(PrefKeys.salaryRangeMax)) ?? 100000;
-    maxCommute = double.tryParse(PrefService.getString(PrefKeys.maxCommuteDistance)) ?? 20;
+    selectedExperience = PreferencesService.getString(PrefKeys.experienceLevel);
+    selectedWorkLocation = PreferencesService.getString(PrefKeys.workLocationPreference);
+    minSalary = double.tryParse(PreferencesService.getString(PrefKeys.salaryRangeMin)) ?? 30000;
+    maxSalary = double.tryParse(PreferencesService.getString(PrefKeys.salaryRangeMax)) ?? 100000;
+    maxCommute = double.tryParse(PreferencesService.getString(PrefKeys.maxCommuteDistance)) ?? 20;
     
     // Load JSON arrays
-    final skillsJson = PrefService.getString(PrefKeys.skillsList);
+    final skillsJson = PreferencesService.getString(PrefKeys.skillsList);
     if (skillsJson.isNotEmpty) {
       try {
         selectedSkills = List<String>.from(jsonDecode(skillsJson));
@@ -65,7 +66,7 @@ class _JobPreferencesScreenState extends State<JobPreferencesScreen> {
       }
     }
     
-    final jobTypesJson = PrefService.getString(PrefKeys.jobTypes);
+    final jobTypesJson = PreferencesService.getString(PrefKeys.jobTypes);
     if (jobTypesJson.isNotEmpty) {
       try {
         selectedJobTypes = List<String>.from(jsonDecode(jobTypesJson));
@@ -74,7 +75,7 @@ class _JobPreferencesScreenState extends State<JobPreferencesScreen> {
       }
     }
     
-    final industriesJson = PrefService.getString(PrefKeys.industryPreferences);
+    final industriesJson = PreferencesService.getString(PrefKeys.industryPreferences);
     if (industriesJson.isNotEmpty) {
       try {
         selectedIndustries = List<String>.from(jsonDecode(industriesJson));
@@ -83,7 +84,7 @@ class _JobPreferencesScreenState extends State<JobPreferencesScreen> {
       }
     }
     
-    final companyTypesJson = PrefService.getString(PrefKeys.companyTypes);
+    final companyTypesJson = PreferencesService.getString(PrefKeys.companyTypes);
     if (companyTypesJson.isNotEmpty) {
       try {
         selectedCompanyTypes = List<String>.from(jsonDecode(companyTypesJson));
@@ -94,29 +95,21 @@ class _JobPreferencesScreenState extends State<JobPreferencesScreen> {
   }
 
   Future<void> _savePreferences() async {
-    print('🚀 Starting to save preferences...');
+    print(' Starting to save preferences...');
     
     // Validation des données avant sauvegarde
     if (selectedExperience.isEmpty) {
-      Get.snackbar(
-        '⚠️ Missing Information',
-        'Please select your experience level.',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.orange,
-        colorText: Colors.white,
-        duration: const Duration(seconds: 3),
+      AppTheme.showStandardSnackBar(
+        title: '⚠️ Missing Information',
+        message: 'Please select your experience level.',
       );
       return;
     }
     
     if (selectedSkills.isEmpty) {
-      Get.snackbar(
-        '⚠️ Missing Information',
-        'Please select at least one skill.',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.orange,
-        colorText: Colors.white,
-        duration: const Duration(seconds: 3),
+      AppTheme.showStandardSnackBar(
+        title: '⚠️ Missing Information',
+        message: 'Please select at least one skill.',
       );
       return;
     }
@@ -142,20 +135,20 @@ class _JobPreferencesScreenState extends State<JobPreferencesScreen> {
         barrierDismissible: false,
       );
       
-      await PrefService.setValue(PrefKeys.experienceLevel, selectedExperience);
-      await PrefService.setValue(PrefKeys.workLocationPreference, selectedWorkLocation);
-      await PrefService.setValue(PrefKeys.salaryRangeMin, minSalary.toString());
-      await PrefService.setValue(PrefKeys.salaryRangeMax, maxSalary.toString());
-      await PrefService.setValue(PrefKeys.maxCommuteDistance, maxCommute.toString());
+      await PreferencesService.setValue(PrefKeys.experienceLevel, selectedExperience);
+      await PreferencesService.setValue(PrefKeys.workLocationPreference, selectedWorkLocation);
+      await PreferencesService.setValue(PrefKeys.salaryRangeMin, minSalary.toString());
+      await PreferencesService.setValue(PrefKeys.salaryRangeMax, maxSalary.toString());
+      await PreferencesService.setValue(PrefKeys.maxCommuteDistance, maxCommute.toString());
       
       // Save JSON arrays
-      await PrefService.setValue(PrefKeys.skillsList, jsonEncode(selectedSkills));
-      await PrefService.setValue(PrefKeys.jobTypes, jsonEncode(selectedJobTypes));
-      await PrefService.setValue(PrefKeys.industryPreferences, jsonEncode(selectedIndustries));
-      await PrefService.setValue(PrefKeys.companyTypes, jsonEncode(selectedCompanyTypes));
+      await PreferencesService.setValue(PrefKeys.skillsList, jsonEncode(selectedSkills));
+      await PreferencesService.setValue(PrefKeys.jobTypes, jsonEncode(selectedJobTypes));
+      await PreferencesService.setValue(PrefKeys.industryPreferences, jsonEncode(selectedIndustries));
+      await PreferencesService.setValue(PrefKeys.companyTypes, jsonEncode(selectedCompanyTypes));
       
       // Marquer que les préférences ont été configurées
-      await PrefService.setValue(PrefKeys.jobPreferencesCompleted, true.toString());
+      await PreferencesService.setValue(PrefKeys.jobPreferencesCompleted, true.toString());
       
       // Fermer le dialog de chargement
       Get.back();
@@ -166,13 +159,10 @@ class _JobPreferencesScreenState extends State<JobPreferencesScreen> {
       print('Job Types: $selectedJobTypes');
       print('Salary: $minSalary - $maxSalary');
       
-      Get.snackbar(
-        '✅ Preferences Saved Successfully!',
-        'Your job matching preferences have been updated! Redirecting to job recommendations...',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-        duration: const Duration(seconds: 2),
+      AppTheme.showStandardSnackBar(
+        title: '✅ Preferences Saved Successfully!',
+        message: 'Your job matching preferences have been updated! Redirecting to job recommendations...',
+        isSuccess: true,
       );
       
       // Attendre un peu pour que l'utilisateur voit le message de succès
@@ -189,13 +179,10 @@ class _JobPreferencesScreenState extends State<JobPreferencesScreen> {
       }
       
       print('❌ Error saving preferences: $e');
-      Get.snackbar(
-        '❌ Save Failed',
-        'Failed to save preferences. Please try again.\nError: ${e.toString()}',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-        duration: const Duration(seconds: 4),
+      AppTheme.showStandardSnackBar(
+        title: '❌ Save Failed',
+        message: 'Failed to save preferences. Please try again.\nError: ${e.toString()}',
+        isError: true,
       );
     }
   }
@@ -208,16 +195,28 @@ class _JobPreferencesScreenState extends State<JobPreferencesScreen> {
         title: const Text('Job Preferences'),
         backgroundColor: ColorRes.backgroundColor,
         elevation: 0,
+        leading: Container(
+          margin: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: const Color(0xFF000647), width: 2.0),
+          ),
+          child: IconButton(
+            onPressed: () => Navigator.pop(context),
+            icon: const Icon(Icons.arrow_back, color: Colors.black),
+          ),
+        ),
         actions: [
           TextButton(
             onPressed: () async {
-              print('🔵 AppBar Save button pressed!');
+              print(' AppBar Save button pressed!');
               await _savePreferences();
             },
             child: const Text(
               'Save',
               style: TextStyle(
-                color: Colors.blue,
+                color: Colors.black,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -234,16 +233,16 @@ class _JobPreferencesScreenState extends State<JobPreferencesScreen> {
               width: double.infinity,
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.blue.withOpacity(0.1),
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(15),
-                border: Border.all(color: Colors.blue.withOpacity(0.3)),
+                border: Border.all(color: const Color(0xFF000647), width: 2.0),
               ),
               child: Column(
                 children: [
                   Icon(
                     Icons.psychology_outlined,
                     size: 40,
-                    color: Colors.blue,
+                    color: Colors.black,
                   ),
                   const SizedBox(height: 10),
                   Text(
@@ -271,7 +270,7 @@ class _JobPreferencesScreenState extends State<JobPreferencesScreen> {
             
             // Experience Level
             _buildDropdownSection(
-              title: '🎯 Experience Level',
+              title: ' Experience Level',
               subtitle: 'What level describes you best?',
               value: selectedExperience,
               items: experienceLevels,
@@ -280,7 +279,7 @@ class _JobPreferencesScreenState extends State<JobPreferencesScreen> {
             
             // Skills
             _buildMultiSelectSection(
-              title: '💡 Your Skills',
+              title: ' Your Skills',
               subtitle: 'Select your technical and professional skills',
               selectedItems: selectedSkills,
               availableItems: availableSkills,
@@ -289,7 +288,7 @@ class _JobPreferencesScreenState extends State<JobPreferencesScreen> {
             
             // Job Types
             _buildMultiSelectSection(
-              title: '💼 Job Types',
+              title: ' Job Types',
               subtitle: 'What type of work are you looking for?',
               selectedItems: selectedJobTypes,
               availableItems: jobTypeOptions,
@@ -298,7 +297,7 @@ class _JobPreferencesScreenState extends State<JobPreferencesScreen> {
             
             // Work Location
             _buildDropdownSection(
-              title: '📍 Work Location Preference',
+              title: ' Work Location Preference',
               subtitle: 'How do you prefer to work?',
               value: selectedWorkLocation,
               items: workLocationOptions,
@@ -310,7 +309,7 @@ class _JobPreferencesScreenState extends State<JobPreferencesScreen> {
             
             // Industries
             _buildMultiSelectSection(
-              title: '🏢 Preferred Industries',
+              title: ' Preferred Industries',
               subtitle: 'Which industries interest you?',
               selectedItems: selectedIndustries,
               availableItems: industryOptions,
@@ -319,7 +318,7 @@ class _JobPreferencesScreenState extends State<JobPreferencesScreen> {
             
             // Company Types
             _buildMultiSelectSection(
-              title: '🚀 Company Types',
+              title: ' Company Types',
               subtitle: 'What size companies do you prefer?',
               selectedItems: selectedCompanyTypes,
               availableItems: companyTypeOptions,
@@ -333,11 +332,13 @@ class _JobPreferencesScreenState extends State<JobPreferencesScreen> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () async {
-                  print('🔵 Bottom Save button pressed!');
+                  print(' Bottom Save button pressed!');
                   await _savePreferences();
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.black,
+                  side: const BorderSide(color: Color(0xFF000647), width: 2.0),
                   padding: const EdgeInsets.symmetric(vertical: 15),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -346,7 +347,7 @@ class _JobPreferencesScreenState extends State<JobPreferencesScreen> {
                 child: const Text(
                   'Save Preferences & Improve Matching',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Colors.black,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
@@ -434,15 +435,15 @@ class _JobPreferencesScreenState extends State<JobPreferencesScreen> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
-                    color: isSelected ? Colors.blue : Colors.white,
+                    color: isSelected ? Colors.white : Colors.white,
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Colors.blue),
+                    border: Border.all(color: const Color(0xFF000647), width: 2.0),
                   ),
                   child: Text(
                     item,
                     style: appTextStyle(
                       fontSize: 12,
-                      color: isSelected ? Colors.white : Colors.blue,
+                      color: Colors.black,
                       fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
                     ),
                   ),
@@ -461,7 +462,7 @@ class _JobPreferencesScreenState extends State<JobPreferencesScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('💰 Salary Range', style: appTextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          Text(' Salary Range', style: appTextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           Text('What is your expected salary range?', style: appTextStyle(fontSize: 12, color: ColorRes.grey)),
           const SizedBox(height: 15),
           Row(
@@ -476,7 +477,7 @@ class _JobPreferencesScreenState extends State<JobPreferencesScreen> {
             min: 20000,
             max: 200000,
             divisions: 18,
-            activeColor: Colors.blue,
+            activeColor: const Color(0xFF000647),
             onChanged: (values) {
               setState(() {
                 minSalary = values.start;

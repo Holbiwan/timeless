@@ -1,0 +1,119 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // === Règles pour les utilisateurs ===
+    match /users/{userId} {
+      // Un utilisateur peut lire/écrire ses propres données
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      
+      // Validation des données utilisateur
+      allow create: if request.auth != null 
+        && request.auth.uid == userId
+        && request.resource.data.keys().hasAll(['email', 'fullName', 'userType']);
+    }
+    
+    // === Règles pour les offres d'emploi (PERMISSIVES POUR DÉMO) ===
+    match /allPost/{jobId} {
+      // Lecture publique pour tous les utilisateurs connectés
+      allow read: if request.auth != null;
+      
+      // Écriture permise pour les utilisateurs connectés (pour démo)
+      allow write: if request.auth != null;
+    }
+    
+    // === Règles pour les catégories d'emploi ===
+    match /category/{categoryName}/{subcollection=**} {
+      // Lecture publique
+      allow read: if request.auth != null;
+      // Écriture pour démo
+      allow write: if request.auth != null;
+    }
+    
+    // === Règles pour les candidatures ===
+    match /Apply/{userId} {
+      // Un utilisateur peut gérer ses propres candidatures
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      
+      // Validation basique
+      allow create: if request.auth != null 
+        && request.auth.uid == userId
+        && request.resource.data.keys().hasAll(['userName', 'email']);
+    }
+    
+    // === Règles pour les CV stockés ===
+    match /UserCVs/{userId}/{subcollection=**} {
+      // Un utilisateur peut gérer ses propres CV
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // === Règles pour les favoris/bookmarks ===
+    match /BookMark/{userId}/{subcollection=**} {
+      // Un utilisateur peut gérer ses propres favoris
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // === Règles pour les chats (si utilisés) ===
+    match /chatRoom/{chatId} {
+      // Lecture/écriture permises pour utilisateurs connectés
+      allow read, write: if request.auth != null;
+    }
+    
+    match /chatRoom/{chatId}/messages/{messageId} {
+      // Messages accessibles aux utilisateurs connectés
+      allow read, write: if request.auth != null;
+    }
+    
+    // === Collections de démo ===
+    match /demo/{document=**} {
+      // Permissif pour les données de démo
+      allow read, write: if request.auth != null;
+    }
+    
+    // === Règles par défaut (plus permissives pour le développement) ===
+    match /{document=**} {
+      // ATTENTION: Règles permissives pour démo
+      // À SÉCURISER EN PRODUCTION
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+    }
+  }
+}
+
+// === Règles pour Firebase Storage ===
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // === CV et documents utilisateur ===
+    match /cv/{userId}/{fileName} {
+      // Un utilisateur peut uploader/lire ses propres CV
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      
+      // Validation des types de fichiers
+      allow create: if request.auth != null 
+        && request.auth.uid == userId
+        && resource.size < 10 * 1024 * 1024; // Max 10MB
+    }
+    
+    // === Photos de profil ===
+    match /profile_pictures/{userId}/{fileName} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow create: if request.auth != null 
+        && request.auth.uid == userId
+        && resource.size < 5 * 1024 * 1024; // Max 5MB
+    }
+    
+    // === Images d'entreprise ===
+    match /company_images/{userId}/{fileName} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // === Règles par défaut pour développement ===
+    match /{allPaths=**} {
+      // Permissif pour développement/démo
+      allow read, write: if request.auth != null;
+    }
+  }
+}

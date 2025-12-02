@@ -35,32 +35,26 @@ class _SplashScreenState extends State<SplashScreen>
 
   int _currentSlide = 0;
   Timer? _autoSlideTimer;
+  late PageController _pageController;
 
   final List<Map<String, dynamic>> _slides = [
     {
-      'title': 'Welcome to',
-      'subtitle': 'Timeless',
-      'description': 'Bridging the Gap With Timeless Talent',
+      'title': '',
+      'subtitle': '',
+      'description': '',
       'isLogo': true
     },
     {
-      'title': 'Find Your',
-      'subtitle': 'Dream Job',
-      'description': 'Discover opportunities that match your profile',
-      'isImage': true,
-      'imagePath': 'assets/images/love_emoji.png'
-    },
-    {
-      'title': 'Smart Jobs',
-      'subtitle': 'Applications',
+      'title': 'A New',
+      'subtitle': 'Job Search App',
       'description': 'Apply to multiple offers',
       'isImage': true,
       'imagePath': 'assets/images/search_job.jpg'
     },
     {
-      'title': 'Get Started',
+      'title': 'Go',
       'subtitle': 'Now',
-      'description': 'Join successful job seekers',
+      'description': 'Join our job seekers',
       'icon': '✨'
     },
   ];
@@ -68,22 +62,24 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
+    _pageController = PageController();
     _masterController.forward();
     _startAutoSlideShow();
   }
 
   void _startAutoSlideShow() {
     _autoSlideTimer = Timer.periodic(
-      Duration(milliseconds: _currentSlide == 0 ? 7000 : 7000),
+      Duration(milliseconds: _currentSlide == 0 ? 6000 : 5000),
       (_) => _nextSlide(),
     );
   }
 
   void _nextSlide() {
     if (_currentSlide < _slides.length - 1) {
-      setState(() {
-        _currentSlide++;
-      });
+      _pageController.nextPage(
+        duration: const Duration(milliseconds: 600),
+        curve: Curves.easeInOutCubic,
+      );
     } else {
       _autoSlideTimer?.cancel();
       _navigateToNextScreen();
@@ -106,6 +102,7 @@ class _SplashScreenState extends State<SplashScreen>
 
     return Scaffold(
       backgroundColor: Colors.black,
+      extendBodyBehindAppBar: true,
       body: FadeTransition(
         opacity: _masterController,
         child: Container(
@@ -147,8 +144,8 @@ class _SplashScreenState extends State<SplashScreen>
                               height: 4,
                               decoration: BoxDecoration(
                                 color: [
-                                  ColorRes.brightYellow.withOpacity(0.4),
-                                  ColorRes.orange.withOpacity(0.3),
+                                  ColorRes.royalBlue.withOpacity(0.4),
+                                  ColorRes.royalBlue.withOpacity(0.3),
                                   Colors.white.withOpacity(0.2),
                                 ][index % 3],
                                 shape: BoxShape.circle,
@@ -168,42 +165,33 @@ class _SplashScreenState extends State<SplashScreen>
                   },
                 ),
 
-                // Contenu avec image animée et texte fixe
-                Center(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // Image qui change avec animation
-                        AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 600),
-                          transitionBuilder:
-                              (Widget child, Animation<double> animation) {
-                            return FadeTransition(
-                              opacity: animation,
-                              child: ScaleTransition(
-                                scale: Tween<double>(begin: 0.8, end: 1.0)
-                                    .animate(CurvedAnimation(
-                                        parent: animation,
-                                        curve: Curves.easeOut)),
-                                child: child,
-                              ),
-                            );
-                          },
-                          child: Container(
-                            key: ValueKey(_currentSlide),
-                            child:
-                                _buildMainVisual(_slides[_currentSlide], 1.0),
-                          ),
+                // Contenu avec PageView pour transitions naturelles
+                PageView.builder(
+                  controller: _pageController,
+                  onPageChanged: (index) {
+                    setState(() {
+                      _currentSlide = index;
+                    });
+                  },
+                  itemCount: _slides.length,
+                  itemBuilder: (context, index) {
+                    return Center(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            // Image de la page courante
+                            _buildMainVisual(_slides[index], 1.0),
+                            
+                            const SizedBox(height: 20),
+                            
+                            // Texte de la page courante
+                            _buildPageText(_slides[index]),
+                          ],
                         ),
-
-                        const SizedBox(height: 20),
-
-                        // Texte dynamique qui change avec les images
-                        _buildDynamicText(),
-                      ],
-                    ),
-                  ),
+                      ),
+                    );
+                  },
                 ),
 
                 // Enhanced Skip button
@@ -227,22 +215,13 @@ class _SplashScreenState extends State<SplashScreen>
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 10),
                         decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              ColorRes.brightYellow,
-                              ColorRes.orange,
-                            ],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
+                          color: ColorRes.white,
                           borderRadius: BorderRadius.circular(25),
-                          border:
-                              Border.all(color: ColorRes.darkGold, width: 1.5),
                           boxShadow: [
                             BoxShadow(
-                              color: ColorRes.orange.withOpacity(0.3),
-                              blurRadius: 12,
-                              spreadRadius: 2,
+                              color: ColorRes.royalBlue.withOpacity(0.2),
+                              blurRadius: 6,
+                              offset: const Offset(0, 2),
                             ),
                           ],
                         ),
@@ -287,12 +266,12 @@ class _SplashScreenState extends State<SplashScreen>
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: List.generate(_slides.length, (index) {
                         return TweenAnimationBuilder<double>(
-                          duration: const Duration(milliseconds: 400),
+                          duration: const Duration(milliseconds: 600),
                           tween: Tween(
                             begin: 0.0,
                             end: index == _currentSlide ? 1.0 : 0.0,
                           ),
-                          curve: Curves.easeOutCubic,
+                          curve: Curves.easeInOutCubic,
                           builder: (context, value, child) {
                             return Container(
                               margin: const EdgeInsets.symmetric(horizontal: 6),
@@ -300,15 +279,15 @@ class _SplashScreenState extends State<SplashScreen>
                               height: 8,
                               decoration: BoxDecoration(
                                 color: Color.lerp(
-                                  Colors.white30,
-                                  ColorRes.brightYellow,
+                                  Colors.white.withOpacity(0.3),
+                                  Colors.white,
                                   value,
                                 ),
                                 borderRadius: BorderRadius.circular(4),
                                 boxShadow: value > 0.5
                                     ? [
                                         BoxShadow(
-                                          color: ColorRes.brightYellow
+                                          color: Colors.white
                                               .withOpacity(0.5),
                                           blurRadius: 8,
                                           spreadRadius: 1,
@@ -335,7 +314,25 @@ class _SplashScreenState extends State<SplashScreen>
     final currentSlide = _slides[_currentSlide];
 
     return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 400),
+      duration: const Duration(milliseconds: 600),
+      transitionBuilder: (Widget child, Animation<double> animation) {
+        return FadeTransition(
+          opacity: CurvedAnimation(
+            parent: animation,
+            curve: Curves.easeInOutCubic,
+          ),
+          child: SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(0, 0.1),
+              end: Offset.zero,
+            ).animate(CurvedAnimation(
+              parent: animation,
+              curve: Curves.easeInOutCubic,
+            )),
+            child: child,
+          ),
+        );
+      },
       child: Column(
         key: ValueKey(_currentSlide),
         children: [
@@ -360,11 +357,11 @@ class _SplashScreenState extends State<SplashScreen>
             style: GoogleFonts.poppins(
               fontSize: 32,
               fontWeight: FontWeight.w800,
-              color: ColorRes.brightYellow,
+              color: ColorRes.royalBlue,
               letterSpacing: 1.2,
               shadows: [
                 Shadow(
-                  color: ColorRes.brightYellow.withOpacity(0.4),
+                  color: ColorRes.royalBlue.withOpacity(0.4),
                   blurRadius: 15,
                   offset: const Offset(0, 0),
                 ),
@@ -498,11 +495,11 @@ class _SplashScreenState extends State<SplashScreen>
             style: GoogleFonts.poppins(
               fontSize: 32,
               fontWeight: FontWeight.w800,
-              color: ColorRes.brightYellow,
+              color: ColorRes.royalBlue,
               letterSpacing: 1.2,
               shadows: [
                 Shadow(
-                  color: ColorRes.brightYellow.withOpacity(0.4),
+                  color: ColorRes.royalBlue.withOpacity(0.4),
                   blurRadius: 15,
                   offset: const Offset(0, 0),
                 ),
@@ -545,27 +542,12 @@ class _SplashScreenState extends State<SplashScreen>
     if (slideData['isLogo'] == true) {
       return ScaleTransition(
         scale: _logoScaleAnimation,
-        child: Container(
-          width: 380,
-          height: 200,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(30),
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.2),
-                blurRadius: 15,
-                spreadRadius: 2,
-                offset: const Offset(0, 8),
-              ),
-            ],
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(18.0),
-            child: Image.asset(
-              'assets/images/logo.png',
-              fit: BoxFit.contain,
-            ),
+        child: SizedBox(
+          width: 600,
+          height: 400,
+          child: Image.asset(
+            'assets/images/logo.png',
+            fit: BoxFit.contain,
           ),
         ),
       );
@@ -621,9 +603,70 @@ class _SplashScreenState extends State<SplashScreen>
     );
   }
 
+  Widget _buildPageText(Map<String, dynamic> slideData) {
+    return Column(
+      children: [
+        // Titre seulement si il n'est pas vide
+        if (slideData['title']!.isNotEmpty) ...[
+          Text(
+            slideData['title']!,
+            textAlign: TextAlign.center,
+            style: GoogleFonts.poppins(
+              fontSize: 22,
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+              letterSpacing: 0.5,
+            ),
+          ),
+        ],
+        // Sous-titre seulement si il n'est pas vide
+        if (slideData['subtitle']!.isNotEmpty) ...[
+          const SizedBox(height: 12),
+          Text(
+            slideData['subtitle']!,
+            textAlign: TextAlign.center,
+            style: GoogleFonts.poppins(
+              fontSize: 32,
+              fontWeight: FontWeight.w800,
+              color: Colors.orange,
+              letterSpacing: 1.2,
+              shadows: [
+                Shadow(
+                  color: Colors.orange.withOpacity(0.4),
+                  blurRadius: 15,
+                  offset: const Offset(0, 0),
+                ),
+              ],
+            ),
+          ),
+        ],
+        // Description seulement si ce n'est pas la première slide avec le logo et si elle n'est pas vide
+        if (slideData['isLogo'] != true && slideData['description']!.isNotEmpty) ...[
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: Text(
+              slideData['description']!,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.poppins(
+                fontSize: 10,
+                fontWeight: FontWeight.w500,
+                color: Colors.white.withOpacity(0.7),
+                height: 1.4,
+                letterSpacing: 0.5,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
   @override
   void dispose() {
     _autoSlideTimer?.cancel();
+    _pageController.dispose();
     _masterController.dispose();
     _logoController.dispose();
     _particleController.dispose();

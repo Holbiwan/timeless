@@ -2,18 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
-import 'package:timeless/screen/chat_box/chat_box_screen.dart';
+// Import supprimé : chat_box_screen.dart n'existe plus
 import 'package:timeless/screen/employer/employer_profile_screen.dart';
 
 import 'package:timeless/screen/manager_section/dashboard/manager_dashboard_screen_controller.dart';
 import 'package:timeless/screen/manager_section/dashboard/widget.dart';
 import 'package:timeless/screen/manager_section/manager_application_screen/manger_application_screen.dart';
+import 'package:timeless/screen/employer/employer_applications_screen.dart';
 import 'package:timeless/screen/manager_section/manager_home_screen/manager_home_screen.dart';
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/string.dart';
 
-/// --- Palette Jamaïque ---
+// --- Palette Jamaïque ---
 const _kJBlack = Colors.black; // fond
 const _kJYellow = Color(0xFFFED100); // actif
 const _kJGreen = Color(0xFF1FA24A); // inactif
@@ -33,15 +34,16 @@ class ManagerDashBoardScreen extends StatelessWidget {
       },
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        backgroundColor: Colors.white, // couleur globale de page
+        backgroundColor: Colors.black, // couleur globale de page
         body: Obx(() {
           switch (controller.currentTab.value) {
             case 0:
               return ManagerHomeScreen();
             case 1:
-              return ManagerApplicationScreen();
+              return const EmployerApplicationsScreen();
             case 2:
-              return ChatBoxScreen();
+              return const Center(
+                  child: Text('Chat temporairement indisponible'));
             default:
               return const EmployerProfileScreen();
           }

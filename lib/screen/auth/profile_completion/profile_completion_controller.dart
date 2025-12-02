@@ -155,7 +155,7 @@ class ProfileCompletionController extends GetxController {
           .get();
 
       if (doc.exists) {
-        final data = doc.data() as Map<String, dynamic>?;
+        final data = doc.data();
         return data?['profileCompleted'] == true;
       }
       

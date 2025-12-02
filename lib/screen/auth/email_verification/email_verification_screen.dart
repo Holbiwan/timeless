@@ -7,9 +7,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/asset_res.dart';
+import 'package:timeless/utils/app_theme.dart';
 import 'package:timeless/screen/dashboard/dashboard_screen.dart';
 import 'package:timeless/screen/auth/sign_in_screen/sign_in_screen.dart';
-import 'package:timeless/service/pref_services.dart';
+import 'package:timeless/screen/first_page/first_screen.dart';
+import 'package:timeless/services/preferences_service.dart';
+import 'package:timeless/services/translation_service.dart';
+import 'package:timeless/services/accessibility_service.dart';
 import 'package:timeless/utils/pref_keys.dart';
 
 class EmailVerificationScreen extends StatefulWidget {
@@ -86,10 +90,10 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
       });
 
       // Save user data to preferences
-      await PrefService.setValue(PrefKeys.userId, user.uid);
-      await PrefService.setValue(PrefKeys.email, widget.email);
-      await PrefService.setValue(PrefKeys.fullName, widget.userFullName);
-      await PrefService.setValue(PrefKeys.rol, "User");
+      await PreferencesService.setValue(PrefKeys.userId, user.uid);
+      await PreferencesService.setValue(PrefKeys.email, widget.email);
+      await PreferencesService.setValue(PrefKeys.fullName, widget.userFullName);
+      await PreferencesService.setValue(PrefKeys.rol, "User");
 
       print('✅ User verification status updated');
     } catch (e) {
@@ -122,7 +126,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
         await user.sendEmailVerification();
         
         Get.snackbar(
-          "📧 Verification Email Sent",
+          " Verification Email Sent",
           "A new verification email has been sent to ${widget.email}",
           backgroundColor: Colors.blue,
           colorText: Colors.white,
@@ -404,7 +408,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
               // Back to sign in
               TextButton(
                 onPressed: () {
-                  Get.offAll(() => const SigninScreenU());
+                  Get.offAll(() => FirstScreen());
                 },
                 child: Text(
                   "Back to Sign In",

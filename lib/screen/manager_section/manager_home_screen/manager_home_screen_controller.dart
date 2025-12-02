@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:timeless/screen/manager_section/Notification/notification_services.dart';
-import 'package:timeless/service/pref_services.dart';
+import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/pref_keys.dart';
 
 class ManagerHomeScreenController extends GetxController
@@ -24,7 +24,7 @@ class ManagerHomeScreenController extends GetxController
   }
 
   getCompanyName() async {
-    companyName = PrefService.getString(PrefKeys.companyName);
+    companyName = PreferencesService.getString(PrefKeys.companyName);
   }
 
   getUserData() async {

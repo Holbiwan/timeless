@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:timeless/screen/manager_section/dashboard/manager_dashboard_screen.dart';
 import 'package:timeless/screen/organization_profile_screen/organization_profile_screen.dart';
-import 'package:timeless/service/pref_services.dart';
+import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/utils/color_res.dart';
 
@@ -21,9 +21,9 @@ class SignInScreenControllerM extends GetxController {
   
 
   getRememberEmailDataManger() {
-    if (PrefService.getString(PrefKeys.emailRememberManager) != "") {
-      emailController.text = PrefService.getString(PrefKeys.emailRememberManager);
-      passwordController.text = PrefService.getString(PrefKeys.passwordRememberManager);
+    if (PreferencesService.getString(PrefKeys.emailRememberManager) != "") {
+      emailController.text = PreferencesService.getString(PrefKeys.emailRememberManager);
+      passwordController.text = PreferencesService.getString(PrefKeys.passwordRememberManager);
     }
   }
 
@@ -48,10 +48,10 @@ class SignInScreenControllerM extends GetxController {
 
           if (value.docs[i]["Email"] == email && value.docs[i]["Email"] != "") {
             isManager = true;
-            PrefService.setValue(PrefKeys.rol, "Manager");
-            PrefService.setValue(PrefKeys.totalPost, value.docs[i]["TotalPost"]);
-            PrefService.setValue(PrefKeys.company, value.docs[i]["company"]);
-            PrefService.setValue(PrefKeys.userId, value.docs[i].id);
+            PreferencesService.setValue(PrefKeys.rol, "Manager");
+            PreferencesService.setValue(PrefKeys.totalPost, value.docs[i]["TotalPost"]);
+            PreferencesService.setValue(PrefKeys.company, value.docs[i]["company"]);
+            PreferencesService.setValue(PrefKeys.userId, value.docs[i].id);
 
             await fireStore
                 .collection("Auth")
@@ -62,7 +62,7 @@ class SignInScreenControllerM extends GetxController {
                 .get()
                 .then((value2) {
               for (int j = 0; j < value2.docs.length; j++) {
-                PrefService.setValue(PrefKeys.companyName, value2.docs[j]['name']);
+                PreferencesService.setValue(PrefKeys.companyName, value2.docs[j]['name']);
               }
             });
 
@@ -91,8 +91,8 @@ class SignInScreenControllerM extends GetxController {
             }
 
             if (credential.user!.email.toString() == email) {
-              PrefService.setValue(PrefKeys.userId, credential.user!.uid.toString());
-              Get.off(() => PrefService.getBool(PrefKeys.company)
+              PreferencesService.setValue(PrefKeys.userId, credential.user!.uid.toString());
+              Get.off(() => PreferencesService.getBool(PrefKeys.company)
                   ? ManagerDashBoardScreen()
                   : const OrganizationProfileScreen());
 
@@ -182,8 +182,8 @@ class SignInScreenControllerM extends GetxController {
 
   onLoginBtnTap() async {
     if (rememberMe == true) {
-      await PrefService.setValue(PrefKeys.emailRememberManager, emailController.text);
-      await PrefService.setValue(PrefKeys.passwordRememberManager, passwordController.text);
+      await PreferencesService.setValue(PrefKeys.emailRememberManager, emailController.text);
+      await PreferencesService.setValue(PrefKeys.passwordRememberManager, passwordController.text);
     }
     if (validator()) {
       signInWithEmailAndPassword(
@@ -265,11 +265,11 @@ class SignInScreenControllerM extends GetxController {
     final demoUserId = "demo-${DateTime.now().millisecondsSinceEpoch}";
     
     // Définir les préférences locales
-    await PrefService.setValue(PrefKeys.rol, "Manager");
-    await PrefService.setValue(PrefKeys.totalPost, 0);
-    await PrefService.setValue(PrefKeys.company, true);
-    await PrefService.setValue(PrefKeys.userId, demoUserId);
-    await PrefService.setValue(PrefKeys.companyName, "Timeless Demo Corp");
+    await PreferencesService.setValue(PrefKeys.rol, "Manager");
+    await PreferencesService.setValue(PrefKeys.totalPost, 0);
+    await PreferencesService.setValue(PrefKeys.company, true);
+    await PreferencesService.setValue(PrefKeys.userId, demoUserId);
+    await PreferencesService.setValue(PrefKeys.companyName, "Timeless Demo Corp");
     
     Get.off(() => ManagerDashBoardScreen());
     
@@ -315,11 +315,11 @@ class SignInScreenControllerM extends GetxController {
       });
 
       // Définir les préférences
-      await PrefService.setValue(PrefKeys.rol, "Manager");
-      await PrefService.setValue(PrefKeys.totalPost, 0);
-      await PrefService.setValue(PrefKeys.company, true);
-      await PrefService.setValue(PrefKeys.userId, userId);
-      await PrefService.setValue(PrefKeys.companyName, "Timeless Demo Corp");
+      await PreferencesService.setValue(PrefKeys.rol, "Manager");
+      await PreferencesService.setValue(PrefKeys.totalPost, 0);
+      await PreferencesService.setValue(PrefKeys.company, true);
+      await PreferencesService.setValue(PrefKeys.userId, userId);
+      await PreferencesService.setValue(PrefKeys.companyName, "Timeless Demo Corp");
     } catch (e) {
       debugPrint('Erreur création profil démo: $e');
       // Continue quand même avec les données locales
@@ -364,11 +364,11 @@ class SignInScreenControllerM extends GetxController {
           for (int i = 0; i < value.docs.length; i++) {
             if (value.docs[i]["Email"] == user!.email && value.docs[i]["Email"] != "") {
               isManager = true;
-              PrefService.setValue(PrefKeys.rol, "Manager");
-              PrefService.setValue(PrefKeys.totalPost, value.docs[i]["TotalPost"]);
-              PrefService.setValue(PrefKeys.company, value.docs[i]["company"]);
-              PrefService.setValue(PrefKeys.userId, user.uid);
-              Get.off(() => PrefService.getBool(PrefKeys.company)
+              PreferencesService.setValue(PrefKeys.rol, "Manager");
+              PreferencesService.setValue(PrefKeys.totalPost, value.docs[i]["TotalPost"]);
+              PreferencesService.setValue(PrefKeys.company, value.docs[i]["company"]);
+              PreferencesService.setValue(PrefKeys.userId, user.uid);
+              Get.off(() => PreferencesService.getBool(PrefKeys.company)
                   ? ManagerDashBoardScreen()
                   : const OrganizationProfileScreen());
               break;
@@ -389,7 +389,7 @@ class SignInScreenControllerM extends GetxController {
         }
       });
 
-      PrefService.setValue(PrefKeys.userId, user?.uid.toString());
+      PreferencesService.setValue(PrefKeys.userId, user?.uid.toString());
       loading.value = false;
     } else {
       loading.value = false;

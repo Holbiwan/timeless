@@ -11,8 +11,12 @@ import 'package:timeless/common/widgets/common_text_field.dart';
 import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/string.dart';
+import 'package:timeless/utils/app_theme.dart';
+import 'package:timeless/services/translation_service.dart';
+import 'package:timeless/services/accessibility_service.dart';
 
 import 'package:timeless/screen/auth/sign_up/sign_up_controller.dart';
+import 'package:timeless/screen/manager_section/help/terms/terms_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -23,17 +27,29 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   final SignUpController ctrl = Get.put(SignUpController());
+  final TranslationService translationService = Get.find<TranslationService>();
+  final AccessibilityService accessibilityService = Get.find<AccessibilityService>();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: ColorRes.white,
+    return Obx(() => Scaffold(
+      backgroundColor: accessibilityService.backgroundColor,
       appBar: AppBar(
-        title: Text('Create account', style: GoogleFonts.poppins()),
-        centerTitle: true,
         elevation: 0,
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        backgroundColor: Colors.transparent,
+        foregroundColor: accessibilityService.textColor,
+        leading: Container(
+          margin: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: const Color(0xFF000647), width: 1.0),
+          ),
+          child: IconButton(
+            onPressed: () => Navigator.pop(context),
+            icon: const Icon(Icons.arrow_back, color: Colors.black),
+          ),
+        ),
       ),
       body: SafeArea(
         child: Obx(() {
@@ -46,117 +62,138 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Logo agrandi
-                    Center(
-                      child: Container(
-                        height: 120,
-                        width: 120,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: ColorRes.logoColor,
-                          borderRadius: BorderRadius.circular(20),
+                    // Logo avec accessibilité
+                    accessibilityService.buildAccessibleWidget(
+                      semanticLabel: 'Timeless app logo',
+                      child: Center(
+                        child: Container(
+                          height: 100,
+                          width: 100,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: accessibilityService.isHighContrastMode.value 
+                                ? AppTheme.secondaryGold 
+                                : AppTheme.primaryOrange,
+                            borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
+                            boxShadow: AppTheme.shadowRegular,
+                          ),
+                          child: const Image(image: AssetImage(AssetRes.logo)),
                         ),
-                        child: const Image(image: AssetImage(AssetRes.logo)),
                       ),
                     ),
                     const SizedBox(height: 16),
 
                     Center(
                       child: Text(
-                        'Create your account',
-                        style: GoogleFonts.poppins(
-                          fontSize: 20,
+                        translationService.getText('create_account'),
+                        style: accessibilityService.getAccessibleTextStyle(
+                          fontSize: AppTheme.fontSizeXLarge,
                           fontWeight: FontWeight.w600,
-                          color: ColorRes.black,
                         ),
                       ),
                     ),
 
-                    const SizedBox(height: 28),
+                    const SizedBox(height: 16),
 
                     // ===== First name =====
-                    _label('First name'),
+                    _buildLabel(translationService.getText('first_name')),
                     GetBuilder<SignUpController>(
                       id: "showFirst",
-                      builder: (_) => _box(
-                        child: commonTextFormField(
+                      builder: (_) => _buildInputField(
+                        child: TextFormField(
                           controller: ctrl.firstNameCtrl,
                           onChanged: ctrl.onChanged,
-                          textDecoration: _decoration(hint: 'First name'),
+                          decoration: AppTheme.getInputDecoration(
+                            hint: translationService.getText('first_name'),
+                          ),
+                          style: accessibilityService.getAccessibleTextStyle(),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 14),
+                    const SizedBox(height: 12),
 
                     // ===== Last name =====
-                    _label('Last name'),
+                    _buildLabel(translationService.getText('last_name')),
                     GetBuilder<SignUpController>(
                       id: "showLast",
-                      builder: (_) => _box(
-                        child: commonTextFormField(
+                      builder: (_) => _buildInputField(
+                        child: TextFormField(
                           controller: ctrl.lastNameCtrl,
                           onChanged: ctrl.onChanged,
-                          textDecoration: _decoration(hint: 'Last name'),
+                          decoration: AppTheme.getInputDecoration(
+                            hint: translationService.getText('last_name'),
+                          ),
+                          style: accessibilityService.getAccessibleTextStyle(),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 14),
+                    const SizedBox(height: 12),
 
                     // ===== Email =====
-                    _label('${Strings.email} *'),
+                    _buildLabel('${translationService.getText('email')} *'),
                     GetBuilder<SignUpController>(
                       id: "showEmail",
                       builder: (_) => Column(
                         children: [
-                          _box(
-                            child: commonTextFormField(
+                          _buildInputField(
+                            child: TextFormField(
                               controller: ctrl.emailCtrl,
                               onChanged: (_) => ctrl.emailValidation(),
-                              textDecoration: _decoration(
-                                hint: 'Email',
-                                suffix: IconButton(
+                              keyboardType: TextInputType.emailAddress,
+                              decoration: AppTheme.getInputDecoration(
+                                hint: translationService.getText('email'),
+                                suffixIcon: IconButton(
                                   tooltip: 'Copy email',
                                   onPressed: () async {
+                                    accessibilityService.triggerHapticFeedback();
                                     await Clipboard.setData(
                                       ClipboardData(text: ctrl.emailCtrl.text),
                                     );
                                     Get.snackbar(
-                                        'Copied', 'Email copied to clipboard',
-                                        snackPosition: SnackPosition.BOTTOM);
+                                      'Copied', 
+                                      'Email copied to clipboard',
+                                      snackPosition: SnackPosition.BOTTOM,
+                                      backgroundColor: accessibilityService.primaryColor,
+                                      colorText: AppTheme.white,
+                                    );
                                   },
-                                  icon: Icon(Icons.copy,
-                                      color: Colors.black.withOpacity(0.25)),
+                                  icon: Icon(
+                                    Icons.copy,
+                                    color: accessibilityService.secondaryTextColor,
+                                  ),
                                 ),
                               ),
+                              style: accessibilityService.getAccessibleTextStyle(),
                             ),
                           ),
                           if (ctrl.emailError.isNotEmpty)
-                            _errorPill(ctrl.emailError),
+                            AppTheme.errorMessage(ctrl.emailError),
                         ],
                       ),
                     ),
 
-                    const SizedBox(height: 14),
+                    const SizedBox(height: 12),
 
                     // ===== Password =====
-                    _label('${Strings.password} *'),
+                    _buildLabel('${translationService.getText('password')} *'),
                     GetBuilder<SignUpController>(
                       id: "showPassword",
                       builder: (_) => Column(
                         children: [
-                          _box(
-                            child: commonTextFormField(
+                          _buildInputField(
+                            child: TextFormField(
                               controller: ctrl.passwordCtrl,
                               obscureText: ctrl.showPassword,
                               onChanged: (_) => ctrl.passwordValidation(),
-                              textDecoration: _decoration(
-                                hint: 'Password (min 8 chars)',
-                                suffix: Row(
+                              decoration: AppTheme.getInputDecoration(
+                                hint: translationService.getText('password_hint'),
+                                suffixIcon: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     IconButton(
                                       tooltip: 'Copy password',
                                       onPressed: () async {
+                                        accessibilityService.triggerHapticFeedback();
                                         await Clipboard.setData(
                                           ClipboardData(
                                               text: ctrl.passwordCtrl.text),
@@ -164,98 +201,129 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                         Get.snackbar('Copied',
                                             'Password copied to clipboard',
                                             snackPosition:
-                                                SnackPosition.BOTTOM);
+                                                SnackPosition.BOTTOM,
+                                            backgroundColor: accessibilityService.primaryColor,
+                                            colorText: AppTheme.white);
                                       },
-                                      icon: Icon(Icons.copy,
-                                          color:
-                                              Colors.black.withOpacity(0.25)),
+                                      icon: Icon(
+                                        Icons.copy,
+                                        color: accessibilityService.secondaryTextColor,
+                                      ),
                                     ),
                                     IconButton(
-                                      tooltip:
-                                          ctrl.showPassword ? 'Show' : 'Hide',
+                                      tooltip: ctrl.showPassword ? 'Show' : 'Hide',
                                       onPressed: isLoading
                                           ? null
-                                          : ctrl.togglePassword,
+                                          : () {
+                                              accessibilityService.triggerHapticFeedback();
+                                              ctrl.togglePassword();
+                                            },
                                       icon: Icon(
                                         ctrl.showPassword
                                             ? Icons.visibility_off
                                             : Icons.visibility,
-                                        color: Colors.black.withOpacity(0.25),
+                                        color: accessibilityService.secondaryTextColor,
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
+                              style: accessibilityService.getAccessibleTextStyle(),
                             ),
                           ),
                           if (ctrl.pwdError.isNotEmpty)
-                            _errorPill(ctrl.pwdError),
+                            AppTheme.errorMessage(ctrl.pwdError),
                         ],
                       ),
                     ),
 
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 16),
 
-                    // ===== Create account button =====
+                    // ===== Go button =====
                     GetBuilder<SignUpController>(
                       id: "colorChange",
-                      builder: (_) => InkWell(
-                        onTap: isLoading ? null : ctrl.onSignUpTap,
-                        child: Container(
-                          height: 45,
-                          width: double.infinity,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            gradient: const LinearGradient(
-                              colors: [
-                                ColorRes.orange,
-                                ColorRes.brightYellow
-                              ],
+                      builder: (_) => accessibilityService.buildAccessibleWidget(
+                        semanticLabel: 'Go',
+                        onTap: isLoading ? null : () {
+                          accessibilityService.triggerHapticFeedback();
+                          ctrl.onSignUpTap();
+                        },
+                        child: SizedBox(
+                          width: 80,
+                          child: Container(
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: const Color(0xFF000647), width: 1.0),
                             ),
+                          child: ElevatedButton(
+                            onPressed: isLoading ? null : ctrl.onSignUpTap,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.transparent,
+                              foregroundColor: Colors.black,
+                              shadowColor: Colors.transparent,
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            child: isLoading
+                                ? const SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF000647)),
+                                    ),
+                                  )
+                                : const Text(
+                                    'Go',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.black,
+                                    ),
+                                  ),
                           ),
-                          child: Text(
-                            'Create account',
-                            style: GoogleFonts.poppins(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: ColorRes.white,
-                            ),
                           ),
                         ),
                       ),
                     ),
 
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 12),
 
                     // Terms and conditions
                     RichText(
                       textAlign: TextAlign.center,
                       text: TextSpan(
-                        style: GoogleFonts.poppins(
-                          fontSize: 12,
-                          color: Colors.black.withOpacity(0.6),
+                        style: accessibilityService.getAccessibleTextStyle(
+                          fontSize: AppTheme.fontSizeSmall,
+                          color: accessibilityService.secondaryTextColor,
                         ),
                         children: [
-                          const TextSpan(text: 'By creating an account, you agree to our '),
+                          TextSpan(text: '${translationService.getText('terms_agreement')} '),
                           TextSpan(
-                            text: 'Terms of Service',
-                            style: GoogleFonts.poppins(
-                              color: ColorRes.darkGold,
+                            text: translationService.getText('terms_of_service'),
+                            style: accessibilityService.getAccessibleTextStyle(
+                              fontSize: AppTheme.fontSizeSmall,
+                              color: accessibilityService.primaryColor,
                               fontWeight: FontWeight.w600,
+                            ).copyWith(
                               decoration: TextDecoration.underline,
                             ),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () async {
-                                final uri = Uri.parse('https://www.timeless.com/terms-of-service');
+                                accessibilityService.triggerHapticFeedback();
+                                final uri = Uri.parse('https://www.timeless-app.com/terms');
                                 if (await canLaunchUrl(uri)) {
                                   await launchUrl(uri, mode: LaunchMode.externalApplication);
                                 } else {
                                   Get.snackbar(
-                                    'Error',
+                                    translationService.getText('error'),
                                     'Could not open Terms of Service',
-                                    backgroundColor: Colors.red,
-                                    colorText: Colors.white,
+                                    backgroundColor: accessibilityService.errorColor,
+                                    colorText: AppTheme.white,
                                   );
                                 }
                               },
@@ -263,22 +331,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           const TextSpan(text: ' and '),
                           TextSpan(
                             text: 'Privacy Policy',
-                            style: GoogleFonts.poppins(
-                              color: ColorRes.darkGold,
+                            style: accessibilityService.getAccessibleTextStyle(
+                              fontSize: AppTheme.fontSizeSmall,
+                              color: accessibilityService.primaryColor,
                               fontWeight: FontWeight.w600,
+                            ).copyWith(
                               decoration: TextDecoration.underline,
                             ),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () async {
+                                accessibilityService.triggerHapticFeedback();
                                 final uri = Uri.parse('https://www.privacypolicygenerator.info/live.php?token=VQQZx8YfJz2gQh7y3jKb9Rm6XsEr4vNJ');
                                 if (await canLaunchUrl(uri)) {
                                   await launchUrl(uri, mode: LaunchMode.externalApplication);
                                 } else {
                                   Get.snackbar(
-                                    'Error',
+                                    translationService.getText('error'),
                                     'Could not open Privacy Policy',
-                                    backgroundColor: Colors.red,
-                                    colorText: Colors.white,
+                                    backgroundColor: accessibilityService.errorColor,
+                                    colorText: AppTheme.white,
                                   );
                                 }
                               },
@@ -287,7 +358,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     ),
 
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 8),
                   ],
                 ),
               ),
@@ -298,98 +369,30 @@ class _SignUpScreenState extends State<SignUpScreen> {
           );
         }),
       ),
-    );
+    ));
   }
 
   // ---------- UI helpers ----------
-  Widget _label(String text) => Padding(
+  Widget _buildLabel(String text) => Padding(
         padding: const EdgeInsets.only(left: 4, bottom: 6),
         child: Text(
           text,
-          style: GoogleFonts.poppins(
+          style: accessibilityService.getAccessibleTextStyle(
+            fontSize: AppTheme.fontSizeRegular,
             fontWeight: FontWeight.w500,
-            fontSize: 14,
-            color: Colors.black.withOpacity(0.6),
+            color: accessibilityService.secondaryTextColor,
           ),
         ),
       );
 
-  BoxDecoration _shadowBox() => BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            offset: const Offset(0, 0),
-            color: const Color(0xFF8C8C8C).withOpacity(0.15),
-            spreadRadius: -8,
-            blurRadius: 20,
+  Widget _buildInputField({required Widget child}) => Container(
+        decoration: AppTheme.containerDecoration.copyWith(
+          color: Colors.white,
+          border: Border.all(
+            color: const Color(0xFF000647),
+            width: 1.0,
           ),
-        ],
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-      );
-
-  Widget _box({required Widget child}) => Container(
-        decoration: _shadowBox(),
+        ),
         child: child,
       );
-
-  InputDecoration _decoration({required String hint, Widget? suffix}) {
-    return InputDecoration(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
-      hintText: hint,
-      filled: true,
-      fillColor: Colors.transparent,
-      suffixIcon: suffix,
-      hintStyle: GoogleFonts.poppins(
-        fontSize: 15,
-        fontWeight: FontWeight.w500,
-        color: Colors.black.withOpacity(0.15),
-      ),
-      border: _enableBorder(),
-      focusedBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: ColorRes.brightYellow, width: 2),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      enabledBorder: _enableBorder(),
-      disabledBorder: _enableBorder(),
-      errorBorder: _errorBorder(),
-      focusedErrorBorder: _errorBorder(),
-    );
-  }
-
-  OutlineInputBorder _enableBorder() => OutlineInputBorder(
-        borderSide: const BorderSide(color: ColorRes.orange),
-        borderRadius: BorderRadius.circular(12),
-      );
-
-  OutlineInputBorder _errorBorder() => OutlineInputBorder(
-        borderSide: const BorderSide(color: ColorRes.starColor),
-        borderRadius: BorderRadius.circular(12),
-      );
-
-  Widget _errorPill(String message) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10),
-      width: double.infinity,
-      height: 28,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(50),
-        color: const Color(0xFFFFE6E6), // ColorRes.invalidColor si dispo
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: Row(
-        children: [
-          const Icon(Icons.error_outline, size: 14, color: Color(0xFFDA1414)),
-          const SizedBox(width: 10),
-          Text(
-            message,
-            style: GoogleFonts.poppins(
-              fontWeight: FontWeight.w400,
-              fontSize: 9,
-              color: const Color(0xFFDA1414),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }

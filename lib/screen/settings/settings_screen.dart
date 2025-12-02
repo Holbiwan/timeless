@@ -3,15 +3,15 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:timeless/screen/dashboard/dashboard_controller.dart';
 import 'package:timeless/screen/looking_for_screen/looking_for_screen.dart';
-import 'package:timeless/screen/settings/appearance/localization.dart';
-import 'package:timeless/service/pref_services.dart';
-import 'package:timeless/service/google_auth_service.dart';
+import 'package:timeless/services/preferences_service.dart';
+import 'package:timeless/services/google_auth_service.dart';
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/utils/string.dart';
 import 'appearance/appearance_screen.dart';
+import 'package:timeless/utils/app_theme.dart';
 
 class SettingsScreenU extends StatelessWidget {
   const SettingsScreenU({super.key});
@@ -30,22 +30,26 @@ class SettingsScreenU extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: () {
-                    Get.back();
+                    if (Navigator.canPop(context)) {
+                      Navigator.pop(context);
+                    } else {
+                      Get.offAllNamed('/dashboard');
+                    }
                   },
                   child: Container(
                     height: 40,
                     width: 40,
-                    padding: const EdgeInsets.only(left: 10),
                     margin: const EdgeInsets.only(left: 14),
                     decoration: BoxDecoration(
-                      color: ColorRes.logoColor,
-                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: const Color(0xFF000647), width: 2.0),
                     ),
                     child: const Align(
                       alignment: Alignment.center,
                       child: Icon(
-                        Icons.arrow_back_ios,
-                        color: ColorRes.containerColor,
+                        Icons.arrow_back,
+                        color: Colors.black,
                       ),
                     ),
                   ),
@@ -185,12 +189,12 @@ class SettingsScreenU extends StatelessWidget {
                           height: 55,
                           width: 55,
                           decoration: BoxDecoration(
-                            color: ColorRes.logoColor,
+                            color: const Color(0xFF000647),
                             borderRadius: BorderRadius.circular(15),
                           ),
                           child: const Icon(
                             Icons.visibility,
-                            color: ColorRes.containerColor,
+                            color: Colors.white,
                           ),
                         ),
                         const SizedBox(width: 15),
@@ -203,9 +207,10 @@ class SettingsScreenU extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const Image(
-                      image: AssetImage(AssetRes.settingArrow),
-                      height: 15,
+                    const Icon(
+                      Icons.arrow_forward_ios,
+                      color: Colors.grey,
+                      size: 15,
                     ),
                   ],
                 ),
@@ -219,58 +224,6 @@ class SettingsScreenU extends StatelessWidget {
             ),
             const SizedBox(height: 10),
 
-            InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (con) => const LocalizationScreen(),
-                  ),
-                );
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          height: 55,
-                          width: 55,
-                          decoration: BoxDecoration(
-                            color: ColorRes.logoColor,
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: const Icon(
-                            Icons.language,
-                            color: ColorRes.containerColor,
-                          ),
-                        ),
-                        const SizedBox(width: 15),
-                        Text(
-                          Strings.localization,
-                          style: appTextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 14,
-                              color: ColorRes.black),
-                        ),
-                      ],
-                    ),
-                    const Image(
-                      image: AssetImage(AssetRes.settingArrow),
-                      height: 15,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 3),
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 10),
-              color: ColorRes.lightGrey.withOpacity(0.8),
-              height: 1,
-            ),
             // const SizedBox(height: 10),
             /* InkWell(
               onTap: () {
@@ -341,10 +294,8 @@ class SettingsScreenU extends StatelessWidget {
                         color: ColorRes.deleteColor,
                         borderRadius: BorderRadius.circular(15),
                       ),
-                      child: const Image(
-                        image: AssetImage(
-                          AssetRes.logout,
-                        ),
+                      child: const Icon(
+                        Icons.logout,
                         color: ColorRes.starColor,
                       ),
                     ),
@@ -371,19 +322,21 @@ class SettingsScreenU extends StatelessWidget {
         builder: (BuildContext bc) {
           return Container(
             height: 265,
-            decoration: const BoxDecoration(
-              color: ColorRes.white,
-              borderRadius: BorderRadius.only(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(45),
                 topRight: Radius.circular(45),
               ),
+              border: Border.all(color: AppTheme.buttonBorderColor, width: 2.0),
             ),
             child: Column(
               children: [
                 const SizedBox(height: 50),
-                const Image(
-                  image: AssetImage(AssetRes.logout),
+                const Icon(
+                  Icons.logout,
                   color: ColorRes.starColor,
+                  size: 48,
                 ),
                 const SizedBox(height: 20),
                 Text(
@@ -430,7 +383,7 @@ class SettingsScreenU extends StatelessWidget {
                         if (await googleSignIn.isSignedIn()) {
                           await googleSignIn.signOut();
                         }
-                        PrefService.clear();
+                        PreferencesService.clear();
                         // ignore: use_build_context_synchronously
                         Navigator.of(context).pushAndRemoveUntil(
                             MaterialPageRoute(
@@ -472,7 +425,11 @@ class SettingsScreenU extends StatelessWidget {
   void _showLogoutConfirmation(BuildContext context, DashBoardController controller) async {
     final confirmed = await Get.dialog<bool>(
       AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
+          side: BorderSide(color: AppTheme.buttonBorderColor, width: 2.0),
+        ),
         title: Row(
           children: [
             Icon(Icons.logout, color: Colors.orange[600], size: 24),
@@ -551,13 +508,10 @@ class SettingsScreenU extends StatelessWidget {
         await _clearAllPreferences();
 
         // Afficher un message de confirmation
-        Get.snackbar(
-          "Déconnexion réussie",
-          "À bientôt sur Timeless !",
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.green[100],
-          colorText: Colors.green[800],
-          duration: const Duration(seconds: 2),
+        AppTheme.showStandardSnackBar(
+          title: "Déconnexion réussie",
+          message: "À bientôt sur Timeless !",
+          isSuccess: true,
         );
 
         // Navigation vers l'écran de démarrage
@@ -569,12 +523,10 @@ class SettingsScreenU extends StatelessWidget {
         );
 
       } catch (e) {
-        Get.snackbar(
-          "Erreur de déconnexion",
-          "Une erreur s'est produite lors de la déconnexion",
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red[100],
-          colorText: Colors.red[800],
+        AppTheme.showStandardSnackBar(
+          title: "Erreur de déconnexion",
+          message: "Une erreur s'est produite lors de la déconnexion",
+          isError: true,
         );
       }
     }
@@ -598,7 +550,7 @@ class SettingsScreenU extends StatelessWidget {
     ];
 
     for (String key in keysToRemove) {
-      PrefService.setValue(key, "");
+      PreferencesService.setValue(key, "");
     }
   }
 }
