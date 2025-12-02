@@ -73,3 +73,6 @@ firebase-debug.log
 *.zip
 *.bak
 *.old
+
+settings.local.json
+.vscode/
