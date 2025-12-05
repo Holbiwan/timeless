@@ -39,15 +39,22 @@ class SignUpScreenM extends StatelessWidget {
                     const SizedBox(height: 50),
                     backButton(),
 
-                    // Logo
+                    // Logo avec design harmonisé
                     Center(
                       child: Container(
                         alignment: Alignment.center,
-                        height: 80,
-                        width: 80,
+                        height: 100,
+                        width: 100,
                         decoration: BoxDecoration(
-                          color: ColorRes.royalBlue,
-                          borderRadius: BorderRadius.circular(15),
+                          color: const Color(0xFF000647), // Couleur harmonisée avec candidat
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFF000647).withOpacity(0.2),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
                         ),
                         child: const Image(
                           image: AssetImage(AssetRes.logo),

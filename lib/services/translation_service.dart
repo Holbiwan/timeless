@@ -363,6 +363,14 @@ class TranslationService extends GetxController {
       'reset_dialog_message':
           'This will reset all accessibility settings to their default values. Continue?',
       'reset': 'Reset',
+      
+      // Missing keys found in usage
+      'application_sent_message': 'Your application has been sent successfully',
+      'confirmation_email_info': 'A confirmation email has been sent to your inbox',
+      'apply_button': 'Apply',
+      'cancel_button': 'Cancel',
+      'confirm_application': 'Confirm Application',
+      'confirm_application_message': 'Are you sure you want to apply for this position?',
     },
     'fr': {
       // Navigation et général
@@ -668,6 +676,14 @@ class TranslationService extends GetxController {
       'reset_dialog_message':
           'Ceci réinitialisera tous les paramètres d\'accessibilité à leurs valeurs par défaut. Continuer ?',
       'reset': 'Réinitialiser',
+      
+      // Missing keys found in usage - French translations
+      'application_sent_message': 'Votre candidature a été envoyée avec succès',
+      'confirmation_email_info': 'Un email de confirmation a été envoyé dans votre boîte de réception',
+      'apply_button': 'Postuler',
+      'cancel_button': 'Annuler',
+      'confirm_application': 'Confirmer la candidature',
+      'confirm_application_message': 'Êtes-vous sûr de vouloir postuler pour ce poste ?',
     },
   };
 }

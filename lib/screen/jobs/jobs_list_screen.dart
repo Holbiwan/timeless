@@ -99,23 +99,42 @@ class JobsListScreen extends StatelessWidget {
             ),
           ),
 
-          // Filtres actifs
+          // Filtres actifs avec scroll optimisé
           Obx(() => controller.hasActiveFilters
               ? Container(
                   height: 50,
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
+                    physics: const BouncingScrollPhysics(), // Améliore la fluidité
+                    cacheExtent: 200, // Optimise le cache pour les performances
                     itemCount: controller.activeFilters.length,
                     itemBuilder: (context, index) {
                       final filter = controller.activeFilters[index];
                       return Container(
                         margin: const EdgeInsets.only(right: 8, top: 4, bottom: 4),
-                        child: Chip(
-                          label: Text(filter, style: TextStyle(color: Colors.white)),
-                          backgroundColor: ColorRes.darkGold,
-                          deleteIcon: Icon(Icons.close, color: Colors.white, size: 18),
-                          onDeleted: () => controller.removeFilter(filter),
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 200), // Animation pour le retrait
+                          child: Chip(
+                            label: Text(
+                              filter, 
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            backgroundColor: ColorRes.darkGold,
+                            elevation: 2,
+                            shadowColor: ColorRes.darkGold.withOpacity(0.3),
+                            deleteIcon: const Icon(
+                              Icons.close, 
+                              color: Colors.white, 
+                              size: 18,
+                            ),
+                            onDeleted: () => controller.removeFilter(filter),
+                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
                         ),
                       );
                     },
