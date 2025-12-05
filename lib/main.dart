@@ -27,6 +27,7 @@ import 'package:timeless/screen/manager_section/Notification/notification_servic
 // Screens for the recruiters
 import 'package:timeless/screen/manager_section/auth_manager/first_page/first_screen.dart'
     as ManagerFirstScreen;
+import 'package:timeless/screen/manager_section/dashboard/manager_dashboard_screen.dart';
 
 // Configurations and resources
 import 'package:timeless/utils/app_res.dart';
@@ -155,6 +156,12 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: AppRes.firstPageScreenM,
           page: () => const ManagerFirstScreen.FirstPageScreenM(),
+        ),
+        
+        // Dashboard for recruiters/managers
+        GetPage(
+          name: AppRes.managerDashboardScreen,
+          page: () => ManagerDashBoardScreen(),
         ),
       ],
 

@@ -1,26 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'package:timeless/screen/applies_logo_screen/applies_logo_screen.dart';
 // Import supprimé : chat_box_user_screen.dart n'existe plus
 import 'package:timeless/screen/dashboard/dashboard_controller.dart';
 import 'package:timeless/screen/dashboard/home/home_screen.dart';
 import 'package:timeless/screen/dashboard/widget.dart';
-import 'package:timeless/screen/inbox_logo_screen/inbox_logo_screen.dart';
 import 'package:timeless/screen/new_home_page/new_home_page_screen.dart';
 import 'package:timeless/screen/profile_logo_screen/profile_logo_screen.dart';
-import 'package:timeless/screen/profile/edit_profile_user/edit_profile_user_screen.dart';
+// Import supprimé : edit_profile_user_screen.dart n'existe plus (remplacé par edit_profile_screen.dart)
 import 'package:timeless/screen/profile/profile_view_screen.dart';
 
 import 'package:timeless/services/preferences_service.dart';
-import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/pref_keys.dart';
-import 'package:timeless/utils/string.dart';
 import 'package:timeless/utils/color_res.dart';
-
-// --- Palette avec icônes noires ---
-const _kBlack = Color(0xFF000000); // noir pour icônes
 
 class DashBoardScreen extends StatelessWidget {
   DashBoardScreen({super.key});
