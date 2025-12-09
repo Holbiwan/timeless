@@ -200,7 +200,13 @@ class _SigninScreenUState extends State<SigninScreenU> {
 
                       SizedBox(height: Get.height * 0.04),
 
-                      // ===== Email =====
+                      // --- SECTION: 
+
+
+                      // Email --- SECTION: 
+
+
+
                       Padding(
                         padding: EdgeInsets.only(
                             left: 4, bottom: Get.height * 0.008),
@@ -287,7 +293,13 @@ class _SigninScreenUState extends State<SigninScreenU> {
 
                       SizedBox(height: Get.height * 0.02),
 
-                      // ===== Password =====
+                      // --- SECTION: 
+
+
+                      // Password --- SECTION: 
+
+
+
                       Padding(
                         padding: EdgeInsets.only(
                             left: 4, bottom: Get.height * 0.008),
@@ -468,7 +480,13 @@ class _SigninScreenUState extends State<SigninScreenU> {
 
                       SizedBox(height: Get.height * 0.02),
 
-                      // ===== Forgot password =====
+                      // --- SECTION: 
+
+
+                      // Forgot password --- SECTION: 
+
+
+
                       Center(
                         child: InkWell(
                           onTap: () => Navigator.push(
@@ -489,7 +507,13 @@ class _SigninScreenUState extends State<SigninScreenU> {
 
                       SizedBox(height: Get.height * 0.03),
 
-                      // ===== Or continue =====
+                      // --- SECTION: 
+
+
+                      // Or continue --- SECTION: 
+
+
+
                       Center(
                         child: Text(
                           Strings.orContinueWith,
@@ -503,7 +527,13 @@ class _SigninScreenUState extends State<SigninScreenU> {
 
                       SizedBox(height: Get.height * 0.028),
 
-                      // ===== Social buttons =====
+                      // --- SECTION: 
+
+
+                      // Social buttons --- SECTION: 
+
+
+
                       Column(
                         children: [
                           // Google - Connexion normale
@@ -599,7 +629,13 @@ class _SigninScreenUState extends State<SigninScreenU> {
 
                       SizedBox(height: Get.height * 0.025),
 
-                      // ===== Sign up link =====
+                      // --- SECTION: 
+
+
+                      // Sign up link --- SECTION: 
+
+
+
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [

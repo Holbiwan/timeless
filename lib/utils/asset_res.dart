@@ -2,7 +2,7 @@ class AssetRes {
   static const icons = 'assets/icons/';
   static const images = 'assets/images/';
 
-  //------------------------------icons------------------------------------------------------
+  // --------- SECTION: ICONS ---------
   static const invalid = '${icons}invalid.png';
   static const pdfRemove = "${icons}pdfRemove.png";
   static const inboxLogo = '${icons}inbox_icon.png';
@@ -37,7 +37,7 @@ class AssetRes {
   static const seePdf = '${icons}see_pdf.png';
   static const applicationIcon = '${icons}applicationIcon.png';
 
-  //-----------------------------images------------------------------------------------------
+  // --------- SECTION: IMAGES ---------
   static const splashScreen = '${images}splashScreenBack.png';
   static const splashFullImage = '${images}splash.png';
   static const firstScreenBack = '${images}firstBackScreen.png';

@@ -15,11 +15,6 @@ Widget homeAppBar() {
   return Obx(() => Container(
     padding: const EdgeInsets.all(AppTheme.spacingMedium),
     margin: const EdgeInsets.symmetric(horizontal: AppTheme.spacingRegular),
-    decoration: BoxDecoration(
-      color: Colors.black,
-      borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
-      boxShadow: AppTheme.shadowMedium,
-    ),
     child: Row(
       children: [
         // Bouton retour à gauche
@@ -35,13 +30,12 @@ Widget homeAppBar() {
             width: 38,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: AppTheme.white,
+              color: Colors.grey[100],
               borderRadius: BorderRadius.circular(AppTheme.radiusRegular),
-              boxShadow: AppTheme.shadowLight,
             ),
             child: const Icon(
               Icons.arrow_back,
-              color: AppTheme.primaryRed,
+              color: Colors.black87,
               size: 18,
             ),
           ),
@@ -54,26 +48,27 @@ Widget homeAppBar() {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                translationService.getText('welcome'),
-                style: accessibilityService.getAccessibleTextStyle(
-                  fontSize: AppTheme.fontSizeXLarge,
-                  color: AppTheme.white.withOpacity(0.8),
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                PreferencesService.getString(PrefKeys.fullName).isNotEmpty 
-                    ? PreferencesService.getString(PrefKeys.fullName)
-                    : 'User',
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
+              RichText(
                 textAlign: TextAlign.center,
-                style: accessibilityService.getAccessibleTextStyle(
-                  fontSize: AppTheme.fontSizeXLarge,
-                  color: AppTheme.white,
-                  fontWeight: FontWeight.bold,
+                text: TextSpan(
+                  text: '${translationService.getText('welcome')} ',
+                  style: accessibilityService.getAccessibleTextStyle(
+                    fontSize: AppTheme.fontSizeMedium,
+                    color: const Color(0xFF000647),
+                    fontWeight: FontWeight.w400,
+                  ),
+                  children: [
+                    TextSpan(
+                      text: PreferencesService.getString(PrefKeys.fullName).isNotEmpty 
+                          ? PreferencesService.getString(PrefKeys.fullName)
+                          : 'User',
+                      style: accessibilityService.getAccessibleTextStyle(
+                        fontSize: AppTheme.fontSizeMedium,
+                        color: Colors.black87,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -95,13 +90,12 @@ Widget homeAppBar() {
                 width: 38,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: AppTheme.white,
+                  color: Colors.grey[100],
                   borderRadius: BorderRadius.circular(AppTheme.radiusRegular),
-                  boxShadow: AppTheme.shadowLight,
                 ),
                 child: const Icon(
                   Icons.person,
-                  color: AppTheme.primaryRed,
+                  color: Colors.black87,
                   size: 18,
                 ),
               ),

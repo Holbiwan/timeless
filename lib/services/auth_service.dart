@@ -1,8 +1,19 @@
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import '../models/user_model_unified.dart';
+
+// AuthService
+// Centralized authentication logic for Timeless.
+// Handles:
+// - Email/Password sign up & login
+// - Google Sign-In
+// - Password reset
+// - Logout
+// - User state stream (auth changes)
+// - Firestore user profile creation/update
 
 class AuthService extends GetxController {
   static AuthService get instance => Get.find();
@@ -12,33 +23,33 @@ class AuthService extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
-  // User state
+  // Reactive variables for user state (used by GetX for UI updates)
   Rx<User?> user = Rx<User?>(null);
   RxBool isLoading = false.obs;
 
   @override
   void onInit() {
     super.onInit();
-    // Écouter les changements d'authentification
+    // Listen for changes in authentication state in real-time
     user.bindStream(_auth.authStateChanges());
   }
 
-  // Inscription avec email et mot de passe
+  // Sign up with email and password
   Future<bool> signUpWithEmail(String email, String password, String name) async {
     try {
       isLoading.value = true;
       
-      // Créer le compte Firebase
+      // Create new firebase account with email and password
       UserCredential credential = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
 
       if (credential.user != null) {
-        // Mettre à jour le nom d'affichage
+        // Update FIrebase user display name
         await credential.user!.updateDisplayName(name);
         
-        // Créer le profil utilisateur dans Firestore avec la structure unifiée
+        // Build unified user model profile model
         UserModel userModel = UserModel(
           uid: credential.user!.uid,
           email: email,
@@ -68,13 +79,13 @@ class AuthService extends GetxController {
           lastLogin: DateTime.now(),
         );
 
-        // Sauvegarder dans Firestore
+        // Save user profile to Firestore
         await _firestore
             .collection('users')
             .doc(credential.user!.uid)
             .set(userModel.toFirestore());
 
-        Get.snackbar('Bienvenue !', 'Votre compte Timeless Job Search a été créé avec succès !');
+        Get.snackbar('Welcome!', 'Your Timeless Job Search account has been created successfully!');
         return true;
       }
       return false;
@@ -89,7 +100,7 @@ class AuthService extends GetxController {
     }
   }
 
-  // Connexion avec email et mot de passe
+  // Connexion with email and password
   Future<bool> signInWithEmail(String email, String password) async {
     try {
       isLoading.value = true;
@@ -100,7 +111,7 @@ class AuthService extends GetxController {
       );
 
       if (credential.user != null) {
-        Get.snackbar('Bienvenue !', 'Connexion à Timeless Job Search réussie !');
+        Get.snackbar('Welcome!', 'Successfully signed in to Timeless Job Search!');
         return true;
       }
       return false;
@@ -115,37 +126,37 @@ class AuthService extends GetxController {
     }
   }
 
-  // Connexion avec Google
+  // Sign in with Google
   Future<bool> signInWithGoogle() async {
     try {
       isLoading.value = true;
 
-      // Déclencher le processus de connexion Google
+      // Trigger the Google sign-in process
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      if (googleUser == null) return false; // Utilisateur a annulé
+      if (googleUser == null) return false; // User cancelled
 
-      // Obtenir les détails d'authentification
+      // Obtain authentication details
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
 
-      // Créer les credentials Firebase
+      // Create Firebase credentials
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
-      // Se connecter à Firebase
+      // Sign in to Firebase
       UserCredential userCredential = await _auth.signInWithCredential(credential);
 
       if (userCredential.user != null) {
-        // Vérifier si l'utilisateur existe déjà dans Firestore
+        // Check if user already exists in Firestore
         DocumentSnapshot userDoc = await _firestore
             .collection('users')
             .doc(userCredential.user!.uid)
             .get();
 
         if (!userDoc.exists) {
-          // Créer un nouveau profil utilisateur avec la structure unifiée
-          final displayName = userCredential.user!.displayName ?? 'Utilisateur';
+          // Create a new user profile with the unified structure
+          final displayName = userCredential.user!.displayName ?? 'User';
           final nameParts = displayName.split(' ');
           
           UserModel userModel = UserModel(
@@ -182,7 +193,7 @@ class AuthService extends GetxController {
               .doc(userCredential.user!.uid)
               .set(userModel.toFirestore());
         } else {
-          // Mettre à jour lastLogin pour les utilisateurs existants
+          // Update the user's last login timestamp and isActive status
           await _firestore
               .collection('users')
               .doc(userCredential.user!.uid)
@@ -192,7 +203,7 @@ class AuthService extends GetxController {
           });
         }
 
-        Get.snackbar('Bienvenue !', 'Connexion à Timeless Job Search réussie !');
+        Get.snackbar('Welcome!', 'Successfully signed in to Timeless Job Search!');
         return true;
       }
       return false;
@@ -204,13 +215,13 @@ class AuthService extends GetxController {
     }
   }
 
-  // Récupération de mot de passe
+  // Reset password
   Future<bool> resetPassword(String email) async {
     try {
       isLoading.value = true;
       
       await _auth.sendPasswordResetEmail(email: email);
-      Get.snackbar('Succès', 'Email de récupération envoyé !');
+      Get.snackbar('Success', 'Recovery email sent!');
       return true;
     } on FirebaseAuthException catch (e) {
       _handleAuthError(e);
@@ -223,18 +234,18 @@ class AuthService extends GetxController {
     }
   }
 
-  // Déconnexion
+  // Logout
   Future<void> signOut() async {
     try {
       await _googleSignIn.signOut();
       await _auth.signOut();
-      Get.snackbar('Succès', 'Déconnexion réussie');
+      Get.snackbar('Success', 'Successfully signed out');
     } catch (e) {
-      Get.snackbar('Erreur', 'Erreur lors de la déconnexion: $e');
+      Get.snackbar('Error', 'Sign out error: $e');
     }
   }
 
-  // Obtenir les données utilisateur depuis Firestore
+  // Get current user data from Firestore
   Future<UserModel?> getCurrentUserData() async {
     try {
       if (_auth.currentUser != null) {
@@ -249,12 +260,12 @@ class AuthService extends GetxController {
       }
       return null;
     } catch (e) {
-      print('Erreur lors de la récupération des données utilisateur: $e');
+      print('Error retrieving user data: $e');
       return null;
     }
   }
 
-  // Gestion des erreurs Firebase Auth
+  // Handle Firebase authentication errors
   void _handleAuthError(FirebaseAuthException e) {
     String message;
     switch (e.code) {
@@ -262,10 +273,10 @@ class AuthService extends GetxController {
         message = 'Le mot de passe est trop faible.';
         break;
       case 'email-already-in-use':
-        message = 'Un compte existe déjà avec cet email.';
+        message = 'An account already exists with this email.';
         break;
       case 'user-not-found':
-        message = 'Aucun utilisateur trouvé avec cet email.';
+        message = 'No user found with this email.';
         break;
       case 'wrong-password':
         message = 'Mot de passe incorrect.';
@@ -274,10 +285,10 @@ class AuthService extends GetxController {
         message = 'Email invalide.';
         break;
       case 'user-disabled':
-        message = 'Ce compte a été désactivé.';
+        message = 'This account has been disabled.';
         break;
       case 'too-many-requests':
-        message = 'Trop de tentatives. Réessayez plus tard.';
+        message = 'Too many attempts. Please try again later.';
         break;
       default:
         message = 'Erreur d\'authentification: ${e.message}';
@@ -285,7 +296,7 @@ class AuthService extends GetxController {
     Get.snackbar('Erreur', message);
   }
 
-  // Getters utiles
+  // Useful getters
   bool get isLoggedIn => _auth.currentUser != null;
   String? get currentUserId => _auth.currentUser?.uid;
   String? get currentUserEmail => _auth.currentUser?.email;

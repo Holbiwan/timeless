@@ -1,4 +1,4 @@
-// Service API sécurisé pour la gestion des profils candidats
+// API service for candidate profiles, resumes (CVs), and applications
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -12,7 +12,7 @@ class CandidateApiService {
   static final FirebaseAuth _auth = FirebaseAuth.instance;
   static final FirebaseStorage _storage = FirebaseStorage.instance;
 
-  // Collection references
+  // Firestore collections
   static CollectionReference get _candidatesCollection =>
       _firestore.collection('candidate_profiles');
   static CollectionReference get _cvsCollection => _firestore.collection('cvs');
@@ -21,9 +21,9 @@ class CandidateApiService {
   static CollectionReference get _usersCollection =>
       _firestore.collection('users');
 
-  // === GESTION DU PROFIL CANDIDAT ===
+  // === HANDLE CANDIDATES PROFILES ===
 
-  // Créer un nouveau profil candidat
+  // Create a new candidate profile
   static Future<CandidateProfileModel> createCandidateProfile({
     required String email,
     required String fullName,
@@ -37,10 +37,10 @@ class CandidateApiService {
         throw Exception('Utilisateur non authentifié');
       }
 
-      // Vérifier que l'utilisateur n'a pas déjà un profil
+      // Check if profile already exists
       final existingProfile = await _candidatesCollection.doc(user.uid).get();
       if (existingProfile.exists) {
-        throw Exception('Profil candidat déjà existant');
+        throw Exception('Candidate profile already exists');
       }
 
       final profile = CandidateProfileModel(
@@ -54,12 +54,12 @@ class CandidateApiService {
         updatedAt: DateTime.now(),
       );
 
-      // Transaction pour créer le profil et mettre à jour l'utilisateur
+      // Transaction to create profile and update user role
       await _firestore.runTransaction((transaction) async {
-        // Créer le profil candidat
+        // Create candidate profile
         transaction.set(_candidatesCollection.doc(user.uid), profile.toJson());
 
-        // Mettre à jour le rôle utilisateur
+        // Update user role
         transaction.set(
           _usersCollection.doc(user.uid),
           {
@@ -84,7 +84,7 @@ class CandidateApiService {
     }
   }
 
-  // Récupérer le profil candidat de l'utilisateur connecté
+  // Get current candidate profile
   static Future<CandidateProfileModel?> getCurrentCandidateProfile() async {
     try {
       final user = _auth.currentUser;
@@ -100,7 +100,7 @@ class CandidateApiService {
     }
   }
 
-  // Mettre à jour le profil candidat
+  // Update candidate profile
   static Future<CandidateProfileModel> updateCandidateProfile(
     CandidateProfileModel profile,
   ) async {
@@ -126,7 +126,7 @@ class CandidateApiService {
     }
   }
 
-  // Stream du profil candidat pour updates en temps réel
+  // Stream candidate profile for real-time updates
   static Stream<CandidateProfileModel?> candidateProfileStream() {
     final user = _auth.currentUser;
     if (user == null) return Stream.value(null);
@@ -137,9 +137,9 @@ class CandidateApiService {
     });
   }
 
-  // === GESTION DES CVS ===
+  // === HANDLE RESUMES (CVs) ===
 
-  // Uploader un CV
+  // Upload a resume (CV)
   static Future<CVModel> uploadCV({
     required File file,
     required String fileName,
@@ -163,16 +163,16 @@ class CandidateApiService {
         throw Exception('Type de fichier non autorisé');
       }
 
-      // Générer un ID unique pour le CV
+      // Get a unique ID for the resume (CV)
       final cvId = DateTime.now().millisecondsSinceEpoch.toString();
       final storagePath = 'cvs/${user.uid}/$cvId/$fileName';
 
-      // Upload vers Firebase Storage
+      // Upload to Firebase Storage
       final ref = _storage.ref().child(storagePath);
       final uploadTask = await ref.putFile(file);
       final downloadUrl = await uploadTask.ref.getDownloadURL();
 
-      // Créer le modèle CV
+      // Create the resume (CV) model
       final cvModel = CVModel(
         id: cvId,
         candidateId: user.uid,
@@ -183,10 +183,10 @@ class CandidateApiService {
         uploadedAt: DateTime.now(),
       );
 
-      // Sauvegarder en Firestore
+      // Save to Firestore
       await _cvsCollection.doc(cvId).set(cvModel.toJson());
 
-      // Mettre à jour le profil candidat avec le CV actuel
+      // Update candidate profile with current resume (CV)
       await _candidatesCollection.doc(user.uid).update({
         'currentCVId': cvId,
         'updatedAt': Timestamp.fromDate(DateTime.now()),
@@ -200,7 +200,7 @@ class CandidateApiService {
     }
   }
 
-  // Récupérer la liste des CVs du candidat
+  // Get list of candidate resumes (CVs)
   static Future<List<CVModel>> getCandidateCVs() async {
     try {
       final user = _auth.currentUser;
@@ -220,33 +220,33 @@ class CandidateApiService {
     }
   }
 
-  // Supprimer un CV
+  // Delete a candidate's resume (CV)
   static Future<void> deleteCV(String cvId) async {
     try {
       final user = _auth.currentUser;
       if (user == null) {
-        throw Exception('Utilisateur non authentifié');
+        throw Exception('User not authenticated');
       }
 
-      // Vérifier que le CV appartient à l'utilisateur
+      // Verify that the resume (CV) belongs to the user
       final cvDoc = await _cvsCollection.doc(cvId).get();
       if (!cvDoc.exists) {
-        throw Exception('CV introuvable');
+        throw Exception('Resume (CV) not found');
       }
 
       final cvData = CVModel.fromJson(cvDoc.data() as Map<String, dynamic>);
       if (cvData.candidateId != user.uid) {
-        throw Exception('Non autorisé à supprimer ce CV');
+        throw Exception('Not authorized to delete this resume (CV)');
       }
 
-      // Supprimer le fichier de Storage
+      // Delete the file from Storage
       final ref = _storage.refFromURL(cvData.downloadUrl);
       await ref.delete();
 
-      // Supprimer de Firestore
+      // Delete from Firestore
       await _cvsCollection.doc(cvId).delete();
 
-      // Si c'était le CV actuel, le retirer du profil
+      // If it was the current resume (CV), remove it from the profile
       final profile = await getCurrentCandidateProfile();
       if (profile?.currentCVId == cvId) {
         await _candidatesCollection.doc(user.uid).update({
@@ -262,9 +262,9 @@ class CandidateApiService {
     }
   }
 
-  // === GESTION DES CANDIDATURES ===
+  // === HANDLES APPLICATIONS (CANDIDATURES) ===
 
-  // Postuler à une annonce
+  // Apply to a job
   static Future<ApplicationModel> applyToJob({
     required String jobId,
     String? coverLetter,
@@ -277,20 +277,20 @@ class CandidateApiService {
         throw Exception('Utilisateur non authentifié');
       }
 
-      // Récupérer le profil candidat pour obtenir les informations nécessaires
+      // Retrieve candidate profile to get necessary information
       final candidateProfile = await getCurrentCandidateProfile();
       if (candidateProfile == null) {
-        throw Exception('Profil candidat non trouvé');
+        throw Exception('Candidate profile not found');
       }
 
-      // Récupérer les informations du job pour obtenir l'employerId
+      // Retrieve job information to get employerId
       final jobDoc = await _firestore.collection('jobs').doc(jobId).get();
       Map<String, dynamic>? jobData;
 
       if (jobDoc.exists) {
         jobData = jobDoc.data();
       } else {
-        // Vérifier dans les collections legacy
+        // Check in legacy collections
         final legacyJobDoc =
             await _firestore.collection('allPost').doc(jobId).get();
         if (legacyJobDoc.exists) {
@@ -304,7 +304,7 @@ class CandidateApiService {
         throw Exception('Données de l\'annonce introuvables');
       }
 
-      // Vérifier que l'utilisateur n'a pas déjà postulé
+      // Verify that the user has not already applied
       final existingApplication = await _applicationsCollection
           .where('jobId', isEqualTo: jobId)
           .where('candidateId', isEqualTo: user.uid)
@@ -314,7 +314,7 @@ class CandidateApiService {
         throw Exception('Candidature déjà envoyée pour cette annonce');
       }
 
-      // Récupérer les informations du CV
+      // Récup  CV
       String cvUrl = '';
       String cvFileName = '';
 
@@ -330,7 +330,7 @@ class CandidateApiService {
           if (kDebugMode) print('Erreur récupération CV: $e');
         }
       } else {
-        // Utiliser le CV actuel si aucun n'est spécifié
+        // Use the current resume (CV) if none is specified
         final currentCVId = candidateProfile.currentCVId;
         if (currentCVId != null) {
           try {
@@ -347,7 +347,7 @@ class CandidateApiService {
         }
       }
 
-      // Générer un ID unique pour la candidature
+      // Generate a unique ID for the application
       final applicationId = DateTime.now().millisecondsSinceEpoch.toString();
 
       final application = ApplicationModel(
@@ -365,7 +365,7 @@ class CandidateApiService {
         candidateProfile: answers,
       );
 
-      // Sauvegarder la candidature
+      // Save the application
       await _applicationsCollection
           .doc(applicationId)
           .set(application.toJson());
@@ -378,7 +378,7 @@ class CandidateApiService {
     }
   }
 
-  // Récupérer les candidatures du candidat
+  // Retrieve candidate applications
   static Future<List<ApplicationModel>> getCandidateApplications() async {
     try {
       final user = _auth.currentUser;
@@ -399,7 +399,7 @@ class CandidateApiService {
     }
   }
 
-  // Retirer une candidature
+  // Revoke an application
   static Future<void> withdrawApplication(String applicationId) async {
     try {
       final user = _auth.currentUser;
@@ -407,10 +407,10 @@ class CandidateApiService {
         throw Exception('Utilisateur non authentifié');
       }
 
-      // Vérifier que la candidature appartient à l'utilisateur
+      // Verify that the application belongs to the user
       final appDoc = await _applicationsCollection.doc(applicationId).get();
       if (!appDoc.exists) {
-        throw Exception('Candidature introuvable');
+        throw Exception('Application not found');
       }
 
       final appData =
@@ -419,7 +419,7 @@ class CandidateApiService {
         throw Exception('Non autorisé à retirer cette candidature');
       }
 
-      // Mettre à jour le statut
+      // Update the status
       await _applicationsCollection.doc(applicationId).update({
         'status': ApplicationStatus.withdrawn.name,
         'updatedAt': Timestamp.fromDate(DateTime.now()),
@@ -434,9 +434,9 @@ class CandidateApiService {
     }
   }
 
-  // === MÉTHODES UTILITAIRES ===
+  // === UTILITY METHODS ===
 
-  // Obtenir le type MIME à partir de l'extension
+  // Get MIME type from extension
   static String _getContentType(String extension) {
     switch (extension.toLowerCase()) {
       case 'pdf':
@@ -450,17 +450,17 @@ class CandidateApiService {
     }
   }
 
-  // Valider l'email
+  // Validate email
   static bool isValidEmail(String email) {
     return RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email);
   }
 
-  // Valider le téléphone
+  // Validate phone number
   static bool isValidPhone(String phone) {
     return RegExp(r'^[+]?[\d\s\-\(\)]{8,15}$').hasMatch(phone);
   }
 
-  // Nettoyer et valider une URL
+  // Clean and validate a URL
   static String? validateUrl(String? url) {
     if (url == null || url.isEmpty) return null;
 
@@ -476,7 +476,7 @@ class CandidateApiService {
     }
   }
 
-  // Obtenir les statistiques du candidat
+  // Get candidate statistics
   static Future<Map<String, dynamic>> getCandidateStats() async {
     try {
       final user = _auth.currentUser;

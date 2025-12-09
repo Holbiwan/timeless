@@ -102,7 +102,9 @@ class SignUpControllerM extends GetxController {
     await _safe(() async => Get.offAllNamed(AppRes.managerDashboardScreen));
   }
 
-  // --- Validation ---
+  // --- SECTION: 
+
+  // Validation ---
   bool _validateAll() {
     _validateFirst(); _validateLast(); _validateEmail(); _validatePhone();
     _validateCity();  _validateState(); _validateCountry(); _validatePwd();
@@ -124,7 +126,9 @@ class SignUpControllerM extends GetxController {
   void _validatePwd(){ final v = passwordController.text; pwdError = v.isEmpty ? 'Mot de passe requis.' : (v.length < 6 ? '6 caractères minimum.' : ''); }
   void _updateAllFieldIds(){ update(['showFirstname','showLastname','showEmail','showPhoneNumber','showPassword','showCity','showState','showCountry']); }
 
-  // --- Popups & garde-fous ---
+  // --- SECTION: 
+
+  // Popups & garde-fous ---
   void _startErrorMuffler() {
     // Pendant 6 secondes, ferme tout snackbar parasite (les erreurs d'autres contrôleurs)
     int ticks = 0;

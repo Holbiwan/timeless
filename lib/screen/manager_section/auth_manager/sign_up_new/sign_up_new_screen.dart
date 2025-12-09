@@ -561,7 +561,9 @@ class SignUpScreenM extends StatelessWidget {
   }
 }
 
-// ---------- UI helpers ----------
+// ---------- SECTION: 
+
+// UI helpers ----------
 
 Widget _label(String text) {
   return Padding(

@@ -50,6 +50,9 @@ dependencies:
   
   # HTTP & Translation
   http: ^1.2.1
+  
+  # Video Player
+  youtube_player_flutter: ^9.1.0
 
 dependency_overrides:
   

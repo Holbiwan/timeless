@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:timeless/screen/dashboard/home/tipsforyou_screen.dart';
+import 'package:timeless/screen/dashboard/home/salons_emploi_screen.dart';
+import 'package:timeless/screen/dashboard/home/webinaires_screen.dart';
 import 'package:timeless/screen/dashboard/home/widgets/appbar.dart';
 import 'package:timeless/screen/dashboard/home/widgets/tips_for_you_section.dart';
 import 'package:timeless/screen/job_detail_screen/job_detail_upload_cv_screen/upload_cv_controller.dart';
@@ -30,7 +33,9 @@ class HomeScreen extends StatelessWidget {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  // --- Tips for you section ---
+                  // --- SECTION: 
+
+                  // Tips for you section ---
                   InkWell(
                     onTap: () {
                       Navigator.push(
@@ -43,7 +48,9 @@ class HomeScreen extends StatelessWidget {
 
                   const SizedBox(height: 15),
 
-                  // --- Bouton See Jobs Offers (remonté) ---
+                  // --- SECTION: 
+
+                  // Bouton See Jobs Offers (remonté) ---
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 18.0),
                     child: ElevatedButton(
@@ -71,7 +78,9 @@ class HomeScreen extends StatelessWidget {
 
                   const SizedBox(height: 15),
 
-                  // --- Encart Events d'emploi ---
+                  // --- SECTION: 
+
+                  // Encart Events d'emploi ---
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 18.0),
                     child: Container(
@@ -118,6 +127,24 @@ class HomeScreen extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 15),
+                          
+                          // YouTube Video Player
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: YoutubePlayer(
+                              controller: YoutubePlayerController(
+                                initialVideoId: '0k5C68M7yn8',
+                                flags: const YoutubePlayerFlags(
+                                  autoPlay: false,
+                                  mute: false,
+                                ),
+                              ),
+                              showVideoProgressIndicator: true,
+                              progressIndicatorColor: Colors.blueAccent,
+                            ),
+                          ),
+                          
+                          const SizedBox(height: 15),
                           Row(
                             children: [
                               Expanded(
@@ -125,7 +152,7 @@ class HomeScreen extends StatelessWidget {
                                   "Salons emploi",
                                   Icons.business,
                                   () {
-                                    // Navigation vers salons
+                                    Get.to(() => const SalonsEmploiScreen());
                                   },
                                 ),
                               ),
@@ -135,7 +162,7 @@ class HomeScreen extends StatelessWidget {
                                   "Webinaires",
                                   Icons.play_circle,
                                   () {
-                                    // Navigation vers vidéos
+                                    Get.to(() => const WebinairesScreen());
                                   },
                                 ),
                               ),

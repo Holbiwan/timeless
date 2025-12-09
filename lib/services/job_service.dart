@@ -13,18 +13,23 @@ class JobService {
   static const String jobsCollection = 'allPost';  // Changed from 'jobs' to 'allPost'
   static const String applicationsCollection = 'applications';
 
-  // =====================================
-  // JOB OFFERS MANAGEMENT
-  // =====================================
+  // Job offers management
 
-  // Create a new job offer
+
+
+
+
+
+
+
+  // == Create a new job offer
   static Future<String> createJobOffer(JobOfferModel job) async {
     try {
       DocumentReference docRef =
           await _firestore.collection(jobsCollection).add(job.toFirestore());
       return docRef.id;
     } catch (e) {
-      throw Exception('Erreur lors de la création de l\'offre: $e');
+      throw Exception('Error creating job offer: $e');
     }
   }
 
@@ -131,7 +136,7 @@ class JobService {
     try {
       await _firestore.collection(jobsCollection).doc(jobId).update(updates);
     } catch (e) {
-      throw Exception('Erreur lors de la mise à jour de l\'offre: $e');
+      throw Exception('Error updating job offer: $e');
     }
   }
 
@@ -146,9 +151,34 @@ class JobService {
     }
   }
 
-  // =====================================
-  // APPLICATIONS MANAGEMENT
-  // =====================================
+  // 
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // == APPLICATIONS MANAGEMENT
+  // 
+
+
+
+
+
+
+
+
+
+
+
+
 
   // Submit an application with CV upload
   static Future<String> submitApplication({
@@ -319,7 +349,7 @@ class JobService {
           .doc(applicationId)
           .update(updates);
     } catch (e) {
-      throw Exception('Erreur lors de la mise à jour du statut: $e');
+      throw Exception('Error updating status: $e');
     }
   }
 

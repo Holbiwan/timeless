@@ -6,16 +6,16 @@ class DatabaseService extends GetxController {
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Collection des emplois de test
+  // Test Jobs Collection
   Future<void> createSampleJobs() async {
     try {
       List<Map<String, dynamic>> sampleJobs = [
         {
           'id': 'job_001',
-          'title': 'Développeur Flutter Senior',
+          'title': 'Senior Flutter Developer',
           'company': 'TechCorp',
-          'description': 'Rejoignez notre équipe pour développer des applications mobiles innovantes avec Flutter.',
-          'requirements': ['Flutter', 'Dart', 'Firebase', '3+ ans d\'expérience'],
+          'description': 'Join our team to develop innovative mobile applications with Flutter.',
+          'requirements': ['Flutter', 'Dart', 'Firebase', '3+ years experience'],
           'location': 'Paris, France',
           'salary': '50000-65000',
           'salaryRange': {
@@ -34,7 +34,7 @@ class DatabaseService extends GetxController {
           'id': 'job_002', 
           'title': 'Designer UI/UX',
           'company': 'Creative Studio',
-          'description': 'Créez des interfaces utilisateur exceptionnelles pour nos applications mobiles.',
+          'description': 'Create exceptional user interfaces for our mobile applications.',
           'requirements': ['Figma', 'Adobe Creative Suite', 'Design System', 'Portfolio'],
           'location': 'Lyon, France',
           'salary': '40000-50000',
@@ -52,9 +52,9 @@ class DatabaseService extends GetxController {
         },
         {
           'id': 'job_003',
-          'title': 'Développeur React Native',
+          'title': 'React Native Developer',
           'company': 'StartupTech',
-          'description': 'Développement d\'applications mobile cross-platform avec React Native.',
+          'description': 'Cross-platform mobile application development with React Native.',
           'requirements': ['React Native', 'JavaScript', 'Redux', 'API REST'],
           'location': 'Remote',
           'salary': '45000-55000',
@@ -72,7 +72,7 @@ class DatabaseService extends GetxController {
         }
       ];
 
-      // Ajouter les emplois dans Firestore
+      // Add jobs to Firestore
       WriteBatch batch = _firestore.batch();
       
       for (Map<String, dynamic> job in sampleJobs) {
@@ -81,13 +81,13 @@ class DatabaseService extends GetxController {
       }
 
       await batch.commit();
-      print('✅ Emplois de démonstration créés avec succès');
+      print('✅ Demo jobs created successfully');
     } catch (e) {
-      print('❌ Erreur lors de la création des emplois: $e');
+      print('❌ Error creating jobs: $e');
     }
   }
 
-  // Récupérer la liste des emplois
+  // Retrieve job list
   Future<List<Map<String, dynamic>>> getJobs() async {
     try {
       QuerySnapshot snapshot = await _firestore
@@ -102,12 +102,12 @@ class DatabaseService extends GetxController {
         return data;
       }).toList();
     } catch (e) {
-      print('Erreur lors de la récupération des emplois: $e');
+      print('Error retrieving jobs: $e');
       return [];
     }
   }
 
-  // Récupérer un emploi spécifique
+  // Get a specific job by ID
   Future<Map<String, dynamic>?> getJob(String jobId) async {
     try {
       DocumentSnapshot doc = await _firestore.collection('jobs').doc(jobId).get();
@@ -118,12 +118,12 @@ class DatabaseService extends GetxController {
       }
       return null;
     } catch (e) {
-      print('Erreur lors de la récupération de l\'emploi: $e');
+      print('Error retrieving job: $e');
       return null;
     }
   }
 
-  // Créer une candidature (adaptée à votre structure existante)
+  // Create an application (adapted to your existing structure)
   Future<bool> createApplication({
     required String jobId,
     required String candidateId,
@@ -143,17 +143,17 @@ class DatabaseService extends GetxController {
         'status': 'submitted',
         'appliedAt': Timestamp.now(),
         'applicationSource': 'mobile_app',
-        'matchScore': 85, // Score par défaut
+        'matchScore': 85, // Default score
       };
 
       await _firestore.collection('Apply').add(application);
       
-      // Incrémenter le compteur de candidatures pour l'emploi
+      // Increment the job application counter
       await _firestore.collection('jobs').doc(jobId).update({
         'applicationsCount': FieldValue.increment(1),
       });
 
-      Get.snackbar('Succès', 'Candidature envoyée avec succès !');
+      Get.snackbar('Success', 'Application sent successfully!');
       return true;
     } catch (e) {
       Get.snackbar('Erreur', 'Erreur lors de l\'envoi de la candidature: $e');
@@ -161,7 +161,7 @@ class DatabaseService extends GetxController {
     }
   }
 
-  // Récupérer les candidatures d'un utilisateur
+  // Retrieve a user's applications
   Future<List<Map<String, dynamic>>> getUserApplications(String userId) async {
     try {
       QuerySnapshot snapshot = await _firestore
@@ -176,7 +176,7 @@ class DatabaseService extends GetxController {
         Map<String, dynamic> appData = doc.data() as Map<String, dynamic>;
         appData['id'] = doc.id;
         
-        // Récupérer les détails de l'emploi
+        // Retrieve job details
         Map<String, dynamic>? jobData = await getJob(appData['jobId']);
         if (jobData != null) {
           appData['job'] = jobData;
@@ -187,29 +187,29 @@ class DatabaseService extends GetxController {
       
       return applications;
     } catch (e) {
-      print('Erreur lors de la récupération des candidatures: $e');
+      print('Error retrieving applications: $e');
       return [];
     }
   }
 
-  // Initialiser la base de données avec des données de test
+  // Initialize the database with test data
   Future<void> initializeDatabase() async {
     try {
-      // Vérifier si des emplois existent déjà
+      // Check if jobs already exist
       QuerySnapshot jobsSnapshot = await _firestore.collection('jobs').limit(1).get();
       
       if (jobsSnapshot.docs.isEmpty) {
-        print(' Initialisation de la base de données...');
+        print(' Initializing database...');
         await createSampleJobs();
       } else {
-        print('✅ Base de données déjà initialisée avec ${jobsSnapshot.docs.length}+ emplois');
+        print('✅ Database already initialized with ${jobsSnapshot.docs.length}+ jobs');
       }
     } catch (e) {
-      print('❌ Erreur lors de l\'initialisation de la base de données: $e');
+      print('❌ Database initialization error: $e');
     }
   }
 
-  // Configurer les règles de sécurité (info pour Firebase Console)
+  // Configure security rules (info for Firebase Console)
   String getFirestoreRules() {
     return '''
 rules_version = '2';

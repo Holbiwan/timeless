@@ -11,17 +11,23 @@ import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/app_theme.dart';
 
 class ManagerProfileController extends GetxController {
-  // --- Images ---
+  // --- SECTION: 
+
+  // Images ---
   final RxString fbImageUrl = ''.obs;   // URL distante
   File? image;                          // image locale (camera/galerie)
   final RxBool isLoading = false.obs;
 
-  // --- Champs texte que certains écrans attendent ---
+  // --- SECTION: 
+
+  // Champs texte que certains écrans attendent ---
   final companyNameController = TextEditingController();
   final companyEmailController = TextEditingController();
   final countryController = TextEditingController();
   
-  // --- Nouveaux champs pour le profil utilisateur complet ---
+  // --- SECTION: 
+
+  // Nouveaux champs pour le profil utilisateur complet ---
   final fullNameController = TextEditingController();
   final emailController = TextEditingController();
   final phoneController = TextEditingController();
@@ -29,14 +35,18 @@ class ManagerProfileController extends GetxController {
   final occupationController = TextEditingController();
   final bioController = TextEditingController();
   
-  // --- Champs additionnels pour correspondre à Mon Profil ---
+  // --- SECTION: 
+
+  // Champs additionnels pour correspondre à Mon Profil ---
   final dateController = TextEditingController(); // Date de naissance
   final jobPositionController = TextEditingController(); // Poste
   final skillsController = TextEditingController(); // Skills
   final salaryMinController = TextEditingController(); // Salary Min
   final salaryMaxController = TextEditingController(); // Salary Max
 
-  // --- Flags de validation (si besoin par vos écrans) ---
+  // --- SECTION: 
+
+  // Flags de validation (si besoin par vos écrans) ---
   final RxBool isNameValidate = false.obs;
   final RxBool isEmailValidate = false.obs;
   final RxBool isCountryValidate = false.obs;
@@ -143,7 +153,9 @@ class ManagerProfileController extends GetxController {
   VoidCallback get EditTap => _onSave;         // getter attendu
   void onTapSubmit() => _onSave();             // variante appelée ailleurs
 
-  // --- Implémentations image picker ---
+  // --- SECTION: 
+
+  // Implémentations image picker ---
   Future<void> _pickFromCamera() async {
     try {
       isLoading.value = true;
@@ -364,7 +376,9 @@ class ManagerProfileController extends GetxController {
     PreferencesService.setValue(PrefKeys.occupation, occupationController.text.trim());
   }
 
-  // --- Validations simples (si tes écrans les utilisent) ---
+  // --- SECTION: 
+
+  // Validations simples (si tes écrans les utilisent) ---
   void validateName()    => isNameValidate.value    = companyNameController.text.trim().isEmpty;
   void validateEmail()   => isEmailValidate.value   = companyEmailController.text.trim().isEmpty;
   void validateCountry() => isCountryValidate.value = countryController.text.trim().isEmpty;

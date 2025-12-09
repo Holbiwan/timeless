@@ -119,7 +119,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFF3B82F6)), // Royal blue instead of red
         progressIndicatorTheme: const ProgressIndicatorThemeData(
-          color: Color(0xFF000647), // Bleu foncé pour les indicateurs de chargement
+          color: Color(0xFF000647), // Dark blue for loading indicators
         ),
         appBarTheme: const AppBarTheme(
           backgroundColor: Colors.transparent,

@@ -90,7 +90,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                     const SizedBox(height: 16),
 
-                    // ===== First name =====
+                    // First name field
                     _buildLabel(translationService.getText('first_name')),
                     GetBuilder<SignUpController>(
                       id: "showFirst",
@@ -107,7 +107,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     const SizedBox(height: 12),
 
-                    // ===== Last name =====
+                    // Last name field
                     _buildLabel(translationService.getText('last_name')),
                     GetBuilder<SignUpController>(
                       id: "showLast",
@@ -124,7 +124,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     const SizedBox(height: 12),
 
-                    // ===== Email =====
+                    // Email field
                     _buildLabel('${translationService.getText('email')} *'),
                     GetBuilder<SignUpController>(
                       id: "showEmail",
@@ -169,7 +169,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                     const SizedBox(height: 12),
 
-                    // ===== Password =====
+                    // Password field
                     _buildLabel('${translationService.getText('password')} *'),
                     GetBuilder<SignUpController>(
                       id: "showPassword",
@@ -234,7 +234,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                     const SizedBox(height: 16),
 
-                    // ===== Go button =====
+                    // Go button
                     GetBuilder<SignUpController>(
                       id: "colorChange",
                       builder: (_) => accessibilityService.buildAccessibleWidget(
@@ -367,7 +367,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     ));
   }
 
-  // ---------- UI helpers ----------
+  // ---------- SECTION: UI HELPERS ----------
   Widget _buildLabel(String text) => Padding(
         padding: const EdgeInsets.only(left: 4, bottom: 6),
         child: Text(

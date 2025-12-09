@@ -14,7 +14,7 @@ class ComprehensiveTranslationService extends GetxController {
   var isAutoTranslateEnabled = false.obs;
   var isTranslating = false.obs;
 
-  // Langues supportées avec leurs codes et noms
+  // Supported languages ​​with their codes and names
   final Map<String, String> supportedLanguages = {
     'en': 'English',
     'fr': 'Français',
@@ -28,7 +28,7 @@ class ComprehensiveTranslationService extends GetxController {
     'ko': '한국어',
   };
 
-  // Drapeaux emoji pour chaque langue
+  // Emoji flags for each language
   final Map<String, String> languageFlags = {
     'en': '🇺🇸',
     'fr': '🇫🇷',
@@ -50,19 +50,19 @@ class ComprehensiveTranslationService extends GetxController {
 
   void loadPreferences() {
     try {
-      // Charger la langue depuis les préférences
+      // Load language from preferences
       final savedLang = PreferencesService.getString(PrefKeys.currentLanguage);
       if (savedLang.isNotEmpty && supportedLanguages.containsKey(savedLang)) {
         currentLanguage.value = savedLang;
         _setLanguageWithoutNotification(savedLang);
       } else {
-        // Détecter la langue du système
+        // Detect system language
         final systemLocale = Get.deviceLocale?.languageCode ?? 'en';
         currentLanguage.value =
             supportedLanguages.containsKey(systemLocale) ? systemLocale : 'en';
       }
 
-      // Charger les préférences de traduction automatique
+      // Load automatic translation preferences
       isAutoTranslateEnabled.value =
           PreferencesService.getBool('auto_translate_enabled');
     } catch (e) {
@@ -73,12 +73,12 @@ class ComprehensiveTranslationService extends GetxController {
     }
   }
 
-  // Change la langue sans notification (pour le chargement initial)
+  // Changes language without notification (for initial loading)
   void _setLanguageWithoutNotification(String langCode) {
     if (supportedLanguages.containsKey(langCode)) {
       currentLanguage.value = langCode;
 
-      // Changer la locale avec Easy Localization si possible
+      // Change locale with Easy Localization
       try {
         if (Get.context != null) {
           Get.context!.setLocale(Locale(langCode));
@@ -89,24 +89,24 @@ class ComprehensiveTranslationService extends GetxController {
     }
   }
 
-  // Change la langue de l'application
+  // Change the app language
   void setLanguage(String langCode) {
     if (supportedLanguages.containsKey(langCode)) {
       currentLanguage.value = langCode;
 
-      // Changer la locale avec Easy Localization si possible
+      // Change locale with Easy Localization if possible
       if (Get.context != null) {
         Get.context!.setLocale(Locale(langCode));
       }
 
-      // Sauvegarder la préférence
+      // Save preference
       try {
         PreferencesService.setValue(PrefKeys.currentLanguage, langCode);
       } catch (e) {
         print('Erreur sauvegarde langue: $e');
       }
 
-      // Notification de succès
+      // Success notification
       AppTheme.showStandardSnackBar(
         title: "Language Changed",
         message: "Switched to ${supportedLanguages[langCode]}",
@@ -115,7 +115,7 @@ class ComprehensiveTranslationService extends GetxController {
     }
   }
 
-  // Active/Désactive la traduction automatique
+  // Enables/Disables automatic translation
   void toggleAutoTranslate() {
     isAutoTranslateEnabled.value = !isAutoTranslateEnabled.value;
     try {
@@ -132,13 +132,13 @@ class ComprehensiveTranslationService extends GetxController {
     );
   }
 
-  // Traduit un texte vers la langue actuelle
+  // Translates a text into the current language
   Future<String> translateText(String text, {String? targetLang}) async {
     if (text.isEmpty) return text;
 
     final target = targetLang ?? currentLanguage.value;
 
-    // Si c'est la même langue, pas besoin de traduire
+    // If it's the same language, no need to translate
     if (target == 'en' && await _isEnglishText(text)) {
       return text;
     }
@@ -167,7 +167,7 @@ class ComprehensiveTranslationService extends GetxController {
     }
   }
 
-  // Affiche une erreur de traduction à l'utilisateur
+  // Shows a translation error to the user
   void _showTranslationError(String message) {
     try {
       AppTheme.showStandardSnackBar(
@@ -180,7 +180,7 @@ class ComprehensiveTranslationService extends GetxController {
     }
   }
 
-  // Traduit automatiquement si l'option est activée
+  // Automatically translates if the option is enabled
   Future<String> autoTranslateIfEnabled(String text,
       {String? targetLang}) async {
     if (isAutoTranslateEnabled.value) {
@@ -189,7 +189,7 @@ class ComprehensiveTranslationService extends GetxController {
     return text;
   }
 
-  // Détecte la langue d'un texte
+  // Detects the language of a text
   Future<String?> detectLanguage(String text) async {
     if (text.trim().isEmpty) return null;
 
@@ -204,7 +204,7 @@ class ComprehensiveTranslationService extends GetxController {
     }
   }
 
-  // Vérifie si le service de traduction est disponible
+  // Check if the translation service is available
   Future<bool> isTranslationServiceAvailable() async {
     try {
       final testResult = await GoogleTranslationService.translateText(
@@ -213,12 +213,12 @@ class ComprehensiveTranslationService extends GetxController {
       );
       return testResult != null;
     } catch (e) {
-      print('Service de traduction non disponible: $e');
+      print('Translation service not available: $e');
       return false;
     }
   }
 
-  // Vérifie si un texte est probablement en anglais (simple heuristique)
+  // Check if a text is probably English (simple heuristic)
   Future<bool> _isEnglishText(String text) async {
     if (text.trim().isEmpty) return false;
 
@@ -260,18 +260,18 @@ class ComprehensiveTranslationService extends GetxController {
       }
     }
 
-    // Si plus de 20% des mots sont des mots anglais courants
+    // If more than 20% of words are common English words
     return englishWordsFound > wordsInText.length * 0.2;
   }
 
-  // Nettoie les ressources du service
+  // Cleans up the service resources
   @override
   void onClose() {
-    // Nettoyer les ressources si nécessaire
+    // Clean up resources if necessary
     super.onClose();
   }
 
-  // Réinitialise le service aux valeurs par défaut
+  // Resets the service to default values
   void resetToDefaults() {
     try {
       currentLanguage.value = 'en';
@@ -291,7 +291,7 @@ class ComprehensiveTranslationService extends GetxController {
     }
   }
 
-  // Méthodes de commodité pour changer de langue
+  // Convenience methods to change language
   void setEnglish() => setLanguage('en');
   void setFrench() => setLanguage('fr');
   void setSpanish() => setLanguage('es');
@@ -303,7 +303,7 @@ class ComprehensiveTranslationService extends GetxController {
   void setJapanese() => setLanguage('ja');
   void setKorean() => setLanguage('ko');
 
-  // Toggle entre les langues principales
+  // Toggle between main languages
   void toggleMainLanguages() {
     switch (currentLanguage.value) {
       case 'en':
