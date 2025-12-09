@@ -2,6 +2,16 @@
 
 *"Bridging The Gap With Timeless Talent"*
 
+## 🕒 About Timeless
+
+
+Timeless is a mobile application built with Flutter that allows candidates to browse and apply to job opportunities directly from their phone, anytime and anywhere.
+Its name reflects the idea of a timeless job stream: accessible listings available at any hour, without constraints.
+
+Timeless focuses on speed, clarity, and a smooth user experience. It offers an optimized job search flow, intuitive navigation, and simple onboarding through Google or Email/Password. Powered by Firebase, the app securely manages user profiles, saved jobs, and applications.
+
+Timeless makes job searching easier, faster, and always available — because opportunities shouldn't be limited by time.
+
 <p align="center">
   <img src="https://zupimages.net/up/25/48/c0qc.png" alt="Timeless logo" width="280">
   &nbsp;&nbsp;&nbsp;
@@ -21,23 +31,17 @@
   <img alt="Status" src="https://img.shields.io/badge/Status-Demo%20Day-4CAF50">
 </p>
 
----
-
 ## 📸 Screenshots
 
 <p align="center">
   <em>Screenshots of the application will be added here soon.</em>
 </p>
 
----
-
 ## 🎬 Demo
 
 <p align="center">
   <em>A video demonstration of the application will be available here shortly.</em>
 </p>
-
----
 
 ## 🛠️ Project Structure
 
@@ -60,8 +64,6 @@ timeless/
 ├── firebase/             # Firestore rules and indexes
 └── tests/                # Flutter unit and widget tests
 ```
-
----
 
 ## 🧰 Tech Stack
 
@@ -90,8 +92,6 @@ timeless/
 | API Documentation        | Swagger                           |
 | Testing                  | Jest + Supertest                  |
 
----
-
 ## 🚀 Features Overview
 
 | Feature / Service        | Purpose                                       |
@@ -102,8 +102,6 @@ timeless/
 | 🔔 **Notifications**     | Sends real-time alerts for jobs and updates.  |
 | 💾 **SharedPreferences** | Saves local settings and authentication tokens. |
 | 🌍 **Translations**      | Supports multiple languages using JSON files in `/assets/translations`. |
-
----
 
 ## 🚧 Installation & Run
 
@@ -132,8 +130,6 @@ timeless/
     ```
 
 ⚠️ **Note:** Firebase configuration files (`google-services.json`, `GoogleService-Info.plist`, and `firebase_options.dart`) are not included in the repository for security reasons. You will need to set up your own Firebase project and add the configuration files to the appropriate locations (`android/app`, `ios/Runner`, and `lib/` respectively).
-
----
 
 ## 📜 License
 
