@@ -12,7 +12,7 @@ import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/utils/app_theme.dart';
 
 class SignInScreenController extends GetxController {
-  // ===== State / Controllers =====
+  // State and controllers
   final RxBool loading = false.obs;
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -28,7 +28,13 @@ class SignInScreenController extends GetxController {
   String emailError = "";
   String pwdError = "";
 
-  // ===== Prefill RememberMe =====
+  // // --- SECTION: 
+
+
+  // Prefill RememberMe // --- SECTION: 
+
+
+
   void getRememberEmailDataUser() {
     final email = PreferencesService.getString(PrefKeys.emailRememberUser);
     final pwd = PreferencesService.getString(PrefKeys.passwordRememberUser);
@@ -39,7 +45,13 @@ class SignInScreenController extends GetxController {
     }
   }
 
-  // ===== Validations =====
+  // // --- SECTION: 
+
+
+  // Validations // --- SECTION: 
+
+
+
   void emailValidation() {
     final text = emailController.text.trim();
     if (text.isEmpty) {
@@ -73,7 +85,13 @@ class SignInScreenController extends GetxController {
     return emailError.isEmpty && pwdError.isEmpty;
   }
 
-  // ===== Helpers =====
+  // // --- SECTION: 
+
+
+  // Helpers // --- SECTION: 
+
+
+
   void _persistUserPrefs(User user, {String? email, String? fullName}) {
     PreferencesService.setValue(PrefKeys.rol, "User");
     PreferencesService.setValue(PrefKeys.userId, user.uid);
@@ -95,7 +113,13 @@ class SignInScreenController extends GetxController {
 
   void _gotoDashboard() => Get.offAll(() => DashBoardScreen());
 
-  // ===== Email / Password =====
+  // // --- SECTION: 
+
+
+  // Email / Password // --- SECTION: 
+
+
+
   Future<void> signInWithEmailAndPassword({
     required String email,
     required String password,
@@ -219,11 +243,89 @@ class SignInScreenController extends GetxController {
     );
   }
 
-  // ===================================================================
+  // // --- SECTION: 
+
+
+// --- SECTION: 
+
+
+// --- SECTION: 
+
+
+// --- SECTION: 
+
+
+// --- SECTION: 
+
+
+// --- SECTION: 
+
+
+// --- SECTION: 
+
+
+// --- SECTION: 
+
+
+// --- SECTION: 
+
+
+// --- SECTION: 
+
+
+// --- SECTION: 
+
+
+// --- SECTION: 
+
+
+// --- SECTION: 
+
+
+// ==
   // GOOGLE SIGN-IN via FirebaseAuth
   // - Android/iOS : signInWithProvider(GoogleAuthProvider())
   // - Web         : signInWithPopup(GoogleAuthProvider())
-  // ===================================================================
+  // // --- SECTION: 
+
+
+// --- SECTION: 
+
+
+// --- SECTION: 
+
+
+// --- SECTION: 
+
+
+// --- SECTION: 
+
+
+// --- SECTION: 
+
+
+// --- SECTION: 
+
+
+// --- SECTION: 
+
+
+// --- SECTION: 
+
+
+// --- SECTION: 
+
+
+// --- SECTION: 
+
+
+// --- SECTION: 
+
+
+// --- SECTION: 
+
+
+// ==
   Future<void> signWithGoogle() async {
     if (loading.value) return;
     loading.value = true;
@@ -278,17 +380,23 @@ class SignInScreenController extends GetxController {
   }
 
 
-  // ===== GitHub (optionnel) =====
+  // // --- SECTION: 
+
+
+  // GitHub (optionnel) // --- SECTION: 
+
+
+
   Future<void> signInWithGitHub() async {
     if (loading.value) return;
     loading.value = true;
     try {
-      // Sur Android, GitHub a des problèmes avec Custom Tabs
+      // On Android, GitHub has issues with Custom Tabs
       if (!kIsWeb) {
         AppTheme.showStandardSnackBar(
           title: "GitHub Sign-In",
-          message: "GitHub n'est pas supporté sur Android pour cette version.\n"
-          "Utilise Google Sign-In ou Email/Password.",
+          message: "GitHub is not supported on Android for this version.\n"
+          "Please use Google Sign-In or Email/Password.",
         );
         return;
       }
@@ -308,7 +416,7 @@ class SignInScreenController extends GetxController {
         return;
       }
 
-      // Récup email si masqué côté GitHub
+      // Get email if hidden by GitHub
       String email = user.email ?? '';
       if (email.isEmpty) {
         for (final p in user.providerData) {
@@ -353,7 +461,13 @@ class SignInScreenController extends GetxController {
     }
   }
 
-  // ===== UI helpers =====
+  // // --- SECTION: 
+
+
+  // UI helpers // --- SECTION: 
+
+
+
   void chang() {
     show = !show;
     update(['showPassword']);
@@ -367,7 +481,13 @@ class SignInScreenController extends GetxController {
 
   void button() => update(['colorChange']);
 
-  // ===== Lifecycle =====
+  // // --- SECTION: 
+
+
+  // Lifecycle // --- SECTION: 
+
+
+
   @override
   void onClose() {
     emailController.dispose();

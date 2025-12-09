@@ -14,7 +14,7 @@ class Strings {
 
   // Home Page
 
-  static const howToFindAPerfectJob = "How to find  a perfect job for you";
+  static const howToFindAPerfectJob = "How to find a perfect job";
   static const tipsForYou = "Tips for you";
   static const seeAll = "See all";
   static const jobRecommendation = "Job Recommendation";

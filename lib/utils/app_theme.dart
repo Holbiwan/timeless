@@ -1,22 +1,21 @@
 // lib/utils/app_theme.dart
-// Système de design global pour Timeless
+// Global design system for Timeless
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
 
 class AppTheme {
-  // ===== COULEURS PRINCIPALES =====
-  
-  // Couleurs de l'identité Timeless
+  // Primary colors
+  // Timeless brand identity colors
   static const Color primaryRed = Color(0xFF6E0803);
   static const Color primaryOrange = Color(0xFFFF6B35);
   static const Color secondaryGold = Color(0xFFFFD23F);
   static const Color accentYellow = Color(0xFFFFE135);
   
-  // Nouvelle couleur pour contour des boutons (bleu foncé)
+  // New button border color (dark blue)
   static const Color buttonBorderColor = Color(0xFF000647);
   
-  // Couleurs neutres
+  // Neutral colors
   static const Color white = Color(0xFFFFFFFF);
   static const Color black = Color(0xFF000000);
   static const Color darkGrey = Color(0xFF2C2C2C);
@@ -24,13 +23,13 @@ class AppTheme {
   static const Color lightGrey = Color(0xFFE5E5E5);
   static const Color backgroundGrey = Color(0xFFF8F9FA);
   
-  // Couleurs d'état
+  // Status colors
   static const Color success = Color(0xFF28A745);
   static const Color warning = Color(0xFFFFC107);
   static const Color error = Color(0xFFDC3545);
   static const Color info = Color(0xFF17A2B8);
   
-  // ===== GRADIENTS =====
+  // Gradients
   static const LinearGradient primaryGradient = LinearGradient(
     colors: [primaryOrange, secondaryGold],
     begin: Alignment.topLeft,
@@ -43,7 +42,10 @@ class AppTheme {
     end: Alignment.bottomCenter,
   );
   
-  // ===== TYPOGRAPHIE =====
+  // --- SECTION: TYPOGRAPHY ---
+
+  // TYPOGRAPHIE --- SECTION: 
+
   
   // Tailles de texte
   static const double fontSizeXSmall = 10.0;
@@ -106,7 +108,11 @@ class AppTheme {
     color: mediumGrey,
   );
   
-  // ===== ESPACEMENT =====
+  // --- SECTION: SPACING ---
+
+  // ESPACEMENT --- SECTION: 
+
+  
   static const double spacingXSmall = 4.0;
   static const double spacingSmall = 8.0;
   static const double spacingRegular = 16.0;
@@ -115,14 +121,22 @@ class AppTheme {
   static const double spacingXLarge = 32.0;
   static const double spacingXXLarge = 48.0;
   
-  // ===== BORDURES ET RAYONS =====
+  // --- SECTION: BORDERS AND RADIUS ---
+
+  // BORDURES ET RAYONS --- SECTION: 
+
+  
   static const double radiusSmall = 8.0;
   static const double radiusRegular = 12.0;
   static const double radiusLarge = 16.0;
   static const double radiusXLarge = 20.0;
   static const double radiusCircle = 50.0;
   
-  // ===== OMBRES =====
+  // --- SECTION: SHADOWS ---
+
+  // OMBRES --- SECTION: 
+
+  
   static List<BoxShadow> get shadowLight => [
     BoxShadow(
       color: Colors.black.withOpacity(0.08),
@@ -159,7 +173,11 @@ class AppTheme {
     ),
   ];
   
-  // ===== COMPOSANTS UI =====
+  // --- SECTION: UI COMPONENTS ---
+
+  // COMPOSANTS UI --- SECTION: 
+
+  
   
   // Style de carte
   static BoxDecoration get cardDecoration => BoxDecoration(
@@ -235,7 +253,11 @@ class AppTheme {
     );
   }
   
-  // ===== THÈMES FLUTTER =====
+  // --- SECTION: FLUTTER THEMES ---
+
+  // THÈMES FLUTTER --- SECTION: 
+
+  
   
   static ThemeData get lightTheme => ThemeData(
     useMaterial3: true,
@@ -343,7 +365,11 @@ class AppTheme {
     ),
   );
   
-  // ===== HELPERS POUR LES WIDGETS =====
+  // --- SECTION: WIDGET HELPERS ---
+
+  // HELPERS POUR LES WIDGETS --- SECTION: 
+
+  
   
   static Widget primaryButton({
     required String text,
@@ -481,7 +507,11 @@ class AppTheme {
     );
   }
 
-  // ===== HELPERS POUR LES DIALOGS =====
+  // --- SECTION: DIALOG HELPERS ---
+
+  // HELPERS POUR LES DIALOGS --- SECTION: 
+
+  
   
   static Future<void> showStandardDialog({
     required BuildContext context,

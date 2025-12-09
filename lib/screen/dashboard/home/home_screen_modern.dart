@@ -38,12 +38,16 @@ class HomeScreenModern extends StatelessWidget {
                         children: [
                           const SizedBox(height: AppTheme.spacingSmall),
                           
-                          // --- Tips section modernisée ---
+                          // --- SECTION: 
+
+                          // Tips section modernisée ---
                           _buildTipsSection(context, translationService, accessibilityService),
                           
                           const SizedBox(height: AppTheme.spacingLarge),
 
-                          // --- Actions principales ---
+                          // --- SECTION: 
+
+                          // Actions principales ---
                           _buildMainActions(translationService, accessibilityService),
                           
                           const SizedBox(height: AppTheme.spacingXXLarge),

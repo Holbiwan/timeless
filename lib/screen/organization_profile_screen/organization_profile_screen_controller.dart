@@ -15,7 +15,7 @@ import 'package:timeless/utils/pref_keys.dart';
 
 class OrganizationProfileScreenController extends GetxController
     implements GetxService {
-  // --- Controllers champs ---
+  // Field controllers
   final TextEditingController companyNameController = TextEditingController();
   final TextEditingController companyEmailController = TextEditingController();
   final TextEditingController companyAddressController =
@@ -28,7 +28,7 @@ class OrganizationProfileScreenController extends GetxController
   final TextEditingController typeController = TextEditingController();
   final TextEditingController statusController = TextEditingController();
 
-  // --- Etats de validation ---
+  // Validation states
   final RxBool isNameValidate = false.obs;
   final RxBool isEmailValidate = false.obs;
   final RxBool isAddressValidate = false.obs;
@@ -40,12 +40,12 @@ class OrganizationProfileScreenController extends GetxController
   final RxBool isTypeValidate = false.obs;
   final RxBool isStatusValidate = false.obs;
 
-  // --- UI/chargements ---
-  final RxBool isLod = false.obs; // loader image
-  final RxBool conLoader = false.obs; // loader bouton "Confirmer"
+  // UI and loading states
+  final RxBool isLod = false.obs; // image loader
+  final RxBool conLoader = false.obs; // confirm button loader
   final RxString fbImageUrlM = "".obs;
 
-  // --- Divers ---
+  // Miscellaneous
   DateTime? startTime;
   final ImagePicker picker = ImagePicker();
   File? image;
@@ -68,7 +68,7 @@ class OrganizationProfileScreenController extends GetxController
     'Prague',
   ];
 
-  // ============= UI =============
+  // UI handlers
   void onChanged(String value) {
     update(["colorChange"]);
     update(["Organization"]);
@@ -80,7 +80,7 @@ class OrganizationProfileScreenController extends GetxController
     update(["dropdown"]);
   }
 
-  // ============= Validation =============
+  // Validation methods
   void validate() {
     isNameValidate.value = companyNameController.text.trim().isEmpty;
 
@@ -95,7 +95,7 @@ class OrganizationProfileScreenController extends GetxController
     isDateValidate.value = dateController.text.trim().isEmpty;
   }
 
-  // ============= DatePicker =============
+  // Date picker functionality
   Future<void> onDatePickerTap(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -112,19 +112,19 @@ class OrganizationProfileScreenController extends GetxController
     );
 
     if (picked == null) {
-      // utilisateur a annulé
+      // User cancelled
       return;
     }
 
     startTime = picked;
-    // Pas d'appel à toLocal() sur une valeur nulle
+    // No toLocal() call on null value
     final d = picked.toLocal();
     dateController.text = "${d.month}/${d.day}/${d.year}";
     update();
   }
 
-  // ============= Upload / Storage =============
-  // Upload depuis [image] (déjà choisie) et met à jour [url]
+  // Upload and storage functionality
+  // Upload from selected image and update URL
   Future<void> getUrl() async {
     if (image == null) return;
 
@@ -136,9 +136,9 @@ class OrganizationProfileScreenController extends GetxController
       final task = await ref.putFile(image!);
       url = await task.ref.getDownloadURL();
     } catch (e) {
-      if (kDebugMode) print("Erreur upload image: $e");
+      if (kDebugMode) print("Image upload error: $e");
       url = "";
-      Get.snackbar("Image", "Échec de l'upload de l'image",
+      Get.snackbar("Image", "Image upload failed",
           snackPosition: SnackPosition.BOTTOM,
           colorText: const Color(0xffDA1414));
     } finally {
@@ -147,19 +147,19 @@ class OrganizationProfileScreenController extends GetxController
     }
   }
 
-  // Upload générique d'un fichier [flow] sur un chemin [path] et renvoie l'URL
+  // Generic file upload to specified path and return URL
   Future<String?> uploadImage({File? flow, required String path}) async {
     if (flow == null) return '';
 
-    // Permissions selon plate-forme
+    // Platform-specific permissions
     if (Platform.isAndroid) {
-      // Sur Android 13+, ce sont READ_MEDIA_IMAGES, ci-dessous Permission.photos géré par le plugin
+      // On Android 13+, uses READ_MEDIA_IMAGES, Permission.photos handled by plugin
       await Permission.photos.request();
       final granted = await Permission.photos.isGranted ||
           await Permission.storage.isGranted;
       if (!granted) {
         if (kDebugMode) {
-          print('Permission storage/photos refusée');
+          print('Storage/photos permission denied');
         }
         return '';
       }
@@ -171,15 +171,15 @@ class OrganizationProfileScreenController extends GetxController
     try {
       final snapshot = await FirebaseStorage.instance.ref(path).putFile(flow);
       final downloadUrl = await snapshot.ref.getDownloadURL();
-      if (kDebugMode) print("Image uploadée: $downloadUrl");
+      if (kDebugMode) print("Image uploaded: $downloadUrl");
       return downloadUrl;
     } catch (e) {
-      if (kDebugMode) print("Erreur upload: $e");
+      if (kDebugMode) print("Upload error: $e");
       return '';
     }
   }
 
-  // Upload d’une image intégrée aux assets vers un dossier Firestore/Storage
+  // Upload asset image to Firestore/Storage folder
   Future<void> addImg({required String img}) async {
     try {
       final storage = FirebaseStorage.instance;
@@ -205,7 +205,7 @@ class OrganizationProfileScreenController extends GetxController
     }
   }
 
-  // ============= Sélection image =============
+  // Image selection functionality
   Future<void> onTapGallery1() async {
     try {
       final XFile? gallery =
@@ -214,26 +214,26 @@ class OrganizationProfileScreenController extends GetxController
       image = File(gallery.path);
       update(['image']);
 
-      // Upload vers Storage → url
+      // Upload to Storage and get URL
       await getUrl();
 
-      // Optionnel : upload vers un chemin spécifique via uploadImage()
+      // Optional: upload to specific path via uploadImage()
       // await uploadImage(flow: image, path: 'organizations/${DateTime.now().millisecondsSinceEpoch}.jpg');
     } catch (e) {
       if (kDebugMode) print("pickImage error: $e");
-      Get.snackbar("Image", "Erreur lors du choix de l'image",
+      Get.snackbar("Image", "Error selecting image",
           snackPosition: SnackPosition.BOTTOM,
           colorText: const Color(0xffDA1414));
     }
   }
 
-  // ============= Sauvegarde =============
+  // Save functionality
   Future<void> onConfirmTap() async {
     conLoader.value = true;
     try {
       validate();
 
-      // Si erreurs, on stoppe là.
+      // Stop if validation errors exist
       if (isNameValidate.value ||
           isEmailValidate.value ||
           isAddressValidate.value ||
@@ -255,12 +255,12 @@ class OrganizationProfileScreenController extends GetxController
         "deviceToken": PreferencesService.getString(PrefKeys.deviceToken),
       };
 
-      // Sauvegarde de l’URL image côté prefs
+      // Save image URL to preferences
       PreferencesService.setValue(PrefKeys.imageManager, url);
       PreferencesService.setValue(
           PrefKeys.companyName, companyNameController.text);
 
-      // Marque "company" = true sur le profil Manager, puis écrit les détails
+      // Mark company as true in Manager profile, then save details
       await fireStore
           .collection("Auth")
           .doc("Manager")
@@ -282,7 +282,7 @@ class OrganizationProfileScreenController extends GetxController
       Get.off(() => ManagerDashBoardScreen());
     } catch (e) {
       if (kDebugMode) print("onConfirmTap error: $e");
-      Get.snackbar("Erreur", "Échec de l’enregistrement",
+      Get.snackbar("Error", "Save failed",
           snackPosition: SnackPosition.BOTTOM,
           colorText: const Color(0xffDA1414));
     } finally {

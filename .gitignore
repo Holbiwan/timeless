@@ -1,20 +1,254 @@
-# =================================================================
+# --- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+
 # EDITOR / IDE FILES
-# =================================================================
+# --- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+
 .idea/
 .vscode/
 *.iml
 *.swp
 
-# =================================================================
+# --- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+
 # OS-SPECIFIC FILES
-# =================================================================
+# --- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+
 .DS_Store
 Thumbs.db
 
-# =================================================================
+# --- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+
 # FLUTTER / DART
-# =================================================================
+# --- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+
 .dart_tool/
 .packages
 .pub/
@@ -27,9 +261,87 @@ build/
 # Lockfile
 # pubspec.lock
 
-# =================================================================
+# --- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+
 # ANDROID BUILD
-# =================================================================
+# --- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+
 android/.gradle/
 android/app/build/
 android/local.properties
@@ -42,9 +354,87 @@ android/app/*.jks
 # Config Firebase Android
 android/app/google-services.json
 
-# =================================================================
+# --- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+
 # iOS BUILD
-# =================================================================
+# --- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+
 ios/Pods/
 ios/Flutter/ephemeral/
 ios/Runner.xcworkspace/
@@ -55,9 +445,87 @@ ios/Runner.xcodeproj/xcuserdata/
 # Firebase iOS config
 ios/Runner/GoogleService-Info.plist
 
-# =================================================================
+# --- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+
 # FIREBASE & ENV / SECRETS
-# =================================================================
+# --- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+
 
 # Environment files
 *.env
@@ -69,9 +537,87 @@ ios/Runner/GoogleService-Info.plist
 lib/firebase_options.dart
 firebase/serviceAccount*.json
 
-# =================================================================
+# --- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+
 # BACKEND NODE (dossier backend/)
-# =================================================================
+# --- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+
 backend/node_modules/
 backend/.env
 backend/npm-debug.log
@@ -83,18 +629,174 @@ backend/*.log
 node_modules/
 
 
-# =================================================================
+# --- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+
 # OPTIONAL PLATFORM FOLDERS (non utilisés)
-# =================================================================
+# --- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+
 windows/
 linux/
 macos/
 web/
 platforms/
 
-# =================================================================
+# --- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+
 # LOGS & TEMP FILES
-# =================================================================
+# --- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+
 *.log
 logs/
 coverage/
@@ -108,9 +810,87 @@ firebase-debug.log
 *.ipa
 *.zip
 
-# =================================================================
+# --- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+
 # PROJECT-SPECIFIC FOLDERS TO HIDE
-# =================================================================
+# --- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+
 
 docs/
 config/
@@ -122,8 +902,86 @@ firebase_config/
 tests/
 !tests/example.dart
 
-# =================================================================
+# --- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+
 # LOCAL CONFIG (FlutterFlow / perso)
-# =================================================================
+# --- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+--- SECTION: 
+
+
+
 settings.local.json
 .settings.local.json

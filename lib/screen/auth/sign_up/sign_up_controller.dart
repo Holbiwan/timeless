@@ -5,14 +5,13 @@ import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'package:timeless/screen/dashboard/dashboard_screen.dart';
 import 'package:timeless/screen/auth/email_verification/email_verification_screen.dart';
 import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/utils/app_theme.dart';
 
 class SignUpController extends GetxController {
-  // ===== State / Controllers =====
+  // State / Controllers for Sign Up Screen
   final RxBool loading = false.obs;
 
   final TextEditingController firstNameCtrl = TextEditingController();
@@ -33,7 +32,7 @@ class SignUpController extends GetxController {
 
   get countryModel => null;
 
-  // ===== Validations (minimales pour la démo) =====
+
   void emailValidation() {
     final text = emailCtrl.text.trim();
     if (text.isEmpty) {
@@ -59,7 +58,7 @@ class SignUpController extends GetxController {
     update(["showPassword"]);
   }
 
-  // stubs conservés (si l'UI les appelle)
+  // stubs preserved (if the UI calls them)))
   void firstNameValidation() {
     firstError = firstNameCtrl.text.trim().isEmpty ? '' : '';
     update(["showFirst"]);
@@ -83,7 +82,7 @@ class SignUpController extends GetxController {
 
   void onChanged(String _) => update(["colorChange"]);
 
-  // ===== Email Verification System =====
+  // Email Verification System
   Future<void> sendEmailVerification(User user) async {
     try {
       await user.sendEmailVerification();
@@ -109,56 +108,6 @@ class SignUpController extends GetxController {
     }
   }
 
-  Future<void> _signInExistingUser(String email, String password) async {
-    try {
-      final cred = await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-
-      if (cred.user != null) {
-        await PreferencesService.setValue(PrefKeys.userId, cred.user!.uid);
-        await PreferencesService.setValue(PrefKeys.rol, "User");
-
-        AppTheme.showStandardSnackBar(
-          title: "✅ Connexion réussie!",
-          message: "Utilisateur existant connecté: $email",
-          isSuccess: true,
-        );
-
-        Get.offAll(() => DashBoardScreen());
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        print("❌ Erreur connexion existante: $e");
-      }
-      // Si la connexion échoue, on crée quand même le compte localement
-      await _createLocalUser(email);
-    }
-  }
-
-  Future<void> _createLocalUser(String email) async {
-    try {
-      // Créer un utilisateur local sans Firebase Auth si problème de connexion
-      final localUserId = "local-${DateTime.now().millisecondsSinceEpoch}";
-
-      await PreferencesService.setValue(PrefKeys.userId, localUserId);
-      await PreferencesService.setValue(PrefKeys.rol, "User");
-
-      AppTheme.showStandardSnackBar(
-        title: "✅ Utilisateur créé!",
-        message: "Mode local: $email\nUtilisateur créé avec succès!",
-        isSuccess: true,
-      );
-
-      Get.offAll(() => DashBoardScreen());
-    } catch (e) {
-      AppTheme.showStandardSnackBar(
-          title: "Erreur",
-          message: "Impossible de créer l'utilisateur: $e",
-          isError: true);
-    }
-  }
 
   Future<void> _sendWelcomeEmailWithVerification(
       String email, String fullName) async {
@@ -210,117 +159,6 @@ class SignUpController extends GetxController {
     }
   }
 
-  Future<void> _sendDirectEmail(String email, String firstName) async {
-    // APPROCHE 1: Via EmailJS (service gratuit pour démo)
-    // Nécessite configuration d'un service EmailJS
-
-    try {
-      // Contenu HTML de l'email
-      final String htmlContent = """
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Bienvenue chez Timeless</title>
-    <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 20px; }
-        .container { max-width: 600px; margin: 0 auto; background-color: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-align: center; padding: 30px; }
-        .content { padding: 30px; }
-        .button { display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
-        .footer { background-color: #f8f9fa; text-align: center; padding: 20px; color: #666; }
-        .feature { display: flex; align-items: center; margin: 15px 0; }
-        .feature-icon { color: #667eea; margin-right: 10px; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1> Bienvenue chez Timeless !</h1>
-            <p>Votre plateforme d'emploi nouvelle génération</p>
-        </div>
-        
-        <div class="content">
-            <h2>Bonjour $firstName,</h2>
-            
-            <p>Félicitations ! Votre compte Timeless a été créé avec succès. </p>
-            
-            <p><strong>Vos identifiants de connexion :</strong></p>
-            <p> Email: <strong>$email</strong><br>
-             Mot de passe: <em>[défini lors de l'inscription]</em></p>
-            
-            <h3> Ce que vous pouvez faire maintenant :</h3>
-            
-            <div class="feature">
-                <span class="feature-icon">✅</span>
-                <span>Découvrir des milliers d'offres d'emploi qualifiées</span>
-            </div>
-            <div class="feature">
-                <span class="feature-icon">⚡</span>
-                <span>Postuler en un clic avec votre profil</span>
-            </div>
-            <div class="feature">
-                <span class="feature-icon"></span>
-                <span>Suivre vos candidatures en temps réel</span>
-            </div>
-            <div class="feature">
-                <span class="feature-icon"></span>
-                <span>Recevoir des recommandations personnalisées</span>
-            </div>
-            <div class="feature">
-                <span class="feature-icon"></span>
-                <span>Accéder aux profils d'entreprises exclusifs</span>
-            </div>
-            
-            <center>
-                <a href="https://timeless.app/login" class="button">
-                     Access my account
-                </a>
-            </center>
-            
-            <p>Need help? Our support team is available 24/7.</p>
-        </div>
-        
-        <div class="footer">
-            <p><strong>The Timeless Team</strong> </p>
-            <p>Your professional success, our priority</p>
-            <p style="font-size: 12px; color: #999;">
-                This email was sent automatically. Do not reply.
-            </p>
-        </div>
-    </div>
-</body>
-</html>
-      """;
-
-      // Sauvegarder l'email HTML dans Firestore pour traçabilité
-      await _db.collection("sentEmails").add({
-        "to": email,
-        "subject": " Bienvenue chez Timeless !",
-        "htmlContent": htmlContent,
-        "firstName": firstName,
-        "sentAt": FieldValue.serverTimestamp(),
-        "type": "welcome",
-        "status": "sent"
-      });
-
-      if (kDebugMode) {
-        print("""
- EMAIL HTML GÉNÉRÉ ET SAUVEGARDÉ
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✅ Destinataire: $email
-✅ Template: Email de bienvenue professionnel
-✅ Format: HTML responsive
-✅ Sauvegardé dans: sentEmails collection
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        """);
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        print("❌ Erreur envoi direct: $e");
-      }
-    }
-  }
 
   Future<String> _generateVerificationWelcomeEmail(
       String email, String fullName) async {
@@ -424,110 +262,7 @@ class SignUpController extends GetxController {
     """;
   }
 
-  Future<String> _generateWelcomeEmailHTML(
-      String email, String firstName) async {
-    return """
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bienvenue chez Timeless</title>
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f5f5; margin: 0; padding: 20px; }
-        .container { max-width: 600px; margin: 0 auto; background-color: white; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.1); }
-        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-align: center; padding: 40px 20px; }
-        .header h1 { margin: 0; font-size: 28px; font-weight: 700; }
-        .header p { margin: 10px 0 0 0; opacity: 0.9; font-size: 16px; }
-        .content { padding: 40px 30px; }
-        .content h2 { color: #333; margin-top: 0; font-size: 24px; }
-        .credentials { background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #667eea; }
-        .feature { display: flex; align-items: center; margin: 15px 0; padding: 10px; }
-        .feature-icon { color: #667eea; margin-right: 15px; font-size: 20px; }
-        .feature-text { color: #555; font-size: 16px; }
-        .button { display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; margin: 25px 0; font-weight: 600; font-size: 16px; }
-        .button:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4); }
-        .footer { background-color: #f8f9fa; text-align: center; padding: 30px 20px; border-top: 1px solid #eee; }
-        .footer h3 { color: #333; margin: 0 0 10px 0; }
-        .footer p { color: #666; margin: 5px 0; }
-        .small-text { font-size: 12px; color: #999; margin-top: 20px; }
-        @media (max-width: 600px) {
-            .content { padding: 30px 20px; }
-            .header { padding: 30px 20px; }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1> Bienvenue chez Timeless !</h1>
-            <p>Votre plateforme d'emploi nouvelle génération</p>
-        </div>
-        
-        <div class="content">
-            <h2>Bonjour $firstName,</h2>
-            
-            <p>Félicitations ! Votre compte Timeless a été créé avec succès. Nous sommes ravis de vous accueillir dans notre communauté ! </p>
-            
-            <div class="credentials">
-                <h3 style="margin-top: 0; color: #333;"> Vos identifiants de connexion</h3>
-                <p><strong> Email :</strong> $email</p>
-                <p><strong> Mot de passe :</strong> <em>Celui que vous avez défini lors de l'inscription</em></p>
-            </div>
-            
-            <h3 style="color: #333;"> Découvrez ce que vous pouvez faire :</h3>
-            
-            <div class="feature">
-                <span class="feature-icon">✨</span>
-                <span class="feature-text">Découvrir des milliers d'offres d'emploi qualifiées</span>
-            </div>
-            <div class="feature">
-                <span class="feature-icon">⚡</span>
-                <span class="feature-text">Postuler en un clic avec votre profil optimisé</span>
-            </div>
-            <div class="feature">
-                <span class="feature-icon"></span>
-                <span class="feature-text">Suivre vos candidatures en temps réel</span>
-            </div>
-            <div class="feature">
-                <span class="feature-icon"></span>
-                <span class="feature-text">Recevoir des recommandations personnalisées</span>
-            </div>
-            <div class="feature">
-                <span class="feature-icon"></span>
-                <span class="feature-text">Accéder aux profils d'entreprises exclusifs</span>
-            </div>
-            <div class="feature">
-                <span class="feature-icon"></span>
-                <span class="feature-text">Connecter avec des recruteurs directement</span>
-            </div>
-            
-            <center>
-                <a href="https://timeless.app/login" class="button">
-                     Access my account maintenant
-                </a>
-            </center>
-            
-            <p style="margin-top: 30px; color: #666;">Une question ? Notre équipe support est disponible 24h/7j pour vous accompagner dans votre recherche d'emploi.</p>
-        </div>
-        
-        <div class="footer">
-            <h3>The Timeless Team </h3>
-            <p>Your professional success, our priority absolue</p>
-            <p> support@timeless.app |  www.timeless.app</p>
-            
-            <div class="small-text">
-                <p>Cet email a été envoyé automatiquement suite à la création de votre compte.</p>
-                <p>Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer cet email.</p>
-            </div>
-        </div>
-    </div>
-</body>
-</html>
-    """;
-  }
-
-  // ===== Core: Register Email/Password with Email Verification =====
+// Register Email/Password with Email Verification
   Future<void> onSignUpTap() async {
     if (loading.value) return;
     if (!_basicValidator()) {
@@ -586,7 +321,7 @@ class SignUpController extends GetxController {
           .doc(user.uid)
           .set(profile);
 
-      // Send Firebase verification email (this works immediately)
+      // Send Firebase verification email
       await sendEmailVerification(user);
 
       // Also send custom welcome email for better UX

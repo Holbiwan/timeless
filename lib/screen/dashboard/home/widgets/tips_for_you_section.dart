@@ -8,7 +8,7 @@ import 'package:timeless/utils/string.dart';
 Widget tipsForYouSection() {
   return Column(
     children: [
-      const SizedBox(height: 27),
+      const SizedBox(height: 15),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 18),
         child: Row(
@@ -32,10 +32,10 @@ Widget tipsForYouSection() {
           ],
         ),
       ),
-      const SizedBox(height: 18),
+      const SizedBox(height: 12),
       Container(
         margin: const EdgeInsets.symmetric(horizontal: 18),
-        height: 150,
+        height: 110,
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(15)),
           color: const Color(0xFF000647),
@@ -74,9 +74,9 @@ Widget tipsForYouSection() {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 8),
                     Container(
-                      height: 32,
+                      height: 28,
                       width: 100,
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                       alignment: Alignment.center,
@@ -98,8 +98,8 @@ Widget tipsForYouSection() {
               ),
             ),
             Container(
-              height: 120,
-              width: 80,
+              height: 85,
+              width: 70,
               margin: const EdgeInsets.only(right: 10, top: 15, bottom: 15),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12),
@@ -112,7 +112,7 @@ Widget tipsForYouSection() {
           ],
         ),
       ),
-      const SizedBox(height: 27),
+      const SizedBox(height: 15),
     ],
   );
 }

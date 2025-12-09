@@ -93,7 +93,13 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
 
                   const SizedBox(height: 16),
 
-                  // ===== Nom de la société =====
+                  // --- SECTION: 
+
+
+                  // Nom de la société --- SECTION: 
+
+
+
                   _buildLabel('Nom de la société *'),
                   _buildInputField(
                     child: TextFormField(
@@ -106,7 +112,13 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
                   ),
                   const SizedBox(height: 12),
 
-                  // ===== Adresse =====
+                  // --- SECTION: 
+
+
+                  // Adresse --- SECTION: 
+
+
+
                   _buildLabel('Adresse complète *'),
                   _buildInputField(
                     child: TextFormField(
@@ -119,7 +131,13 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
                   ),
                   const SizedBox(height: 12),
 
-                  // ===== Code postal =====
+                  // --- SECTION: 
+
+
+                  // Code postal --- SECTION: 
+
+
+
                   _buildLabel('Code postal *'),
                   _buildInputField(
                     child: TextFormField(
@@ -135,7 +153,13 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
                   ),
                   const SizedBox(height: 12),
 
-                  // ===== Pays =====
+                  // --- SECTION: 
+
+
+                  // Pays --- SECTION: 
+
+
+
                   _buildLabel('Pays *'),
                   _buildInputField(
                     child: TextFormField(
@@ -148,7 +172,13 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
                   ),
                   const SizedBox(height: 12),
 
-                  // ===== Code SIRET =====
+                  // --- SECTION: 
+
+
+                  // Code SIRET --- SECTION: 
+
+
+
                   _buildLabel('Code SIRET *'),
                   _buildInputField(
                     child: TextFormField(
@@ -184,7 +214,13 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
                   ),
                   const SizedBox(height: 12),
 
-                  // ===== Code APE =====
+                  // --- SECTION: 
+
+
+                  // Code APE --- SECTION: 
+
+
+
                   _buildLabel('Code APE *'),
                   _buildInputField(
                     child: TextFormField(
@@ -217,7 +253,13 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
                   ),
                   const SizedBox(height: 12),
 
-                  // ===== Email =====
+                  // --- SECTION: 
+
+
+                  // Email --- SECTION: 
+
+
+
                   _buildLabel('Email professionnel *'),
                   _buildInputField(
                     child: TextFormField(
@@ -252,7 +294,13 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
 
                   const SizedBox(height: 12),
 
-                  // ===== Password =====
+                  // --- SECTION: PASSWORD ---
+
+
+                  // Password --- SECTION: 
+
+
+
                   _buildLabel('Mot de passe *'),
                   Obx(() => _buildInputField(
                     child: TextFormField(
@@ -307,7 +355,13 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
 
                   const SizedBox(height: 12),
 
-                  // ===== Confirmation Password =====
+                  // --- SECTION: 
+
+
+                  // Confirmation Password --- SECTION: 
+
+
+
                   _buildLabel('Confirmer le mot de passe *'),
                   Obx(() => _buildInputField(
                     child: TextFormField(

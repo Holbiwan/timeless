@@ -13,7 +13,9 @@ import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/string.dart';
 
-// --- Palette Jamaïque ---
+// --- SECTION: 
+
+// Palette Jamaïque ---
 const _kJBlack = Colors.black; // fond
 const _kJYellow = Color(0xFFFED100); // actif
 const _kJGreen = Color(0xFF1FA24A); // inactif

@@ -32,7 +32,13 @@ class SignUpController extends GetxController {
   final FirebaseFirestore fireStore = FirebaseFirestore.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn();
 
-  // ========= Validations =========
+  // --- SECTION: 
+
+
+  // ==== Validations --- SECTION: 
+
+
+====
   void validateName() {
     final text = fullNameController.text.trim();
     nameError = text.isEmpty ? "Please enter name" : '';
@@ -84,7 +90,13 @@ class SignUpController extends GetxController {
     return nameError.isEmpty && emailError.isEmpty && pwdError.isEmpty && confirmError.isEmpty;
   }
 
-  // ========= UI helpers =========
+  // --- SECTION: 
+
+
+  // ==== UI helpers --- SECTION: 
+
+
+====
   void chang() {
     show = !show;
     update(["showPassword"]);
@@ -97,7 +109,13 @@ class SignUpController extends GetxController {
 
   void onChanged(String _) => update(["colorChange"]);
 
-  // ========= Enregistrement email / mot de passe =========
+  // --- SECTION: 
+
+
+  // ==== Enregistrement email / mot de passe --- SECTION: 
+
+
+====
   Future<void> signUpWithEmail() async {
     if (!_isValid()) return;
 
@@ -155,7 +173,13 @@ class SignUpController extends GetxController {
     }
   }
 
-  // ========= Inscription Google =========
+  // --- SECTION: 
+
+
+  // ==== Inscription Google --- SECTION: 
+
+
+====
   Future<void> signUpWithGoogle() async {
     loading.value = true;
     try {
