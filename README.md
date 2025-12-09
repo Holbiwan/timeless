@@ -2,6 +2,20 @@
 
 *"Bridging The Gap With Timeless Talent"*
 
+---
+
+## 🕒 About Timeless
+
+
+Timeless is a mobile application built with Flutter that allows candidates to browse and apply to job opportunities directly from their phone, anytime and anywhere.
+Its name reflects the idea of a timeless job stream: accessible listings available at any hour, without constraints.
+
+Timeless focuses on speed, clarity, and a smooth user experience. It offers an optimized job search flow, intuitive navigation, and simple onboarding through Google or Email/Password. Powered by Firebase, the app securely manages user profiles, saved jobs, and applications.
+
+Timeless makes job searching easier, faster, and always available — because opportunities shouldn't be limited by time.
+
+---
+
 <p align="center">
   <img src="https://zupimages.net/up/25/48/c0qc.png" alt="Timeless logo" width="280">
   &nbsp;&nbsp;&nbsp;
