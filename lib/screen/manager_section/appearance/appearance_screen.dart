@@ -57,13 +57,16 @@ class AppearanceScreenM extends StatelessWidget {
                 ),
                 const Spacer(),
                 // SizedBox(width: Get.width - 170),
-                Obx(() => FlutterSwitch(
+                GetBuilder<AppearanceControllerM>(
+                  builder: (controller) => FlutterSwitch(
                     height: 27,
                     width: 45,
-                    value: controller.isSwitchedDarkMode.value,
+                    value: controller.isSwitchedDarkMode,
                     activeColor: ColorRes.blueColor,
                     toggleSize: 20,
-                    onToggle: (value) => controller.onchangeDarkMode(value))),
+                    onToggle: (value) => controller.onchangeDarkMode(value)
+                  )
+                ),
                 const SizedBox(width: 15),
               ],
             ),

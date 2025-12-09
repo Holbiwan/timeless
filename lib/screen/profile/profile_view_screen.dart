@@ -5,7 +5,7 @@ import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/pref_keys.dart';
-import 'package:timeless/screen/profile/edit_profile_user/edit_profile_user_screen.dart';
+import 'package:timeless/screen/manager_section/Profile/edit_profile/edit_profile_screen.dart';
 import 'package:timeless/screen/profile/job_preferences_screen.dart';
 import 'package:timeless/utils/app_theme.dart';
 import 'package:timeless/services/translation_service.dart';
@@ -59,7 +59,7 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
             child: IconButton(
               icon: const Icon(Icons.edit_outlined, color: Colors.black),
               onPressed: () async {
-                await Get.to(() => EditProfileUserScreen());
+                await Get.to(() => EditProfileScreen());
                 // Rafraîchir la page après retour de l'édition
                 setState(() {});
               },
@@ -140,7 +140,7 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                 Expanded(
                   child: ElevatedButton.icon(
                     onPressed: () async {
-                      await Get.to(() => EditProfileUserScreen());
+                      await Get.to(() => EditProfileScreen());
                       // Rafraîchir la page après retour de l'édition  
                       setState(() {});
                     },
