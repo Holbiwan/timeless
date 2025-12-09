@@ -1,3 +1,8 @@
+
+// Main entry point of the Timeless application
+// This file initializes Firebase, global services, localization, and sets up the main app widget.
+// GetX dependencies are also used for state management and routing.
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -7,33 +12,32 @@ import 'package:easy_localization/easy_localization.dart';
 
 import 'firebase_options.dart';
 
-// Principal screens for the candidates
+// Candidate screens
 import 'package:timeless/screen/splashScreen/splash_screen.dart';
 import 'package:timeless/screen/first_page/first_screen.dart';
 import 'package:timeless/screen/job_detail_screen/job_detail_screen.dart';
 import 'package:timeless/screen/job_recommendation_screen/job_recommendation_screen.dart';
 import 'package:timeless/screen/jobs/job_application_screen.dart';
 
-// Sercices for global functionalities
+// Global services
 import 'package:timeless/services/translation_service.dart';
 import 'package:timeless/services/easy_translation_service.dart';
 import 'package:timeless/services/comprehensive_translation_service.dart';
 import 'package:timeless/services/theme_service.dart';
 import 'package:timeless/services/accessibility_service.dart';
-// Import supprimé : auto_translation_service.dart n'existe plus
 import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/screen/manager_section/Notification/notification_services.dart';
 
-// Screens for the recruiters
+// Recruiter screens
 import 'package:timeless/screen/manager_section/auth_manager/first_page/first_screen.dart'
     as ManagerFirstScreen;
 import 'package:timeless/screen/manager_section/dashboard/manager_dashboard_screen.dart';
 
-// Configurations and resources
+// Config and resources
 import 'package:timeless/utils/app_res.dart';
 import 'package:timeless/utils/pref_keys.dart';
 
-// Entry point of the application
+// Entry point of the app
 // This function sets up everything needed before launching the app
 Future<void> main() async {
   // Needed for async operations before runApp
@@ -76,11 +80,11 @@ Future<void> main() async {
   ));
 
   // Initialize global services using GetX
-  Get.put(TranslationService()); // Support français/anglais (Legacy)
-  Get.put(EasyTranslationService()); // Nouveau service Easy Localization
-  Get.put(ComprehensiveTranslationService()); // Service complet avec Google Translate
-  Get.put(ThemeService()); // Service de thèmes amélioré
-  Get.put(AccessibilityService()); // Accessibilité pour tous
+  Get.put(TranslationService()); // Support french/english (Legacy)
+  Get.put(EasyTranslationService()); // New Easy Localization service
+  Get.put(ComprehensiveTranslationService()); // Complete service with Google Translate
+  Get.put(ThemeService()); // Enhanced theme service
+  Get.put(AccessibilityService()); // Accessibility service for all
 
   // Launch the application with Easy Localization
   runApp(
@@ -111,7 +115,7 @@ class MyApp extends StatelessWidget {
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,
-      // Theme with Timeless blue colors - no green focus outlines
+      // Theme with Timeless blue colors
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFF3B82F6)), // Royal blue instead of red
         progressIndicatorTheme: const ProgressIndicatorThemeData(
@@ -160,7 +164,7 @@ class MyApp extends StatelessWidget {
           page: () => const ManagerFirstScreen.FirstPageScreenM(),
         ),
         
-        // Dashboard for recruiters/managers
+        // Dashboard for recruiters
         GetPage(
           name: AppRes.managerDashboardScreen,
           page: () => ManagerDashBoardScreen(),
