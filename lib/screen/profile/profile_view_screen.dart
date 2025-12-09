@@ -1,15 +1,13 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/color_res.dart';
-import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/screen/manager_section/Profile/edit_profile/edit_profile_screen.dart';
 import 'package:timeless/screen/profile/job_preferences_screen.dart';
 import 'package:timeless/utils/app_theme.dart';
 import 'package:timeless/services/translation_service.dart';
 import 'package:timeless/utils/app_res.dart';
+import 'package:timeless/screen/profile/profile_controller.dart';
 
 class ProfileViewScreen extends StatefulWidget {
   const ProfileViewScreen({super.key});
@@ -19,6 +17,14 @@ class ProfileViewScreen extends StatefulWidget {
 }
 
 class _ProfileViewScreenState extends State<ProfileViewScreen> {
+  late final ProfileController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = Get.put(ProfileController());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,77 +66,80 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
               icon: const Icon(Icons.edit_outlined, color: Colors.black),
               onPressed: () async {
                 await Get.to(() => EditProfileScreen());
-                // Rafraîchir la page après retour de l'édition
+                // Rafraîchir le profil après édition
+                await controller.refreshProfile();
                 setState(() {});
               },
             ),
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(6),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Profile Header
-            _buildProfileHeader(),
-            const SizedBox(height: 4),
-            
-            // Personal Information Section
-            _buildSection(
-              title: ' ${Get.find<TranslationService>().getText('personal_information')}',
+      body: Obx(() => controller.isLoading.value
+        ? const Center(child: CircularProgressIndicator(color: Colors.white))
+        : SingleChildScrollView(
+            padding: const EdgeInsets.all(6),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildInfoRow(Get.find<TranslationService>().getText('full_name'), PreferencesService.getString(PrefKeys.fullName)),
-                _buildInfoRow(Get.find<TranslationService>().getText('email'), PreferencesService.getString(PrefKeys.email)),
-                _buildInfoRow(Get.find<TranslationService>().getText('phone'), PreferencesService.getString(PrefKeys.phoneNumber)),
-                _buildInfoRow(Get.find<TranslationService>().getText('date_of_birth'), PreferencesService.getString(PrefKeys.dateOfBirth)),
-              ],
-            ),
-            
-            const SizedBox(height: 4),
-            
-            // Location Section  
-            _buildSection(
-              title: Get.find<TranslationService>().getText('location'),
-              children: [
-                _buildInfoRow(Get.find<TranslationService>().getText('city'), PreferencesService.getString(PrefKeys.city)),
-                _buildInfoRow(Get.find<TranslationService>().getText('country'), PreferencesService.getString(PrefKeys.country)),
-              ],
-            ),
-            
-            const SizedBox(height: 4),
-            
-            // Professional Information
-            _buildSection(
-              title: Get.find<TranslationService>().getText('professional_information'),
-              children: [
-                _buildInfoRow(Get.find<TranslationService>().getText('current_occupation'), PreferencesService.getString(PrefKeys.occupation)),
-                _buildInfoRow(Get.find<TranslationService>().getText('job_position'), PreferencesService.getString(PrefKeys.jobPosition)),
-                _buildInfoRow(Get.find<TranslationService>().getText('experience_level'), PreferencesService.getString(PrefKeys.experienceLevel)),
-                _buildInfoRow(Get.find<TranslationService>().getText('bio'), PreferencesService.getString(PrefKeys.bio), isMultiline: true),
-              ],
-            ),
-            
-            const SizedBox(height: 4),
-            
-            // Skills Section
-            _buildSection(
-              title: Get.find<TranslationService>().getText('skills'),
-              children: [
-                _buildInfoRow(Get.find<TranslationService>().getText('skills'), PreferencesService.getString(PrefKeys.skillsList), isMultiline: true),
-              ],
-            ),
-            
-            const SizedBox(height: 4),
-            
-            // Salary Expectations Section  
-            _buildSection(
-              title: Get.find<TranslationService>().getText('salary_expectations'),
-              children: [
-                _buildInfoRow(Get.find<TranslationService>().getText('salary_range_min'), PreferencesService.getString(PrefKeys.salaryRangeMin)),
-                _buildInfoRow(Get.find<TranslationService>().getText('salary_range_max'), PreferencesService.getString(PrefKeys.salaryRangeMax)),
-              ],
-            ),
+                // Profile Header
+                _buildProfileHeader(),
+                const SizedBox(height: 4),
+                
+                // Personal Information Section
+                _buildSection(
+                  title: 'Informations Personnelles',
+                  children: [
+                    _buildInfoRow('Nom Complet', controller.displayName),
+                    _buildInfoRow('Email', controller.displayEmail),
+                    _buildInfoRow('Téléphone', controller.displayPhone),
+                    _buildInfoRow('Date de Naissance', controller.displayDateOfBirth),
+                  ],
+                ),
+                
+                const SizedBox(height: 4),
+                
+                // Location Section  
+                _buildSection(
+                  title: 'Localisation',
+                  children: [
+                    _buildInfoRow('Ville', controller.displayCity),
+                    _buildInfoRow('Pays', controller.displayCountry),
+                  ],
+                ),
+                
+                const SizedBox(height: 4),
+                
+                // Professional Information
+                _buildSection(
+                  title: 'Informations Professionnelles',
+                  children: [
+                    _buildInfoRow('Profession Actuelle', controller.displayOccupation),
+                    _buildInfoRow('Poste', controller.displayJobPosition),
+                    _buildInfoRow('Niveau d\'expérience', controller.displayExperience),
+                    _buildInfoRow('Biographie', controller.displayBio, isMultiline: true),
+                  ],
+                ),
+                
+                const SizedBox(height: 4),
+                
+                // Skills Section
+                _buildSection(
+                  title: 'Skills',
+                  children: [
+                    _buildInfoRow('Skills', controller.displaySkills, isMultiline: true),
+                  ],
+                ),
+                
+                const SizedBox(height: 4),
+                
+                // Salary Expectations Section  
+                _buildSection(
+                  title: 'Salary Expectations',
+                  children: [
+                    _buildInfoRow('Salary Range Min', controller.displaySalaryMin),
+                    _buildInfoRow('Salary Range Max', controller.displaySalaryMax),
+                  ],
+                ),
             
             const SizedBox(height: 4),
             
@@ -141,7 +150,8 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                   child: ElevatedButton.icon(
                     onPressed: () async {
                       await Get.to(() => EditProfileScreen());
-                      // Rafraîchir la page après retour de l'édition  
+                      // Rafraîchir le profil après édition
+                      await controller.refreshProfile();
                       setState(() {});
                     },
                     icon: const Icon(Icons.edit, size: 16),
@@ -199,7 +209,7 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
             ),
           ],
         ),
-      ),
+      )),
     );
   }
 
@@ -215,26 +225,22 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
             child: _buildProfileImage(),
           ),
           const SizedBox(height: 12),
-          Text(
-            PreferencesService.getString(PrefKeys.fullName).isNotEmpty 
-                ? PreferencesService.getString(PrefKeys.fullName)
-                : Get.find<TranslationService>().getText('your_name'),
+          Obx(() => Text(
+            controller.displayName,
             style: appTextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
-          ),
+          )),
           const SizedBox(height: 4),
-          Text(
-            PreferencesService.getString(PrefKeys.occupation).isNotEmpty
-                ? PreferencesService.getString(PrefKeys.occupation)
-                : '',
+          Obx(() => Text(
+            controller.displayOccupation,
             style: appTextStyle(
               fontSize: 12,
               color: Colors.white70,
             ),
-          ),
+          )),
         ],
       ),
     );
@@ -292,7 +298,7 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
           ),
           Expanded(
             child: Text(
-              value.isNotEmpty ? value : Get.find<TranslationService>().getText('not_specified'),
+              value.isNotEmpty ? value : 'Non spécifié',
               style: appTextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w400,
@@ -309,39 +315,30 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
 
 
   Widget _buildProfileImage() {
-    final String imagePath = PreferencesService.getString('profile_image_path');
-    
-    if (imagePath.isNotEmpty && File(imagePath).existsSync()) {
-      // Afficher la photo de profil
-      return CircleAvatar(
-        radius: 34,
-        backgroundImage: FileImage(File(imagePath)),
-        backgroundColor: Colors.transparent,
-      );
-    } else {
-      // Afficher les initiales si pas de photo
-      return CircleAvatar(
-        radius: 34,
-        backgroundColor: Colors.black,
-        child: Text(
-          _getInitials(),
-          style: appTextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: Colors.orange,
+    return Obx(() {
+      if (controller.hasProfileImage()) {
+        // Afficher la photo de profil depuis Firebase
+        return CircleAvatar(
+          radius: 34,
+          backgroundImage: NetworkImage(controller.profileImageUrl.value),
+          backgroundColor: Colors.transparent,
+        );
+      } else {
+        // Afficher les initiales si pas de photo
+        return CircleAvatar(
+          radius: 34,
+          backgroundColor: Colors.black,
+          child: Text(
+            controller.getInitials(),
+            style: appTextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.orange,
+            ),
           ),
-        ),
-      );
-    }
-  }
-
-  String _getInitials() {
-    final fullName = PreferencesService.getString(PrefKeys.fullName);
-    if (fullName.isEmpty) return 'U';
-    
-    final names = fullName.split(' ');
-    if (names.length == 1) return names[0][0].toUpperCase();
-    return '${names[0][0]}${names[names.length - 1][0]}'.toUpperCase();
+        );
+      }
+    });
   }
 
   
@@ -350,15 +347,15 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
       AlertDialog(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
-          side: BorderSide(color: AppTheme.buttonBorderColor, width: 2.0),
+          borderRadius: BorderRadius.circular(15),
+          side: const BorderSide(color: Color(0xFF000647), width: 2.0),
         ),
-        title: Text(
+        title: const Text(
           'Clear Profile Data',
           style: TextStyle(color: Colors.black),
         ),
-        content: Text(
-          'This will clear all your profile and preference data. Are you sure?',
+        content: const Text(
+          'This will clear all your profile data from Firebase. Are you sure?',
           style: TextStyle(color: Colors.black),
         ),
         actions: [
@@ -367,9 +364,9 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
             style: TextButton.styleFrom(
               backgroundColor: Colors.white,
               foregroundColor: Colors.black,
-              side: BorderSide(color: AppTheme.buttonBorderColor, width: 2.0),
+              side: const BorderSide(color: Color(0xFF000647), width: 2.0),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppTheme.radiusRegular),
+                borderRadius: BorderRadius.circular(10),
               ),
             ),
             child: const Text('Cancel'),
@@ -383,15 +380,15 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                 AlertDialog(
                   backgroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
-                    side: BorderSide(color: AppTheme.buttonBorderColor, width: 2.0),
+                    borderRadius: BorderRadius.circular(15),
+                    side: const BorderSide(color: Color(0xFF000647), width: 2.0),
                   ),
-                  content: Row(
+                  content: const Row(
                     children: [
                       CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(AppTheme.buttonBorderColor),
+                        valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF000647)),
                       ),
-                      const SizedBox(width: 20),
+                      SizedBox(width: 20),
                       Text(
                         'Clearing data...',
                         style: TextStyle(color: Colors.black),
@@ -402,49 +399,27 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                 barrierDismissible: false,
               );
               
-              // Clear all profile related preferences
-              await Future.wait([
-                PreferencesService.setValue(PrefKeys.fullName, ''),
-                PreferencesService.setValue(PrefKeys.email, ''),
-                PreferencesService.setValue(PrefKeys.phoneNumber, ''),
-                PreferencesService.setValue(PrefKeys.dateOfBirth, ''),
-                PreferencesService.setValue(PrefKeys.city, ''),
-                PreferencesService.setValue(PrefKeys.state, ''),
-                PreferencesService.setValue(PrefKeys.country, ''),
-                PreferencesService.setValue(PrefKeys.occupation, ''),
-                PreferencesService.setValue(PrefKeys.jobPosition, ''),
-                PreferencesService.setValue(PrefKeys.bio, ''),
-                PreferencesService.setValue(PrefKeys.address, ''),
-                PreferencesService.setValue(PrefKeys.profileImageUrl, ''),
-                // Clear preferences
-                PreferencesService.setValue(PrefKeys.experienceLevel, ''),
-                PreferencesService.setValue(PrefKeys.skillsList, ''),
-                PreferencesService.setValue(PrefKeys.salaryRangeMin, ''),
-                PreferencesService.setValue(PrefKeys.salaryRangeMax, ''),
-                PreferencesService.setValue(PrefKeys.jobTypes, ''),
-                PreferencesService.setValue(PrefKeys.industryPreferences, ''),
-                PreferencesService.setValue(PrefKeys.companyTypes, ''),
-                PreferencesService.setValue(PrefKeys.maxCommuteDistance, ''),
-                PreferencesService.setValue(PrefKeys.workLocationPreference, ''),
-              ]);
+              // Clear Firebase data via controller
+              await controller.clearProfileData();
               
               Get.back(); // Close loading dialog
               
               AppTheme.showStandardSnackBar(
-                title: '✅ Profile Cleared',
-                message: 'All profile and preference data has been cleared. You can now enter your own information.',
+                title: 'Profile Cleared',
+                message: 'All profile data has been cleared from Firebase.',
                 isSuccess: true,
               );
               
-              // Force rebuild
+              // Refresh profile
+              await controller.refreshProfile();
               setState(() {});
             },
             style: TextButton.styleFrom(
               backgroundColor: Colors.white,
               foregroundColor: Colors.red,
-              side: BorderSide(color: AppTheme.buttonBorderColor, width: 2.0),
+              side: const BorderSide(color: Color(0xFF000647), width: 2.0),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppTheme.radiusRegular),
+                borderRadius: BorderRadius.circular(10),
               ),
             ),
             child: const Text('Clear', style: TextStyle(color: Colors.red)),

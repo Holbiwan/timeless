@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:timeless/utils/app_style.dart';
-import 'package:timeless/utils/color_res.dart';
 
 Widget detailBox(text, values) {
   return Container(

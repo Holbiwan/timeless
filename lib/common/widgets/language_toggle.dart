@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:timeless/services/translation_service.dart';
-import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/app_theme.dart';
 
 class LanguageToggle extends StatelessWidget {

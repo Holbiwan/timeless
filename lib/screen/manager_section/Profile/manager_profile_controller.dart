@@ -2,13 +2,13 @@ import 'dart:io';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/utils/color_res.dart';
+import 'package:timeless/utils/app_theme.dart';
 
 class ManagerProfileController extends GetxController {
   // --- Images ---
@@ -28,11 +28,21 @@ class ManagerProfileController extends GetxController {
   final cityController = TextEditingController();
   final occupationController = TextEditingController();
   final bioController = TextEditingController();
+  
+  // --- Champs additionnels pour correspondre à Mon Profil ---
+  final dateController = TextEditingController(); // Date de naissance
+  final jobPositionController = TextEditingController(); // Poste
+  final skillsController = TextEditingController(); // Skills
+  final salaryMinController = TextEditingController(); // Salary Min
+  final salaryMaxController = TextEditingController(); // Salary Max
 
   // --- Flags de validation (si besoin par vos écrans) ---
   final RxBool isNameValidate = false.obs;
   final RxBool isEmailValidate = false.obs;
   final RxBool isCountryValidate = false.obs;
+
+  // Getter pour compatibility avec l'EditProfileScreen
+  String get profileImageUrl => fbImageUrl.value;
 
   @override
   void onInit() {
@@ -51,7 +61,7 @@ class ManagerProfileController extends GetxController {
       final user = FirebaseAuth.instance.currentUser;
       if (user != null) {
         final doc = await FirebaseFirestore.instance
-            .collection('Users')
+            .collection('users')
             .doc(user.uid)
             .get();
         
@@ -59,13 +69,26 @@ class ManagerProfileController extends GetxController {
           final data = doc.data()!;
           
           // Charger les données du profil
-          fullNameController.text = data['fullName'] ?? PreferencesService.getString(PrefKeys.fullName);
-          emailController.text = data['email'] ?? PreferencesService.getString(PrefKeys.email);
-          phoneController.text = data['phone'] ?? PreferencesService.getString(PrefKeys.phoneNumber);
-          cityController.text = data['city'] ?? PreferencesService.getString(PrefKeys.city);
-          countryController.text = data['country'] ?? PreferencesService.getString(PrefKeys.country);
-          occupationController.text = data['occupation'] ?? PreferencesService.getString(PrefKeys.occupation);
+          fullNameController.text = data['fullName'] ?? '';
+          emailController.text = data['email'] ?? '';
+          phoneController.text = data['phoneNumber'] ?? '';
+          cityController.text = data['city'] ?? '';
+          countryController.text = data['country'] ?? '';
+          occupationController.text = data['occupation'] ?? '';
           bioController.text = data['bio'] ?? '';
+          dateController.text = data['dateOfBirth'] ?? '';
+          jobPositionController.text = data['jobPosition'] ?? '';
+          
+          // Skills et salary depuis jobPreferences si disponible
+          final jobPrefs = data['jobPreferences'] as Map<String, dynamic>?;
+          if (jobPrefs != null) {
+            skillsController.text = (jobPrefs['skills'] as List<dynamic>?)?.join(', ') ?? '';
+            final salaryRange = jobPrefs['salaryRange'] as Map<String, dynamic>?;
+            if (salaryRange != null) {
+              salaryMinController.text = salaryRange['min']?.toString() ?? '';
+              salaryMaxController.text = salaryRange['max']?.toString() ?? '';
+            }
+          }
           
           // Charger l'image de profil
           if (data['profileImageUrl'] != null) {
@@ -138,6 +161,7 @@ class ManagerProfileController extends GetxController {
       if (pickedFile != null) {
         image = File(pickedFile.path);
         fbImageUrl.value = ''; // Clear network image when local image is selected
+        update(['image']); // Update the image widget
         Get.snackbar('Succès', 'Photo capturée avec succès',
             snackPosition: SnackPosition.BOTTOM,
             backgroundColor: Colors.green,
@@ -190,6 +214,7 @@ class ManagerProfileController extends GetxController {
       if (pickedFile != null) {
         image = File(pickedFile.path);
         fbImageUrl.value = ''; // Clear network image when local image is selected
+        update(['image']); // Update the image widget
         Get.snackbar('Succès', 'Photo sélectionnée avec succès',
             snackPosition: SnackPosition.BOTTOM,
             backgroundColor: Colors.green,
@@ -228,6 +253,7 @@ class ManagerProfileController extends GetxController {
   Future<void> _onSave() async {
     try {
       isLoading.value = true;
+      update(['save_button']); // Update button state
       
       // Upload de l'image si une nouvelle image a été sélectionnée
       String? imageUrl;
@@ -244,26 +270,25 @@ class ManagerProfileController extends GetxController {
       // Mettre à jour les préférences locales
       _updateLocalPreferences();
       
-      Get.snackbar(
-        'Succès',
-        'Profil sauvegardé avec succès',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-        duration: const Duration(seconds: 3),
+      // Afficher popup de confirmation avec AppTheme
+      AppTheme.showStandardSnackBar(
+        title: "Profil mis à jour",
+        message: "Votre profil a été sauvegardé avec succès !",
+        isSuccess: true,
       );
       
     } catch (e) {
-      Get.snackbar(
-        'Erreur',
-        'Impossible de sauvegarder le profil: $e',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: ColorRes.royalBlue,
-        colorText: Colors.white,
-        duration: const Duration(seconds: 3),
+      print('❌ Erreur lors de la sauvegarde du profil: $e');
+      
+      // Afficher popup d'erreur avec AppTheme
+      AppTheme.showStandardSnackBar(
+        title: "Erreur",
+        message: "Impossible de sauvegarder le profil: $e",
+        isError: true,
       );
     } finally {
       isLoading.value = false;
+      update(['save_button']); // Update button state
     }
   }
 
@@ -298,12 +323,26 @@ class ManagerProfileController extends GetxController {
       'uid': user.uid,
       'email': emailController.text.trim(),
       'fullName': fullNameController.text.trim(),
-      'phone': phoneController.text.trim(),
+      'phoneNumber': phoneController.text.trim(),
       'city': cityController.text.trim(),
       'country': countryController.text.trim(),
       'occupation': occupationController.text.trim(),
       'bio': bioController.text.trim(),
+      'dateOfBirth': dateController.text.trim(),
+      'jobPosition': jobPositionController.text.trim(),
       'updatedAt': FieldValue.serverTimestamp(),
+      
+      // Structure jobPreferences pour compatibilité
+      'jobPreferences': {
+        'skills': skillsController.text.trim().split(',').map((s) => s.trim()).where((s) => s.isNotEmpty).toList(),
+        'workType': ['remote', 'hybrid', 'onsite'],
+        'contractType': ['fulltime'],
+        'salaryRange': {
+          'min': salaryMinController.text.trim().isNotEmpty ? int.tryParse(salaryMinController.text.trim()) : null,
+          'max': salaryMaxController.text.trim().isNotEmpty ? int.tryParse(salaryMaxController.text.trim()) : null,
+          'currency': 'EUR'
+        }
+      },
     };
     
     if (imageUrl != null) {
@@ -311,7 +350,7 @@ class ManagerProfileController extends GetxController {
     }
     
     await FirebaseFirestore.instance
-        .collection('Users')
+        .collection('users')
         .doc(user.uid)
         .set(profileData, SetOptions(merge: true));
   }
@@ -341,6 +380,11 @@ class ManagerProfileController extends GetxController {
     cityController.dispose();
     occupationController.dispose();
     bioController.dispose();
+    dateController.dispose();
+    jobPositionController.dispose();
+    skillsController.dispose();
+    salaryMinController.dispose();
+    salaryMaxController.dispose();
     super.onClose();
   }
 }

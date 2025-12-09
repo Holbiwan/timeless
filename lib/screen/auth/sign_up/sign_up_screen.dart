@@ -3,20 +3,15 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:timeless/common/widgets/common_loader.dart';
-import 'package:timeless/common/widgets/common_text_field.dart';
 import 'package:timeless/utils/asset_res.dart';
-import 'package:timeless/utils/color_res.dart';
-import 'package:timeless/utils/string.dart';
 import 'package:timeless/utils/app_theme.dart';
 import 'package:timeless/services/translation_service.dart';
 import 'package:timeless/services/accessibility_service.dart';
 
 import 'package:timeless/screen/auth/sign_up/sign_up_controller.dart';
-import 'package:timeless/screen/manager_section/help/terms/terms_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});

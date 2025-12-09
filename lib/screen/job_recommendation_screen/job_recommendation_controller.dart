@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-import 'package:timeless/utils/asset_res.dart';
 
 class JobRecommendationController extends GetxController
     implements GetxService {

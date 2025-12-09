@@ -5,14 +5,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/app_res.dart';
-import 'package:timeless/utils/color_res.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:timeless/utils/pref_keys.dart';
 // import 'package:pull_to_refresh/pull_to_refresh.dart'; // Package removed
-import 'package:timeless/services/notification_service.dart';
 
 FirebaseFirestore firestore = FirebaseFirestore.instance;
 List<Map<String, dynamic>> companyList = [];

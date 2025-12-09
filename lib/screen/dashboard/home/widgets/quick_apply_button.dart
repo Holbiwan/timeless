@@ -4,8 +4,6 @@ import 'package:get/get.dart';
 import 'package:timeless/screen/job_detail_screen/job_detail_upload_cv_screen/upload_cv_controller.dart';
 import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/app_res.dart';
-import 'package:timeless/utils/app_style.dart';
-import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/services/notification_service.dart';
 import 'package:timeless/utils/app_theme.dart';
@@ -102,12 +100,17 @@ class QuickApplyButton extends StatelessWidget {
       _sendNotificationToRecruiter();
 
       // Add notification to user's notification list
-      final notificationService = Get.find<NotificationService>();
-      await notificationService.addApplicationNotification(
-        jobTitle: jobData['Position'] ?? 'Unknown Position',
-        companyName: jobData['companyName'] ?? 'Unknown Company',
-        jobId: docId,
-      );
+      try {
+        final notificationService = Get.find<NotificationService>();
+        await notificationService.addApplicationNotification(
+          jobTitle: jobData['Position'] ?? 'Unknown Position',
+          companyName: jobData['CompanyName'] ?? 'Unknown Company',
+          jobId: docId,
+        );
+      } catch (e) {
+        // Service might not be initialized yet
+        print('Notification service not available: $e');
+      }
 
       // Show confirmation
       AppTheme.showStandardSnackBar(
@@ -147,7 +150,6 @@ class QuickApplyButton extends StatelessWidget {
     final deviceToken = jobData['deviceToken'];
     if (deviceToken != null && deviceToken.isNotEmpty) {
       try {
-        final fullName = PreferencesService.getString(PrefKeys.fullName);
         final position = jobData['Position'] ?? 'un poste';
 
         // Simple snackbar pour la démo au lieu de notification complexe

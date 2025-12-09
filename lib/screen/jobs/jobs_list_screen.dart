@@ -4,7 +4,6 @@ import 'package:timeless/common/widgets/universal_app_bar.dart';
 import 'package:timeless/models/job_offer_model.dart';
 import 'package:timeless/models/job_offer_model.dart' as JobModel;
 import 'package:timeless/screen/jobs/jobs_list_controller.dart';
-import 'package:timeless/screen/jobs/job_detail_screen.dart';
 import 'package:timeless/screen/jobs/job_application_screen.dart';
 import 'package:timeless/utils/color_res.dart';
 

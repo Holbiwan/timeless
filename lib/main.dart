@@ -81,7 +81,6 @@ Future<void> main() async {
   Get.put(ComprehensiveTranslationService()); // Service complet avec Google Translate
   Get.put(ThemeService()); // Service de thèmes amélioré
   Get.put(AccessibilityService()); // Accessibilité pour tous
-  // AutoTranslationService supprimé - fonctionnalité trop avancée
 
   // Launch the application with Easy Localization
   runApp(
@@ -149,7 +148,10 @@ class MyApp extends StatelessWidget {
         ),
         GetPage(
           name: AppRes.jobApplicationScreen,
-          page: () => JobApplicationScreen(job: Get.arguments['job'], docId: Get.arguments['docId']),
+          page: () => JobApplicationScreen(
+            job: Get.arguments?['job'], 
+            docId: Get.arguments?['docId']
+          ),
         ),
 
         // Login screen for recruiters

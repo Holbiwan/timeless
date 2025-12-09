@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:timeless/common/widgets/common_loader.dart';
-import 'package:timeless/common/widgets/language_toggle.dart';
 import 'package:timeless/screen/auth/profile_completion/profile_completion_controller.dart';
 import 'package:timeless/screen/dashboard/dashboard_screen.dart';
 import 'package:timeless/services/google_auth_service.dart';
 import 'package:timeless/services/translation_service.dart';
-import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/color_res.dart';
-import 'package:timeless/utils/string.dart';
 import 'package:timeless/utils/app_theme.dart';
 
 class ProfileCompletionScreen extends StatefulWidget {
@@ -79,15 +75,8 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
                           ),
                         ),
                         
-                        // Language toggle + Menu
-                        Row(
-                          children: [
-                            // Toggle de langue
-                            const LanguageToggle(),
-                            const SizedBox(width: 12),
-                            
-                            // Bouton de déconnexion/changement de compte
-                            PopupMenuButton<String>(
+                        // Menu seul
+                        PopupMenuButton<String>(
                           icon: const Icon(Icons.more_vert, color: Color.fromARGB(255, 246, 246, 59)),
                           onSelected: (String value) async {
                             if (value == 'switch_account') {
@@ -117,8 +106,6 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
                                 ],
                               ),
                             ),
-                          ],
-                        ),
                           ],
                         ),
                       ],

@@ -652,21 +652,6 @@ class _SigninScreenUState extends State<SigninScreenU> {
   }
 
   // Helpers
-  InputBorder _inputBorderFor(String text, String error) {
-    if (text.trim().isEmpty) return InputBorder.none;
-    return error.isNotEmpty ? _errorBorder() : _enableBorder();
-  }
-
-  OutlineInputBorder _enableBorder() => OutlineInputBorder(
-        borderSide: const BorderSide(color: Color(0xFF000647), width: 2),
-        borderRadius: BorderRadius.circular(12),
-      );
-
-  OutlineInputBorder _errorBorder() => OutlineInputBorder(
-        borderSide: const BorderSide(color: ColorRes.starColor, width: 2),
-        borderRadius: BorderRadius.circular(12),
-      );
-
   Widget _errorPill(String message) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10),

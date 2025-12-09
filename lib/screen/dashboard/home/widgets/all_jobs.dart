@@ -3,20 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:timeless/common/widgets/common_loader.dart';
-import 'package:timeless/screen/create_vacancies/create_vacancies_controller.dart';
 import 'package:timeless/screen/dashboard/home/home_controller.dart';
-import 'package:timeless/screen/dashboard/home/widgets/quick_apply_button.dart';
 import 'package:timeless/screen/job_recommendation_screen/job_recommendation_controller.dart';
-import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/app_res.dart';
 import 'package:timeless/utils/app_style.dart';
-import 'package:timeless/utils/asset_res.dart';
-import 'package:timeless/utils/color_res.dart';
-import 'package:timeless/utils/pref_keys.dart';
 
 Widget allJobs(Stream stream, {bool? seeAll = false}) {
-  final HomeController controller = HomeController();
-  final create = Get.put(CreateVacanciesController());
+  final HomeController controller = Get.put(HomeController());
 
   return GetBuilder<JobRecommendationController>(
     id: "search",
@@ -92,11 +85,7 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
                 final position = docData["Position"] ?? "Non spécifié";
                 final company = docData["CompanyName"] ?? "Entreprise";
                 final location = docData["location"] ?? "Non spécifié";
-                final type = docData["type"] ?? "Non spécifié";
                 final salary = docData["salary"] ?? "0";
-                final bookmarkList = docData.containsKey('BookMarkUserList') 
-                    ? docData['BookMarkUserList'] 
-                    : [];
 
                 // Filtrer les données de démo indésirables
                 if (company.contains('DemoToday') || 
@@ -248,6 +237,7 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
 }
 
 void _showApplicationDialog(BuildContext context, Map<String, dynamic> jobData, QueryDocumentSnapshot doc) {
+  print('🎯 POPUP APPELÉ - Job: ${jobData["Position"]}');
   showDialog(
     context: context,
     builder: (BuildContext context) {

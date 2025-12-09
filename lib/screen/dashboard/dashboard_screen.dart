@@ -6,9 +6,7 @@ import 'package:timeless/screen/dashboard/dashboard_controller.dart';
 import 'package:timeless/screen/dashboard/home/home_screen.dart';
 import 'package:timeless/screen/dashboard/widget.dart';
 import 'package:timeless/screen/new_home_page/new_home_page_screen.dart';
-import 'package:timeless/screen/profile_logo_screen/profile_logo_screen.dart';
 // Import supprimé : edit_profile_user_screen.dart n'existe plus (remplacé par edit_profile_screen.dart)
-import 'package:timeless/screen/profile/profile_view_screen.dart';
 
 import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/asset_res.dart';
@@ -35,16 +33,10 @@ class DashBoardScreen extends StatelessWidget {
         body: GetBuilder<DashBoardController>(
           id: "bottom_bar",
           builder: (c) {
-            switch (c.currentTab) {
-              case 0:
-                return token.isEmpty
-                    ? const HomePageNewScreenU()
-                    : HomeScreen();
-              default:
-                return token.isEmpty
-                    ? const ProfileLogoScreen()
-                    : const ProfileViewScreen();
-            }
+            // Toujours afficher Home, le bouton Retour ne change pas l'écran affiché
+            return token.isEmpty
+                ? const HomePageNewScreenU()
+                : HomeScreen();
           },
         ),
         bottomNavigationBar: GetBuilder<DashBoardController>(
@@ -68,9 +60,8 @@ class DashBoardScreen extends StatelessWidget {
                     label: "Home",
                   ),
                   BottomNavigationBarItem(
-                    icon: Image.asset(AssetRes.profile1,
-                        height: 18, width: 18, color: Colors.white),
-                    label: "Profile",
+                    icon: const Icon(Icons.work, color: Colors.white, size: 18),
+                    label: "Jobs",
                   ),
                 ],
               ),

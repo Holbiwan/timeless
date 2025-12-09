@@ -7,7 +7,6 @@ import 'package:timeless/screen/employer/employer_profile_screen.dart';
 
 import 'package:timeless/screen/manager_section/dashboard/manager_dashboard_screen_controller.dart';
 import 'package:timeless/screen/manager_section/dashboard/widget.dart';
-import 'package:timeless/screen/manager_section/manager_application_screen/manger_application_screen.dart';
 import 'package:timeless/screen/employer/employer_applications_screen.dart';
 import 'package:timeless/screen/manager_section/manager_home_screen/manager_home_screen.dart';
 import 'package:timeless/utils/app_style.dart';

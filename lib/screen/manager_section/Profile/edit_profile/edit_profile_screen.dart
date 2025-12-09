@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:timeless/common/widgets/back_button.dart';
 import 'package:timeless/screen/create_vacancies/create_vacancies_controller.dart';
-import 'package:timeless/screen/manager_section/profile/manager_profile_controller.dart';
+import 'package:timeless/screen/profile/profile_controller.dart';
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/color_res.dart';
@@ -12,7 +12,7 @@ import 'package:timeless/utils/color_res.dart';
 // ignore: must_be_immutable
 class EditProfileScreen extends StatelessWidget {
   EditProfileScreen({super.key});
-  final controller = Get.put(ManagerProfileController()); // CHANGEMENT ICI
+  final controller = Get.find<ProfileController>(); // Utilise le même contrôleur
 
   CreateVacanciesController getCreate = Get.put(CreateVacanciesController());
 
@@ -28,7 +28,6 @@ class EditProfileScreen extends StatelessWidget {
               padding: const EdgeInsets.all(15),
               child: InkWell(
                 onTap: () {
-                  controller.init();
                   Get.back();
                 },
                 child: backButton(),
@@ -65,22 +64,29 @@ class EditProfileScreen extends StatelessWidget {
                     children: [
                       Stack(
                         children: [
-                          GetBuilder<ManagerProfileController>( // CHANGEMENT ICI
+                          GetBuilder<ProfileController>(
                               id: "image",
-                              builder: (context) {
+                              builder: (profileController) {
+                                ImageProvider imageProvider;
+                                
+                                // Priority: local image > remote URL > default asset
+                                if (profileController.image != null) {
+                                  imageProvider = FileImage(profileController.image!);
+                                } else if (profileController.profileImageUrl.value.isNotEmpty) {
+                                  imageProvider = NetworkImage(profileController.profileImageUrl.value);
+                                } else {
+                                  imageProvider = const AssetImage(AssetRes.roundAirbnb);
+                                }
+                                
                                 return Container(
                                   width: 90,
                                   height: 90,
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    image: (getCreate.url.isEmpty) // CHANGEMENT ICI
-                                        ? const DecorationImage(
-                                            image: AssetImage(AssetRes.roundAirbnb),
-                                            fit: BoxFit.cover, // Changé de fill à cover
-                                          )
-                                        : DecorationImage(
-                                            image: NetworkImage(getCreate.url),
-                                            fit: BoxFit.cover), // Changé de fill à cover
+                                    image: DecorationImage(
+                                      image: imageProvider,
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
                                 );
                               }),
@@ -89,120 +95,7 @@ class EditProfileScreen extends StatelessWidget {
                             right: 10,
                             child: InkWell(
                               onTap: () {
-                                showModalBottomSheet<void>(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                  ),
-                                  backgroundColor: Colors.transparent,
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return Container(
-                                      height: 450,
-                                      decoration: const BoxDecoration(
-                                        color: ColorRes.white,
-                                        borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(45),
-                                          topRight: Radius.circular(45),
-                                        ),
-                                      ),
-                                      child: Center(
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: <Widget>[
-                                            const SizedBox(height: 30),
-                                            Text(
-                                              'Change Logo Company',
-                                              style: appTextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w500,
-                                                  color: ColorRes.black.withOpacity(0.8)),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
-                                              child: Container(
-                                                height: 120,
-                                                width: Get.width,
-                                                decoration: BoxDecoration(
-                                                  border: Border.all(color: const Color(0xffF3ECFF)),
-                                                  borderRadius: const BorderRadius.all(Radius.circular(5)),
-                                                ),
-                                                child: Column(
-                                                  children: [
-                                                    InkWell(
-                                                      onTap: () {
-                                                        controller.onTapImage(); // ASSUREZ-VOUS QUE CETTE MÉTHODE EXISTE
-                                                      },
-                                                      child: Container(
-                                                        height: 70,
-                                                        width: 70,
-                                                        margin: const EdgeInsets.symmetric(horizontal: 100, vertical: 10),
-                                                        decoration: BoxDecoration(
-                                                          color: ColorRes.logoColor,
-                                                          borderRadius: BorderRadius.circular(80),
-                                                        ),
-                                                        child: const Icon(
-                                                          Icons.camera_alt,
-                                                          size: 40,
-                                                          color: ColorRes.containerColor,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      "Take photo",
-                                                      style: appTextStyle(
-                                                          fontWeight: FontWeight.w500,
-                                                          fontSize: 14,
-                                                          color: ColorRes.black),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.symmetric(horizontal: 18),
-                                              child: Container(
-                                                height: 120,
-                                                width: Get.width,
-                                                decoration: BoxDecoration(
-                                                  border: Border.all(color: const Color(0xffF3ECFF)),
-                                                  borderRadius: const BorderRadius.all(Radius.circular(5)),
-                                                ),
-                                                child: Column(
-                                                  children: [
-                                                    InkWell(
-                                                      onTap: () => controller.onTapGallery1(), // ASSUREZ-VOUS QUE CETTE MÉTHODE EXISTE
-                                                      child: Container(
-                                                        height: 70,
-                                                        width: 70,
-                                                        margin: const EdgeInsets.symmetric(horizontal: 100, vertical: 10),
-                                                        decoration: BoxDecoration(
-                                                          color: ColorRes.logoColor,
-                                                          borderRadius: BorderRadius.circular(80),
-                                                        ),
-                                                        child: const Image(
-                                                          image: AssetImage(AssetRes.galleryImage),
-                                                          color: ColorRes.containerColor,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      "From gallery", // Corrigé "Form" en "From"
-                                                      style: appTextStyle(
-                                                          fontWeight: FontWeight.w500,
-                                                          fontSize: 14,
-                                                          color: ColorRes.black),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                );
+                                _showPhotoSelectionModal(context);
                               },
                               child: const CircleAvatar(
                                 radius: 10,
@@ -218,34 +111,67 @@ class EditProfileScreen extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(width: 20),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            controller.companyNameController.text,
-                            style: appTextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w500,
-                                color: ColorRes.black),
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            controller.companyEmailController.text,
-                            style: appTextStyle(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 12,
-                                color: ColorRes.black.withOpacity(0.6)),
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            controller.countryController.text,
-                            style: appTextStyle(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 12,
-                                color: ColorRes.black.withOpacity(0.6)),
-                          ),
-                        ],
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Obx(() => Text(
+                              controller.displayName.isNotEmpty 
+                                ? controller.displayName 
+                                : controller.fullNameController.text.isNotEmpty
+                                  ? controller.fullNameController.text
+                                  : 'Votre Nom',
+                              style: appTextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w500,
+                                  color: ColorRes.black),
+                              overflow: TextOverflow.ellipsis,
+                            )),
+                            const SizedBox(height: 2),
+                            Obx(() => Text(
+                              controller.displayEmail.isNotEmpty 
+                                ? controller.displayEmail 
+                                : controller.emailController.text.isNotEmpty
+                                  ? controller.emailController.text
+                                  : 'Email',
+                              style: appTextStyle(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 12,
+                                  color: ColorRes.black.withOpacity(0.6)),
+                              overflow: TextOverflow.ellipsis,
+                            )),
+                            const SizedBox(height: 2),
+                            Obx(() {
+                              String locationText = '';
+                              final city = controller.displayCity.isNotEmpty 
+                                ? controller.displayCity 
+                                : controller.cityController.text;
+                              final country = controller.displayCountry.isNotEmpty 
+                                ? controller.displayCountry 
+                                : controller.countryController.text;
+                              
+                              if (city.isNotEmpty && country.isNotEmpty) {
+                                locationText = '$city, $country';
+                              } else if (city.isNotEmpty) {
+                                locationText = city;
+                              } else if (country.isNotEmpty) {
+                                locationText = country;
+                              } else {
+                                locationText = 'Localisation';
+                              }
+                              
+                              return Text(
+                                locationText,
+                                style: appTextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 12,
+                                    color: ColorRes.black.withOpacity(0.6)),
+                                overflow: TextOverflow.ellipsis,
+                              );
+                            }),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -253,41 +179,340 @@ class EditProfileScreen extends StatelessWidget {
                 const SizedBox(height: 20),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Obx(
-                    () => Column(children: [
-                      // ... (le reste du code reste similaire mais utilise ManagerProfileController)
-                      GetBuilder<ManagerProfileController>( // CHANGEMENT ICI
-                          id: "Organization",
+                  child: Column(children: [
+                    // Nom complet
+                    _buildTextField(
+                      label: "Nom complet",
+                      controller: controller.fullNameController,
+                      icon: Icons.person,
+                    ),
+                    const SizedBox(height: 15),
+                    
+                    // Email
+                    _buildTextField(
+                      label: "Email",
+                      controller: controller.emailController,
+                      icon: Icons.email,
+                      keyboardType: TextInputType.emailAddress,
+                    ),
+                    const SizedBox(height: 15),
+                    
+                    // Téléphone
+                    _buildTextField(
+                      label: "Téléphone",
+                      controller: controller.phoneController,
+                      icon: Icons.phone,
+                      keyboardType: TextInputType.phone,
+                    ),
+                    const SizedBox(height: 15),
+                    
+                    // Ville
+                    _buildTextField(
+                      label: "Ville",
+                      controller: controller.cityController,
+                      icon: Icons.location_city,
+                    ),
+                    const SizedBox(height: 15),
+                    
+                    // Pays
+                    _buildTextField(
+                      label: "Pays",
+                      controller: controller.countryController,
+                      icon: Icons.public,
+                    ),
+                    const SizedBox(height: 15),
+                    
+                    // Occupation
+                    _buildTextField(
+                      label: "Occupation",
+                      controller: controller.occupationController,
+                      icon: Icons.work,
+                    ),
+                    const SizedBox(height: 15),
+                    
+                    // Bio
+                    _buildTextField(
+                      label: "Biographie",
+                      controller: controller.bioController,
+                      icon: Icons.description,
+                      maxLines: 3,
+                    ),
+                    const SizedBox(height: 15),
+                    
+                    // Date de naissance
+                    _buildTextField(
+                      label: "Date de Naissance",
+                      controller: controller.dateController,
+                      icon: Icons.calendar_today,
+                      keyboardType: TextInputType.datetime,
+                    ),
+                    const SizedBox(height: 15),
+                    
+                    // Poste 
+                    _buildTextField(
+                      label: "Poste",
+                      controller: controller.jobPositionController,
+                      icon: Icons.badge,
+                    ),
+                    const SizedBox(height: 15),
+                    
+                    // Skills
+                    _buildTextField(
+                      label: "Skills",
+                      controller: controller.skillsController,
+                      icon: Icons.star,
+                      maxLines: 2,
+                    ),
+                    const SizedBox(height: 15),
+                    
+                    // Salaire Min
+                    _buildTextField(
+                      label: "Salary Range Min",
+                      controller: controller.salaryMinController,
+                      icon: Icons.attach_money,
+                      keyboardType: TextInputType.number,
+                    ),
+                    const SizedBox(height: 15),
+                    
+                    // Salaire Max
+                    _buildTextField(
+                      label: "Salary Range Max",
+                      controller: controller.salaryMaxController,
+                      icon: Icons.money,
+                      keyboardType: TextInputType.number,
+                    ),
+                    const SizedBox(height: 20),
+                    
+                    // Save button - Plus compact et fonctionnel
+                    GetBuilder<ProfileController>(
+                          id: "save_button",
                           builder: (con) {
-                            return InkWell(
-                              onTap: con.onTapSubmit, // ASSUREZ-VOUS QUE CETTE MÉTHODE EXISTE
-                              child: Container(
-                                height: 50,
-                                width: MediaQuery.of(context).size.width,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  gradient: const LinearGradient(colors: [
-                                    ColorRes.gradientColor,
-                                    ColorRes.containerColor
-                                  ]),
+                            return Container(
+                              width: double.infinity,
+                              height: 45,
+                              child: ElevatedButton(
+                                onPressed: con.isLoading.value 
+                                    ? null 
+                                    : () => con.onTapSubmit(),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF000647),
+                                  foregroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  elevation: 2,
                                 ),
-                                child: Text("Save Changes",
-                                    style: appTextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w500,
-                                        color: ColorRes.white)),
+                                child: con.isLoading.value
+                                    ? const SizedBox(
+                                        height: 20,
+                                        width: 20,
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                          strokeWidth: 2,
+                                        ),
+                                      )
+                                    : Text(
+                                        "Save Changes",
+                                        style: appTextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.white,
+                                        ),
+                                      ),
                               ),
                             );
                           }),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 15),
                     ]),
-                  ),
                 ),
               ]),
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildTextField({
+    required String label,
+    required TextEditingController controller,
+    required IconData icon,
+    TextInputType? keyboardType,
+    int maxLines = 1,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            spreadRadius: 1,
+            blurRadius: 5,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: TextFormField(
+        controller: controller,
+        keyboardType: keyboardType,
+        maxLines: maxLines,
+        style: appTextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w400,
+          color: ColorRes.black,
+        ),
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle: appTextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
+            color: ColorRes.black.withOpacity(0.6),
+          ),
+          prefixIcon: Icon(
+            icon,
+            color: const Color(0xFF000647),
+            size: 20,
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide.none,
+          ),
+          filled: true,
+          fillColor: Colors.white,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 16,
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showPhotoSelectionModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (BuildContext context) {
+        return Container(
+          height: 280,
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(25),
+              topRight: Radius.circular(25),
+            ),
+          ),
+          child: Column(
+            children: [
+              // Barre de drag
+              Container(
+                margin: const EdgeInsets.only(top: 15),
+                width: 50,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              
+              const SizedBox(height: 25),
+              
+              // Titre
+              Text(
+                'Changer votre photo de profil',
+                style: appTextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: ColorRes.black,
+                ),
+              ),
+              
+              const SizedBox(height: 30),
+              
+              // Option Caméra
+              _buildPhotoOption(
+                icon: Icons.camera_alt,
+                title: "Prendre une photo",
+                onTap: () {
+                  Get.back();
+                  controller.onTapImage();
+                },
+              ),
+              
+              const SizedBox(height: 20),
+              
+              // Option Galerie
+              _buildPhotoOption(
+                icon: Icons.photo_library,
+                title: "Choisir dans la galerie",
+                onTap: () {
+                  Get.back();
+                  controller.onTapGallery1();
+                },
+              ),
+              
+              const SizedBox(height: 20),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildPhotoOption({
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 30),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+          decoration: BoxDecoration(
+            color: const Color(0xFF000647).withOpacity(0.05),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: const Color(0xFF000647).withOpacity(0.2),
+              width: 1,
+            ),
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF000647),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(
+                  icon,
+                  color: Colors.white,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 15),
+              Text(
+                title,
+                style: appTextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: ColorRes.black,
+                ),
+              ),
+              const Spacer(),
+              const Icon(
+                Icons.arrow_forward_ios,
+                size: 16,
+                color: Colors.grey,
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

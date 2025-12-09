@@ -4,7 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:timeless/common/widgets/universal_back_fab.dart';
 import 'package:timeless/screen/auth/employer_signin/employer_siret_signin_screen.dart';
 import 'package:timeless/screen/auth/employer_signin/employer_ape_signin_screen.dart';
-import 'package:timeless/services/translation_service.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/app_theme.dart';
 import 'package:timeless/utils/asset_res.dart';
@@ -14,8 +13,6 @@ class EmployerSignInChoiceScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TranslationService translationService = TranslationService.instance;
-
     return Scaffold(
       backgroundColor: ColorRes.backgroundColor,
       body: Stack(

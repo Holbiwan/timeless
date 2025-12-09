@@ -3,22 +3,15 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:timeless/common/widgets/back_button.dart';
-import 'package:timeless/common/widgets/universal_back_fab.dart';
-import 'package:timeless/common/widgets/language_toggle.dart';
 import 'package:timeless/screen/auth/sign_in_screen/sign_in_screen.dart';
 import 'package:timeless/screen/auth/sign_up/sign_up_screen.dart';
-import 'package:timeless/screen/manager_section/auth_manager/Sign_in/sign_in_screen.dart';
 import 'package:timeless/screen/auth/employer_signin/employer_signin_choice_screen.dart';
 import 'package:timeless/screen/auth/employer_signin/employer_signin_screen.dart';
 import 'package:timeless/screen/first_page/first_controller.dart';
 import 'package:timeless/screen/accessibility/accessibility_panel.dart';
 import 'package:timeless/screen/dashboard/home/tipsforyou_screen.dart';
-import 'package:timeless/screen/demo/demo_screen.dart';
 import 'package:timeless/services/translation_service.dart';
-import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/color_res.dart';
-import 'package:timeless/utils/string.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class FirstScreen extends StatelessWidget {
@@ -68,21 +61,50 @@ class FirstScreen extends StatelessWidget {
                     fit: BoxFit.contain,
                   ),
                 ),
-                SizedBox(height: Get.height * 0.04),
+                SizedBox(height: Get.height * 0.02),
 
-                // "Tu es candidat et a déjà un compte" text
+                // "L'app pratique pour la recherche d'emploi" text
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Obx(() => Text(
-                        translationService.getText('candidate_already_account'),
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 14,
-                          color: ColorRes.textSecondary,
-                          height: 1.4,
+                  child: RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: "L'app ",
+                          style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14,
+                            color: ColorRes.textSecondary,
+                          ),
                         ),
-                      )),
+                        TextSpan(
+                          text: "pratique",
+                          style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 14,
+                            color: const Color(0xFF000647),
+                          ),
+                        ),
+                        TextSpan(
+                          text: " pour la ",
+                          style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14,
+                            color: ColorRes.textSecondary,
+                          ),
+                        ),
+                        TextSpan(
+                          text: "recherche d'emploi",
+                          style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 14,
+                            color: const Color(0xFF000647),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
                 SizedBox(height: Get.height * 0.03),
 
@@ -108,14 +130,14 @@ class FirstScreen extends StatelessWidget {
                           color: const Color(0xFF000647), width: 2.0),
                       color: Colors.white,
                     ),
-                    child: Obx(() => Text(
-                          translationService.getText('sign_in'),
+                    child: Text(
+                          "Connexion en tant que candidat",
                           style: GoogleFonts.poppins(
                             fontWeight: FontWeight.w500,
                             fontSize: 14,
                             color: Colors.black,
                           ),
-                        )),
+                        ),
                   ),
                 ),
 
@@ -142,14 +164,14 @@ class FirstScreen extends StatelessWidget {
                       border: Border.all(
                           color: const Color(0xFF000647), width: 2.0),
                     ),
-                    child: Obx(() => Text(
-                          translationService.getText('create_account'),
+                    child: Text(
+                          "Créer un compte candidat",
                           style: GoogleFonts.poppins(
                             fontWeight: FontWeight.w500,
                             fontSize: 14,
                             color: Colors.black,
                           ),
-                        )),
+                        ),
                   ),
                 ),
                 SizedBox(height: Get.height * 0.025),
@@ -343,11 +365,8 @@ class FirstScreen extends StatelessWidget {
               padding: const EdgeInsets.only(
                   top: 40, left: 18, right: 18, bottom: 10),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  // Bouton de traduction
-                  const LanguageToggle(),
-
                   // Boutons à droite
                   Row(
                     children: [

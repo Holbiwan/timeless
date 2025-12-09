@@ -1,0 +1,194 @@
+// Modèle utilisateur unifié - Compatible avec ProfileCompletionController
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+class UserModel {
+  // Identifiants de base
+  final String uid;
+  final String email;
+  
+  // Informations personnelles
+  final String firstName;
+  final String lastName; 
+  final String fullName;
+  final String? phoneNumber;
+  final String? photoURL;
+  
+  // Informations professionnelles
+  final String title;
+  final String bio;
+  final String experience;
+  final String city;
+  
+  // Préférences de travail
+  final Map<String, dynamic> jobPreferences;
+  
+  // Activité
+  final List<String> savedJobs;
+  final List<String> appliedJobs;
+  
+  // Métadonnées
+  final String provider;
+  final String role;
+  final bool profileCompleted;
+  final bool isActive;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final DateTime? lastLogin;
+
+  UserModel({
+    required this.uid,
+    required this.email,
+    required this.firstName,
+    required this.lastName,
+    required this.fullName,
+    this.phoneNumber,
+    this.photoURL,
+    required this.title,
+    required this.bio,
+    required this.experience,
+    required this.city,
+    required this.jobPreferences,
+    required this.savedJobs,
+    required this.appliedJobs,
+    required this.provider,
+    required this.role,
+    required this.profileCompleted,
+    required this.isActive,
+    required this.createdAt,
+    required this.updatedAt,
+    this.lastLogin,
+  });
+
+  // Conversion depuis Firestore
+  factory UserModel.fromFirestore(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
+    
+    return UserModel(
+      uid: data['uid'] ?? doc.id,
+      email: data['email'] ?? '',
+      firstName: data['firstName'] ?? '',
+      lastName: data['lastName'] ?? '',
+      fullName: data['fullName'] ?? '',
+      phoneNumber: data['phoneNumber'],
+      photoURL: data['photoURL'],
+      title: data['title'] ?? '',
+      bio: data['bio'] ?? '',
+      experience: data['experience'] ?? 'junior',
+      city: data['city'] ?? '',
+      jobPreferences: Map<String, dynamic>.from(data['jobPreferences'] ?? {
+        'categories': [],
+        'workType': ['remote', 'hybrid', 'onsite'],
+        'contractType': ['fulltime'],
+        'salaryRange': {'min': null, 'max': null, 'currency': 'EUR'}
+      }),
+      savedJobs: List<String>.from(data['savedJobs'] ?? []),
+      appliedJobs: List<String>.from(data['appliedJobs'] ?? []),
+      provider: data['provider'] ?? 'email',
+      role: data['role'] ?? 'user',
+      profileCompleted: data['profileCompleted'] ?? false,
+      isActive: data['isActive'] ?? true,
+      createdAt: _parseTimestamp(data['createdAt']),
+      updatedAt: _parseTimestamp(data['updatedAt']),
+      lastLogin: _parseTimestamp(data['lastLogin']),
+    );
+  }
+
+  // Conversion vers Firestore
+  Map<String, dynamic> toFirestore() {
+    return {
+      'uid': uid,
+      'email': email,
+      'firstName': firstName,
+      'lastName': lastName,
+      'fullName': fullName,
+      'phoneNumber': phoneNumber,
+      'photoURL': photoURL,
+      'title': title,
+      'bio': bio,
+      'experience': experience,
+      'city': city,
+      'jobPreferences': jobPreferences,
+      'savedJobs': savedJobs,
+      'appliedJobs': appliedJobs,
+      'provider': provider,
+      'role': role,
+      'profileCompleted': profileCompleted,
+      'isActive': isActive,
+      'createdAt': Timestamp.fromDate(createdAt),
+      'updatedAt': Timestamp.fromDate(updatedAt),
+      'lastLogin': lastLogin != null ? Timestamp.fromDate(lastLogin!) : null,
+    };
+  }
+
+  // Helper pour parser les timestamps
+  static DateTime _parseTimestamp(dynamic timestamp) {
+    if (timestamp == null) return DateTime.now();
+    if (timestamp is Timestamp) return timestamp.toDate();
+    if (timestamp is String) return DateTime.tryParse(timestamp) ?? DateTime.now();
+    return DateTime.now();
+  }
+
+  // Copie avec modifications
+  UserModel copyWith({
+    String? uid,
+    String? email,
+    String? firstName,
+    String? lastName,
+    String? fullName,
+    String? phoneNumber,
+    String? photoURL,
+    String? title,
+    String? bio,
+    String? experience,
+    String? city,
+    Map<String, dynamic>? jobPreferences,
+    List<String>? savedJobs,
+    List<String>? appliedJobs,
+    String? provider,
+    String? role,
+    bool? profileCompleted,
+    bool? isActive,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    DateTime? lastLogin,
+  }) {
+    return UserModel(
+      uid: uid ?? this.uid,
+      email: email ?? this.email,
+      firstName: firstName ?? this.firstName,
+      lastName: lastName ?? this.lastName,
+      fullName: fullName ?? this.fullName,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      photoURL: photoURL ?? this.photoURL,
+      title: title ?? this.title,
+      bio: bio ?? this.bio,
+      experience: experience ?? this.experience,
+      city: city ?? this.city,
+      jobPreferences: jobPreferences ?? this.jobPreferences,
+      savedJobs: savedJobs ?? this.savedJobs,
+      appliedJobs: appliedJobs ?? this.appliedJobs,
+      provider: provider ?? this.provider,
+      role: role ?? this.role,
+      profileCompleted: profileCompleted ?? this.profileCompleted,
+      isActive: isActive ?? this.isActive,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      lastLogin: lastLogin ?? this.lastLogin,
+    );
+  }
+
+  // Nom d'affichage complet
+  String get displayName => fullName.isNotEmpty ? fullName : '$firstName $lastName'.trim();
+
+  // Niveau d'expérience lisible
+  String get experienceLabel {
+    switch (experience) {
+      case 'internship': return 'Stage / Alternance';
+      case 'junior': return 'Junior (0-2 ans)';
+      case 'mid': return 'Confirmé (3-5 ans)';
+      case 'senior': return 'Senior (5-10 ans)';
+      case 'expert': return 'Expert (10+ ans)';
+      default: return experience;
+    }
+  }
+}
