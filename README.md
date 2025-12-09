@@ -68,11 +68,7 @@ timeless/
 ### Mobile App
 
 | Feature                  | Technology/Service                |
-| ------------------------ SECTION: 
-
-| --------------------------------- SECTION: 
-
-|
+|--------------------------|-----------------------------------|
 | Framework                | Flutter (Dart)                    |
 | State Management         | GetX                              |
 | Platform Support         | Android & iOS                     |
@@ -85,11 +81,7 @@ timeless/
 ### Backend (`/backend`)
 
 | Feature                  | Technology/Service                |
-| ------------------------ SECTION: 
-
-| --------------------------------- SECTION: 
-
-|
+|--------------------------|-----------------------------------|
 | Framework                | Node.js / Express                 |
 | Database                 | MongoDB (with Mongoose)           |
 | Authentication           | JWT (JSON Web Tokens)             |
@@ -102,18 +94,14 @@ timeless/
 
 ## 🚀 Features Overview
 
-| Feature / Service      | Purpose                                       |
-| ---------------------- SECTION: 
-
-| --------------------------------------------- SECTION: 
-
-|
-| 🔐 **Firebase Auth**   | Handles user login via email and social providers (WIP). |
-| 📊 **Firestore**       | Stores job offers, user profiles, and applications. |
+| Feature / Service        | Purpose                                       |
+|--------------------------|-----------------------------------------------|
+| 🔐 **Firebase Auth**     | Handles user login via email and social providers (WIP). |
+| 📊 **Firestore**         | Stores job offers, user profiles, and applications. |
 | 📁 **Firebase Storage**  | Manages CV uploads and profile pictures.     |
-| 🔔 **Notifications**   | Sends real-time alerts for jobs and updates.  |
+| 🔔 **Notifications**     | Sends real-time alerts for jobs and updates.  |
 | 💾 **SharedPreferences** | Saves local settings and authentication tokens. |
-| 🌍 **Translations**     | Supports multiple languages using JSON files in `/assets/translations`. |
+| 🌍 **Translations**      | Supports multiple languages using JSON files in `/assets/translations`. |
 
 ---
 
