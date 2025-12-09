@@ -1,4 +1,5 @@
 # 🚀 Timeless
+
 *"Bridging The Gap With Timeless Talent"*
 
 <p align="center">
@@ -65,6 +66,7 @@ timeless/
 ## 🧰 Tech Stack
 
 ### Mobile App
+
 | Feature                  | Technology/Service                |
 | ------------------------ | --------------------------------- |
 | Framework                | Flutter (Dart)                    |
@@ -77,6 +79,7 @@ timeless/
 | Notifications            | Firebase Cloud Messaging (FCM)    |
 
 ### Backend (`/backend`)
+
 | Feature                  | Technology/Service                |
 | ------------------------ | --------------------------------- |
 | Framework                | Node.js / Express                 |
@@ -104,22 +107,26 @@ timeless/
 
 ## 🚧 Installation & Run
 
-1.  **Clone the repository:**
+1. **Clone the repository:**
+
     ```bash
     git clone https://github.com/your-account/timeless.git
     ```
 
-2.  **Navigate to the project directory:**
+2. **Navigate to the project directory:**
+
     ```bash
     cd timeless
     ```
 
-3.  **Install Flutter dependencies:**
+3. **Install Flutter dependencies:**
+
     ```bash
     flutter pub get
     ```
 
-4.  **Run the application:**
+4. **Run the application:**
+
     ```bash
     flutter run
     ```
