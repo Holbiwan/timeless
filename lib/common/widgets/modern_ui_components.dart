@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:timeless/utils/app_theme.dart';
 import 'package:timeless/services/accessibility_service.dart';
-import 'package:timeless/services/translation_service.dart';
 
 // Composants UI
 class ModernUIComponents {

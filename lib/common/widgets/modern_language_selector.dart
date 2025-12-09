@@ -271,7 +271,7 @@ class ModernLanguageSelector extends StatelessWidget {
               accessibilityService.triggerHapticFeedback();
               translationService.toggleAutoTranslate();
             },
-            activeColor: accessibilityService.primaryColor,
+            activeThumbColor: accessibilityService.primaryColor,
           ),
         ],
       ),

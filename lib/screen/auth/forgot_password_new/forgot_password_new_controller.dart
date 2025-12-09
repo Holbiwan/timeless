@@ -35,28 +35,68 @@ class ForgotPasswordControllerU extends GetxController {
 
   onLoginBtnTap() {
     if (validator()) {
-
-        resetPassword();
         if (kDebugMode) {
-          print("GO TO HOME PAGE");
+          print("Email validation passed, attempting to send reset email...");
         }
-
+        resetPassword();
       /*Get.to(OtpScreenM());*/
+    } else {
+        if (kDebugMode) {
+          print("Email validation failed: $emailError");
+        }
     }
     update(["showEmail"]);
   }
 
   Future resetPassword() async{
-
-    FirebaseAuth.instance.sendPasswordResetEmail(email:forgotEmailController.text.trim()).then((_) {
-      Get.snackbar("Reset Password", "link has been sent to your email for password reset", colorText: Colors.black);
-      Get.back();
-    }).catchError((error) {
-      Get.snackbar("Error", "$error", colorText: const Color(0xffDA1414));
-    });
-
-
-
+    try {
+      if (kDebugMode) {
+        print("Attempting to send password reset email to: ${forgotEmailController.text.trim()}");
+      }
+      
+      await FirebaseAuth.instance.sendPasswordResetEmail(
+        email: forgotEmailController.text.trim()
+      );
+      
+      if (kDebugMode) {
+        print("Password reset email sent successfully");
+      }
+      
+      Get.snackbar(
+        "Reset Password", 
+        "Un lien de réinitialisation a été envoyé à votre email", 
+        backgroundColor: const Color(0xFF000647),
+        colorText: Colors.white,
+        duration: const Duration(seconds: 4)
+      );
+      
+      // Délai avant de revenir en arrière pour éviter le conflit avec le snackbar
+      Future.delayed(const Duration(milliseconds: 500), () {
+        Get.back();
+      });
+      
+    } catch (error) {
+      if (kDebugMode) {
+        print("Error sending password reset email: $error");
+      }
+      
+      String errorMessage = "Une erreur s'est produite";
+      if (error.toString().contains("user-not-found")) {
+        errorMessage = "Aucun compte trouvé avec cette adresse email";
+      } else if (error.toString().contains("invalid-email")) {
+        errorMessage = "Adresse email invalide";
+      } else if (error.toString().contains("network-request-failed")) {
+        errorMessage = "Problème de connexion réseau";
+      }
+      
+      Get.snackbar(
+        "Erreur", 
+        errorMessage, 
+        backgroundColor: const Color(0xffDA1414),
+        colorText: Colors.white,
+        duration: const Duration(seconds: 4)
+      );
+    }
   }
 
   RxBool isEmailValidate = false.obs;

@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:timeless/common/widgets/universal_app_bar.dart';
 import 'package:timeless/models/application_model.dart';
-import 'package:timeless/models/job_offer_model.dart';
 import 'package:timeless/screen/profile/my_applications_controller.dart';
 import 'package:timeless/utils/color_res.dart';
 

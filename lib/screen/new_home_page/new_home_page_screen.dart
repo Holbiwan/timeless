@@ -1,12 +1,9 @@
 // \lib\screen\new_home_page\new_home_page_screen.dart
 
 import 'package:flutter/material.dart';
-// Import supprimé : auto_translation_service.dart n'existe plus
 
 class HomePageNewScreenU extends StatelessWidget {
   const HomePageNewScreenU({super.key});
-
-  // AutoTranslationService supprimé - fonctionnalité trop avancée
 
   @override
   Widget build(BuildContext context) {
@@ -47,8 +44,7 @@ class HomePageNewScreenU extends StatelessWidget {
 
               const SizedBox(height: 20),
 
-              // Variante slogan avec auto-traduction
-              // AutoTranslation supprimée - texte statique
+              // Slogan statique
               Text(
                 "Find your future today.",
                 style: const TextStyle(

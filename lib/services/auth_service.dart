@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import '../models/user_model.dart';
+import '../models/user_model_unified.dart';
 
 class AuthService extends GetxController {
   static AuthService get instance => Get.find();
@@ -38,30 +38,43 @@ class AuthService extends GetxController {
         // Mettre à jour le nom d'affichage
         await credential.user!.updateDisplayName(name);
         
-        // Créer le profil utilisateur dans Firestore
+        // Créer le profil utilisateur dans Firestore avec la structure unifiée
         UserModel userModel = UserModel(
-          id: credential.user!.uid,
+          uid: credential.user!.uid,
           email: email,
-          displayName: name,
+          firstName: name.split(' ').first,
+          lastName: name.split(' ').length > 1 ? name.split(' ').skip(1).join(' ') : '',
+          fullName: name,
+          phoneNumber: null,
           photoURL: credential.user!.photoURL,
-          role: 'candidate',
-          createdAt: DateTime.now(),
-          profile: {
-            'firstName': name.split(' ').first,
-            'lastName': name.split(' ').length > 1 ? name.split(' ').last : '',
-            'bio': '',
-            'skills': [],
-            'location': '',
+          title: '',
+          bio: '',
+          experience: 'junior',
+          city: '',
+          jobPreferences: {
+            'categories': [],
+            'workType': ['remote', 'hybrid', 'onsite'],
+            'contractType': ['fulltime'],
+            'salaryRange': {'min': null, 'max': null, 'currency': 'EUR'}
           },
+          savedJobs: [],
+          appliedJobs: [],
+          provider: 'email',
+          role: 'user',
+          profileCompleted: false,
+          isActive: true,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+          lastLogin: DateTime.now(),
         );
 
         // Sauvegarder dans Firestore
         await _firestore
             .collection('users')
             .doc(credential.user!.uid)
-            .set(userModel.toJson());
+            .set(userModel.toFirestore());
 
-        Get.snackbar('Succès', 'Compte créé avec succès !');
+        Get.snackbar('Bienvenue !', 'Votre compte Timeless Job Search a été créé avec succès !');
         return true;
       }
       return false;
@@ -87,7 +100,7 @@ class AuthService extends GetxController {
       );
 
       if (credential.user != null) {
-        Get.snackbar('Succès', 'Connexion réussie !');
+        Get.snackbar('Bienvenue !', 'Connexion à Timeless Job Search réussie !');
         return true;
       }
       return false;
@@ -131,31 +144,55 @@ class AuthService extends GetxController {
             .get();
 
         if (!userDoc.exists) {
-          // Créer un nouveau profil utilisateur
+          // Créer un nouveau profil utilisateur avec la structure unifiée
+          final displayName = userCredential.user!.displayName ?? 'Utilisateur';
+          final nameParts = displayName.split(' ');
+          
           UserModel userModel = UserModel(
-            id: userCredential.user!.uid,
+            uid: userCredential.user!.uid,
             email: userCredential.user!.email!,
-            displayName: userCredential.user!.displayName ?? 'Utilisateur',
+            firstName: nameParts.isNotEmpty ? nameParts.first : '',
+            lastName: nameParts.length > 1 ? nameParts.skip(1).join(' ') : '',
+            fullName: displayName,
+            phoneNumber: null,
             photoURL: userCredential.user!.photoURL,
-            role: 'candidate',
-            createdAt: DateTime.now(),
-            profile: {
-              'firstName': userCredential.user!.displayName?.split(' ').first ?? '',
-              'lastName': (userCredential.user!.displayName?.split(' ').length ?? 0) > 1 
-                  ? userCredential.user!.displayName!.split(' ').last : '',
-              'bio': '',
-              'skills': [],
-              'location': '',
+            title: '',
+            bio: '',
+            experience: 'junior',
+            city: '',
+            jobPreferences: {
+              'categories': [],
+              'workType': ['remote', 'hybrid', 'onsite'],
+              'contractType': ['fulltime'],
+              'salaryRange': {'min': null, 'max': null, 'currency': 'EUR'}
             },
+            savedJobs: [],
+            appliedJobs: [],
+            provider: 'google',
+            role: 'user',
+            profileCompleted: false,
+            isActive: true,
+            createdAt: DateTime.now(),
+            updatedAt: DateTime.now(),
+            lastLogin: DateTime.now(),
           );
 
           await _firestore
               .collection('users')
               .doc(userCredential.user!.uid)
-              .set(userModel.toJson());
+              .set(userModel.toFirestore());
+        } else {
+          // Mettre à jour lastLogin pour les utilisateurs existants
+          await _firestore
+              .collection('users')
+              .doc(userCredential.user!.uid)
+              .update({
+            'lastLogin': FieldValue.serverTimestamp(),
+            'isActive': true,
+          });
         }
 
-        Get.snackbar('Succès', 'Connexion Google réussie !');
+        Get.snackbar('Bienvenue !', 'Connexion à Timeless Job Search réussie !');
         return true;
       }
       return false;
@@ -207,7 +244,7 @@ class AuthService extends GetxController {
             .get();
         
         if (doc.exists) {
-          return UserModel.fromJson(doc.data() as Map<String, dynamic>);
+          return UserModel.fromFirestore(doc);
         }
       }
       return null;

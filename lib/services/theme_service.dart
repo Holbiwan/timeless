@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:timeless/services/preferences_service.dart';
-import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/utils/app_theme.dart';
 
 class ThemeService extends GetxController {

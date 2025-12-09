@@ -1,6 +1,5 @@
 // Modèle de profil candidat complet
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'application_model.dart';
 
 class CandidateProfileModel {
   final String id;

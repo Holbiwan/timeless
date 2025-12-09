@@ -4,12 +4,9 @@ import 'package:timeless/screen/job_detail_screen/job_detail_upload_cv_screen/up
 import 'package:timeless/screen/job_detail_screen/job_detail_upload_cv_screen/upload_cv_screen_helper.dart';
 import 'package:timeless/services/translation_service.dart';
 import 'package:timeless/screen/job_detail_screen/job_detail_widget/job_details_appbar.dart';
-import 'package:timeless/screen/manager_section/Notification/notification_services.dart';
-import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/color_res.dart';
-import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/utils/string.dart';
 import 'package:timeless/utils/app_theme.dart';
 

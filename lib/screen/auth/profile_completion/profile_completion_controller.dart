@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:timeless/utils/app_theme.dart';
 
 class ProfileCompletionController extends GetxController {
   // Loading state
@@ -137,9 +138,24 @@ class ProfileCompletionController extends GetxController {
           .set(userData, SetOptions(merge: true));
 
       print('✅ Profil utilisateur sauvegardé avec succès');
+      
+      // Afficher popup de confirmation
+      AppTheme.showStandardSnackBar(
+        title: "Profil mis à jour",
+        message: "Votre profil a été sauvegardé avec succès !",
+        isSuccess: true,
+      );
 
     } catch (e) {
       print('❌ Erreur lors de la sauvegarde du profil: $e');
+      
+      // Afficher popup d'erreur
+      AppTheme.showStandardSnackBar(
+        title: "Erreur",
+        message: "Impossible de sauvegarder le profil: $e",
+        isError: true,
+      );
+      
       rethrow;
     }
   }

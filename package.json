@@ -1,0 +1,20 @@
+{
+  "name": "timeless",
+  "version": "1.0.0",
+  "description": "\"Bringing The Gap With Timeless Talent\"",
+  "main": "cleanup_firebase.js",
+  "directories": {
+    "doc": "docs",
+    "lib": "lib",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "firebase": "^12.6.0"
+  }
+}

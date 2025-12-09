@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:timeless/utils/color_res.dart';
-import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/app_theme.dart';
 import 'package:timeless/screen/dashboard/home/widgets/all_jobs.dart';
 import 'package:timeless/screen/job_recommendation_screen/job_recommendation_controller.dart';

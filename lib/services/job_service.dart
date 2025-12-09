@@ -10,7 +10,7 @@ class JobService {
   static final FirebaseStorage _storage = FirebaseStorage.instance;
 
   // Collections
-  static const String jobsCollection = 'jobs';
+  static const String jobsCollection = 'allPost';  // Changed from 'jobs' to 'allPost'
   static const String applicationsCollection = 'applications';
 
   // =====================================

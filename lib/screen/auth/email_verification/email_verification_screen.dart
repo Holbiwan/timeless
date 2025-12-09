@@ -7,13 +7,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/asset_res.dart';
-import 'package:timeless/utils/app_theme.dart';
 import 'package:timeless/screen/dashboard/dashboard_screen.dart';
-import 'package:timeless/screen/auth/sign_in_screen/sign_in_screen.dart';
 import 'package:timeless/screen/first_page/first_screen.dart';
 import 'package:timeless/services/preferences_service.dart';
-import 'package:timeless/services/translation_service.dart';
-import 'package:timeless/services/accessibility_service.dart';
 import 'package:timeless/utils/pref_keys.dart';
 
 class EmailVerificationScreen extends StatefulWidget {

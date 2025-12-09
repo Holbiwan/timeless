@@ -9,7 +9,6 @@ import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/string.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../sign_up_new/sign_up_new_screen.dart';
-import '../../help/terms/terms_screen.dart';
 
 class FirstPageScreenM extends StatelessWidget {
   const FirstPageScreenM({super.key});

@@ -1,7 +1,5 @@
 // Test de syntaxe pour comprehensive_translation_service.dart
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 // Simuler les services pour le test
 class PreferencesService {

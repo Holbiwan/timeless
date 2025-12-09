@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/common/widgets/back_button.dart';
 

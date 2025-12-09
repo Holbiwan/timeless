@@ -1,6 +1,5 @@
 // lib/service/email_service.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 
 class EmailService {
   static final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -30,20 +29,16 @@ class EmailService {
             : null,
       });
 
-      if (kDebugMode) {
-        print('✅ Email queued for sending: ${mailDoc.id}');
-        print(' To: $to');
-        print(' Subject: $subject');
-      }
+      print('✅ Email queued for sending: ${mailDoc.id}');
+      print(' To: $to');
+      print(' Subject: $subject');
 
       // Log email attempt
       await _logEmailAttempt(to, subject, mailDoc.id);
 
       return true;
     } catch (e) {
-      if (kDebugMode) {
-        print('❌ Email sending failed: $e');
-      }
+      print('❌ Email sending failed: $e');
 
       // Fallback: Try alternative method
       return await _sendEmailFallback(to, subject, htmlBody, textBody);
@@ -65,15 +60,11 @@ class EmailService {
         "retryCount": 0,
       });
 
-      if (kDebugMode) {
-        print(' Email stored in pending queue for manual processing');
-      }
+      print('⚠️ Email stored in pending queue for manual processing');
 
       return true;
     } catch (e) {
-      if (kDebugMode) {
-        print('❌ Fallback email storage failed: $e');
-      }
+      print('❌ Fallback email storage failed: $e');
       return false;
     }
   }
@@ -90,9 +81,7 @@ class EmailService {
         "status": "queued",
       });
     } catch (e) {
-      if (kDebugMode) {
-        print('❌ Email logging failed: $e');
-      }
+      print('❌ Email logging failed: $e');
     }
   }
 
@@ -134,7 +123,7 @@ class EmailService {
     required String location,
     required String jobType,
   }) async {
-    final subject = "✅ Application Confirmed - $jobTitle at $companyName";
+    final subject = "✅ Candidature confirmée - $jobTitle chez $companyName";
     final htmlBody = _generateApplicationConfirmationHTML(
       userName: userName,
       jobTitle: jobTitle,
@@ -218,54 +207,71 @@ class EmailService {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Application Confirmed</title>
+    <title>Candidature confirmée</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f5f5; margin: 0; padding: 20px; }
         .container { max-width: 600px; margin: 0 auto; background-color: white; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.1); }
         .header { background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; text-align: center; padding: 30px 20px; }
         .content { padding: 30px; }
+        .thank-you-box { background: #e8f5e8; padding: 20px; border-radius: 10px; margin: 20px 0; border: 1px solid #28a745; text-align: center; }
         .job-details { background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #28a745; }
         .detail-row { display: flex; justify-content: space-between; margin: 8px 0; }
+        .next-steps { background: #fff3cd; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #ffc107; }
         .footer { background-color: #f8f9fa; text-align: center; padding: 20px; border-top: 1px solid #eee; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>✅ Application Submitted!</h1>
-            <p>Your job application has been successfully received</p>
+            <h1>✅ Candidature envoyée !</h1>
+            <p>Votre candidature a été reçue avec succès</p>
         </div>
         <div class="content">
-            <h2>Hello $userName,</h2>
-            <p>Great news! Your application has been successfully submitted.</p>
+            <h2>Bonjour $userName,</h2>
+            
+            <div class="thank-you-box">
+                <h3>🙏 Merci pour votre candidature !</h3>
+                <p>Nous vous remercions d'avoir postulé à cette offre. Votre candidature est maintenant entre les mains de l'équipe de recrutement.</p>
+            </div>
+            
+            <p>Excellente nouvelle ! Votre candidature a été soumise avec succès.</p>
+            
             <div class="job-details">
-                <h3> Application Details</h3>
+                <h3>📋 Détails de votre candidature</h3>
                 <div class="detail-row">
-                    <span><strong>Position:</strong></span>
+                    <span><strong>Poste :</strong></span>
                     <span>$jobTitle</span>
                 </div>
                 <div class="detail-row">
-                    <span><strong>Company:</strong></span>
+                    <span><strong>Entreprise :</strong></span>
                     <span>$companyName</span>
                 </div>
                 <div class="detail-row">
-                    <span><strong>Location:</strong></span>
+                    <span><strong>Localisation :</strong></span>
                     <span>$location</span>
                 </div>
                 <div class="detail-row">
-                    <span><strong>Job Type:</strong></span>
+                    <span><strong>Type de contrat :</strong></span>
                     <span>$jobType</span>
                 </div>
                 <div class="detail-row">
-                    <span><strong>Salary:</strong></span>
+                    <span><strong>Salaire :</strong></span>
                     <span>$salary</span>
                 </div>
             </div>
-            <p>The hiring team will review your application and contact you soon.</p>
+            
+            <div class="next-steps">
+                <h3>📞 Prochaines étapes</h3>
+                <p>L'équipe de recrutement va examiner votre candidature et vous contacter prochainement si votre profil correspond à leurs attentes.</p>
+                <p><strong>Nous vous souhaitons bonne chance !</strong></p>
+            </div>
+            
+            <p>Si vous avez des questions, n'hésitez pas à nous contacter.</p>
         </div>
         <div class="footer">
-            <h3>The Timeless Team </h3>
-            <p> support@timeless.app</p>
+            <h3>L'équipe Timeless 💼</h3>
+            <p>📧 support@timeless.app</p>
+            <p><em>Merci de nous faire confiance pour votre recherche d'emploi</em></p>
         </div>
     </div>
 </body>

@@ -52,9 +52,19 @@ class ForgotPasswordControllerM extends GetxController {
 
     FirebaseAuth.instance.sendPasswordResetEmail(email:forgotEmailController.text.trim()).then((_) {
       Get.back();
-      Get.snackbar("Reset Password", "link has been sent to your email for password reset", colorText: Colors.black);
+      Get.snackbar(
+        "Reset Password", 
+        "link has been sent to your email for password reset", 
+        backgroundColor: const Color(0xFF000647),
+        colorText: Colors.white
+      );
     }).catchError((error) {
-      Get.snackbar("Error", "$error", colorText: const Color(0xffDA1414));
+      Get.snackbar(
+        "Error", 
+        "$error", 
+        backgroundColor: const Color(0xffDA1414),
+        colorText: Colors.white
+      );
     });
 
     /*try {

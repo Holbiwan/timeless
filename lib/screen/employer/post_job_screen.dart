@@ -133,7 +133,7 @@ class _PostJobScreenState extends State<PostJobScreen> {
                 const SizedBox(height: 12),
                 DropdownButtonFormField<String>(
                   decoration: _dec('Category'),
-                  value: _category,
+                  initialValue: _category,
                   items: categories
                       .map((c) => DropdownMenuItem(value: c, child: Text(c)))
                       .toList(),

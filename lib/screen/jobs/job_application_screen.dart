@@ -79,6 +79,110 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
     }
   }
 
+  void _showSuccessDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          contentPadding: const EdgeInsets.all(24),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.green.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.check_circle,
+                  color: Colors.green,
+                  size: 50,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Candidature envoyée !',
+                style: GoogleFonts.poppins(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Votre candidature pour le poste de ${widget.job['Position'] ?? 'ce poste'} chez ${widget.job['CompanyName'] ?? 'cette entreprise'} a été envoyée avec succès !',
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  color: Colors.grey[700],
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.blue.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.blue.withOpacity(0.3)),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.email,
+                      color: Colors.blue[700],
+                      size: 16,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Un email de confirmation a été envoyé à ${_emailController.text}',
+                        style: GoogleFonts.poppins(
+                          fontSize: 12,
+                          color: Colors.blue[800],
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Ferme le dialog
+                    Navigator.of(context).pop(); // Retourne à l'écran précédent
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF000647),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                  ),
+                  child: Text(
+                    'Parfait !',
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> _submitApplication() async {
     if (!_formKey.currentState!.validate()) {
       return;
@@ -118,15 +222,7 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
         },
       );
 
-      Get.snackbar(
-        'Candidature envoyée',
-        'Votre candidature a été envoyée avec succès !',
-        backgroundColor: const Color(0xFF000647),
-        colorText: Colors.white,
-        duration: Duration(seconds: 3),
-      );
-
-      Navigator.pop(context);
+      _showSuccessDialog();
     } catch (e) {
       Get.snackbar(
         'Erreur',
@@ -161,7 +257,7 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(
           horizontal: MediaQuery.of(context).size.width > 600 ? 40 : 20,
-          vertical: 16,
+          vertical: 8,
         ),
         child: Form(
           key: _formKey,
@@ -260,7 +356,7 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
                 ),
               ),
 
-              const SizedBox(height: 16),
+              const SizedBox(height: 10),
 
               // Formulaire de candidature
               Text(
@@ -271,7 +367,7 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
                   color: Colors.black,
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 8),
 
               // Nom complet
               TextFormField(
@@ -293,7 +389,7 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
                   return null;
                 },
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 8),
 
               // Email
               TextFormField(
@@ -319,7 +415,7 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
                   return null;
                 },
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 8),
 
               // Téléphone
               TextFormField(
@@ -342,7 +438,7 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
                   return null;
                 },
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 10),
 
               // CV Upload Section
               Text(
@@ -353,136 +449,70 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
                   color: Colors.black,
                 ),
               ),
-              const SizedBox(height: 16),
-
-              // CV stocké existant (si disponible)
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(16),
-                margin: const EdgeInsets.only(bottom: 12),
-                decoration: BoxDecoration(
-                  border: Border.all(color: const Color(0xFF000647).withOpacity(0.3), width: 1),
-                  borderRadius: BorderRadius.circular(12),
-                  color: const Color(0xFF000647).withOpacity(0.05),
-                ),
-                child: Row(
-                  children: [
-                    Icon(Icons.description, color: const Color(0xFF000647), size: 24),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'CV sauvegardé'.tr,
-                            style: GoogleFonts.poppins(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: const Color(0xFF000647),
-                            ),
-                          ),
-                          Text(
-                            'mon_cv.pdf', // TODO: Get from user preferences
-                            style: GoogleFonts.poppins(
-                              fontSize: 12,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        // Use stored CV
-                        setState(() {
-                          _cvFileName = 'mon_cv.pdf';
-                          _selectedCV = null; // Reset picked file
-                        });
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF000647),
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                      ),
-                      child: Text(
-                        'Utiliser'.tr,
-                        style: GoogleFonts.poppins(
-                          fontSize: 12,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              // Ou uploader un nouveau CV
-              Text(
-                'Ou uploader un nouveau CV'.tr,
-                style: GoogleFonts.poppins(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.grey[600],
-                ),
-                textAlign: TextAlign.center,
-              ),
               const SizedBox(height: 8),
+
 
               InkWell(
                 onTap: _pickCV,
                 child: Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                   decoration: BoxDecoration(
                     border: Border.all(
                       color: _selectedCV != null 
                           ? const Color(0xFF000647) 
                           : Colors.grey[300]!,
-                      width: 2,
+                      width: 1.5,
                     ),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(10),
                     color: _selectedCV != null 
                         ? const Color(0xFF000647).withOpacity(0.05)
                         : Colors.grey[50],
                   ),
-                  child: Column(
+                  child: Row(
                     children: [
                       Icon(
                         _selectedCV != null ? Icons.check_circle : Icons.upload_file,
-                        size: 40,
+                        size: 24,
                         color: _selectedCV != null 
                             ? const Color(0xFF000647) 
                             : Colors.grey[400],
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        _selectedCV != null 
-                            ? '${'CV sélectionné'.tr}: $_cvFileName'
-                            : 'Cliquez pour sélectionner un nouveau CV'.tr,
-                        style: GoogleFonts.poppins(
-                          fontSize: 13,
-                          color: _selectedCV != null 
-                              ? const Color(0xFF000647)
-                              : Colors.grey[600],
-                          fontWeight: _selectedCV != null 
-                              ? FontWeight.w600 
-                              : FontWeight.w400,
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              _selectedCV != null 
+                                  ? 'CV sélectionné: $_cvFileName'
+                                  : 'Sélectionner votre CV *',
+                              style: GoogleFonts.poppins(
+                                fontSize: 12,
+                                color: _selectedCV != null 
+                                    ? const Color(0xFF000647)
+                                    : Colors.grey[700],
+                                fontWeight: _selectedCV != null 
+                                    ? FontWeight.w600 
+                                    : FontWeight.w500,
+                              ),
+                            ),
+                            if (_selectedCV == null)
+                              Text(
+                                'PDF, DOC, DOCX acceptés',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 10,
+                                  color: Colors.grey[500],
+                                ),
+                              ),
+                          ],
                         ),
-                        textAlign: TextAlign.center,
                       ),
-                      if (_selectedCV == null)
-                        Text(
-                          'Formats acceptés: PDF, DOC, DOCX'.tr,
-                          style: GoogleFonts.poppins(
-                            fontSize: 11,
-                            color: Colors.grey[500],
-                          ),
-                        ),
                     ],
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 8),
 
               // Commentaire/Lettre de motivation
               Text(
@@ -493,11 +523,11 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
                   color: Colors.black,
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 6),
 
               TextFormField(
                 controller: _commentController,
-                maxLines: 2,
+                maxLines: 3,
                 decoration: InputDecoration(
                   hintText: 'Expliquez pourquoi vous êtes le candidat idéal pour ce poste...',
                   border: OutlineInputBorder(
@@ -512,29 +542,42 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
               const SizedBox(height: 16),
 
               // Bouton d'envoi
-              SizedBox(
+              Container(
                 width: double.infinity,
-                height: 50,
+                margin: EdgeInsets.symmetric(horizontal: 20),
                 child: ElevatedButton(
                   onPressed: _isLoading ? null : _submitApplication,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF000647),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
+                    elevation: 3,
+                    shadowColor: const Color(0xFF000647).withOpacity(0.3),
                   ),
                   child: _isLoading 
-                      ? CircularProgressIndicator(color: Colors.white)
+                      ? SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2,
+                          ),
+                        )
                       : Text(
                           'Envoyer ma candidature',
                           style: GoogleFonts.poppins(
                             fontSize: 16,
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.w700,
                             color: Colors.white,
+                            letterSpacing: 0.5,
                           ),
                         ),
                 ),
               ),
+              const SizedBox(height: 20),
             ],
           ),
         ),

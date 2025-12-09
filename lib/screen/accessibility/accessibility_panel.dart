@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:timeless/services/accessibility_service.dart';
 import 'package:timeless/services/translation_service.dart';
-import 'package:timeless/utils/color_res.dart';
 
 class AccessibilityPanel extends StatelessWidget {
   const AccessibilityPanel({super.key});
@@ -262,7 +261,7 @@ class AccessibilityPanel extends StatelessWidget {
             Switch(
               value: value,
               onChanged: (_) => onChanged(),
-              activeColor: accessibilityService.primaryColor,
+              activeThumbColor: accessibilityService.primaryColor,
             ),
           ],
         ),

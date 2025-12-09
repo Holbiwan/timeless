@@ -187,10 +187,7 @@ class ForgotPasswordScreen extends StatelessWidget {
             alignment: Alignment.center,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              gradient: const LinearGradient(colors: [
-                ColorRes.gradientColor,
-                ColorRes.containerColor,
-              ]),
+              color: const Color(0xFF000647),
             ),
             child: InkWell(
               onTap: () {

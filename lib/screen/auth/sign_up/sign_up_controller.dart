@@ -9,9 +9,7 @@ import 'package:timeless/screen/dashboard/dashboard_screen.dart';
 import 'package:timeless/screen/auth/email_verification/email_verification_screen.dart';
 import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/pref_keys.dart';
-import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/app_theme.dart';
-import 'package:country_picker/country_picker.dart';
 
 class SignUpController extends GetxController {
   // ===== State / Controllers =====

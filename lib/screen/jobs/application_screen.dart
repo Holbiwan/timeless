@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:timeless/common/widgets/universal_app_bar.dart';
 import 'package:timeless/models/job_offer_model.dart';
 import 'package:timeless/screen/jobs/application_controller.dart';
