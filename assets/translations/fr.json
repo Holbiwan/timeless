@@ -63,7 +63,7 @@
   "Formats acceptés: PDF, DOC, DOCX": "Formats acceptés: PDF, DOC, DOCX",
   "motivation_letter_optional": "Lettre de motivation (optionnel)",
   "motivation_letter_hint": "Expliquez pourquoi vous êtes intéressé(e) par ce poste...",
-  "apply_button": "Envoyer ma candidature",
+  "apply_button": "Soumettre ma candidature",
   "confirm_application": "Confirmer la candidature",
   "confirm_application_message": "Êtes-vous sûr de vouloir envoyer votre candidature pour le poste de {{position}} chez {{company}} ?",
   "cancel_button": "Annuler",
@@ -72,6 +72,7 @@
   "application_sent_message": "Votre candidature pour le poste de {{position}} chez {{company}} a été envoyée avec succès.",
   "confirmation_email_info": "Vous recevrez un email de confirmation.",
   "perfect_button": "Parfait !",
+  "sign in as": "Se connecter en tant que PRO",
   
   "employer_signin_title": "Se connecter en tant que PRO",
   "employer_signin_subtitle": "Choisissez votre méthode de connexion",
