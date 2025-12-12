@@ -6,6 +6,7 @@ import 'package:file_picker/file_picker.dart';
 // import 'package:timeless/models/job_offer_model.dart'; // Removed - using Map instead
 import 'package:timeless/services/job_service.dart';
 import 'package:timeless/services/preferences_service.dart';
+import 'package:timeless/services/unified_translation_service.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/pref_keys.dart';
 
@@ -25,6 +26,8 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
   final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
   final _commentController = TextEditingController();
+  final UnifiedTranslationService translationService =
+      UnifiedTranslationService();
 
   File? _selectedCV;
   bool _isLoading = false;
@@ -50,9 +53,10 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
     try {
       _nameController.text = PreferencesService.getString(PrefKeys.fullName);
       _emailController.text = PreferencesService.getString(PrefKeys.email);
-      _phoneController.text = PreferencesService.getString(PrefKeys.phoneNumber);
+      _phoneController.text =
+          PreferencesService.getString(PrefKeys.phoneNumber);
     } catch (e) {
-      print('Erreur lors du chargement des infos utilisateur: $e');
+      print(translationService.getText('error_loading_user_info') + ': $e');
     }
   }
 
@@ -71,8 +75,8 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
       }
     } catch (e) {
       Get.snackbar(
-        'Erreur',
-        'Impossible de sélectionner le fichier: $e',
+        translationService.getText('error'),
+        translationService.getText('file_selection_error') + ': $e',
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
@@ -106,7 +110,7 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
               ),
               const SizedBox(height: 16),
               Text(
-                'Candidature envoyée !',
+                translationService.getText('application_sent_title'),
                 style: GoogleFonts.poppins(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
@@ -116,7 +120,7 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
               ),
               const SizedBox(height: 12),
               Text(
-                'Votre candidature pour le poste de ${widget.job['Position'] ?? 'ce poste'} chez ${widget.job['CompanyName'] ?? 'cette entreprise'} a été envoyée avec succès !',
+                '${translationService.getText('you_are_applying_for')} ${widget.job['Position'] ?? translationService.getText('this_position')} ${translationService.getText('at')} ${widget.job['CompanyName'] ?? translationService.getText('this_company')} ${translationService.getText('has_been_sent_successfully')}',
                 style: GoogleFonts.poppins(
                   fontSize: 14,
                   color: Colors.grey[700],
@@ -141,7 +145,7 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        'Un email de confirmation a été envoyé à ${_emailController.text}',
+                        '${translationService.getText('confirmation_email_sent_to')} ${_emailController.text}',
                         style: GoogleFonts.poppins(
                           fontSize: 12,
                           color: Colors.blue[800],
@@ -168,7 +172,7 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
                   child: Text(
-                    'Parfait !',
+                    translationService.getText('perfect'),
                     style: GoogleFonts.poppins(
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
@@ -190,8 +194,8 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
 
     if (_selectedCV == null) {
       Get.snackbar(
-        'CV requis',
-        'Veuillez sélectionner votre CV',
+        translationService.getText('cv_required'),
+        translationService.getText('please_select_cv'),
         backgroundColor: Colors.orange,
         colorText: Colors.white,
       );
@@ -209,12 +213,12 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
         employerId: widget.job['employerId'] ?? 'unknown_employer',
         candidateName: _nameController.text.trim(),
         candidateEmail: _emailController.text.trim(),
-        candidatePhone: _phoneController.text.trim().isNotEmpty 
-            ? _phoneController.text.trim() 
+        candidatePhone: _phoneController.text.trim().isNotEmpty
+            ? _phoneController.text.trim()
             : null,
         cvFile: _selectedCV!,
-        coverLetter: _commentController.text.trim().isNotEmpty 
-            ? _commentController.text.trim() 
+        coverLetter: _commentController.text.trim().isNotEmpty
+            ? _commentController.text.trim()
             : null,
         candidateProfile: {
           'phone': _phoneController.text.trim(),
@@ -225,8 +229,8 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
       _showSuccessDialog();
     } catch (e) {
       Get.snackbar(
-        'Erreur',
-        'Impossible d\'envoyer la candidature: $e',
+        translationService.getText('error'),
+        translationService.getText('application_send_error') + ': $e',
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
@@ -243,7 +247,7 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
       backgroundColor: ColorRes.backgroundColor,
       appBar: AppBar(
         title: Text(
-          'Postuler - ${widget.job['Position'] ?? 'Poste'}',
+          '${translationService.getText('apply')} - ${widget.job['Position'] ?? translationService.getText('position_default')}',
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.w600,
             color: Colors.black,
@@ -270,7 +274,8 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: const Color(0xFF000647), width: 1.0),
+                  border:
+                      Border.all(color: const Color(0xFF000647), width: 1.0),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -295,7 +300,9 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                widget.job['Position'] ?? 'Poste non spécifié',
+                                widget.job['Position'] ??
+                                    translationService
+                                        .getText('position_not_specified'),
                                 style: GoogleFonts.poppins(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w600,
@@ -303,7 +310,9 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
                                 ),
                               ),
                               Text(
-                                widget.job['CompanyName'] ?? 'Entreprise non spécifiée',
+                                widget.job['CompanyName'] ??
+                                    translationService
+                                        .getText('company_not_specified'),
                                 style: GoogleFonts.poppins(
                                   fontSize: 14,
                                   color: Colors.grey[600],
@@ -318,13 +327,16 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
                     Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
                             color: Colors.blue.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: Text(
-                            widget.job['location'] ?? 'Lieu non spécifié',
+                            widget.job['location'] ??
+                                translationService
+                                    .getText('location_not_specified'),
                             style: GoogleFonts.poppins(
                               fontSize: 10,
                               color: Colors.blue[700],
@@ -334,15 +346,18 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
                         ),
                         const SizedBox(width: 8),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
                             color: Colors.green.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: Text(
-                            widget.job['salary'] != null && widget.job['salary'] != "0" 
+                            widget.job['salary'] != null &&
+                                    widget.job['salary'] != "0"
                                 ? "${widget.job['salary']}€"
-                                : "Salaire non spécifié",
+                                : translationService
+                                    .getText('salary_not_specified'),
                             style: GoogleFonts.poppins(
                               fontSize: 10,
                               color: Colors.green[700],
@@ -360,7 +375,7 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
 
               // Formulaire de candidature
               Text(
-                'Informations personnelles',
+                translationService.getText('personal_information_title'),
                 style: GoogleFonts.poppins(
                   fontSize: 11,
                   fontWeight: FontWeight.w500,
@@ -373,18 +388,19 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
               TextFormField(
                 controller: _nameController,
                 decoration: InputDecoration(
-                  labelText: 'Nom complet *',
+                  labelText: translationService.getText('full_name_label'),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: const Color(0xFF000647), width: 2),
+                    borderSide:
+                        BorderSide(color: const Color(0xFF000647), width: 2),
                   ),
                 ),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return 'Le nom est requis';
+                    return translationService.getText('name_required');
                   }
                   return null;
                 },
@@ -396,21 +412,24 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
-                  labelText: 'Email *',
+                  labelText: translationService.getText('email_label'),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: const Color(0xFF000647), width: 2),
+                    borderSide:
+                        BorderSide(color: const Color(0xFF000647), width: 2),
                   ),
                 ),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return 'L\'email est requis';
+                    return translationService
+                        .getText('email_required_validation');
                   }
                   if (!GetUtils.isEmail(value.trim())) {
-                    return 'Email invalide';
+                    return translationService
+                        .getText('invalid_email_validation');
                   }
                   return null;
                 },
@@ -422,18 +441,19 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
                 controller: _phoneController,
                 keyboardType: TextInputType.phone,
                 decoration: InputDecoration(
-                  labelText: 'Numéro de téléphone *',
+                  labelText: translationService.getText('phone_number_label'),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: const Color(0xFF000647), width: 2),
+                    borderSide:
+                        BorderSide(color: const Color(0xFF000647), width: 2),
                   ),
                 ),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return 'Le numéro de téléphone est requis';
+                    return translationService.getText('phone_number_required');
                   }
                   return null;
                 },
@@ -442,7 +462,7 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
 
               // CV Upload Section
               Text(
-                'Curriculum Vitae'.tr,
+                translationService.getText('curriculum_vitae_title'),
                 style: GoogleFonts.poppins(
                   fontSize: 11,
                   fontWeight: FontWeight.w500,
@@ -451,31 +471,30 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
               ),
               const SizedBox(height: 8),
 
-
               InkWell(
                 onTap: _pickCV,
                 child: Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                   decoration: BoxDecoration(
-                    border: Border.all(
-                      color: _selectedCV != null 
-                          ? const Color(0xFF000647) 
-                          : Colors.grey[300]!,
-                      width: 1.5,
-                    ),
-                    borderRadius: BorderRadius.circular(10),
-                    color: _selectedCV != null 
+                                      border: Border.all(
+                                        color: ColorRes.backgroundColor,
+                                        width: 1.5,
+                                      ),                    borderRadius: BorderRadius.circular(10),
+                    color: _selectedCV != null
                         ? const Color(0xFF000647).withOpacity(0.05)
                         : Colors.grey[50],
                   ),
                   child: Row(
                     children: [
                       Icon(
-                        _selectedCV != null ? Icons.check_circle : Icons.upload_file,
+                        _selectedCV != null
+                            ? Icons.check_circle
+                            : Icons.upload_file,
                         size: 24,
-                        color: _selectedCV != null 
-                            ? const Color(0xFF000647) 
+                        color: _selectedCV != null
+                            ? const Color(0xFF000647)
                             : Colors.grey[400],
                       ),
                       const SizedBox(width: 12),
@@ -484,22 +503,24 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              _selectedCV != null 
-                                  ? 'CV sélectionné: $_cvFileName'
-                                  : 'Sélectionner votre CV *',
+                              _selectedCV != null
+                                  ? '${translationService.getText('cv_selected_message')}: $_cvFileName'
+                                  : translationService
+                                      .getText('select_your_cv_label'),
                               style: GoogleFonts.poppins(
                                 fontSize: 12,
-                                color: _selectedCV != null 
+                                color: _selectedCV != null
                                     ? const Color(0xFF000647)
                                     : Colors.grey[700],
-                                fontWeight: _selectedCV != null 
-                                    ? FontWeight.w600 
+                                fontWeight: _selectedCV != null
+                                    ? FontWeight.w600
                                     : FontWeight.w500,
                               ),
                             ),
                             if (_selectedCV == null)
                               Text(
-                                'PDF, DOC, DOCX acceptés',
+                                translationService
+                                    .getText('accepted_formats_label'),
                                 style: GoogleFonts.poppins(
                                   fontSize: 10,
                                   color: Colors.grey[500],
@@ -516,7 +537,7 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
 
               // Commentaire/Lettre de motivation
               Text(
-                'Lettre de motivation (optionnel)',
+                translationService.getText('cover_letter_title'),
                 style: GoogleFonts.poppins(
                   fontSize: 11,
                   fontWeight: FontWeight.w500,
@@ -529,13 +550,14 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
                 controller: _commentController,
                 maxLines: 3,
                 decoration: InputDecoration(
-                  hintText: 'Expliquez pourquoi vous êtes le candidat idéal pour ce poste...',
+                  hintText: translationService.getText('cover_letter_hint'),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: const Color(0xFF000647), width: 2),
+                    borderSide:
+                        BorderSide(color: const Color(0xFF000647), width: 2),
                   ),
                 ),
               ),
@@ -550,14 +572,15 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF000647),
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 12), // Reduced padding
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                     elevation: 3,
                     shadowColor: const Color(0xFF000647).withOpacity(0.3),
                   ),
-                  child: _isLoading 
+                  child: _isLoading
                       ? SizedBox(
                           width: 20,
                           height: 20,
@@ -567,9 +590,9 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
                           ),
                         )
                       : Text(
-                          'Envoyer ma candidature',
+                          translationService.getText('send_my_application'),
                           style: GoogleFonts.poppins(
-                            fontSize: 16,
+                            fontSize: 14, // Reduced font size
                             fontWeight: FontWeight.w700,
                             color: Colors.white,
                             letterSpacing: 0.5,
