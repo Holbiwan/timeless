@@ -504,6 +504,9 @@ class JobDetailsUploadCvController extends GetxController {
       
       if (userEmail.isEmpty) return;
 
+      // Check if this is an English job posting
+      final isEnglishJob = _isEnglishJobPosting(jobData);
+      
       final emailHTML = _generateApplicationConfirmationEmail(
         userName: userName,
         jobTitle: jobData['Position'] ?? 'Position',
@@ -511,15 +514,24 @@ class JobDetailsUploadCvController extends GetxController {
         salary: jobData['salary'] ?? 'Not specified',
         location: jobData['location'] ?? 'Not specified',
         type: jobData['type'] ?? 'Not specified',
+        isEnglish: isEnglishJob,
       );
+
+      final subject = isEnglishJob 
+          ? "✅ Application Confirmed - ${jobData['Position']} at ${jobData['CompanyName']}"
+          : "✅ Candidature confirmée - ${jobData['Position']} chez ${jobData['CompanyName']}";
+          
+      final textMessage = isEnglishJob
+          ? "Your application for ${jobData['Position']} at ${jobData['CompanyName']} has been successfully submitted."
+          : "Votre candidature pour ${jobData['Position']} chez ${jobData['CompanyName']} a été soumise avec succès.";
 
       // Send via Firebase Extensions
       final mailDoc = await FirebaseFirestore.instance.collection("mail").add({
         "to": [userEmail],
         "message": {
-          "subject": "✅ Application Confirmed - ${jobData['Position']} at ${jobData['CompanyName']}",
+          "subject": subject,
           "html": emailHTML,
-          "text": "Your application for ${jobData['Position']} at ${jobData['CompanyName']} has been successfully submitted."
+          "text": textMessage
         }
       });
 
@@ -533,9 +545,10 @@ class JobDetailsUploadCvController extends GetxController {
         "status": "sent",
         "mailDocId": mailDoc.id,
         "userId": PreferencesService.getString(PrefKeys.userId),
+        "language": isEnglishJob ? "english" : "french",
       });
 
-      if (kDebugMode) print('✅ Application confirmation email sent to $userEmail');
+      if (kDebugMode) print('✅ Application confirmation email sent to $userEmail (${isEnglishJob ? "English" : "French"})');
     } catch (e) {
       if (kDebugMode) print('❌ Error sending application confirmation email: $e');
     }
@@ -547,26 +560,63 @@ class JobDetailsUploadCvController extends GetxController {
       final userId = PreferencesService.getString(PrefKeys.userId);
       if (userId.isEmpty) return;
 
+      // Check if this is an English job posting
+      final isEnglishJob = _isEnglishJobPosting(jobData);
+      
+      final title = isEnglishJob ? "Application Submitted" : "Candidature soumise";
+      final message = isEnglishJob 
+          ? "Your application for ${jobData['Position']} at ${jobData['CompanyName']} has been submitted successfully."
+          : "Votre candidature pour ${jobData['Position']} chez ${jobData['CompanyName']} a été soumise avec succès.";
+
       await FirebaseFirestore.instance
           .collection("users")
           .doc(userId)
           .collection("notifications")
           .add({
         "type": "application_submitted",
-        "title": "Application Submitted",
-        "message": "Your application for ${jobData['Position']} at ${jobData['CompanyName']} has been submitted successfully.",
+        "title": title,
+        "message": message,
         "jobTitle": jobData['Position'],
         "companyName": jobData['CompanyName'],
         "read": false,
         "createdAt": FieldValue.serverTimestamp(),
         "icon": "check_circle",
         "priority": "medium",
+        "language": isEnglishJob ? "english" : "french",
       });
 
-      if (kDebugMode) print('✅ Application notification added');
+      if (kDebugMode) print('✅ Application notification added (${isEnglishJob ? "English" : "French"})');
     } catch (e) {
       if (kDebugMode) print('❌ Error adding application notification: $e');
     }
+  }
+
+  // Helper method to check if a job posting is in English
+  bool _isEnglishJobPosting(Map<String, dynamic> jobData) {
+    // Check if keywords contain 'english' or 'international'
+    final keywords = jobData['keywords'] as List<dynamic>?;
+    if (keywords != null) {
+      final keywordStrings = keywords.whereType<String>().map((k) => k.toLowerCase()).toList();
+      if (keywordStrings.contains('english') || keywordStrings.contains('international')) {
+        return true;
+      }
+    }
+    
+    // Check if company name contains our English demo companies
+    final companyName = jobData['CompanyName'] as String?;
+    if (companyName != null) {
+      final englishCompanies = [
+        'DataMaster Strasbourg',
+        'ShieldIT Nice', 
+        'UserFirst Rennes',
+        'AI-Driven Grenoble'
+      ];
+      if (englishCompanies.contains(companyName)) {
+        return true;
+      }
+    }
+    
+    return false;
   }
 
   String _generateApplicationConfirmationEmail({
@@ -576,8 +626,11 @@ class JobDetailsUploadCvController extends GetxController {
     required String salary,
     required String location,
     required String type,
+    bool isEnglish = false,
   }) {
-    return """
+    if (isEnglish) {
+      // English email template
+      return """
 <!DOCTYPE html>
 <html>
 <head>
@@ -613,7 +666,7 @@ class JobDetailsUploadCvController extends GetxController {
             <p>Great news! Your application has been successfully submitted and is now being reviewed by the hiring team.</p>
             
             <div class="job-details">
-                <h3 style="margin-top: 0; color: #333;"> Application Details</h3>
+                <h3 style="margin-top: 0; color: #333;">📋 Application Details</h3>
                 <div class="detail-row">
                     <span class="detail-label">Position:</span>
                     <span class="detail-value">$jobTitle</span>
@@ -632,7 +685,7 @@ class JobDetailsUploadCvController extends GetxController {
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">Salary:</span>
-                    <span class="detail-value">$salary</span>
+                    <span class="detail-value">€$salary</span>
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">Application Date:</span>
@@ -641,7 +694,7 @@ class JobDetailsUploadCvController extends GetxController {
             </div>
             
             <div class="next-steps">
-                <h3 style="margin-top: 0; color: #333;"> What happens next?</h3>
+                <h3 style="margin-top: 0; color: #333;">🚀 What happens next?</h3>
                 <p style="margin: 0;">
                     • The hiring team will review your application<br>
                     • You'll receive updates on your application status<br>
@@ -654,8 +707,8 @@ class JobDetailsUploadCvController extends GetxController {
         </div>
         
         <div class="footer">
-            <h3>The Timeless Team </h3>
-            <p>Connecting talent with opportunity</p>
+            <h3>🌟 The Timeless Team</h3>
+            <p>Connecting talent with opportunity worldwide</p>
             <p style="font-size: 12px; color: #999;">
                 This is an automated confirmation email.
             </p>
@@ -663,6 +716,96 @@ class JobDetailsUploadCvController extends GetxController {
     </div>
 </body>
 </html>
-    """;
+      """;
+    } else {
+      // French email template  
+      return """
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidature confirmée - $jobTitle</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f5f5; margin: 0; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; background-color: white; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; text-align: center; padding: 30px 20px; }
+        .header h1 { margin: 0; font-size: 26px; font-weight: 700; }
+        .content { padding: 30px; }
+        .job-details { background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #28a745; }
+        .detail-row { display: flex; justify-content: space-between; margin: 8px 0; }
+        .detail-label { font-weight: 600; color: #495057; }
+        .detail-value { color: #28a745; font-weight: 600; }
+        .next-steps { background: #e3f2fd; padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #2196f3; }
+        .footer { background-color: #f8f9fa; text-align: center; padding: 20px; border-top: 1px solid #eee; }
+        .success-icon { font-size: 48px; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="success-icon">✅</div>
+            <h1>Candidature soumise !</h1>
+            <p>Votre candidature a été reçue avec succès</p>
+        </div>
+        
+        <div class="content">
+            <h2>Bonjour $userName,</h2>
+            
+            <p>Excellente nouvelle ! Votre candidature a été soumise avec succès et est maintenant en cours d'examen par l'équipe de recrutement.</p>
+            
+            <div class="job-details">
+                <h3 style="margin-top: 0; color: #333;">📋 Détails de la candidature</h3>
+                <div class="detail-row">
+                    <span class="detail-label">Poste :</span>
+                    <span class="detail-value">$jobTitle</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Entreprise :</span>
+                    <span class="detail-value">$companyName</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Localisation :</span>
+                    <span class="detail-value">$location</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Type de contrat :</span>
+                    <span class="detail-value">$type</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Salaire :</span>
+                    <span class="detail-value">$salary €</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Date de candidature :</span>
+                    <span class="detail-value">${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}</span>
+                </div>
+            </div>
+            
+            <div class="next-steps">
+                <h3 style="margin-top: 0; color: #333;">🚀 Prochaines étapes</h3>
+                <p style="margin: 0;">
+                    • L'équipe de recrutement va examiner votre candidature<br>
+                    • Vous recevrez des mises à jour sur le statut de votre candidature<br>
+                    • Surveillez votre email pour toute communication<br>
+                    • Consultez votre tableau de bord Timeless pour les mises à jour
+                </p>
+            </div>
+            
+            <p style="color: #666;">Merci d'utiliser Timeless pour votre recherche d'emploi. Nous vous souhaitons bonne chance pour votre candidature !</p>
+        </div>
+        
+        <div class="footer">
+            <h3>🌟 L'équipe Timeless</h3>
+            <p>Connecter les talents aux opportunités</p>
+            <p style="font-size: 12px; color: #999;">
+                Ceci est un email de confirmation automatique.
+            </p>
+        </div>
+    </div>
+</body>
+</html>
+      """;
+    }
   }
 }

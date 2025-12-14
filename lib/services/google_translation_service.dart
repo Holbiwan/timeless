@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import 'package:timeless/config/api_config.dart';
 
-class GoogleTranslationService {
+class GoogleUnifiedTranslationService {
   // Configuration sécurisée depuis le fichier de config
   static const String _baseUrl = ApiConfig.googleTranslationBaseUrl;
   static const String _apiKey = ApiConfig.googleTranslationApiKey;

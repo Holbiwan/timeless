@@ -4,7 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:timeless/screen/employer/post_job_screen.dart';
 import 'package:timeless/screen/employer/my_jobs_screen.dart';
+import 'package:timeless/screen/employer/employer_settings_screen.dart';
 import 'package:timeless/screen/manager_section/auth_manager/Sign_in/sign_in_screen.dart';
+import 'package:timeless/controllers/employer_profile_controller.dart';
 import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/utils/color_res.dart';
@@ -172,6 +174,13 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
           icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: Get.back,
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings, color: Colors.white),
+            onPressed: () => Get.to(() => const EmployerSettingsScreen()),
+            tooltip: 'Settings',
+          ),
+        ],
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: SafeArea(

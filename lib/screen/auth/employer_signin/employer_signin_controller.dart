@@ -36,6 +36,44 @@ class EmployerSignInController extends GetxController {
     super.onInit();
     // Pré-remplir le pays avec France
     countryController.text = 'France';
+    // Pré-remplir avec les données de test
+    fillTestData();
+  }
+
+  // Variable pour choisir quelle société de test utiliser
+  final RxInt selectedTestCompany = 0.obs; // 0 = Sainte Thérèse, 1 = X Digital
+
+  // Méthode pour pré-remplir les données de test
+  void fillTestData() {
+    if (selectedTestCompany.value == 0) {
+      // ETABLISSEMENT SAINTE THERESE
+      companyNameController.text = 'ETABLISSEMENT SAINTE THERESE';
+      addressController.text = '1 rue du test 75001 PARIS';
+      postalCodeController.text = '75001';
+      countryController.text = 'France';
+      siretController.text = '12345678901234'; // SIRET fictif
+      apeController.text = '8542Z'; // Code APE pour enseignement
+      emailController.text = 'Classe.Sainte-Therese@outlook.com';
+      passwordController.text = 'TestPassword123!';
+      confirmPasswordController.text = 'TestPassword123!';
+    } else {
+      // X DIGITAL
+      companyNameController.text = 'X DIGITAL';
+      addressController.text = '42 Avenue des Champs-Élysées 75008 PARIS';
+      postalCodeController.text = '75008';
+      countryController.text = 'France';
+      siretController.text = '98765432109876'; // SIRET fictif
+      apeController.text = '6201Z'; // Code APE pour programmation informatique
+      emailController.text = 'holbiwansabrina@gmail.com';
+      passwordController.text = 'XDigital2024!';
+      confirmPasswordController.text = 'XDigital2024!';
+    }
+  }
+
+  // Méthode pour changer de société de test
+  void switchTestCompany() {
+    selectedTestCompany.value = selectedTestCompany.value == 0 ? 1 : 0;
+    fillTestData();
   }
 
   @override

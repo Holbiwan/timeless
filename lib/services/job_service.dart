@@ -15,13 +15,6 @@ class JobService {
 
   // Job offers management
 
-
-
-
-
-
-
-
   // == Create a new job offer
   static Future<String> createJobOffer(JobOfferModel job) async {
     try {
@@ -152,32 +145,8 @@ class JobService {
   }
 
   // 
-
-
-
-
-
-
-
-
-
-
-
-
-
   // == APPLICATIONS MANAGEMENT
   // 
-
-
-
-
-
-
-
-
-
-
-
 
 
   // Submit an application with CV upload
@@ -218,13 +187,15 @@ class JobService {
           .collection(applicationsCollection)
           .add(application.toFirestore());
 
-      // Update job applications count
-      await _firestore.collection(jobsCollection).doc(jobId).update({
+      // Update job applications count in allPost collection
+      await _firestore.collection('allPost').doc(jobId).update({
         'applicationsCount': FieldValue.increment(1),
       });
 
       // Send confirmation emails
+      print('🚀 Attempting to send confirmation email...');
       await _sendApplicationEmails(application, jobId);
+      print('✅ Email sending process completed');
 
       return docRef.id;
     } catch (e) {
@@ -251,25 +222,40 @@ class JobService {
   static Future<void> _sendApplicationEmails(
       ApplicationModel application, String jobId) async {
     try {
-      // Get job details
-      JobOfferModel? job = await getJobOffer(jobId);
-      if (job == null) return;
+      print('📧 Getting job details for email from allPost collection...');
+      
+      // Get job details directly from allPost collection
+      DocumentSnapshot jobDoc = await _firestore.collection('allPost').doc(jobId).get();
+      if (!jobDoc.exists) {
+        print('❌ Job document not found in allPost: $jobId');
+        return;
+      }
+      
+      final jobData = jobDoc.data() as Map<String, dynamic>;
+      print('📋 Job data retrieved: ${jobData['Position']} at ${jobData['CompanyName']}');
 
       // Send confirmation email to candidate
-      await EmailService.sendApplicationConfirmation(
+      print('📤 Sending confirmation email to: ${application.candidateEmail}');
+      final emailSent = await EmailService.sendApplicationConfirmation(
         email: application.candidateEmail,
         userName: application.candidateName,
-        jobTitle: job.title,
-        companyName: job.companyName,
-        salary: _formatSalary(job.salaryMin, job.salaryMax),
-        location: job.location,
-        jobType: job.jobType.name,
+        jobTitle: jobData['Position'] ?? 'Position not specified',
+        companyName: jobData['CompanyName'] ?? 'Company not specified',
+        salary: _formatSalaryFromString(jobData['salary']),
+        location: jobData['location'] ?? 'Location not specified',
+        jobType: jobData['jobType'] ?? 'Job type not specified',
       );
+
+      if (emailSent) {
+        print('✅ Confirmation email sent successfully!');
+      } else {
+        print('⚠️ Confirmation email failed to send');
+      }
 
       // Send notification email to employer (if they have an email)
       // TODO: Get employer email from employers collection
     } catch (e) {
-      print('Erreur envoi emails: $e');
+      print('❌ Error sending emails: $e');
       // Don't throw here to avoid blocking the application
     }
   }
@@ -369,24 +355,21 @@ class JobService {
     }
   }
 
-  // Helper method to format salary range
-  static String _formatSalary(double? salaryMin, double? salaryMax) {
-    if (salaryMin == null && salaryMax == null) {
+  
+  // Helper method to format salary from string (for allPost collection)
+  static String _formatSalaryFromString(dynamic salary) {
+    if (salary == null || salary == "0" || salary == "") {
       return 'Salaire à négocier';
     }
-
-    if (salaryMin != null && salaryMax != null) {
-      return '${salaryMin.toInt()}€ - ${salaryMax.toInt()}€';
+    
+    String salaryStr = salary.toString();
+    
+    // Si le salaire contient déjà le symbole €, on le retourne tel quel
+    if (salaryStr.contains('€')) {
+      return salaryStr;
     }
-
-    if (salaryMin != null) {
-      return 'À partir de ${salaryMin.toInt()}€';
-    }
-
-    if (salaryMax != null) {
-      return 'Jusqu\'à ${salaryMax.toInt()}€';
-    }
-
-    return 'Non spécifié';
+    
+    // Sinon on ajoute le symbole €
+    return '${salaryStr}€';
   }
 }

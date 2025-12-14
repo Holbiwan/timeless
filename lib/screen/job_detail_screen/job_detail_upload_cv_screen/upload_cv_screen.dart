@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:timeless/screen/job_detail_screen/job_detail_upload_cv_screen/upload_cv_controller.dart';
 import 'package:timeless/screen/job_detail_screen/job_detail_upload_cv_screen/upload_cv_screen_helper.dart';
-import 'package:timeless/services/translation_service.dart';
+import 'package:timeless/services/unified_translation_service.dart';
 import 'package:timeless/screen/job_detail_screen/job_detail_widget/job_details_appbar.dart';
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/asset_res.dart';
@@ -21,12 +21,12 @@ class JobDetailsUploadCvScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorRes.backgroundColor,
-      body: WillPopScope(
-        onWillPop: () async {
-          Get.back();
-          controller.filepath.value = "";
-          controller.motivationController.clear();
-          return true;
+      body: PopScope(
+        onPopInvoked: (didPop) {
+          if (didPop) {
+            controller.filepath.value = "";
+            controller.motivationController.clear();
+          }
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 18),
@@ -347,7 +347,7 @@ class JobDetailsUploadCvScreen extends StatelessWidget {
                       // Champ lettre de motivation optionnelle
                       const SizedBox(height: 30),
                       Text(
-                        Get.find<TranslationService>().getText('motivation_letter_optional'),
+                        Get.find<UnifiedTranslationService>().getText('motivation_letter_optional'),
                         style: appTextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.w500,
@@ -368,7 +368,7 @@ class JobDetailsUploadCvScreen extends StatelessWidget {
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             hintText:
-                                Get.find<TranslationService>().getText('motivation_letter_hint'),
+                                Get.find<UnifiedTranslationService>().getText('motivation_letter_hint'),
                             hintStyle: appTextStyle(
                               fontSize: 9,
                               fontWeight: FontWeight.w400,
@@ -417,7 +417,7 @@ class JobDetailsUploadCvScreen extends StatelessWidget {
                               ),
                             ),
                             child: Text(
-                              Get.find<TranslationService>().getText('apply_button'),
+                              Get.find<UnifiedTranslationService>().getText('apply_button'),
                               style: appTextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w500,

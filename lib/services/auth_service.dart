@@ -62,12 +62,7 @@ class AuthService extends GetxController {
           bio: '',
           experience: 'junior',
           city: '',
-          jobPreferences: {
-            'categories': [],
-            'workType': ['remote', 'hybrid', 'onsite'],
-            'contractType': ['fulltime'],
-            'salaryRange': {'min': null, 'max': null, 'currency': 'EUR'}
-          },
+          // jobPreferences removed
           savedJobs: [],
           appliedJobs: [],
           provider: 'email',
@@ -171,12 +166,7 @@ class AuthService extends GetxController {
             bio: '',
             experience: 'junior',
             city: '',
-            jobPreferences: {
-              'categories': [],
-              'workType': ['remote', 'hybrid', 'onsite'],
-              'contractType': ['fulltime'],
-              'salaryRange': {'min': null, 'max': null, 'currency': 'EUR'}
-            },
+            // jobPreferences removed
             savedJobs: [],
             appliedJobs: [],
             provider: 'google',

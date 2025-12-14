@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:timeless/screen/dashboard/dashboard_controller.dart';
 import 'package:timeless/screen/looking_for_screen/looking_for_screen.dart';
+import 'package:timeless/screen/profile/profile_controller.dart';
 import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/services/google_auth_service.dart';
+import 'package:timeless/services/auth_service.dart';
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/pref_keys.dart';
@@ -15,6 +16,10 @@ import 'package:timeless/utils/app_theme.dart';
 
 class SettingsScreenU extends StatelessWidget {
   const SettingsScreenU({super.key});
+  
+  // Obtenir une instance du ProfileController pour la mise à jour en temps réel
+  ProfileController get profileController => Get.put(ProfileController());
+  AuthService get authService => Get.put(AuthService());
 
   @override
   Widget build(BuildContext context) {
@@ -195,7 +200,7 @@ class SettingsScreenU extends StatelessWidget {
                         ),
                         const SizedBox(width: 15),
                         Text(
-                          "Modifier le profil",
+                          "Edit profile",
                           style: appTextStyle(
                               fontWeight: FontWeight.w500,
                               fontSize: 14,
@@ -243,7 +248,7 @@ class SettingsScreenU extends StatelessWidget {
                         ),
                         const SizedBox(width: 15),
                         Text(
-                          "Modifier le mot de passe",
+                          "Change password",
                           style: appTextStyle(
                               fontWeight: FontWeight.w500,
                               fontSize: 14,
@@ -291,7 +296,7 @@ class SettingsScreenU extends StatelessWidget {
                         ),
                         const SizedBox(width: 15),
                         Text(
-                          "Supprimer le compte",
+                          "Delete account",
                           style: appTextStyle(
                               fontWeight: FontWeight.w500,
                               fontSize: 14,
@@ -522,21 +527,29 @@ class SettingsScreenU extends StatelessWidget {
         });
   }
 
-  // Nouvelle fonction de déconnexion améliorée
-  void _showLogoutConfirmation(BuildContext context, DashBoardController controller) async {
+  // Fonction de déconnexion complètement améliorée
+  void _showLogoutConfirmation(BuildContext context, DashBoardController dashController) async {
+    final profileCtrl = profileController;
+    
     final confirmed = await Get.dialog<bool>(
       AlertDialog(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
-          side: BorderSide(color: AppTheme.buttonBorderColor, width: 2.0),
+          borderRadius: BorderRadius.circular(15),
         ),
         title: Row(
           children: [
-            Icon(Icons.logout, color: Colors.orange[600], size: 24),
-            const SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.orange[100],
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Icon(Icons.logout_rounded, color: Colors.orange[600], size: 24),
+            ),
+            const SizedBox(width: 12),
             Text(
-              'Déconnexion',
+              'Logout',
               style: appTextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 18,
@@ -547,31 +560,90 @@ class SettingsScreenU extends StatelessWidget {
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Êtes-vous sûr de vouloir vous déconnecter ?',
+              'Are you sure you want to log out?',
               style: appTextStyle(
-                fontSize: 14,
-                color: ColorRes.black.withOpacity(0.8),
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: ColorRes.black,
               ),
             ),
-            const SizedBox(height: 8),
-            Text(
-              'Vous devrez vous reconnecter pour accéder à votre compte.',
-              style: appTextStyle(
-                fontSize: 12,
-                color: ColorRes.textSecondary,
+            const SizedBox(height: 12),
+            
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.blue[50],
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.blue[200]!),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.info_outline, color: Colors.blue[600], size: 20),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'You will need to sign back in to access your account',
+                      style: appTextStyle(
+                        fontSize: 13,
+                        color: Colors.blue[700],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
+            
+            const SizedBox(height: 12),
+            Obx(() => Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    radius: 16,
+                    backgroundColor: const Color(0xFF000647),
+                    child: Text(
+                      profileCtrl.getInitials(),
+                      style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          profileCtrl.fullName.value.isEmpty ? 'User' : profileCtrl.fullName.value,
+                          style: appTextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                        ),
+                        Text(
+                          profileCtrl.email.value,
+                          style: appTextStyle(fontSize: 11, color: Colors.grey[600]),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            )),
           ],
         ),
         actions: [
           TextButton(
             onPressed: () => Get.back(result: false),
+            style: TextButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            ),
             child: Text(
-              'Annuler',
+              'Cancel',
               style: appTextStyle(
-                color: ColorRes.textSecondary,
+                color: Colors.grey[600],
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -579,17 +651,27 @@ class SettingsScreenU extends StatelessWidget {
           ElevatedButton(
             onPressed: () => Get.back(result: true),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
+              backgroundColor: const Color(0xFF000647),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+              minimumSize: const Size(0, 32),
             ),
-            child: Text(
-              'Se déconnecter',
-              style: appTextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-              ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.logout_rounded, size: 18, color: Colors.white),
+                const SizedBox(width: 6),
+                Text(
+                  'Logout',
+                  style: appTextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14,
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -597,39 +679,163 @@ class SettingsScreenU extends StatelessWidget {
     );
 
     if (confirmed == true) {
-      try {
-        // Réinitialiser l'onglet actuel
-        controller.currentTab = 0;
-        controller.update(["bottom_bar"]);
+      await _performLogout(dashController);
+    }
+  }
+  
+  // Fonction pour effectuer la déconnexion
+  Future<void> _performLogout(DashBoardController dashController) async {
+    try {
+      // Afficher un dialogue de progression
+      Get.dialog(
+        AlertDialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const CircularProgressIndicator(color: Color(0xFF000647)),
+              const SizedBox(height: 16),
+              Text(
+                'Signing out...',
+                style: appTextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Please wait while we sign you out safely',
+                style: appTextStyle(
+                  fontSize: 12,
+                  color: Colors.grey[600],
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+        barrierDismissible: false,
+      );
+      
+      // Réinitialiser l'onglet actuel du dashboard
+      dashController.currentTab = 0;
+      dashController.update(["bottom_bar"]);
 
-        // Déconnexion Firebase
-        await FirebaseAuth.instance.signOut();
-        
-        // Déconnexion Google avec notre service amélioré
-        await GoogleAuthService.signOut();
-
-        // Nettoyer toutes les préférences
-        await _clearAllPreferences();
-
-        // Afficher un message de confirmation
-        Get.snackbar(
-          "Déconnexion réussie",
-          "À bientôt sur Timeless !",
-          backgroundColor: const Color(0xFF000647),
-          colorText: Colors.white,
-          duration: const Duration(seconds: 2),
-        );
-
-        // Navigation vers l'écran de démarrage
-        Get.offAllNamed('/');
-
-      } catch (e) {
-        AppTheme.showStandardSnackBar(
-          title: "Erreur de déconnexion",
-          message: "Une erreur s'est produite lors de la déconnexion",
-          isError: true,
-        );
+      // Déconnexion avec AuthService (plus robuste)
+      await authService.signOut();
+      
+      // Nettoyer le profil controller
+      profileController.clearProfileData();
+      
+      // Nettoyer toutes les préférences
+      await _clearAllPreferences();
+      
+      // Attendre un peu pour s'assurer que tout est nettoyé
+      await Future.delayed(const Duration(milliseconds: 500));
+      
+      // Fermer le dialogue de progression
+      Get.back();
+      
+      // Afficher confirmation de déconnexion
+      Get.dialog(
+        AlertDialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.green[50],
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(Icons.check_circle_outline, color: Colors.green[600], size: 48),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Logout Successful!',
+                style: appTextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.green[600],
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Thank you for using Timeless.\nSee you soon!',
+                style: appTextStyle(
+                  fontSize: 14,
+                  color: Colors.grey[700],
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF000647).withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset('assets/images/logo.png', height: 20),
+                    const SizedBox(width: 8),
+                    Text(
+                      'TIMELESS',
+                      style: appTextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: const Color(0xFF000647),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Get.back();
+                // Navigation vers l'écran de démarrage
+                Get.offAllNamed('/');
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF000647),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                minimumSize: const Size(double.infinity, 45),
+              ),
+              child: Text(
+                'Continue to Welcome Screen',
+                style: appTextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+        barrierDismissible: false,
+      );
+      
+    } catch (e) {
+      // Fermer le dialogue de progression si ouvert
+      if (Get.isDialogOpen ?? false) {
+        Get.back();
       }
+      
+      Get.snackbar(
+        "Logout Error",
+        "An error occurred during logout: $e",
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 4),
+      );
     }
   }
 
@@ -655,12 +861,16 @@ class SettingsScreenU extends StatelessWidget {
     }
   }
 
-  // Fonction pour modifier le profil
+  // Fonction pour modifier le profil avec mise à jour temps réel
   void _showEditProfile(BuildContext context) {
+    // Initialiser le ProfileController pour avoir accès aux données
+    final controller = profileController;
+    
     Get.bottomSheet(
       Container(
-        padding: const EdgeInsets.all(20),
-        margin: const EdgeInsets.only(bottom: 80), // Marge pour éviter la barre de navigation
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.75, // Limite la hauteur à 75% de l'écran
+        ),
         decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(
@@ -671,61 +881,127 @@ class SettingsScreenU extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              "Modifier le profil",
-              style: appTextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: ColorRes.black,
+            // Header fixe
+            Container(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
+              child: Row(
+                children: [
+                  Icon(Icons.edit, color: const Color(0xFF000647), size: 24),
+                  const SizedBox(width: 8),
+                  Text(
+                    "Edit profile",
+                    style: appTextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: ColorRes.black,
+                    ),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 20),
-            ListTile(
-              leading: const Icon(Icons.person, color: Color(0xFF000647)),
-              title: Text("Modifier le nom", style: appTextStyle(fontSize: 16, color: ColorRes.black)),
-              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-              onTap: () {
-                Get.back();
-                _showEditNameDialog(context);
-              },
-            ),
-            const Divider(),
-            ListTile(
-              leading: const Icon(Icons.email, color: Color(0xFF000647)),
-              title: Text("Modifier l'email", style: appTextStyle(fontSize: 16, color: ColorRes.black)),
-              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-              onTap: () {
-                Get.back();
-                _showEditEmailDialog(context);
-              },
-            ),
-            const Divider(),
-            ListTile(
-              leading: const Icon(Icons.photo_camera, color: Color(0xFF000647)),
-              title: Text("Photo de profil", style: appTextStyle(fontSize: 16, color: ColorRes.black)),
-              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-              onTap: () {
-                Get.back();
-                Get.snackbar(
-                  "Photo de profil",
-                  "Fonctionnalité en développement",
-                  backgroundColor: const Color(0xFF000647),
-                  colorText: Colors.white,
-                );
-              },
+            
+            // Contenu scrollable
+            Flexible(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.only(bottom: 20),
+                child: Column(
+                  children: [
+                    // Edit Name avec affichage du nom actuel
+                    ListTile(
+                      leading: const Icon(Icons.person, color: Color(0xFF000647)),
+                      title: Text("Edit name", style: appTextStyle(fontSize: 15, color: ColorRes.black)),
+                      subtitle: Obx(() => Text(
+                        controller.fullName.value.isEmpty ? 'No name set' : controller.fullName.value,
+                        style: appTextStyle(fontSize: 13, color: Colors.grey[600]),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      )),
+                      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                      onTap: () {
+                        Get.back();
+                        _showEditNameDialog(context);
+                      },
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+                    ),
+                    const Divider(height: 1, indent: 20, endIndent: 20),
+                    
+                    // Edit Email avec affichage de l'email actuel
+                    ListTile(
+                      leading: const Icon(Icons.email, color: Color(0xFF000647)),
+                      title: Text("Edit email", style: appTextStyle(fontSize: 15, color: ColorRes.black)),
+                      subtitle: Obx(() => Text(
+                        controller.email.value.isEmpty ? 'No email set' : controller.email.value,
+                        style: appTextStyle(fontSize: 13, color: Colors.grey[600]),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      )),
+                      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                      onTap: () {
+                        Get.back();
+                        _showEditEmailDialog(context);
+                      },
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+                    ),
+                    const Divider(height: 1, indent: 20, endIndent: 20),
+                    
+                    // Edit Phone avec affichage du téléphone actuel
+                    ListTile(
+                      leading: const Icon(Icons.phone, color: Color(0xFF000647)),
+                      title: Text("Edit phone", style: appTextStyle(fontSize: 15, color: ColorRes.black)),
+                      subtitle: Obx(() => Text(
+                        controller.phoneNumber.value.isEmpty ? 'No phone set' : controller.phoneNumber.value,
+                        style: appTextStyle(fontSize: 13, color: Colors.grey[600]),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      )),
+                      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                      onTap: () {
+                        Get.back();
+                        _showEditPhoneDialog(context);
+                      },
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+                    ),
+                    const Divider(height: 1, indent: 20, endIndent: 20),
+                    
+                    // Profile picture avec affichage de l'état actuel
+                    ListTile(
+                      leading: const Icon(Icons.photo_camera, color: Color(0xFF000647)),
+                      title: Text("Profile picture", style: appTextStyle(fontSize: 15, color: ColorRes.black)),
+                      subtitle: Obx(() => Text(
+                        controller.hasProfileImage() ? 'Picture set' : 'No picture',
+                        style: appTextStyle(fontSize: 13, color: Colors.grey[600]),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      )),
+                      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                      onTap: () {
+                        Get.back();
+                        _showEditProfilePictureDialog(context);
+                      },
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+                    ),
+                    
+                    // Espace en bas pour éviter le débordement
+                    SizedBox(height: MediaQuery.of(context).viewInsets.bottom + 20),
+                  ],
+                ),
+              ),
             ),
           ],
         ),
       ),
+      isScrollControlled: true, // Permet au bottom sheet d'être responsive
     );
   }
 
-  // Fonction pour changer le mot de passe
+  // Fonction pour changer le mot de passe améliorée
   void _showChangePassword(BuildContext context) {
+    final controller = profileController;
+    
     Get.bottomSheet(
       Container(
         padding: const EdgeInsets.all(20),
-        margin: const EdgeInsets.only(bottom: 80), // Marge pour éviter la barre de navigation
+        margin: const EdgeInsets.only(bottom: 80),
         decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(
@@ -736,43 +1012,107 @@ class SettingsScreenU extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              "Modifier le mot de passe",
-              style: appTextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: ColorRes.black,
-              ),
+            Row(
+              children: [
+                Icon(Icons.lock_reset, color: const Color(0xFF000647), size: 24),
+                const SizedBox(width: 8),
+                Text(
+                  "Change password",
+                  style: appTextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: ColorRes.black,
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 20),
-            Text(
-              "Un email avec les instructions sera envoyé à votre adresse",
-              textAlign: TextAlign.center,
-              style: appTextStyle(
-                fontSize: 14,
-                color: Colors.grey[600],
+            
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.blue[50],
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.blue[200]!),
+              ),
+              child: Column(
+                children: [
+                  Icon(Icons.email_outlined, color: Colors.blue[600], size: 32),
+                  const SizedBox(height: 12),
+                  Text(
+                    "Password Reset Email",
+                    style: appTextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.blue[800],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Obx(() => Text(
+                    "We'll send instructions to:\n${controller.email.value}",
+                    textAlign: TextAlign.center,
+                    style: appTextStyle(
+                      fontSize: 14,
+                      color: Colors.grey[700],
+                    ),
+                  )),
+                ],
               ),
             ),
+            
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Get.back();
-                _sendPasswordResetEmail();
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF000647),
-                minimumSize: const Size(double.infinity, 45),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+            
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () => Get.back(),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: Colors.grey[600],
+                      side: BorderSide(color: Colors.grey[400]!),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      minimumSize: const Size(0, 40),
+                    ),
+                    child: Text(
+                      "Cancel",
+                      style: appTextStyle(
+                        color: Colors.grey[600],
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-              child: Text(
-                "Envoyer les instructions",
-                style: appTextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
+                const SizedBox(width: 12),
+                Expanded(
+                  flex: 2,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Get.back();
+                      _sendPasswordResetEmail();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF000647),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      minimumSize: const Size(0, 40),
+                    ),
+                    child: Text(
+                      "Send Instructions",
+                      style: appTextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
           ],
         ),
@@ -780,8 +1120,10 @@ class SettingsScreenU extends StatelessWidget {
     );
   }
 
-  // Fonction pour supprimer le compte
+  // Fonction pour supprimer le compte améliorée
   void _showDeleteAccount(BuildContext context) {
+    final controller = profileController;
+    
     Get.dialog(
       AlertDialog(
         backgroundColor: Colors.white,
@@ -790,10 +1132,10 @@ class SettingsScreenU extends StatelessWidget {
         ),
         title: Row(
           children: [
-            Icon(Icons.warning, color: Colors.red[600], size: 24),
+            Icon(Icons.warning_amber_rounded, color: Colors.red[600], size: 28),
             const SizedBox(width: 8),
             Text(
-              'Supprimer le compte',
+              'Delete Account',
               style: appTextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 18,
@@ -804,32 +1146,70 @@ class SettingsScreenU extends StatelessWidget {
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.red[50],
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.red[200]!),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.info_outline, color: Colors.red[600], size: 20),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'This action is irreversible!',
+                      style: appTextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.red[600],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
             Text(
-              'Cette action est irréversible !',
+              'The following data will be permanently deleted:',
               style: appTextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: Colors.red[600],
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: ColorRes.black,
               ),
             ),
             const SizedBox(height: 8),
-            Text(
-              'Toutes vos données seront définitivement supprimées.',
-              style: appTextStyle(
-                fontSize: 14,
-                color: ColorRes.black.withOpacity(0.8),
+            _buildDeleteItem('• Your profile information'),
+            _buildDeleteItem('• Job applications history'),
+            _buildDeleteItem('• Saved jobs and preferences'),
+            _buildDeleteItem('• All account data and settings'),
+            const SizedBox(height: 12),
+            Obx(() => Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(6),
               ),
-            ),
+              child: Text(
+                'Account: ${controller.email.value}',
+                style: appTextStyle(
+                  fontSize: 12,
+                  color: Colors.grey[700],
+                ),
+              ),
+            )),
           ],
         ),
         actions: [
           TextButton(
             onPressed: () => Get.back(),
             child: Text(
-              'Annuler',
+              'Cancel',
               style: appTextStyle(
-                color: ColorRes.textSecondary,
+                color: Colors.grey[600],
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -840,16 +1220,19 @@ class SettingsScreenU extends StatelessWidget {
               _confirmDeleteAccount();
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
+              backgroundColor: Colors.red[600],
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              minimumSize: const Size(0, 36),
             ),
             child: Text(
-              'Supprimer',
+              'Continue to Delete',
               style: appTextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
+                fontSize: 14,
               ),
             ),
           ),
@@ -857,183 +1240,517 @@ class SettingsScreenU extends StatelessWidget {
       ),
     );
   }
+  
+  // Widget helper pour les éléments de suppression
+  Widget _buildDeleteItem(String text) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: Text(
+        text,
+        style: appTextStyle(
+          fontSize: 13,
+          color: Colors.grey[700],
+        ),
+      ),
+    );
+  }
 
-  // Fonction pour modifier le nom
+  // Fonction pour modifier le nom avec mise à jour temps réel
   void _showEditNameDialog(BuildContext context) {
+    final controller = profileController;
     final TextEditingController nameController = TextEditingController();
-    nameController.text = PreferencesService.getString(PrefKeys.fullName);
+    nameController.text = controller.fullName.value;
     
     Get.dialog(
       AlertDialog(
-        title: Text("Modifier le nom", style: appTextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-        content: TextField(
-          controller: nameController,
-          decoration: const InputDecoration(
-            labelText: "Nom complet",
-            border: OutlineInputBorder(),
-          ),
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        title: Row(
+          children: [
+            Icon(Icons.person, color: const Color(0xFF000647), size: 24),
+            const SizedBox(width: 8),
+            Text("Edit name", style: appTextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: nameController,
+              decoration: InputDecoration(
+                labelText: "Full name",
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(color: const Color(0xFF000647), width: 2),
+                ),
+              ),
+              textCapitalization: TextCapitalization.words,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              "This will update your name across the entire application",
+              style: appTextStyle(fontSize: 12, color: Colors.grey[600]),
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
         actions: [
           TextButton(
             onPressed: () => Get.back(),
-            child: Text("Annuler", style: appTextStyle(color: Colors.grey)),
+            child: Text("Cancel", style: appTextStyle(color: Colors.grey, fontSize: 14)),
           ),
-          ElevatedButton(
-            onPressed: () async {
+          Obx(() => ElevatedButton(
+            onPressed: controller.isLoading.value ? null : () async {
               final newName = nameController.text.trim();
-              if (newName.isNotEmpty) {
+              if (newName.isNotEmpty && newName != controller.fullName.value) {
                 try {
-                  // Sauvegarder localement
-                  PreferencesService.setValue(PrefKeys.fullName, newName);
+                  controller.isLoading.value = true;
                   
-                  // Sauvegarder dans Firestore
-                  final userId = PreferencesService.getString(PrefKeys.userId);
-                  if (userId.isNotEmpty) {
-                    await FirebaseFirestore.instance
-                        .collection("Auth")
-                        .doc("User")
-                        .collection("register")
-                        .doc(userId)
-                        .update({"fullName": newName});
-                  }
+                  // Mettre à jour le contrôleur - cela déclenchera la mise à jour temps réel
+                  controller.fullNameController.text = newName;
+                  
+                  // Sauvegarder dans Firestore avec le ProfileController
+                  await controller.onTapSubmit();
                   
                   Get.back();
+                  
                   Get.snackbar(
-                    "Succès",
-                    "Nom modifié et synchronisé avec succès",
+                    "Success",
+                    "Name updated successfully across the app!",
                     backgroundColor: const Color(0xFF000647),
                     colorText: Colors.white,
+                    duration: const Duration(seconds: 3),
                   );
                 } catch (e) {
                   Get.snackbar(
-                    "Erreur",
-                    "Erreur lors de la sauvegarde: $e",
+                    "Error",
+                    "Failed to update name: $e",
                     backgroundColor: Colors.red,
                     colorText: Colors.white,
                   );
+                } finally {
+                  controller.isLoading.value = false;
                 }
-              } else {
+              } else if (newName.isEmpty) {
                 Get.snackbar(
-                  "Erreur",
-                  "Le nom ne peut pas être vide",
+                  "Error",
+                  "Name cannot be empty",
                   backgroundColor: Colors.red,
                   colorText: Colors.white,
                 );
+              } else {
+                Get.back(); // Pas de changement, fermer le dialogue
               }
             },
-            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF000647)),
-            child: Text("Sauvegarder", style: appTextStyle(color: Colors.white)),
-          ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF000647),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              minimumSize: const Size(0, 36),
+            ),
+            child: controller.isLoading.value 
+                ? const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                  )
+                : Text("Save", style: appTextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14)),
+          )),
         ],
       ),
     );
   }
 
-  // Fonction pour modifier l'email
+  // Fonction pour modifier l'email avec mise à jour temps réel
   void _showEditEmailDialog(BuildContext context) {
+    final controller = profileController;
     final TextEditingController emailController = TextEditingController();
-    emailController.text = PreferencesService.getString(PrefKeys.email);
+    emailController.text = controller.email.value;
     
     Get.dialog(
       AlertDialog(
-        title: Text("Modifier l'email", style: appTextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-        content: TextField(
-          controller: emailController,
-          decoration: const InputDecoration(
-            labelText: "Adresse email",
-            border: OutlineInputBorder(),
-          ),
-          keyboardType: TextInputType.emailAddress,
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        title: Row(
+          children: [
+            Icon(Icons.email, color: const Color(0xFF000647), size: 24),
+            const SizedBox(width: 8),
+            Text("Edit email", style: appTextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: emailController,
+              decoration: InputDecoration(
+                labelText: "Email address",
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(color: const Color(0xFF000647), width: 2),
+                ),
+              ),
+              keyboardType: TextInputType.emailAddress,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              "This will update your email across the entire application",
+              style: appTextStyle(fontSize: 12, color: Colors.grey[600]),
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
         actions: [
           TextButton(
             onPressed: () => Get.back(),
-            child: Text("Annuler", style: appTextStyle(color: Colors.grey)),
+            child: Text("Cancel", style: appTextStyle(color: Colors.grey, fontSize: 14)),
           ),
-          ElevatedButton(
-            onPressed: () async {
+          Obx(() => ElevatedButton(
+            onPressed: controller.isLoading.value ? null : () async {
               final newEmail = emailController.text.trim();
-              if (newEmail.isNotEmpty && newEmail.contains('@')) {
+              if (newEmail.isNotEmpty && newEmail.contains('@') && newEmail != controller.email.value) {
                 try {
-                  // Sauvegarder localement
-                  PreferencesService.setValue(PrefKeys.email, newEmail);
+                  controller.isLoading.value = true;
                   
-                  // Sauvegarder dans Firestore
-                  final userId = PreferencesService.getString(PrefKeys.userId);
-                  if (userId.isNotEmpty) {
-                    await FirebaseFirestore.instance
-                        .collection("Auth")
-                        .doc("User")
-                        .collection("register")
-                        .doc(userId)
-                        .update({"email": newEmail});
-                  }
+                  // Mettre à jour le contrôleur - cela déclenchera la mise à jour temps réel
+                  controller.emailController.text = newEmail;
+                  
+                  // Sauvegarder dans Firestore avec le ProfileController
+                  await controller.onTapSubmit();
                   
                   Get.back();
+                  
                   Get.snackbar(
-                    "Succès",
-                    "Email modifié et synchronisé avec succès",
+                    "Success",
+                    "Email updated successfully across the app!",
                     backgroundColor: const Color(0xFF000647),
                     colorText: Colors.white,
+                    duration: const Duration(seconds: 3),
                   );
                 } catch (e) {
                   Get.snackbar(
-                    "Erreur",
-                    "Erreur lors de la sauvegarde: $e",
+                    "Error",
+                    "Failed to update email: $e",
                     backgroundColor: Colors.red,
                     colorText: Colors.white,
                   );
+                } finally {
+                  controller.isLoading.value = false;
                 }
-              } else {
+              } else if (newEmail.isEmpty || !newEmail.contains('@')) {
                 Get.snackbar(
-                  "Erreur",
-                  "Veuillez entrer un email valide",
+                  "Error",
+                  "Please enter a valid email address",
                   backgroundColor: Colors.red,
                   colorText: Colors.white,
                 );
+              } else {
+                Get.back(); // Pas de changement, fermer le dialogue
               }
             },
-            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF000647)),
-            child: Text("Sauvegarder", style: appTextStyle(color: Colors.white)),
-          ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF000647),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              minimumSize: const Size(0, 36),
+            ),
+            child: controller.isLoading.value 
+                ? const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                  )
+                : Text("Save", style: appTextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14)),
+          )),
         ],
       ),
     );
   }
+  
+  // Nouvelle fonction pour modifier le téléphone
+  void _showEditPhoneDialog(BuildContext context) {
+    final controller = profileController;
+    final TextEditingController phoneController = TextEditingController();
+    phoneController.text = controller.phoneNumber.value;
+    
+    Get.dialog(
+      AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        title: Row(
+          children: [
+            Icon(Icons.phone, color: const Color(0xFF000647), size: 24),
+            const SizedBox(width: 8),
+            Text("Edit phone", style: appTextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: phoneController,
+              decoration: InputDecoration(
+                labelText: "Phone number",
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(color: const Color(0xFF000647), width: 2),
+                ),
+              ),
+              keyboardType: TextInputType.phone,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              "This will update your phone number across the entire application",
+              style: appTextStyle(fontSize: 12, color: Colors.grey[600]),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(),
+            child: Text("Cancel", style: appTextStyle(color: Colors.grey, fontSize: 14)),
+          ),
+          Obx(() => ElevatedButton(
+            onPressed: controller.isLoading.value ? null : () async {
+              final newPhone = phoneController.text.trim();
+              if (newPhone != controller.phoneNumber.value) {
+                try {
+                  controller.isLoading.value = true;
+                  
+                  // Mettre à jour le contrôleur - cela déclenchera la mise à jour temps réel
+                  controller.phoneController.text = newPhone;
+                  
+                  // Sauvegarder dans Firestore avec le ProfileController
+                  await controller.onTapSubmit();
+                  
+                  Get.back();
+                  
+                  Get.snackbar(
+                    "Success",
+                    "Phone number updated successfully across the app!",
+                    backgroundColor: const Color(0xFF000647),
+                    colorText: Colors.white,
+                    duration: const Duration(seconds: 3),
+                  );
+                } catch (e) {
+                  Get.snackbar(
+                    "Error",
+                    "Failed to update phone number: $e",
+                    backgroundColor: Colors.red,
+                    colorText: Colors.white,
+                  );
+                } finally {
+                  controller.isLoading.value = false;
+                }
+              } else {
+                Get.back(); // Pas de changement, fermer le dialogue
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF000647),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              minimumSize: const Size(0, 36),
+            ),
+            child: controller.isLoading.value 
+                ? const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                  )
+                : Text("Save", style: appTextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14)),
+          )),
+        ],
+      ),
+    );
+  }
+  
+  // Nouvelle fonction pour la photo de profil
+  void _showEditProfilePictureDialog(BuildContext context) {
+    final controller = profileController;
+    
+    Get.bottomSheet(
+      Container(
+        padding: const EdgeInsets.all(20),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.photo_camera, color: const Color(0xFF000647), size: 24),
+                const SizedBox(width: 8),
+                Text(
+                  "Profile Picture",
+                  style: appTextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: ColorRes.black,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            
+            ListTile(
+              leading: const Icon(Icons.camera_alt, color: Color(0xFF000647)),
+              title: Text("Take a photo", style: appTextStyle(fontSize: 16, color: ColorRes.black)),
+              onTap: () async {
+                Get.back();
+                await controller.onTapImage();
+              },
+            ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.photo_library, color: Color(0xFF000647)),
+              title: Text("Choose from gallery", style: appTextStyle(fontSize: 16, color: ColorRes.black)),
+              onTap: () async {
+                Get.back();
+                await controller.onTapGallery1();
+              },
+            ),
+            if (controller.hasProfileImage()) ...[
+              const Divider(),
+              ListTile(
+                leading: Icon(Icons.delete, color: Colors.red[600]),
+                title: Text("Remove photo", style: appTextStyle(fontSize: 16, color: Colors.red[600])),
+                onTap: () {
+                  Get.back();
+                  controller.profileImageUrl.value = '';
+                  controller.onTapSubmit();
+                  Get.snackbar(
+                    "Success",
+                    "Profile picture removed",
+                    backgroundColor: const Color(0xFF000647),
+                    colorText: Colors.white,
+                  );
+                },
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
 
-  // Fonction pour envoyer l'email de réinitialisation
-  void _sendPasswordResetEmail() {
-    final email = PreferencesService.getString(PrefKeys.email);
+  // Fonction pour envoyer l'email de réinitialisation améliorée
+  void _sendPasswordResetEmail() async {
+    final controller = profileController;
+    final email = controller.email.value;
+    
     if (email.isNotEmpty) {
-      // Utiliser Firebase pour envoyer l'email de réinitialisation
-      FirebaseAuth.instance.sendPasswordResetEmail(email: email).then((_) {
+      try {
+        // Utiliser l'AuthService pour envoyer l'email de réinitialisation
+        final success = await authService.resetPassword(email);
+        
+        if (success) {
+          Get.dialog(
+            AlertDialog(
+              backgroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.mark_email_read, color: Colors.green[600], size: 48),
+                  const SizedBox(height: 16),
+                  Text(
+                    "Email Sent!",
+                    style: appTextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.green[600],
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    "A password reset link has been sent to:",
+                    style: appTextStyle(fontSize: 14, color: Colors.grey[600]),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[100],
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      email,
+                      style: appTextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: const Color(0xFF000647),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    "Please check your inbox and follow the instructions to reset your password.",
+                    style: appTextStyle(fontSize: 12, color: Colors.grey[600]),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+              actions: [
+                ElevatedButton(
+                  onPressed: () => Get.back(),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF000647),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: Text(
+                    "Got it!",
+                    style: appTextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+      } catch (error) {
         Get.snackbar(
-          "Email envoyé",
-          "Un lien de réinitialisation a été envoyé à $email",
-          backgroundColor: const Color(0xFF000647),
+          "Error",
+          "Failed to send password reset email: $error",
+          backgroundColor: Colors.red,
           colorText: Colors.white,
           duration: const Duration(seconds: 4),
         );
-      }).catchError((error) {
-        Get.snackbar(
-          "Erreur",
-          "Erreur lors de l'envoi de l'email: $error",
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
-      });
+      }
     } else {
       Get.snackbar(
-        "Erreur",
-        "Aucun email trouvé dans le profil",
+        "Error",
+        "No email address found in your profile",
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
     }
   }
 
-  // Fonction pour confirmer la suppression du compte
+  // Fonction pour confirmer la suppression du compte améliorée
   void _confirmDeleteAccount() async {
+    final controller = profileController;
+    final TextEditingController confirmController = TextEditingController();
+    final RxBool canDelete = false.obs;
+    
+    confirmController.addListener(() {
+      canDelete.value = confirmController.text.trim().toUpperCase() == 'DELETE';
+    });
+    
     final confirmed = await Get.dialog<bool>(
       AlertDialog(
         backgroundColor: Colors.white,
@@ -1042,40 +1759,80 @@ class SettingsScreenU extends StatelessWidget {
         ),
         title: Row(
           children: [
-            Icon(Icons.warning, color: Colors.red[600], size: 24),
+            Icon(Icons.dangerous, color: Colors.red[700], size: 28),
             const SizedBox(width: 8),
             Text(
-              'Confirmer la suppression',
+              'Final Confirmation',
               style: appTextStyle(
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w700,
                 fontSize: 18,
-                color: Colors.red[600],
+                color: Colors.red[700],
               ),
             ),
           ],
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.red[50],
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.red[300]!, width: 2),
+              ),
+              child: Column(
+                children: [
+                  Icon(Icons.warning_amber_rounded, color: Colors.red[700], size: 32),
+                  const SizedBox(height: 8),
+                  Text(
+                    'LAST WARNING',
+                    style: appTextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.red[700],
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'This action cannot be undone!',
+                    style: appTextStyle(
+                      fontSize: 12,
+                      color: Colors.red[600],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
             Text(
-              'Êtes-vous absolument sûr ?',
+              'You are about to permanently delete:',
               style: appTextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: Colors.red[600],
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: ColorRes.black,
               ),
             ),
             const SizedBox(height: 8),
-            Text(
-              'Cette action supprimera définitivement votre compte et toutes vos données. Cette action est irréversible.',
-              style: appTextStyle(
-                fontSize: 14,
-                color: ColorRes.black.withOpacity(0.8),
+            Obx(() => Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(6),
+                border: Border.all(color: Colors.grey[300]!),
               ),
-            ),
-            const SizedBox(height: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Account: ${controller.email.value}', style: appTextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+                  Text('Name: ${controller.fullName.value}', style: appTextStyle(fontSize: 12)),
+                ],
+              ),
+            )),
+            const SizedBox(height: 16),
             Text(
-              'Tapez "SUPPRIMER" pour confirmer :',
+              'Type "DELETE" to confirm (case sensitive):',
               style: appTextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
@@ -1084,13 +1841,23 @@ class SettingsScreenU extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             TextField(
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: "Tapez SUPPRIMER",
+              controller: confirmController,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide(color: Colors.red[600]!, width: 2),
+                ),
+                hintText: "Type DELETE here",
+                hintStyle: appTextStyle(color: Colors.grey[500]),
               ),
-              onChanged: (value) {
-                // Store the value for validation
-              },
+              style: appTextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.red[600],
+              ),
             ),
           ],
         ),
@@ -1098,41 +1865,162 @@ class SettingsScreenU extends StatelessWidget {
           TextButton(
             onPressed: () => Get.back(result: false),
             child: Text(
-              'Annuler',
+              'Cancel',
               style: appTextStyle(
-                color: ColorRes.textSecondary,
+                color: Colors.grey[600],
                 fontWeight: FontWeight.w500,
               ),
             ),
           ),
-          ElevatedButton(
-            onPressed: () {
-              // Pour l'instant, on simule
-              Get.back(result: false);
-              Get.snackbar(
-                "Information",
-                "Pour votre sécurité, contactez le support pour supprimer votre compte",
-                backgroundColor: Colors.orange,
-                colorText: Colors.white,
-                duration: const Duration(seconds: 4),
-              );
-            },
+          Obx(() => ElevatedButton(
+            onPressed: canDelete.value ? () {
+              Get.back(result: true);
+            } : null,
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
+              backgroundColor: canDelete.value ? Colors.red[700] : Colors.grey[400],
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
             child: Text(
-              'Supprimer définitivement',
+              'Delete Forever',
               style: appTextStyle(
                 color: Colors.white,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w700,
               ),
             ),
-          ),
+          )),
         ],
       ),
     );
+    
+    if (confirmed == true) {
+      await _performAccountDeletion();
+    }
+  }
+  
+  // Fonction pour effectuer la suppression du compte
+  Future<void> _performAccountDeletion() async {
+    final controller = profileController;
+    
+    try {
+      // Afficher un dialogue de progression
+      Get.dialog(
+        AlertDialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const CircularProgressIndicator(color: Color(0xFF000647)),
+              const SizedBox(height: 16),
+              Text(
+                'Deleting account...',
+                style: appTextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Please wait while we remove your data',
+                style: appTextStyle(
+                  fontSize: 12,
+                  color: Colors.grey[600],
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+        barrierDismissible: false,
+      );
+      
+      // Supprimer le profil de Firestore
+      await controller.clearProfileData();
+      
+      // Supprimer le compte utilisateur Firebase
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        await user.delete();
+      }
+      
+      // Déconnecter Google si nécessaire
+      await GoogleAuthService.signOut();
+      
+      // Nettoyer les préférences locales
+      await _clearAllPreferences();
+      
+      // Fermer le dialogue de progression
+      Get.back();
+      
+      // Afficher confirmation et rediriger
+      Get.dialog(
+        AlertDialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.check_circle_outline, color: Colors.green[600], size: 48),
+              const SizedBox(height: 16),
+              Text(
+                'Account Deleted',
+                style: appTextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.green[600],
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Your account has been permanently deleted. Thank you for using Timeless.',
+                style: appTextStyle(
+                  fontSize: 14,
+                  color: Colors.grey[700],
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Get.back();
+                Get.offAllNamed('/');
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF000647),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: Text(
+                'Continue',
+                style: appTextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+        barrierDismissible: false,
+      );
+      
+    } catch (e) {
+      // Fermer le dialogue de progression si ouvert
+      if (Get.isDialogOpen ?? false) {
+        Get.back();
+      }
+      
+      Get.snackbar(
+        "Deletion Error",
+        "Failed to delete account: $e\n\nPlease contact support for assistance.",
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 6),
+      );
+    }
   }
 }

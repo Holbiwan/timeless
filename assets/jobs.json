@@ -1,92 +1,235 @@
-[
-  {
-    "title": "Flutter Developer",
-    "company": "Timeless",
-    "location": "Paris, France",
-    "description": "Develop cross-platform mobile applications with Flutter and Firebase for a school demo project.",
-    "createdAt": {
-      ".sv": "timestamp"
-    }
-  },
-  {
-    "title": "Frontend Engineer (React)",
-    "company": "TechHive",
-    "location": "Berlin, Germany",
-    "description": "Build modern and responsive user interfaces with React.js, focusing on speed and user experience.",
-    "createdAt": {
-      ".sv": "timestamp"
-    }
-  },
-  {
-    "title": "Backend Developer (Node.js)",
-    "company": "CodeWorks",
-    "location": "Amsterdam, Netherlands",
-    "description": "Design and maintain scalable APIs and services using Node.js and Express, connected to MongoDB.",
-    "createdAt": {
-      ".sv": "timestamp"
-    }
-  },
-  {
-    "title": "UI/UX Designer",
-    "company": "DesignFlow",
-    "location": "Barcelona, Spain",
-    "description": "Create clean and user-friendly interfaces, wireframes, and prototypes for mobile and web platforms.",
-    "createdAt": {
-      ".sv": "timestamp"
-    }
-  },
-  {
-    "title": "Data Analyst",
-    "company": "DataVision",
-    "location": "Lisbon, Portugal",
-    "description": "Analyze datasets, prepare reports, and provide insights to support data-driven decisions.",
-    "createdAt": {
-      ".sv": "timestamp"
-    }
-  },
-  {
-    "title": "Cloud Engineer (AWS/GCP)",
-    "company": "CloudBridge",
-    "location": "Dublin, Ireland",
-    "description": "Deploy and manage cloud infrastructure, focusing on scalability, security, and cost optimization.",
-    "createdAt": {
-      ".sv": "timestamp"
-    }
-  },
-  {
-    "title": "Cybersecurity Specialist",
-    "company": "SecureNet",
-    "location": "Warsaw, Poland",
-    "description": "Implement security measures, monitor systems, and protect sensitive data against cyber threats.",
-    "createdAt": {
-      ".sv": "timestamp"
-    }
-  },
-  {
-    "title": "AI/ML Engineer",
-    "company": "DeepTech",
-    "location": "Zurich, Switzerland",
-    "description": "Develop machine learning models, optimize algorithms, and work with large datasets for predictions.",
-    "createdAt": {
-      ".sv": "timestamp"
-    }
-  },
-  {
-    "title": "Product Manager (Digital Platforms)",
-    "company": "NextGen Apps",
-    "location": "Stockholm, Sweden",
-    "description": "Coordinate between tech and business teams to deliver high-quality digital products.",
-    "createdAt": {
-      ".sv": "timestamp"
-    }
-  },
-  {
-    "title": "Full Stack Developer",
-    "company": "InnoDev",
-    "location": "Copenhagen, Denmark",
-    "description": "Work on both frontend and backend systems, from React to Node.js, delivering end-to-end features.",
-    "createdAt": {
-      ".sv": "timestamp"
+{
+  "jobs": {
+    "ux_ui_1": {
+      "Position": "UX/UI Designer",
+      "CompanyName": "CreativeStudio",
+      "location": "Paris",
+      "description": "Design intuitive interfaces and improve user journeys for mobile and web platforms.",
+      "salary": "45000-55000",
+      "jobType": "CDI",
+      "category": "UX/UI",
+      "applicationsCount": 0,
+      "logoUrl": "https://i.imgur.com/czQq7xP.png",
+      "createdAt": { ".sv": "timestamp" }
+    },
+    "ux_ui_2": {
+      "Position": "Senior Product Designer",
+      "CompanyName": "VisionLabs",
+      "location": "Lyon",
+      "description": "Lead design strategy, create impactful experiences, and collaborate with product teams.",
+      "salary": "60000-70000",
+      "jobType": "CDI",
+      "category": "UX/UI",
+      "applicationsCount": 0,
+      "logoUrl": "https://i.imgur.com/F4K2hQJ.png",
+      "createdAt": { ".sv": "timestamp" }
+    },
+    "ux_ui_3": {
+      "Position": "UI Designer",
+      "CompanyName": "PixelForge",
+      "location": "Remote",
+      "description": "Craft clean, modern UI components and contribute to a scalable design system.",
+      "salary": "40000-50000",
+      "jobType": "Full Remote",
+      "category": "UX/UI",
+      "applicationsCount": 0,
+      "logoUrl": "https://i.imgur.com/7kUxVWq.png",
+      "createdAt": { ".sv": "timestamp" }
+    },
+
+    "data_1": {
+      "Position": "Data Analyst",
+      "CompanyName": "DataMind",
+      "location": "Marseille",
+      "description": "Analyze datasets and deliver insights to support data-driven business decisions.",
+      "salary": "45000-55000",
+      "jobType": "CDI",
+      "category": "Data",
+      "applicationsCount": 0,
+      "logoUrl": "https://i.imgur.com/UzPSjhc.png",
+      "createdAt": { ".sv": "timestamp" }
+    },
+    "data_2": {
+      "Position": "Machine Learning Engineer",
+      "CompanyName": "AlgoTech",
+      "location": "Paris",
+      "description": "Build and deploy ML models to enhance product performance and automation.",
+      "salary": "60000-75000",
+      "jobType": "CDI",
+      "category": "Data",
+      "applicationsCount": 0,
+      "logoUrl": "https://i.imgur.com/VdQDc5T.png",
+      "createdAt": { ".sv": "timestamp" }
+    },
+    "data_3": {
+      "Position": "Data Scientist",
+      "CompanyName": "DeepInsights",
+      "location": "Lille",
+      "description": "Develop predictive models and contribute to AI initiatives across the company.",
+      "salary": "55000-70000",
+      "jobType": "CDI",
+      "category": "Data",
+      "applicationsCount": 0,
+      "logoUrl": "https://i.imgur.com/iMMm9cL.png",
+      "createdAt": { ".sv": "timestamp" }
+    },
+
+    "security_1": {
+      "Position": "Cybersecurity Analyst",
+      "CompanyName": "SecureWave",
+      "location": "Toulouse",
+      "description": "Monitor systems, detect vulnerabilities, and improve overall security posture.",
+      "salary": "50000-60000",
+      "jobType": "CDI",
+      "category": "Security",
+      "applicationsCount": 0,
+      "logoUrl": "https://i.imgur.com/GgB1PNp.png",
+      "createdAt": { ".sv": "timestamp" }
+    },
+    "security_2": {
+      "Position": "Security Engineer",
+      "CompanyName": "CyberTrust",
+      "location": "Remote",
+      "description": "Implement security solutions and ensure compliance across cloud infrastructures.",
+      "salary": "65000-80000",
+      "jobType": "Full Remote",
+      "category": "Security",
+      "applicationsCount": 0,
+      "logoUrl": "https://i.imgur.com/TSz5NQH.png",
+      "createdAt": { ".sv": "timestamp" }
+    },
+    "security_3": {
+      "Position": "SOC Analyst",
+      "CompanyName": "ShieldOps",
+      "location": "Nice",
+      "description": "Analyze incidents, respond to threats, and collaborate with the SOC team 24/7.",
+      "salary": "48000-58000",
+      "jobType": "CDI",
+      "category": "Security",
+      "applicationsCount": 0,
+      "logoUrl": "https://i.imgur.com/bCcGpKU.png",
+      "createdAt": { ".sv": "timestamp" }
+    },
+
+    "flutter_dev_1": {
+      "Position": "Flutter Developer",
+      "CompanyName": "Timeless",
+      "location": "Paris, France",
+      "description": "Develop cross-platform mobile applications with Flutter and Firebase for a school demo project.",
+      "salary": "45000-55000",
+      "jobType": "CDD",
+      "category": "Development",
+      "applicationsCount": 0,
+      "logoUrl": "https://i.imgur.com/1PIyJ7Z.png",
+      "createdAt": { ".sv": "timestamp" }
+    },
+    "frontend_1": {
+      "Position": "Frontend Engineer (React)",
+      "CompanyName": "TechHive",
+      "location": "Berlin, Germany",
+      "description": "Build modern and responsive user interfaces with React.js, focusing on speed and user experience.",
+      "salary": "55000-65000",
+      "jobType": "CDI",
+      "category": "Development",
+      "applicationsCount": 0,
+      "logoUrl": "https://i.imgur.com/dOy4V99.png",
+      "createdAt": { ".sv": "timestamp" }
+    },
+    "backend_1": {
+      "Position": "Backend Developer (Node.js)",
+      "CompanyName": "CodeWorks",
+      "location": "Amsterdam, Netherlands",
+      "description": "Design and maintain scalable APIs and services using Node.js and Express, connected to MongoDB.",
+      "salary": "50000-60000",
+      "jobType": "CDI",
+      "category": "Development",
+      "applicationsCount": 0,
+      "logoUrl": "https://i.imgur.com/6AEDBeY.png",
+      "createdAt": { ".sv": "timestamp" }
+    },
+    "ux_1": {
+      "Position": "UI/UX Designer",
+      "CompanyName": "DesignFlow",
+      "location": "Barcelona, Spain",
+      "description": "Create clean and user-friendly interfaces, wireframes, and prototypes for mobile and web platforms.",
+      "salary": "42000-52000",
+      "jobType": "CDI",
+      "category": "UX/UI",
+      "applicationsCount": 0,
+      "logoUrl": "https://i.imgur.com/rt17nQV.png",
+      "createdAt": { ".sv": "timestamp" }
+    },
+    "data_4": {
+      "Position": "Data Analyst",
+      "CompanyName": "DataVision",
+      "location": "Lisbon, Portugal",
+      "description": "Analyze datasets, prepare reports, and provide insights to support data-driven decisions.",
+      "salary": "45000-55000",
+      "jobType": "CDI",
+      "category": "Data",
+      "applicationsCount": 0,
+      "logoUrl": "https://i.imgur.com/0TeHTxE.png",
+      "createdAt": { ".sv": "timestamp" }
+    },
+    "cloud_1": {
+      "Position": "Cloud Engineer (AWS/GCP)",
+      "CompanyName": "CloudBridge",
+      "location": "Dublin, Ireland",
+      "description": "Deploy and manage cloud infrastructure, focusing on scalability, security, and cost optimization.",
+      "salary": "60000-80000",
+      "jobType": "CDI",
+      "category": "Cloud",
+      "applicationsCount": 0,
+      "logoUrl": "https://i.imgur.com/XJL2mO8.png",
+      "createdAt": { ".sv": "timestamp" }
+    },
+    "security_4": {
+      "Position": "Cybersecurity Specialist",
+      "CompanyName": "SecureNet",
+      "location": "Warsaw, Poland",
+      "description": "Implement security measures, monitor systems, and protect sensitive data against cyber threats.",
+      "salary": "55000-68000",
+      "jobType": "CDI",
+      "category": "Security",
+      "applicationsCount": 0,
+      "logoUrl": "https://i.imgur.com/4QtBCV7.png",
+      "createdAt": { ".sv": "timestamp" }
+    },
+    "ai_1": {
+      "Position": "AI/ML Engineer",
+      "CompanyName": "DeepTech",
+      "location": "Zurich, Switzerland",
+      "description": "Develop machine learning models, optimize algorithms, and work with large datasets for predictions.",
+      "salary": "70000-90000",
+      "jobType": "CDI",
+      "category": "AI",
+      "applicationsCount": 0,
+      "logoUrl": "https://i.imgur.com/BLq03ef.png",
+      "createdAt": { ".sv": "timestamp" }
+    },
+    "pm_1": {
+      "Position": "Product Manager (Digital Platforms)",
+      "CompanyName": "NextGen Apps",
+      "location": "Stockholm, Sweden",
+      "description": "Coordinate between tech and business teams to deliver high-quality digital products.",
+      "salary": "65000-78000",
+      "jobType": "CDI",
+      "category": "Product",
+      "applicationsCount": 0,
+      "logoUrl": "https://i.imgur.com/IfmG8AH.png",
+      "createdAt": { ".sv": "timestamp" }
+    },
+    "fullstack_1": {
+      "Position": "Full Stack Developer",
+      "CompanyName": "InnoDev",
+      "location": "Copenhagen, Denmark",
+      "description": "Work on both frontend and backend systems, from React to Node.js, delivering end-to-end features.",
+      "salary": "60000-75000",
+      "jobType": "CDI",
+      "category": "Development",
+      "applicationsCount": 0,
+      "logoUrl": "https://i.imgur.com/8tCpyxZ.png",
+      "createdAt": { ".sv": "timestamp" }
     }
   }
-]
+}

@@ -1,8 +1,10 @@
 // lib/common/widgets/modern_language_selector.dart
+// ignore_for_file: deprecated_member_use, duplicate_ignore
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:timeless/utils/app_theme.dart';
-import 'package:timeless/services/comprehensive_translation_service.dart';
+import 'package:timeless/services/unified_translation_service.dart';
 import 'package:timeless/services/accessibility_service.dart';
 
 class ModernLanguageSelector extends StatelessWidget {
@@ -19,7 +21,7 @@ class ModernLanguageSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ComprehensiveTranslationService translationService = Get.find<ComprehensiveTranslationService>();
+    final UnifiedTranslationService translationService = Get.find<UnifiedTranslationService>();
     final AccessibilityService accessibilityService = Get.find<AccessibilityService>();
 
     return Obx(() => GestureDetector(
@@ -32,7 +34,7 @@ class ModernLanguageSelector extends StatelessWidget {
     ));
   }
 
-  Widget _buildCompactSelector(ComprehensiveTranslationService translationService, AccessibilityService accessibilityService) {
+  Widget _buildCompactSelector(UnifiedTranslationService translationService, AccessibilityService accessibilityService) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
@@ -44,6 +46,7 @@ class ModernLanguageSelector extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
+            // ignore: deprecated_member_use
             color: Colors.black.withOpacity(0.1),
             blurRadius: 4,
             offset: const Offset(0, 2),
@@ -77,7 +80,7 @@ class ModernLanguageSelector extends StatelessWidget {
     );
   }
 
-  Widget _buildFullSelector(ComprehensiveTranslationService translationService, AccessibilityService accessibilityService) {
+  Widget _buildFullSelector(UnifiedTranslationService translationService, AccessibilityService accessibilityService) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
@@ -115,7 +118,7 @@ class ModernLanguageSelector extends StatelessWidget {
   }
 
   void _showLanguageSelection(BuildContext context) {
-    final ComprehensiveTranslationService translationService = Get.find<ComprehensiveTranslationService>();
+    final UnifiedTranslationService translationService = Get.find<UnifiedTranslationService>();
     final AccessibilityService accessibilityService = Get.find<AccessibilityService>();
 
     showModalBottomSheet(
@@ -226,7 +229,7 @@ class ModernLanguageSelector extends StatelessWidget {
     );
   }
 
-  Widget _buildAutoTranslateToggle(ComprehensiveTranslationService translationService, AccessibilityService accessibilityService) {
+  Widget _buildAutoTranslateToggle(UnifiedTranslationService translationService, AccessibilityService accessibilityService) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -284,7 +287,7 @@ class ModernLanguageSelector extends StatelessWidget {
     String languageName,
     String flag,
     bool isSelected,
-    ComprehensiveTranslationService translationService,
+    UnifiedTranslationService translationService,
     AccessibilityService accessibilityService,
   ) {
     return GestureDetector(
@@ -381,7 +384,7 @@ class FloatingLanguageSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ComprehensiveTranslationService translationService = Get.find<ComprehensiveTranslationService>();
+    final UnifiedTranslationService translationService = Get.find<UnifiedTranslationService>();
 
     return Positioned(
       top: MediaQuery.of(context).padding.top + 16,
@@ -403,7 +406,7 @@ class FloatingLanguageSelector extends StatelessWidget {
   }
 
   void _showQuickLanguageSwitch(BuildContext context) {
-    final ComprehensiveTranslationService translationService = Get.find<ComprehensiveTranslationService>();
-    translationService.toggleMainLanguages();
+    final UnifiedTranslationService translationService = Get.find<UnifiedTranslationService>();
+    translationService.toggleLanguage();
   }
 }

@@ -111,17 +111,7 @@ class ProfileCompletionController extends GetxController {
         'createdAt': FieldValue.serverTimestamp(),
         'updatedAt': FieldValue.serverTimestamp(),
         
-        // Préférences par défaut
-        'jobPreferences': {
-          'categories': [],
-          'workType': ['remote', 'hybrid', 'onsite'],
-          'contractType': ['fulltime'],
-          'salaryRange': {
-            'min': null,
-            'max': null,
-            'currency': 'EUR'
-          }
-        },
+        // jobPreferences removed
         
         // Activité
         'savedJobs': [],

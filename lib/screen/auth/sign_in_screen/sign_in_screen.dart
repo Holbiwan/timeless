@@ -9,7 +9,7 @@ import 'package:timeless/common/widgets/back_button.dart';
 import 'package:timeless/common/widgets/common_loader.dart';
 import 'package:timeless/common/widgets/common_text_field.dart';
 
-import 'package:timeless/screen/auth/forgot_password_new/forgot_password_new_screen.dart';
+import 'package:timeless/screen/auth/forgot_password/forgot_password_screen.dart';
 import 'package:timeless/screen/auth/sign_in_screen/sign_in_controller.dart';
 import 'package:timeless/screen/auth/sign_up/sign_up_screen.dart';
 
@@ -119,7 +119,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
       // Utilisateur existant
       AppTheme.showStandardSnackBar(
         title: "Bon retour !",
-        message: "Connexion réussie.",
+        message: "Login successful.",
         isSuccess: true,
       );
       Get.offAll(() => DashBoardScreen());
@@ -404,18 +404,14 @@ class _SigninScreenUState extends State<SigninScreenU> {
                         builder: (_) => InkWell(
                           onTap: () {
                             controller.rememberMe = !controller.rememberMe;
-                            if (controller.rememberMe) {
-                              PreferencesService.setValue(
-                                PrefKeys.emailRememberUser,
-                                controller.emailController.text,
-                              );
-                              PreferencesService.setValue(
-                                PrefKeys.passwordRememberUser,
-                                controller.passwordController.text,
-                              );
-                            } else {
+                            if (!controller.rememberMe) {
+                              // Si on désactive Remember Me, supprimer les données sauvegardées
                               PreferencesService.remove(PrefKeys.emailRememberUser);
                               PreferencesService.remove(PrefKeys.passwordRememberUser);
+                              // Et vider les champs pour permettre à l'utilisateur de saisir de nouvelles données
+                              controller.emailController.clear();
+                              controller.passwordController.clear();
+                              controller.update(["showEmail", "showPassword"]);
                             }
                             controller.update(["remember_me"]);
                           },
@@ -492,7 +488,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                           onTap: () => Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (_) => ForgotPasswordScreenU()),
+                                builder: (_) => ForgotPasswordScreen()),
                           ),
                           child: Text(
                             Strings.forgotThePassword,

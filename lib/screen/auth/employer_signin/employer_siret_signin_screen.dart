@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:timeless/common/widgets/universal_back_fab.dart';
 import 'package:timeless/common/widgets/common_loader.dart';
-import 'package:timeless/services/translation_service.dart';
+import 'package:timeless/services/unified_translation_service.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/app_theme.dart';
 import 'package:timeless/utils/asset_res.dart';
@@ -19,7 +19,7 @@ class EmployerSiretSignInScreen extends StatefulWidget {
 
 class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
   final TextEditingController siretController = TextEditingController();
-  final TranslationService translationService = TranslationService.instance;
+  final UnifiedTranslationService translationService = UnifiedTranslationService.instance;
   bool isLoading = false;
 
   @override

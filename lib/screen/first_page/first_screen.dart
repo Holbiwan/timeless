@@ -10,7 +10,7 @@ import 'package:timeless/screen/auth/employer_signin/employer_signin_screen.dart
 import 'package:timeless/screen/first_page/first_controller.dart';
 import 'package:timeless/screen/accessibility/accessibility_panel.dart';
 import 'package:timeless/screen/dashboard/home/tipsforyou_screen.dart';
-import 'package:timeless/services/translation_service.dart';
+import 'package:timeless/services/unified_translation_service.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -18,7 +18,7 @@ class FirstScreen extends StatelessWidget {
   FirstScreen({super.key});
 
   final FirstScreenController controller = Get.put(FirstScreenController());
-  final TranslationService translationService = TranslationService.instance;
+  final UnifiedTranslationService translationService = UnifiedTranslationService.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -66,43 +66,13 @@ class FirstScreen extends StatelessWidget {
                 // "L'app pratique pour la recherche d'emploi" text
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: RichText(
+                  child: Text(
+                    "The practical app for job searching",
                     textAlign: TextAlign.center,
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: "L'app ",
-                          style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14,
-                            color: ColorRes.textSecondary,
-                          ),
-                        ),
-                        TextSpan(
-                          text: "pratique",
-                          style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.w700,
-                            fontSize: 14,
-                            color: const Color(0xFF000647),
-                          ),
-                        ),
-                        TextSpan(
-                          text: " pour la ",
-                          style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14,
-                            color: ColorRes.textSecondary,
-                          ),
-                        ),
-                        TextSpan(
-                          text: "recherche d'emploi",
-                          style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.w700,
-                            fontSize: 14,
-                            color: const Color(0xFF000647),
-                          ),
-                        ),
-                      ],
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                      color: ColorRes.textSecondary,
                     ),
                   ),
                 ),
@@ -131,7 +101,7 @@ class FirstScreen extends StatelessWidget {
                       color: Colors.white,
                     ),
                     child: Text(
-                          "Connexion en tant que candidat",
+                          "Sign in as candidate",
                           style: GoogleFonts.poppins(
                             fontWeight: FontWeight.w500,
                             fontSize: 14,
@@ -165,7 +135,7 @@ class FirstScreen extends StatelessWidget {
                           color: const Color(0xFF000647), width: 2.0),
                     ),
                     child: Text(
-                          "Créer un compte candidat",
+                          "Create candidate account",
                           style: GoogleFonts.poppins(
                             fontWeight: FontWeight.w500,
                             fontSize: 14,
@@ -210,7 +180,7 @@ class FirstScreen extends StatelessWidget {
                       children: [
                         Flexible(
                           child: Obx(() => Text(
-                                translationService.getText('sign_in_as'),
+                                translationService.getText('sign in as'),
                                 style: GoogleFonts.poppins(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500,
@@ -417,7 +387,7 @@ class GuestJobBrowser extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TranslationService translationService = TranslationService.instance;
+    final UnifiedTranslationService translationService = UnifiedTranslationService.instance;
 
     return Scaffold(
       backgroundColor: ColorRes.backgroundColor,
@@ -657,7 +627,7 @@ class GuestJobListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TranslationService translationService = TranslationService.instance;
+    final UnifiedTranslationService translationService = UnifiedTranslationService.instance;
 
     return Scaffold(
       backgroundColor: ColorRes.backgroundColor,
@@ -687,7 +657,7 @@ class GuestJobListScreen extends StatelessWidget {
   }
 
   Widget _buildJobCard(BuildContext context, Map<String, dynamic> job,
-      String docId, TranslationService translationService) {
+      String docId, UnifiedTranslationService translationService) {
     return Container(
       margin: const EdgeInsets.only(bottom: 15),
       padding: const EdgeInsets.all(20),
@@ -825,7 +795,7 @@ class GuestJobListScreen extends StatelessWidget {
   }
 
   void _showAuthenticationDialog(
-      BuildContext context, TranslationService translationService) {
+      BuildContext context, UnifiedTranslationService translationService) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -930,7 +900,7 @@ class GuestJobListScreen extends StatelessWidget {
       'Position': 'Flutter Developer',
       'companyName': 'TechCorp',
       'requirement':
-          'Développer des applications mobiles cross-platform avec Flutter. Expérience de 2+ ans requise.',
+          'Develop cross-platform mobile applications with Flutter. 2+ years of experience required.',
       'salary': '45 000€ - 55 000€',
       'location': 'Paris',
     },
@@ -938,7 +908,7 @@ class GuestJobListScreen extends StatelessWidget {
       'Position': 'UI/UX Designer',
       'companyName': 'DesignStudio',
       'requirement':
-          'Créer des interfaces utilisateur modernes et intuitives. Portfolio requis.',
+          'Create modern and intuitive user interfaces. Portfolio required.',
       'salary': '40 000€ - 50 000€',
       'location': 'Lyon',
     },
@@ -946,7 +916,7 @@ class GuestJobListScreen extends StatelessWidget {
       'Position': 'Data Scientist',
       'companyName': 'DataFlow',
       'requirement':
-          'Analyser des données complexes et créer des modèles prédictifs. Python/R requis.',
+          'Analyze complex data and create predictive models. Python/R required.',
       'salary': '50 000€ - 65 000€',
       'location': 'Remote',
     },
@@ -954,7 +924,7 @@ class GuestJobListScreen extends StatelessWidget {
       'Position': 'Product Manager',
       'companyName': 'StartupXYZ',
       'requirement':
-          'Gérer le cycle de vie des produits digitaux. 3+ ans d\'expérience.',
+          'Manage the life cycle of digital products. 3+ years of experience.',
       'salary': '55 000€ - 70 000€',
       'location': 'Marseille',
     },
@@ -962,7 +932,7 @@ class GuestJobListScreen extends StatelessWidget {
       'Position': 'DevOps Engineer',
       'companyName': 'CloudTech',
       'requirement':
-          'Automatiser les déploiements et gérer l\'infrastructure cloud. AWS/Azure.',
+          'Automate deployments and manage cloud infrastructure. AWS/Azure.',
       'salary': '48 000€ - 62 000€',
       'location': 'Toulouse',
     },

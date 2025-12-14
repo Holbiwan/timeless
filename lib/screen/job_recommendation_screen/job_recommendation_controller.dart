@@ -14,48 +14,44 @@ class JobRecommendationController extends GetxController
   RxString searchText = ''.obs;
   
   // Filtres observables
-  RxString selectedCategory = 'Tous'.obs;
-  RxString selectedJobType = 'Tous'.obs;
-  RxString selectedLocation = 'Toutes'.obs;
-  RxString selectedSalaryRange = 'Tous'.obs;
-  RxString selectedExperienceLevel = 'Tous'.obs;
+  RxString selectedCategory = 'All'.obs;
+  RxString selectedJobType = 'All'.obs;
+  RxString selectedLocation = 'All'.obs;
+  RxString selectedSalaryRange = 'All'.obs;
+  RxString selectedExperienceLevel = 'All'.obs;
   
   // Options de filtres
   final List<String> categories = [
-    'Tous',
-    'Technologie',
-    'Marketing',
-    'Finance', 
-    'Design',
-    'Ressources Humaines',
-    'Vente',
-    'Support Client',
-    'Management'
+    'All',
+    'Data',
+    'UX/UI', 
+    'Security'
   ];
 
   final List<String> jobTypes = [
-    'Tous',
+    'All',
     'CDI',
-    'CDD', 
+    'CDD',
     'Stage',
     'Freelance',
-    'Temps partiel'
+    'Intérim'
   ];
 
   final List<String> locations = [
-    'Toutes',
+    'All',
     'Paris',
-    'Lyon',
+    'Lyon', 
     'Marseille',
     'Toulouse',
     'Nice',
     'Nantes',
     'Bordeaux',
-    'Lille'
+    'Lille',
+    'Cannes'
   ];
 
   final List<String> salaryRanges = [
-    'Tous',
+    'All',
     '< 35K',
     '35K-50K',
     '50K-70K',
@@ -64,10 +60,10 @@ class JobRecommendationController extends GetxController
   ];
 
   final List<String> experienceLevels = [
-    'Tous',
-    'Débutant',
-    'Intermédiaire', 
-    'Confirmé',
+    'All',
+    'Entry-level',
+    'Intermediate', 
+    'Experienced',
     'Expert'
   ];
 
@@ -91,7 +87,25 @@ class JobRecommendationController extends GetxController
 
   onTapJobs2(int index) {
     selectedJobs2.value = index;
+    
+    // Synchroniser avec le filtre de catégorie des chips
+    switch (index) {
+      case 0:
+        selectedCategory.value = 'All';
+        break;
+      case 1:
+        selectedCategory.value = 'UX/UI';
+        break;
+      case 2:
+        selectedCategory.value = 'Data';
+        break;
+      case 3:
+        selectedCategory.value = 'Security';
+        break;
+    }
+    
     update();
+    update(['search']);
   }
 
   // Mettre à jour le texte de recherche
@@ -103,45 +117,63 @@ class JobRecommendationController extends GetxController
   // Mettre à jour les filtres
   void updateCategory(String category) {
     selectedCategory.value = category;
+    
+    // Synchroniser avec les boutons de catégorie du haut
+    switch (category) {
+      case 'All':
+        selectedJobs2.value = 0;
+        break;
+      case 'UX/UI':
+        selectedJobs2.value = 1;
+        break;
+      case 'Data':
+        selectedJobs2.value = 2;
+        break;
+      case 'Security':
+        selectedJobs2.value = 3;
+        break;
+    }
+    
+    update();
     update(['search']);
-    if (kDebugMode) print('Catégorie sélectionnée: $category');
+    if (kDebugMode) print('Selected category: $category');
   }
 
   void updateJobType(String jobType) {
     selectedJobType.value = jobType;
     update(['search']);
-    if (kDebugMode) print('Type de poste sélectionné: $jobType');
+    if (kDebugMode) print('Selected job type: $jobType');
   }
 
   void updateLocation(String location) {
     selectedLocation.value = location;
     update(['search']);
-    if (kDebugMode) print('Localisation sélectionnée: $location');
+    if (kDebugMode) print('Selected location: $location');
   }
 
   void updateSalaryRange(String salaryRange) {
     selectedSalaryRange.value = salaryRange;
     update(['search']);
-    if (kDebugMode) print('Salaire sélectionné: $salaryRange');
+    if (kDebugMode) print('Selected salary range: $salaryRange');
   }
 
   void updateExperienceLevel(String experienceLevel) {
     selectedExperienceLevel.value = experienceLevel;
     update(['search']);
-    if (kDebugMode) print('Niveau d\'expérience sélectionné: $experienceLevel');
+    if (kDebugMode) print('Selected experience level: $experienceLevel');
   }
 
   // Réinitialiser tous les filtres
   void clearAllFilters() {
-    selectedCategory.value = 'Tous';
-    selectedJobType.value = 'Tous';
-    selectedLocation.value = 'Toutes';
-    selectedSalaryRange.value = 'Tous';
-    selectedExperienceLevel.value = 'Tous';
+    selectedCategory.value = 'All';
+    selectedJobType.value = 'All';
+    selectedLocation.value = 'All';
+    selectedSalaryRange.value = 'All';
+    selectedExperienceLevel.value = 'All';
     searchText.value = '';
     searchController.clear();
     update(['search']);
-    if (kDebugMode) print('Tous les filtres réinitialisés');
+    if (kDebugMode) print('All filters reset');
   }
 
   // Appliquer les filtres aux documents
@@ -166,39 +198,68 @@ class JobRecommendationController extends GetxController
     }
 
     // Filtre par catégorie
-    if (selectedCategory.value != 'Tous' && selectedCategory.value.isNotEmpty) {
+    if (selectedCategory.value != 'All' && selectedCategory.value.isNotEmpty) {
       filteredDocs = filteredDocs.where((doc) {
         final data = doc.data() as Map<String, dynamic>;
-        return data['category'] == selectedCategory.value;
+        final docCategory = data['category']?.toString() ?? '';
+        // Correspondance entre UX/UI et UX pour les données Firestore
+        if (selectedCategory.value == 'UX/UI') {
+          return docCategory == 'UX' || docCategory == 'UI' || docCategory == 'UX/UI';
+        }
+        return docCategory == selectedCategory.value;
       }).toList();
     }
 
     // Filtre par type de poste
-    if (selectedJobType.value != 'Tous' && selectedJobType.value.isNotEmpty) {
+    if (selectedJobType.value != 'All' && selectedJobType.value.isNotEmpty) {
       filteredDocs = filteredDocs.where((doc) {
         final data = doc.data() as Map<String, dynamic>;
-        return data['type'] == selectedJobType.value;
+        return data['jobType'] == selectedJobType.value;
       }).toList();
     }
 
     // Filtre par localisation
-    if (selectedLocation.value != 'Toutes' && selectedLocation.value.isNotEmpty) {
+    if (selectedLocation.value != 'All' && selectedLocation.value.isNotEmpty) {
       filteredDocs = filteredDocs.where((doc) {
         final data = doc.data() as Map<String, dynamic>;
-        return data['location'] == selectedLocation.value;
+        final docLocation = data['location']?.toString() ?? '';
+        // Vérifier si la ville sélectionnée est incluse dans la localisation
+        return docLocation.toLowerCase().contains(selectedLocation.value.toLowerCase());
       }).toList();
     }
 
     // Filtre par salaire
-    if (selectedSalaryRange.value != 'Tous' && selectedSalaryRange.value.isNotEmpty) {
+    if (selectedSalaryRange.value != 'All' && selectedSalaryRange.value.isNotEmpty) {
       filteredDocs = filteredDocs.where((doc) {
         final data = doc.data() as Map<String, dynamic>;
-        return data['salaryRange'] == selectedSalaryRange.value;
+        final salary = data['salary']?.toString() ?? '';
+        
+        if (salary.isEmpty || salary == '0') return false;
+        
+        // Extraire le salaire minimum de la chaîne (ex: "60000-75000" -> 60000)
+        int? minSalary;
+        if (salary.contains('-')) {
+          minSalary = int.tryParse(salary.split('-')[0]);
+        } else {
+          minSalary = int.tryParse(salary);
+        }
+        
+        if (minSalary == null) return false;
+        
+        // Filtrer selon la tranche sélectionnée
+        switch (selectedSalaryRange.value) {
+          case '< 35K': return minSalary < 35000;
+          case '35K-50K': return minSalary >= 35000 && minSalary < 50000;
+          case '50K-70K': return minSalary >= 50000 && minSalary < 70000;
+          case '70K-90K': return minSalary >= 70000 && minSalary < 90000;
+          case '90K+': return minSalary >= 90000;
+          default: return true;
+        }
       }).toList();
     }
 
     // Filtre par niveau d'expérience
-    if (selectedExperienceLevel.value != 'Tous' && selectedExperienceLevel.value.isNotEmpty) {
+    if (selectedExperienceLevel.value != 'All' && selectedExperienceLevel.value.isNotEmpty) {
       filteredDocs = filteredDocs.where((doc) {
         final data = doc.data() as Map<String, dynamic>;
         return data['experienceLevel'] == selectedExperienceLevel.value;
@@ -215,11 +276,11 @@ class JobRecommendationController extends GetxController
 
   // Vérifier si des filtres sont actifs
   bool hasActiveFilters() {
-    return selectedCategory.value != 'Tous' ||
-           selectedJobType.value != 'Tous' ||
-           selectedLocation.value != 'Toutes' ||
-           selectedSalaryRange.value != 'Tous' ||
-           selectedExperienceLevel.value != 'Tous' ||
+    return selectedCategory.value != 'All' ||
+           selectedJobType.value != 'All' ||
+           selectedLocation.value != 'All' ||
+           selectedSalaryRange.value != 'All' ||
+           selectedExperienceLevel.value != 'All' ||
            searchText.value.isNotEmpty;
   }
 }

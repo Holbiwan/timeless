@@ -36,7 +36,7 @@ class PrefKeys {
   static const bio = "bio";
   static const profileImageUrl = "profileImageUrl";
 
-  // Job Matching Preferences
+  // Job Matching Preferences - REMOVED
   static const experienceLevel = "experienceLevel"; // Junior, Mid, Senior, Lead
   static const skillsList = "skillsList"; // JSON array of skills
   static const salaryRangeMin = "salaryRangeMin"; // Minimum expected salary
@@ -49,8 +49,7 @@ class PrefKeys {
   static const maxCommuteDistance = "maxCommuteDistance"; // In kilometers
   static const workLocationPreference =
       "workLocationPreference"; // Remote, On-site, Hybrid
-  static const jobPreferencesCompleted =
-      "jobPreferencesCompleted"; // Boolean: true if user completed preferences
+  // static const jobPreferencesCompleted = "jobPreferencesCompleted"; // REMOVED
 
   //logout
   static const email = "Email";

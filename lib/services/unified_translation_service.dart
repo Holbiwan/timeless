@@ -442,7 +442,7 @@ class UnifiedTranslationService extends GetxController {
       'contact_info': 'Contact Information',
       'cover_letter': 'Cover Letter (optional)',
       'cover_letter_placeholder': 'Explain why you are interested in this position...',
-      'send_application': 'Send my application',
+      'submit_application': 'Submit my application',
       'application_sent': 'Application Sent!',
       'application_success': 'Your application for {title} has been successfully submitted',
       'cv_required': '⚠️ CV Required',

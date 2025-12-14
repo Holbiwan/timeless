@@ -123,7 +123,7 @@ class EmailService {
     required String location,
     required String jobType,
   }) async {
-    final subject = "✅ Candidature confirmée - $jobTitle chez $companyName";
+    final subject = "✅ Application Confirmed - $jobTitle at $companyName";
     final htmlBody = _generateApplicationConfirmationHTML(
       userName: userName,
       jobTitle: jobTitle,
@@ -132,6 +132,9 @@ class EmailService {
       location: location,
       jobType: jobType,
     );
+
+    print('📧 Sending confirmation email to: $email');
+    print('📋 Job: $jobTitle at $companyName');
 
     return await sendEmail(
       to: email,
@@ -207,7 +210,7 @@ class EmailService {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Candidature confirmée</title>
+    <title>Application Confirmed</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f5f5; margin: 0; padding: 20px; }
         .container { max-width: 600px; margin: 0 auto; background-color: white; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.1); }
@@ -223,55 +226,55 @@ class EmailService {
 <body>
     <div class="container">
         <div class="header">
-            <h1>✅ Candidature envoyée !</h1>
-            <p>Votre candidature a été reçue avec succès</p>
+            <h1>✅ Application Submitted!</h1>
+            <p>Your application has been received successfully</p>
         </div>
         <div class="content">
-            <h2>Bonjour $userName,</h2>
+            <h2>Hello $userName,</h2>
             
             <div class="thank-you-box">
-                <h3>🙏 Merci pour votre candidature !</h3>
-                <p>Nous vous remercions d'avoir postulé à cette offre. Votre candidature est maintenant entre les mains de l'équipe de recrutement.</p>
+                <h3>🙏 Thank you for your application!</h3>
+                <p>We appreciate you applying for this position. Your application is now in the hands of our recruitment team.</p>
             </div>
             
-            <p>Excellente nouvelle ! Votre candidature a été soumise avec succès.</p>
+            <p>Great news! Your application has been submitted successfully.</p>
             
             <div class="job-details">
-                <h3>📋 Détails de votre candidature</h3>
+                <h3>📋 Application Details</h3>
                 <div class="detail-row">
-                    <span><strong>Poste :</strong></span>
+                    <span><strong>Position:</strong></span>
                     <span>$jobTitle</span>
                 </div>
                 <div class="detail-row">
-                    <span><strong>Entreprise :</strong></span>
+                    <span><strong>Company:</strong></span>
                     <span>$companyName</span>
                 </div>
                 <div class="detail-row">
-                    <span><strong>Localisation :</strong></span>
+                    <span><strong>Location:</strong></span>
                     <span>$location</span>
                 </div>
                 <div class="detail-row">
-                    <span><strong>Type de contrat :</strong></span>
+                    <span><strong>Job Type:</strong></span>
                     <span>$jobType</span>
                 </div>
                 <div class="detail-row">
-                    <span><strong>Salaire :</strong></span>
+                    <span><strong>Salary:</strong></span>
                     <span>$salary</span>
                 </div>
             </div>
             
             <div class="next-steps">
-                <h3>📞 Prochaines étapes</h3>
-                <p>L'équipe de recrutement va examiner votre candidature et vous contacter prochainement si votre profil correspond à leurs attentes.</p>
-                <p><strong>Nous vous souhaitons bonne chance !</strong></p>
+                <h3>📞 Next Steps</h3>
+                <p>Our recruitment team will review your application and contact you soon if your profile matches our requirements.</p>
+                <p><strong>We wish you the best of luck!</strong></p>
             </div>
             
-            <p>Si vous avez des questions, n'hésitez pas à nous contacter.</p>
+            <p>If you have any questions, please don't hesitate to contact us.</p>
         </div>
         <div class="footer">
-            <h3>L'équipe Timeless 💼</h3>
+            <h3>The Timeless Team 💼</h3>
             <p>📧 support@timeless.app</p>
-            <p><em>Merci de nous faire confiance pour votre recherche d'emploi</em></p>
+            <p><em>Thank you for trusting us with your job search</em></p>
         </div>
     </div>
 </body>

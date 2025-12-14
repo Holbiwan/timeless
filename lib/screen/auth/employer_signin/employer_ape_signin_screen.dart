@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:timeless/common/widgets/universal_back_fab.dart';
 import 'package:timeless/common/widgets/common_loader.dart';
-import 'package:timeless/services/translation_service.dart';
+import 'package:timeless/services/unified_translation_service.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/app_theme.dart';
 import 'package:timeless/utils/asset_res.dart';
@@ -21,7 +21,7 @@ class _EmployerApeSignInScreenState extends State<EmployerApeSignInScreen> {
   final TextEditingController apeController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TranslationService translationService = TranslationService.instance;
+  final UnifiedTranslationService translationService = UnifiedTranslationService.instance;
   bool isLoading = false;
   bool isPasswordHidden = true;
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:timeless/services/preferences_service.dart';
-import 'package:timeless/services/translation_service.dart';
+import 'package:timeless/services/unified_translation_service.dart';
 import 'package:timeless/services/accessibility_service.dart';
 import 'package:timeless/utils/app_theme.dart';
 import 'package:timeless/utils/pref_keys.dart';
@@ -9,7 +9,7 @@ import 'package:timeless/screen/settings/settings_screen.dart';
 import 'package:timeless/screen/accessibility/accessibility_panel.dart';
 
 Widget homeAppBar() {
-  final TranslationService translationService = Get.find<TranslationService>();
+  final UnifiedTranslationService translationService = Get.find<UnifiedTranslationService>();
   final AccessibilityService accessibilityService = Get.find<AccessibilityService>();
   
   return Obx(() => Container(

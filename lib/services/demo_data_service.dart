@@ -5,16 +5,16 @@ import 'package:flutter/foundation.dart';
 class DemoDataService {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   
-  // Catégories d'emplois
+  // Catégories d'emplois IT
   static const List<String> jobCategories = [
-    'Technologie',
-    'Marketing',
-    'Finance', 
-    'Design',
-    'Ressources Humaines',
-    'Vente',
-    'Support Client',
-    'Management'
+    'Développement',
+    'Data Science',
+    'DevOps',
+    'Cybersécurité',
+    'Cloud',
+    'Mobile',
+    'IA & Machine Learning',
+    'Management IT'
   ];
 
   // Types de contrat
@@ -46,75 +46,178 @@ class DemoDataService {
     'Lille'
   ];
 
-  // Entreprises de démo
+  // Entreprises IT de démo
   static const List<Map<String, dynamic>> demoCompanies = [
     {
-      'name': 'TechInnovate',
-      'logo': 'tech_innovate_logo.png',
-      'description': 'Startup innovante en intelligence artificielle'
+      'name': 'TechCorp Solutions',
+      'logo': 'techcorp_logo.png',
+      'description': 'Leader français en développement logiciel et solutions IT innovantes.',
+      'siret': '12345678901234',
+      'ape': '6201Z',
+      'location': 'Paris, France',
+      'website': 'https://techcorp-solutions.fr',
+      'employees': '50-200',
+      'founded': 2015,
     },
     {
-      'name': 'DigitalSolutions',
-      'logo': 'digital_solutions_logo.png', 
-      'description': 'Agence de transformation digitale'
+      'name': 'DataFlow Analytics',
+      'logo': 'dataflow_logo.png', 
+      'description': 'Spécialiste en analyse de données et intelligence artificielle.',
+      'siret': '98765432109876',
+      'ape': '6202A',
+      'location': 'Lyon, France',
+      'website': 'https://dataflow-analytics.fr',
+      'employees': '10-50',
+      'founded': 2018,
     },
     {
-      'name': 'CreativeStudio',
-      'logo': 'creative_studio_logo.png',
-      'description': 'Studio de création graphique et web'
+      'name': 'CyberGuard Security',
+      'logo': 'cyberguard_logo.png',
+      'description': 'Entreprise de cybersécurité protégeant les infrastructures critiques.',
+      'siret': '11122233344556',
+      'ape': '6202B',
+      'location': 'Marseille, France',
+      'website': 'https://cyberguard-security.fr',
+      'employees': '20-100',
+      'founded': 2020,
     },
     {
-      'name': 'FinanceExpert',
-      'logo': 'finance_expert_logo.png',
-      'description': 'Cabinet de conseil en finance'
+      'name': 'CloudMaster Services',
+      'logo': 'cloudmaster_logo.png',
+      'description': 'Expert en migration et gestion d\'infrastructures cloud.',
+      'siret': '66677788899001',
+      'ape': '6203Z',
+      'location': 'Toulouse, France',
+      'website': 'https://cloudmaster-services.fr',
+      'employees': '30-150',
+      'founded': 2017,
     },
     {
-      'name': 'MarketPro',
-      'logo': 'market_pro_logo.png',
-      'description': 'Agence de marketing digital'
+      'name': 'InnovaTech Startup',
+      'logo': 'innovatech_logo.png',
+      'description': 'Startup innovante développant des solutions IoT et mobiles.',
+      'siret': '55544433322111',
+      'ape': '6209Z',
+      'location': 'Nantes, France',
+      'website': 'https://innovatech-startup.fr',
+      'employees': '5-25',
+      'founded': 2021,
+    },
+    {
+      'name': 'DigitalPro Consulting',
+      'logo': 'digitalpro_logo.png',
+      'description': 'Cabinet de conseil spécialisé en transformation digitale.',
+      'siret': '99988877766555',
+      'ape': '6202A',
+      'location': 'Bordeaux, France',
+      'website': 'https://digitalpro-consulting.fr',
+      'employees': '15-75',
+      'founded': 2016,
     }
   ];
 
-  // Générer des annonces de démo
+  // Créer les employeurs de démo
+  static Future<void> createDemoEmployers() async {
+    try {
+      if (kDebugMode) print('🏢 Création des employeurs de démo...');
+
+      final batch = _firestore.batch();
+
+      for (int i = 0; i < demoCompanies.length; i++) {
+        final company = demoCompanies[i];
+        final employerId = 'demo_employer_${i + 1}';
+
+        // Données employeur
+        final employerData = {
+          'Email': 'demo${i + 1}@${company['name']!.toLowerCase().replaceAll(' ', '')}.fr',
+          'CompanyName': company['name'],
+          'SIRET': company['siret'],
+          'APE': company['ape'],
+          'location': company['location'],
+          'description': company['description'],
+          'website': company['website'],
+          'employees': company['employees'],
+          'founded': company['founded'],
+          'TotalPost': 0,
+          'company': true,
+          'CreatedAt': FieldValue.serverTimestamp(),
+          'DemoAccount': true,
+          'isActive': true,
+        };
+
+        final employerRef = _firestore
+            .collection('Auth')
+            .doc('Manager')
+            .collection('register')
+            .doc(employerId);
+
+        batch.set(employerRef, employerData);
+
+        // Informations détaillées de l'entreprise
+        final companyDetailRef = employerRef.collection('company').doc();
+        final companyDetailData = {
+          'name': company['name'],
+          'website': company['website'],
+          'location': company['location'],
+          'description': company['description'],
+          'employees': company['employees'],
+          'founded': company['founded'],
+          'logo': company['logo'],
+          'CreatedAt': FieldValue.serverTimestamp(),
+        };
+
+        batch.set(companyDetailRef, companyDetailData);
+      }
+
+      await batch.commit();
+      if (kDebugMode) print('✅ ${demoCompanies.length} employeurs de démo créés !');
+
+    } catch (e) {
+      if (kDebugMode) print('❌ Erreur création employeurs de démo: $e');
+      rethrow;
+    }
+  }
+
+  // Générer des annonces IT de démo
   static Future<void> generateDemoJobs() async {
     try {
       if (kDebugMode) print('🚀 Génération des annonces de démo...');
 
       final batch = _firestore.batch();
       
-      // Positions par catégorie
+      // Positions par catégorie IT
       final Map<String, List<String>> positionsByCategory = {
-        'Technologie': [
-          'Développeur Flutter', 'Développeur React', 'Data Scientist', 
-          'DevOps Engineer', 'Architecte Solution', 'Ingénieur iOS'
+        'Développement': [
+          'Développeur Full Stack Senior', 'Développeur Frontend React', 'Développeur Backend Node.js', 
+          'Développeur PHP/Symfony', 'Ingénieur Logiciel', 'Architecte Solution'
         ],
-        'Marketing': [
-          'Responsable Marketing Digital', 'Community Manager', 'SEO Specialist',
-          'Marketing Manager', 'Content Creator', 'Growth Hacker'
+        'Data Science': [
+          'Data Scientist', 'Data Analyst', 'Ingénieur Big Data',
+          'Machine Learning Engineer', 'Data Engineer', 'Business Intelligence Analyst'
         ],
-        'Design': [
-          'UI/UX Designer', 'Graphiste', 'Product Designer',
-          'Motion Designer', 'Directeur Artistique', 'Web Designer'
+        'DevOps': [
+          'DevOps Engineer', 'Site Reliability Engineer', 'Platform Engineer',
+          'Infrastructure Engineer', 'Build & Release Engineer', 'Automation Engineer'
         ],
-        'Finance': [
-          'Analyst Financier', 'Contrôleur de Gestion', 'Comptable',
-          'CFO', 'Audit Manager', 'Risk Analyst'
+        'Cybersécurité': [
+          'Ingénieur Cybersécurité', 'Security Analyst', 'Penetration Tester',
+          'CISO', 'Security Operations Center Analyst', 'Incident Response Specialist'
         ],
-        'Ressources Humaines': [
-          'Responsable RH', 'Recruteur', 'HR Business Partner',
-          'Chargé de Formation', 'Gestionnaire Paie', 'DRH'
+        'Cloud': [
+          'Architecte Cloud', 'Cloud Engineer AWS', 'Cloud Engineer Azure',
+          'Solutions Architect', 'Cloud Infrastructure Manager', 'Cloud DevOps Engineer'
         ],
-        'Vente': [
-          'Commercial BtoB', 'Account Manager', 'Sales Representative',
-          'Business Developer', 'Key Account Manager', 'Directeur Commercial'
+        'Mobile': [
+          'Développeur Mobile Flutter', 'Développeur iOS Swift', 'Développeur Android Kotlin',
+          'Mobile App Architect', 'React Native Developer', 'Xamarin Developer'
         ],
-        'Support Client': [
-          'Customer Success Manager', 'Support Technique', 'Service Client',
-          'Account Manager', 'Technical Support', 'Customer Care'
+        'IA & Machine Learning': [
+          'AI Research Engineer', 'Deep Learning Engineer', 'NLP Engineer',
+          'Computer Vision Engineer', 'MLOps Engineer', 'Prompt Engineer'
         ],
-        'Management': [
-          'Chef de Projet', 'Product Manager', 'Team Lead',
-          'Directeur Général', 'Operations Manager', 'Program Manager'
+        'Management IT': [
+          'CTO', 'VP Engineering', 'Team Lead Technique',
+          'Product Manager', 'Chef de Projet IT', 'Scrum Master'
         ]
       };
 
@@ -145,15 +248,19 @@ class DemoDataService {
               'salary': salary,
               'experienceLevel': experienceLevel,
               'RequirementsList': requirements,
-              'description': _generateJobDescription(position, company['name']),
+              'description': _generateJobDescription(position, company['name']!),
               'createdAt': FieldValue.serverTimestamp(),
               'isActive': true,
               'BookMarkUserList': <String>[],
-              'applicants': 0,
+              'applicants': (jobCount % 5) + 1, // Entre 1 et 5 candidatures
               'deviceToken': 'demo_device_token',
               // Champs pour les filtres
               'salaryRange': _getSalaryRange(salary),
               'keywords': _generateKeywords(position, category),
+              'employerId': 'demo_employer_${(jobCount % demoCompanies.length) + 1}',
+              'SIRET': company['siret'],
+              'APE': company['ape'],
+              'benefits': _generateBenefits(),
             };
 
             final docRef = _firestore.collection('allPost').doc();
@@ -175,29 +282,29 @@ class DemoDataService {
 
   static String _generateSalary(String category, String experienceLevel) {
     final Map<String, Map<String, int>> salaryRanges = {
-      'Technologie': {
-        'Débutant': 45000, 'Intermédiaire': 55000, 'Confirmé': 70000, 'Expert': 90000
+      'Développement': {
+        'Débutant': 42000, 'Intermédiaire': 55000, 'Confirmé': 70000, 'Expert': 90000
       },
-      'Marketing': {
-        'Débutant': 35000, 'Intermédiaire': 45000, 'Confirmé': 60000, 'Expert': 80000
+      'Data Science': {
+        'Débutant': 45000, 'Intermédiaire': 58000, 'Confirmé': 75000, 'Expert': 95000
       },
-      'Design': {
-        'Débutant': 35000, 'Intermédiaire': 45000, 'Confirmé': 60000, 'Expert': 75000
+      'DevOps': {
+        'Débutant': 48000, 'Intermédiaire': 62000, 'Confirmé': 78000, 'Expert': 100000
       },
-      'Finance': {
-        'Débutant': 40000, 'Intermédiaire': 50000, 'Confirmé': 65000, 'Expert': 85000
+      'Cybersécurité': {
+        'Débutant': 50000, 'Intermédiaire': 65000, 'Confirmé': 80000, 'Expert': 110000
       },
-      'Ressources Humaines': {
-        'Débutant': 35000, 'Intermédiaire': 45000, 'Confirmé': 60000, 'Expert': 80000
+      'Cloud': {
+        'Débutant': 52000, 'Intermédiaire': 68000, 'Confirmé': 85000, 'Expert': 120000
       },
-      'Vente': {
-        'Débutant': 30000, 'Intermédiaire': 40000, 'Confirmé': 55000, 'Expert': 75000
+      'Mobile': {
+        'Débutant': 40000, 'Intermédiaire': 52000, 'Confirmé': 68000, 'Expert': 85000
       },
-      'Support Client': {
-        'Débutant': 28000, 'Intermédiaire': 35000, 'Confirmé': 45000, 'Expert': 60000
+      'IA & Machine Learning': {
+        'Débutant': 55000, 'Intermédiaire': 72000, 'Confirmé': 90000, 'Expert': 130000
       },
-      'Management': {
-        'Débutant': 50000, 'Intermédiaire': 65000, 'Confirmé': 80000, 'Expert': 120000
+      'Management IT': {
+        'Débutant': 65000, 'Intermédiaire': 85000, 'Confirmé': 110000, 'Expert': 150000
       }
     };
 
@@ -216,33 +323,61 @@ class DemoDataService {
 
   static List<String> _generateRequirements(String category, String position, String experienceLevel) {
     final Map<String, List<String>> categoryRequirements = {
-      'Technologie': [
-        'Maîtrise des langages de programmation',
-        'Expérience avec les frameworks modernes',
-        'Connaissance des bonnes pratiques de développement',
-        'Capacité à travailler en équipe agile',
-        'Anglais technique requis'
+      'Développement': [
+        'Maîtrise des langages de programmation (JavaScript, Python, Java)',
+        'Expérience avec les frameworks modernes (React, Angular, Vue.js)',
+        'Connaissance des bases de données (SQL, NoSQL)',
+        'Pratique des méthodologies agiles (Scrum, Kanban)',
+        'Maîtrise de Git et des outils DevOps'
       ],
-      'Marketing': [
-        'Expérience en marketing digital',
-        'Maîtrise des réseaux sociaux',
-        'Connaissance des outils d\'analyse',
-        'Créativité et sens de l\'innovation',
-        'Excellente communication'
+      'Data Science': [
+        'Python/R et librairies data (Pandas, NumPy, Scikit-learn)',
+        'Machine Learning et Deep Learning',
+        'Visualisation de données (Tableau, PowerBI, Matplotlib)',
+        'Connaissance des bases de données et SQL',
+        'Statistiques et mathématiques appliquées'
       ],
-      'Design': [
-        'Maîtrise des outils Adobe Creative Suite',
-        'Expérience en design UI/UX',
-        'Sens artistique développé',
-        'Portfolio démontrant vos compétences',
-        'Capacité à travailler avec les développeurs'
+      'DevOps': [
+        'Containerisation (Docker, Kubernetes)',
+        'Cloud Computing (AWS, Azure, GCP)',
+        'Infrastructure as Code (Terraform, Ansible)',
+        'CI/CD pipelines (Jenkins, GitLab CI)',
+        'Monitoring et logging (Prometheus, ELK Stack)'
       ],
-      'Finance': [
-        'Formation en finance ou comptabilité',
-        'Maîtrise d\'Excel et outils financiers',
-        'Rigueur et attention aux détails',
-        'Connaissance de la réglementation',
-        'Esprit d\'analyse'
+      'Cybersécurité': [
+        'Sécurité réseau et systèmes',
+        'Outils SIEM (Splunk, QRadar)',
+        'Tests de pénétration et audit sécurité',
+        'Scripting (Python, PowerShell)',
+        'Certifications sécurité (CISSP, CEH) appréciées'
+      ],
+      'Cloud': [
+        'Expertise des plateformes cloud (AWS, Azure, GCP)',
+        'Architecture et migration cloud',
+        'Services cloud natifs et microservices',
+        'Sécurité cloud et governance',
+        'Optimisation des coûts cloud'
+      ],
+      'Mobile': [
+        'Développement natif ou cross-platform',
+        'UI/UX mobile et Material Design',
+        'Intégration d\'APIs REST et GraphQL',
+        'Tests automatisés et déploiement mobile',
+        'Performance et optimisation mobile'
+      ],
+      'IA & Machine Learning': [
+        'Deep Learning frameworks (TensorFlow, PyTorch)',
+        'NLP et Computer Vision',
+        'MLOps et déploiement de modèles',
+        'Big Data et data engineering',
+        'Recherche et veille technologique IA'
+      ],
+      'Management IT': [
+        'Leadership technique et gestion d\'équipe',
+        'Vision produit et stratégie technique',
+        'Méthodologies agiles et lean',
+        'Budget et gestion de projets IT',
+        'Communication avec les stakeholders'
       ]
     };
 
@@ -285,10 +420,14 @@ Rejoignez-nous pour contribuer au succès de nos projets innovants !''';
     final categoryKeywords = [category.toLowerCase()];
     
     final Map<String, List<String>> additionalKeywords = {
-      'Technologie': ['tech', 'développement', 'software', 'code', 'programmation'],
-      'Marketing': ['digital', 'communication', 'brand', 'campaign', 'social media'],
-      'Design': ['créatif', 'graphique', 'interface', 'visuel', 'artistic'],
-      'Finance': ['comptabilité', 'audit', 'budget', 'analyse', 'fiscalité'],
+      'Développement': ['fullstack', 'frontend', 'backend', 'web', 'api', 'javascript'],
+      'Data Science': ['data', 'analytics', 'machine learning', 'ai', 'python', 'sql'],
+      'DevOps': ['cloud', 'kubernetes', 'docker', 'ci/cd', 'automation', 'infrastructure'],
+      'Cybersécurité': ['security', 'pentest', 'siem', 'vulnerability', 'compliance'],
+      'Cloud': ['aws', 'azure', 'gcp', 'migration', 'scalability', 'architecture'],
+      'Mobile': ['flutter', 'react native', 'ios', 'android', 'app development'],
+      'IA & Machine Learning': ['artificial intelligence', 'neural networks', 'nlp', 'computer vision'],
+      'Management IT': ['leadership', 'strategy', 'agile', 'scrum', 'product management'],
     };
 
     return [
@@ -296,6 +435,256 @@ Rejoignez-nous pour contribuer au succès de nos projets innovants !''';
       ...categoryKeywords,
       ...additionalKeywords[category] ?? []
     ];
+  }
+
+  static List<String> _generateBenefits() {
+    final allBenefits = [
+      'Télétravail hybride possible',
+      'Mutuelle premium',
+      'Tickets restaurant',
+      '13ème mois',
+      'RTT et congés flexibles',
+      'Formation continue',
+      'Certification professionnelle financée',
+      'Prime de performance',
+      'Stock-options',
+      'Équipement haut de gamme',
+      'Team building réguliers',
+      'Participation aux bénéfices',
+      'Vélo de fonction',
+      'Salle de sport',
+      'Conciergerie d\'entreprise'
+    ];
+    
+    // Retourner 4-6 avantages aléatoires
+    final shuffled = List<String>.from(allBenefits)..shuffle();
+    return shuffled.take(5).toList();
+  }
+
+  // Générer des annonces d'emploi en anglais
+  static Future<void> generateEnglishJobs() async {
+    try {
+      if (kDebugMode) print('🌍 Génération des annonces en anglais...');
+
+      final batch = _firestore.batch();
+      
+      final englishJobs = [
+        {
+          "companyName": "DataMaster Strasbourg",
+          "title": "Big Data Engineer",
+          "description": "DataMaster Strasbourg is seeking an experienced Big Data Engineer to join our team. You will be responsible for designing, implementing, and maintaining large-scale data processing systems using cutting-edge technologies like Hadoop, Spark, and Kafka.",
+          "requirements": [
+            "Master's degree in Computer Science, Data Science, or a related field.",
+            "5+ years of experience in big data technologies.",
+            "Proficiency in Java, Scala, or Python.",
+            "Experience with distributed computing frameworks (Hadoop, Spark).",
+            "Knowledge of streaming technologies (Kafka, Storm).",
+            "Experience with cloud platforms (AWS, Azure, GCP)."
+          ],
+          "location": "Strasbourg, France",
+          "jobType": "CDI",
+          "experienceLevel": "Confirmé",
+          "salary": "75000",
+          "salaryMax": "95000",
+          "skills": ["Hadoop", "Spark", "Kafka", "Java", "Scala", "AWS"],
+          "category": "Data Science",
+          "industry": "Big Data"
+        },
+        {
+          "companyName": "ShieldIT Nice",
+          "title": "Penetration Tester",
+          "description": "ShieldIT Nice is looking for a skilled Penetration Tester to join our team. You will be responsible for conducting penetration tests on our systems and applications to identify and exploit vulnerabilities, and for providing recommendations for remediation.",
+          "requirements": [
+            "Bachelor's degree in Computer Science or a related field.",
+            "Proven experience as a Penetration Tester or similar role.",
+            "Strong knowledge of penetration testing methodologies and tools.",
+            "Excellent understanding of web application and network security.",
+            "Relevant certifications (e.g., OSCP, CEH) are a plus."
+          ],
+          "location": "Nice, France",
+          "jobType": "CDI",
+          "experienceLevel": "Intermédiaire",
+          "salary": "55000",
+          "salaryMax": "75000",
+          "skills": ["Penetration Testing", "Web Application Security", "Network Security", "OSCP", "CEH"],
+          "category": "Cybersécurité",
+          "industry": "Cybersecurity"
+        },
+        {
+          "companyName": "UserFirst Rennes",
+          "title": "Product Designer (UX/UI)",
+          "description": "UserFirst Rennes is seeking a talented Product Designer to join our team. You will be responsible for the entire product design process, from user research and ideation to final UI design and prototyping. You will work closely with our product and engineering teams to create intuitive and engaging user experiences.",
+          "requirements": [
+            "Proven experience as a Product Designer, UX/UI Designer, or similar role.",
+            "Strong portfolio of design projects.",
+            "Proficiency in design and prototyping tools (e.g., Figma, Sketch).",
+            "Excellent understanding of user-centered design principles and methodologies.",
+            "Good communication and teamwork skills."
+          ],
+          "location": "Rennes, France",
+          "jobType": "CDI",
+          "experienceLevel": "Intermédiaire",
+          "salary": "50000",
+          "salaryMax": "65000",
+          "skills": ["Product Design", "UX Design", "UI Design", "Figma", "User Research"],
+          "category": "Développement",
+          "industry": "Technology"
+        },
+        {
+          "companyName": "AI-Driven Grenoble",
+          "title": "Machine Learning Engineer",
+          "description": "AI-Driven Grenoble is looking for a skilled Machine Learning Engineer to join our team. You will be responsible for designing, building, and deploying machine learning models to solve complex business problems. You will work closely with our data scientists and software engineers to bring our AI solutions to life.",
+          "requirements": [
+            "Master's or PhD in Computer Science or a related field.",
+            "Proven experience as a Machine Learning Engineer or similar role.",
+            "Strong programming skills in Python.",
+            "Experience with machine learning frameworks (e.g., TensorFlow, PyTorch).",
+            "Experience with deploying machine learning models in production."
+          ],
+          "location": "Grenoble, France",
+          "jobType": "CDI",
+          "experienceLevel": "Confirmé",
+          "salary": "70000",
+          "salaryMax": "90000",
+          "skills": ["Machine Learning", "Python", "TensorFlow", "PyTorch", "MLOps"],
+          "category": "IA & Machine Learning",
+          "industry": "Artificial Intelligence"
+        }
+      ];
+
+      for (int i = 0; i < englishJobs.length; i++) {
+        final job = englishJobs[i];
+        final company = demoCompanies[i % demoCompanies.length];
+        
+        final jobData = {
+          'Position': job['title'],
+          'CompanyName': job['companyName'],
+          'CompanyLogo': company['logo'],
+          'CompanyDescription': 'International company operating in ${job['location']}',
+          'category': job['category'],
+          'type': job['jobType'],
+          'location': job['location'],
+          'salary': job['salary'],
+          'salaryMax': job['salaryMax'],
+          'experienceLevel': job['experienceLevel'],
+          'RequirementsList': job['requirements'],
+          'description': job['description'],
+          'createdAt': FieldValue.serverTimestamp(),
+          'isActive': true,
+          'BookMarkUserList': <String>[],
+          'applicants': 0,
+          'deviceToken': 'demo_device_token',
+          'salaryRange': _getSalaryRange(job['salary']! as String),
+          'keywords': [
+            ...(job['title']! as String).toLowerCase().split(' '),
+            ...(job['skills']! as List<dynamic>).map((s) => (s as String).toLowerCase()),
+            'english',
+            'international'
+          ],
+          'employerId': 'demo_employer_${(i % demoCompanies.length) + 1}',
+          'SIRET': company['siret'],
+          'APE': company['ape'],
+          'skills': job['skills'],
+          'industry': job['industry'],
+          'benefits': [
+            'Remote work options',
+            'Health insurance',
+            'Professional development',
+            'Flexible hours',
+            'International environment'
+          ],
+        };
+
+        final docRef = _firestore.collection('allPost').doc();
+        batch.set(docRef, jobData);
+      }
+
+      await batch.commit();
+      if (kDebugMode) print('✅ ${englishJobs.length} annonces en anglais créées !');
+
+    } catch (e) {
+      if (kDebugMode) print('❌ Erreur création annonces anglaises: $e');
+      rethrow;
+    }
+  }
+
+  // Créer des candidatures fictives
+  static Future<void> createDemoApplications() async {
+    try {
+      if (kDebugMode) print('📋 Création des candidatures de démo...');
+
+      final batch = _firestore.batch();
+      final candidateNames = [
+        'Marie Dubois',
+        'Thomas Martin',
+        'Sophie Laurent',
+        'Pierre Durand',
+        'Camille Petit',
+        'Antoine Moreau',
+        'Julie Simon',
+        'Nicolas Bernard',
+        'Clara Rousseau',
+        'Maxime Leroy'
+      ];
+
+      // Récupérer quelques annonces pour créer des candidatures
+      final jobsSnapshot = await _firestore
+          .collection('allPost')
+          .where('CompanyName', whereIn: demoCompanies.map((c) => c['name']).toList())
+          .limit(15)
+          .get();
+
+      for (int i = 0; i < jobsSnapshot.docs.length && i < candidateNames.length; i++) {
+        final job = jobsSnapshot.docs[i];
+        final candidateName = candidateNames[i];
+        final email = candidateName.toLowerCase().replaceAll(' ', '.') + '@email.com';
+
+        final applicationData = {
+          'applicantName': candidateName,
+          'applicantEmail': email,
+          'jobId': job.id,
+          'position': job.data()['Position'],
+          'company': job.data()['CompanyName'],
+          'employerId': job.data()['employerId'] ?? 'demo_employer_1',
+          'appliedAt': FieldValue.serverTimestamp(),
+          'status': ['En attente', 'En cours', 'Acceptée', 'Refusée'][i % 4],
+          'cvUrl': 'https://example.com/cv/${candidateName.toLowerCase().replaceAll(' ', '-')}.pdf',
+          'coverLetter': 'Madame, Monsieur,\n\nJe suis très intéressé(e) par le poste de ${job.data()['Position']} au sein de ${job.data()['CompanyName']}. Mon expérience et mes compétences correspondent parfaitement aux exigences décrites dans votre annonce...',
+          'experience': ['1-2 ans', '3-5 ans', '5+ ans'][i % 3],
+          'currentSalary': ((int.tryParse(job.data()['salary'] ?? '45000') ?? 45000) * 0.9).round().toString(),
+          'expectedSalary': job.data()['salary'],
+          'availability': 'Immédiate',
+          'location': job.data()['location'],
+        };
+
+        final docRef = _firestore.collection('applications').doc();
+        batch.set(docRef, applicationData);
+      }
+
+      await batch.commit();
+      if (kDebugMode) print('✅ ${candidateNames.length} candidatures de démo créées !');
+
+    } catch (e) {
+      if (kDebugMode) print('❌ Erreur création candidatures de démo: $e');
+      rethrow;
+    }
+  }
+
+  // Méthode principale pour créer toutes les données de démo
+  static Future<void> createAllDemoData() async {
+    try {
+      if (kDebugMode) print('🚀 Initialisation complète des données de démo...');
+      
+      await createDemoEmployers();
+      await generateDemoJobs();
+      await generateEnglishJobs();
+      await createDemoApplications();
+      
+      if (kDebugMode) print('✅ Toutes les données de démo ont été créées avec succès !');
+    } catch (e) {
+      if (kDebugMode) print('❌ Erreur lors de la création des données de démo: $e');
+      rethrow;
+    }
   }
 
   // Créer un utilisateur de démo

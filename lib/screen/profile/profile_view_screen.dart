@@ -3,9 +3,8 @@ import 'package:get/get.dart';
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/screen/manager_section/Profile/edit_profile/edit_profile_screen.dart';
-import 'package:timeless/screen/profile/job_preferences_screen.dart';
 import 'package:timeless/utils/app_theme.dart';
-import 'package:timeless/services/translation_service.dart';
+import 'package:timeless/services/unified_translation_service.dart';
 import 'package:timeless/utils/app_res.dart';
 import 'package:timeless/screen/profile/profile_controller.dart';
 
@@ -31,7 +30,7 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
       backgroundColor: const Color(0xFF000647),
       appBar: AppBar(
         title: Text(
-          Get.find<TranslationService>().getText('my_profile'),
+          Get.find<UnifiedTranslationService>().getText('my_profile'),
           style: const TextStyle(color: Colors.black),
         ),
         backgroundColor: Colors.white,
@@ -155,7 +154,7 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                       setState(() {});
                     },
                     icon: const Icon(Icons.edit, size: 16),
-                    label: Text(Get.find<TranslationService>().getText('edit_profile')),
+                    label: Text(Get.find<UnifiedTranslationService>().getText('edit_profile')),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       foregroundColor: Colors.black,
@@ -167,23 +166,7 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 15),
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: () => Get.to(() => const JobPreferencesScreen()),
-                    icon: const Icon(Icons.psychology_outlined, size: 16),
-                    label: Text(Get.find<TranslationService>().getText('job_preferences')),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.black,
-                      side: const BorderSide(color: Color(0xFF000647), width: 2.0),
-                      padding: const EdgeInsets.symmetric(vertical: 4),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                  ),
-                ),
+                // Job Preferences button removed
               ],
             ),
             
@@ -195,7 +178,7 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
               child: OutlinedButton.icon(
                 onPressed: _clearProfileData,
                 icon: const Icon(Icons.clear_all, size: 16),
-                label: Text(Get.find<TranslationService>().getText('clear_profile_data')),
+                label: Text(Get.find<UnifiedTranslationService>().getText('clear_profile_data')),
                 style: OutlinedButton.styleFrom(
                   backgroundColor: Colors.white,
                   foregroundColor: Colors.black,
