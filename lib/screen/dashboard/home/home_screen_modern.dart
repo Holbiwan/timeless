@@ -4,7 +4,7 @@ import 'package:timeless/screen/dashboard/home/tipsforyou_screen.dart';
 import 'package:timeless/screen/dashboard/home/widgets/appbar.dart';
 import 'package:timeless/utils/app_res.dart';
 import 'package:timeless/utils/app_theme.dart';
-import 'package:timeless/services/translation_service.dart';
+import 'package:timeless/services/unified_translation_service.dart';
 import 'package:timeless/services/accessibility_service.dart';
 import 'package:timeless/common/widgets/language_switcher.dart';
 
@@ -14,7 +14,7 @@ class HomeScreenModern extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TranslationService translationService = Get.find<TranslationService>();
+    final UnifiedTranslationService translationService = Get.find<UnifiedTranslationService>();
     final AccessibilityService accessibilityService = Get.find<AccessibilityService>();
 
     return Obx(() => Scaffold(
@@ -71,7 +71,7 @@ class HomeScreenModern extends StatelessWidget {
     ));
   }
 
-  Widget _buildTipsSection(BuildContext context, TranslationService translationService, AccessibilityService accessibilityService) {
+  Widget _buildTipsSection(BuildContext context, UnifiedTranslationService translationService, AccessibilityService accessibilityService) {
     return accessibilityService.buildAccessibleWidget(
       semanticLabel: 'Tips section',
       onTap: () {
@@ -149,7 +149,7 @@ class HomeScreenModern extends StatelessWidget {
     );
   }
 
-  Widget _buildMainActions(TranslationService translationService, AccessibilityService accessibilityService) {
+  Widget _buildMainActions(UnifiedTranslationService translationService, AccessibilityService accessibilityService) {
     return Column(
       children: [
         // Bouton principal "See Jobs" modernisé

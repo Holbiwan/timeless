@@ -378,6 +378,110 @@ class SignUpScreenM extends StatelessWidget {
                       ),
                     ),
 
+                    // Nom de l'entreprise
+                    const SizedBox(height: 10),
+                    _label("Company Name"),
+                    GetBuilder<SignUpControllerM>(
+                      id: "showCompanyName",
+                      builder: (_) => Column(
+                        children: [
+                          _shadowField(
+                            child: commonTextFormField(
+                              onChanged: controller.onChanged,
+                              controller: controller.companyNameController,
+                              textDecoration: _decor(
+                                context,
+                                hint: 'Your company name',
+                                hasError: controller.companyNameError.isNotEmpty,
+                                isEmpty: controller.companyNameController.text
+                                    .trim()
+                                    .isEmpty,
+                              ),
+                            ),
+                          ),
+                          controller.companyNameError.isEmpty
+                              ? const SizedBox(height: 20)
+                              : _errorChip(context, controller.companyNameError),
+                        ],
+                      ),
+                    ),
+
+                    // SIRET
+                    const SizedBox(height: 10),
+                    _label("SIRET"),
+                    GetBuilder<SignUpControllerM>(
+                      id: "showSiret",
+                      builder: (_) => Column(
+                        children: [
+                          _shadowField(
+                            child: commonTextFormField(
+                              onChanged: controller.onChanged,
+                              controller: controller.siretController,
+                              textDecoration: _decor(
+                                context,
+                                hint: '14 digits SIRET',
+                                hasError: controller.siretError.isNotEmpty,
+                                isEmpty: controller.siretController.text
+                                    .trim()
+                                    .isEmpty,
+                              ).copyWith(
+                                suffixIcon: controller.isSiretLoading
+                                    ? const SizedBox(
+                                        width: 20,
+                                        height: 20,
+                                        child: CircularProgressIndicator(strokeWidth: 2),
+                                      )
+                                    : controller.siretValidated
+                                        ? Icon(Icons.check_circle, color: Colors.green)
+                                        : null,
+                              ),
+                            ),
+                          ),
+                          controller.siretError.isEmpty
+                              ? const SizedBox(height: 20)
+                              : _errorChip(context, controller.siretError),
+                        ],
+                      ),
+                    ),
+
+                    // Code APE (affiché après validation SIRET)
+                    GetBuilder<SignUpControllerM>(
+                      id: "showAPE",
+                      builder: (_) => controller.companyInfo != null
+                          ? Column(
+                              children: [
+                                const SizedBox(height: 10),
+                                _label("APE Code"),
+                                Container(
+                                  height: 51,
+                                  width: double.infinity,
+                                  padding: const EdgeInsets.all(16),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[100],
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(color: Colors.grey[300]!),
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        '${controller.companyInfo!['activitePrincipaleUniteLegale']} - ${controller.companyInfo!['activitePrincipaleLibelle']}',
+                                        style: appTextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.black87,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 20),
+                              ],
+                            )
+                          : const SizedBox.shrink(),
+                    ),
+
                     // Remember me
                     GetBuilder<SignUpControllerM>(
                       id: "remember_me",

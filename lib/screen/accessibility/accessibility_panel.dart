@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:timeless/services/accessibility_service.dart';
-import 'package:timeless/services/translation_service.dart';
+import 'package:timeless/services/unified_translation_service.dart';
 
 class AccessibilityPanel extends StatelessWidget {
   const AccessibilityPanel({super.key});
@@ -11,7 +11,7 @@ class AccessibilityPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final accessibilityService = AccessibilityService.instance;
-    final translationService = TranslationService.instance;
+    final translationService = UnifiedTranslationService.instance;
     
     return Scaffold(
       backgroundColor: accessibilityService.backgroundColor,
@@ -271,7 +271,7 @@ class AccessibilityPanel extends StatelessWidget {
 
   Widget _buildFontSizeControls() {
     final accessibilityService = AccessibilityService.instance;
-    final translationService = TranslationService.instance;
+    final translationService = UnifiedTranslationService.instance;
     
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -346,7 +346,7 @@ class AccessibilityPanel extends StatelessWidget {
 
   Widget _buildTestSection() {
     final accessibilityService = AccessibilityService.instance;
-    final translationService = TranslationService.instance;
+    final translationService = UnifiedTranslationService.instance;
     
     return Container(
       padding: const EdgeInsets.all(16),
@@ -406,7 +406,7 @@ class AccessibilityPanel extends StatelessWidget {
 
   void _showResetDialog(BuildContext context) {
     final accessibilityService = AccessibilityService.instance;
-    final translationService = TranslationService.instance;
+    final translationService = UnifiedTranslationService.instance;
     
     showDialog(
       context: context,

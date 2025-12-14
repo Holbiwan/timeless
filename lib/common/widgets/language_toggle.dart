@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:timeless/services/translation_service.dart';
+import 'package:timeless/services/unified_translation_service.dart';
 import 'package:timeless/utils/app_theme.dart';
 
 class LanguageToggle extends StatelessWidget {
@@ -11,7 +11,7 @@ class LanguageToggle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      final translationService = TranslationService.instance;
+      final translationService = UnifiedTranslationService.instance;
       final isEnglish = translationService.currentLanguage.value == 'en';
       
       return InkWell(

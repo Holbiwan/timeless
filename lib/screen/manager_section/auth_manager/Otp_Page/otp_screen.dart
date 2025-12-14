@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:timeless/common/widgets/back_button.dart';
-import 'package:timeless/screen/manager_section/auth_manager/reset_password/reset_password_screen.dart';
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/color_res.dart';
@@ -124,7 +123,7 @@ class OtpScreenM extends StatelessWidget {
             }),
         const SizedBox(height: 180),
         InkWell(
-          onTap: controller.otpValidation(),
+          onTap: () => controller.otpValidation(),
           child: Container(
             height: 50,
             width: 339,
@@ -139,10 +138,8 @@ class OtpScreenM extends StatelessWidget {
             child: InkWell(
               onTap: () {
                 controller.startTimer();
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (con) => ResetPasswordScreenM()));
+                // Navigation to reset password screen removed due to missing screen
+                Get.back();
               },
               child: Text("Verify",
                   style: appTextStyle(

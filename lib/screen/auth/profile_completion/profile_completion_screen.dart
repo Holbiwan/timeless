@@ -6,7 +6,7 @@ import 'package:timeless/common/widgets/common_loader.dart';
 import 'package:timeless/screen/auth/profile_completion/profile_completion_controller.dart';
 import 'package:timeless/screen/dashboard/dashboard_screen.dart';
 import 'package:timeless/services/google_auth_service.dart';
-import 'package:timeless/services/translation_service.dart';
+import 'package:timeless/services/unified_translation_service.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/app_theme.dart';
 
@@ -19,7 +19,7 @@ class ProfileCompletionScreen extends StatefulWidget {
 
 class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
   final ProfileCompletionController controller = Get.put(ProfileCompletionController());
-  final TranslationService _translationService = TranslationService.instance;
+  final UnifiedTranslationService _translationService = UnifiedTranslationService.instance;
 
   @override
   void initState() {

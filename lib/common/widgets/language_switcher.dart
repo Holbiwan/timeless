@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:timeless/utils/app_theme.dart';
-import 'package:timeless/services/comprehensive_translation_service.dart';
+import 'package:timeless/services/unified_translation_service.dart';
 import 'package:timeless/services/accessibility_service.dart';
 
 class LanguageSwitcher extends StatelessWidget {
@@ -17,7 +17,7 @@ class LanguageSwitcher extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ComprehensiveTranslationService translationService = Get.find<ComprehensiveTranslationService>();
+    final UnifiedTranslationService translationService = Get.find<UnifiedTranslationService>();
     final AccessibilityService accessibilityService = Get.find<AccessibilityService>();
 
     return Obx(() => accessibilityService.buildAccessibleWidget(
@@ -31,7 +31,7 @@ class LanguageSwitcher extends StatelessWidget {
   }
 
   Widget _buildCompactSwitch() {
-    final ComprehensiveTranslationService translationService = Get.find<ComprehensiveTranslationService>();
+    final UnifiedTranslationService translationService = Get.find<UnifiedTranslationService>();
     final AccessibilityService accessibilityService = Get.find<AccessibilityService>();
 
     return Container(
@@ -70,7 +70,7 @@ class LanguageSwitcher extends StatelessWidget {
   }
 
   Widget _buildFullSwitch() {
-    final ComprehensiveTranslationService translationService = Get.find<ComprehensiveTranslationService>();
+    final UnifiedTranslationService translationService = Get.find<UnifiedTranslationService>();
     final AccessibilityService accessibilityService = Get.find<AccessibilityService>();
 
     return Container(
@@ -114,7 +114,7 @@ class LanguageSwitcher extends StatelessWidget {
   }
 
   void _showLanguageDialog(BuildContext context) {
-    final ComprehensiveTranslationService translationService = Get.find<ComprehensiveTranslationService>();
+    final UnifiedTranslationService translationService = Get.find<UnifiedTranslationService>();
     final AccessibilityService accessibilityService = Get.find<AccessibilityService>();
 
     showDialog(
@@ -197,7 +197,7 @@ class LanguageSwitcher extends StatelessWidget {
     String languageCode,
     bool isSelected,
   ) {
-    final ComprehensiveTranslationService translationService = Get.find<ComprehensiveTranslationService>();
+    final UnifiedTranslationService translationService = Get.find<UnifiedTranslationService>();
     final AccessibilityService accessibilityService = Get.find<AccessibilityService>();
 
     return accessibilityService.buildAccessibleWidget(

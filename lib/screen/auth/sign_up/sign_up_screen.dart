@@ -8,7 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:timeless/common/widgets/common_loader.dart';
 import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/app_theme.dart';
-import 'package:timeless/services/translation_service.dart';
+import 'package:timeless/services/unified_translation_service.dart';
 import 'package:timeless/services/accessibility_service.dart';
 
 import 'package:timeless/screen/auth/sign_up/sign_up_controller.dart';
@@ -22,7 +22,7 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   final SignUpController ctrl = Get.put(SignUpController());
-  final TranslationService translationService = Get.find<TranslationService>();
+  final UnifiedTranslationService translationService = Get.find<UnifiedTranslationService>();
   final AccessibilityService accessibilityService = Get.find<AccessibilityService>();
 
   @override

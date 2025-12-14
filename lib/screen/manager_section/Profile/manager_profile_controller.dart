@@ -89,16 +89,7 @@ class ManagerProfileController extends GetxController {
           dateController.text = data['dateOfBirth'] ?? '';
           jobPositionController.text = data['jobPosition'] ?? '';
           
-          // Skills et salary depuis jobPreferences si disponible
-          final jobPrefs = data['jobPreferences'] as Map<String, dynamic>?;
-          if (jobPrefs != null) {
-            skillsController.text = (jobPrefs['skills'] as List<dynamic>?)?.join(', ') ?? '';
-            final salaryRange = jobPrefs['salaryRange'] as Map<String, dynamic>?;
-            if (salaryRange != null) {
-              salaryMinController.text = salaryRange['min']?.toString() ?? '';
-              salaryMaxController.text = salaryRange['max']?.toString() ?? '';
-            }
-          }
+          // jobPreferences removed - skills and salary managed separately if needed
           
           // Charger l'image de profil
           if (data['profileImageUrl'] != null) {
@@ -344,17 +335,7 @@ class ManagerProfileController extends GetxController {
       'jobPosition': jobPositionController.text.trim(),
       'updatedAt': FieldValue.serverTimestamp(),
       
-      // Structure jobPreferences pour compatibilité
-      'jobPreferences': {
-        'skills': skillsController.text.trim().split(',').map((s) => s.trim()).where((s) => s.isNotEmpty).toList(),
-        'workType': ['remote', 'hybrid', 'onsite'],
-        'contractType': ['fulltime'],
-        'salaryRange': {
-          'min': salaryMinController.text.trim().isNotEmpty ? int.tryParse(salaryMinController.text.trim()) : null,
-          'max': salaryMaxController.text.trim().isNotEmpty ? int.tryParse(salaryMaxController.text.trim()) : null,
-          'currency': 'EUR'
-        }
-      },
+      // jobPreferences removed
     };
     
     if (imageUrl != null) {

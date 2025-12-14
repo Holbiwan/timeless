@@ -20,9 +20,7 @@ import 'package:timeless/screen/job_recommendation_screen/job_recommendation_scr
 import 'package:timeless/screen/jobs/job_application_screen.dart';
 
 // Global services
-import 'package:timeless/services/translation_service.dart';
-import 'package:timeless/services/easy_translation_service.dart';
-import 'package:timeless/services/comprehensive_translation_service.dart';
+import 'package:timeless/services/unified_translation_service.dart';
 import 'package:timeless/services/theme_service.dart';
 import 'package:timeless/services/accessibility_service.dart';
 import 'package:timeless/services/preferences_service.dart';
@@ -80,9 +78,7 @@ Future<void> main() async {
   ));
 
   // Initialize global services using GetX
-  Get.put(TranslationService()); // Support french/english (Legacy)
-  Get.put(EasyTranslationService()); // New Easy Localization service
-  Get.put(ComprehensiveTranslationService()); // Complete service with Google Translate
+  Get.put(UnifiedTranslationService()); // Unified translation service (replaces 3 old services)
   Get.put(ThemeService()); // Enhanced theme service
   Get.put(AccessibilityService()); // Accessibility service for all
 

@@ -110,7 +110,7 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
               ),
               const SizedBox(height: 16),
               Text(
-                translationService.getText('application_sent_title'),
+                'Application Submitted Successfully!',
                 style: GoogleFonts.poppins(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
@@ -120,7 +120,7 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
               ),
               const SizedBox(height: 12),
               Text(
-                '${translationService.getText('you_are_applying_for')} ${widget.job['Position'] ?? translationService.getText('this_position')} ${translationService.getText('at')} ${widget.job['CompanyName'] ?? translationService.getText('this_company')} ${translationService.getText('has_been_sent_successfully')}',
+                'Your application for ${widget.job['Position'] ?? 'this position'} at ${widget.job['CompanyName'] ?? 'this company'} has been submitted successfully.',
                 style: GoogleFonts.poppins(
                   fontSize: 14,
                   color: Colors.grey[700],
@@ -145,7 +145,7 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        '${translationService.getText('confirmation_email_sent_to')} ${_emailController.text}',
+                        'A confirmation email has been sent to ${_emailController.text}',
                         style: GoogleFonts.poppins(
                           fontSize: 12,
                           color: Colors.blue[800],
@@ -172,7 +172,7 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
                   child: Text(
-                    translationService.getText('perfect'),
+                    'Perfect!',
                     style: GoogleFonts.poppins(
                       fontWeight: FontWeight.w600,
                       color: Colors.white,

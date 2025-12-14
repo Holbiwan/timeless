@@ -6,12 +6,12 @@ import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/pref_keys.dart';
-import 'package:timeless/services/translation_service.dart';
+import 'package:timeless/services/unified_translation_service.dart';
 
 class UploadCvScreenHelper {
   // Show application confirmation dialog
   static void showApplicationConfirmationDialog(JobDetailsUploadCvController controller, var args) {
-    final translationService = Get.find<TranslationService>();
+    final translationService = Get.find<UnifiedTranslationService>();
     Get.dialog(
       Dialog(
         shape: RoundedRectangleBorder(
@@ -122,7 +122,7 @@ class UploadCvScreenHelper {
 
   // Show success popup after application submission
   static void showSuccessPopup(var jobDoc) {
-    final translationService = Get.find<TranslationService>();
+    final translationService = Get.find<UnifiedTranslationService>();
     Get.dialog(
       Dialog(
         shape: RoundedRectangleBorder(
