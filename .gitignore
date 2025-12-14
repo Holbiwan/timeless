@@ -62,6 +62,12 @@ lib/firebase_options.dart
 
 # Custom config
 lib/config/api_config.dart
+lib/config/secrets.dart 
+config/.dart_tool/
+config/secrets.yaml 
+config/secrets.json
+config/api_keys.yaml
+config/local_settings.yaml
 
 # Keys & certificates
 *.jks
@@ -97,3 +103,15 @@ firebase-debug.log
 *.old
 settings.local.json
 .settings.local.json
+
+# .Sab
+.Sabrina
+docs/
+.sabrina/
+.sabrina_cache/
+
+# Private config and heavy files
+config/
+firebase_config/
+node_modules/
+
