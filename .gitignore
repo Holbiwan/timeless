@@ -96,20 +96,4 @@ firebase-debug.log
 *.bak
 *.old
 settings.local.json
-
-# =================================================================
-# NODE / FIREBASE TOOLS
-# =================================================================
-node_modules/
-firebase_config/
-.firebaserc
-firebase.json
-firestore.indexes.json
-firestore.rules
-.env.*
-*.js
-*.json
-
-.Sabrina
-.Sabrina/*
-.Sab
+.settings.local.json
