@@ -180,7 +180,7 @@ class FirstScreen extends StatelessWidget {
                       children: [
                         Flexible(
                           child: Obx(() => Text(
-                                translationService.getText('sign in as'),
+                                translationService.getText('Sign in as'),
                                 style: GoogleFonts.poppins(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500,
