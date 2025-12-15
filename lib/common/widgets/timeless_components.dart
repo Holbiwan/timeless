@@ -89,7 +89,6 @@ class TimelessButton extends StatelessWidget {
       case ButtonSize.large:
         return AppDimensions.buttonHeightLarge;
       case ButtonSize.medium:
-      default:
         return AppDimensions.buttonHeight;
     }
   }
@@ -101,7 +100,6 @@ class TimelessButton extends StatelessWidget {
       case ButtonSize.large:
         return AppDimensions.fontSizeLG;
       case ButtonSize.medium:
-      default:
         return AppDimensions.fontSizeMD;
     }
   }

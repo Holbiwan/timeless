@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-// Import supprimé : chat_box_user_screen.dart n'existe plus
 import 'package:timeless/screen/dashboard/dashboard_controller.dart';
 import 'package:timeless/screen/dashboard/home/home_screen.dart';
 import 'package:timeless/screen/dashboard/widget.dart';
 import 'package:timeless/screen/new_home_page/new_home_page_screen.dart';
-// Import supprimé : edit_profile_user_screen.dart n'existe plus (remplacé par edit_profile_screen.dart)
 
 import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/asset_res.dart';

@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 
 class EmployerValidationService {
   static const String _baseUrl = 'https://api.insee.fr/entreprises/sirene/V3';
-  
+
   // Données fictives cohérentes pour les tests
   static const Map<String, Map<String, dynamic>> _fakeCompanies = {
     '12345678901234': {
@@ -22,7 +22,8 @@ class EmployerValidationService {
       'siret': '98765432109876',
       'denomination': 'DataFlow Analytics',
       'activitePrincipaleUniteLegale': '6202A',
-      'activitePrincipaleLibelle': 'Conseil en systèmes et logiciels informatiques',
+      'activitePrincipaleLibelle':
+          'Conseil en systèmes et logiciels informatiques',
       'adresse': '45 Rue de la République 69002 Lyon',
       'secteur': 'Conseil en informatique',
       'effectif': '20-49',
@@ -73,11 +74,11 @@ class EmployerValidationService {
     '7112B': 'Ingénierie, études techniques',
   };
 
-  /// Valide un code SIRET et récupère les informations de l'entreprise
+  // Valide un code SIRET et récupère les informations de l'entreprise
   static Future<Map<String, dynamic>?> validateSiret(String siret) async {
     // Nettoyage du SIRET
     final cleanSiret = siret.replaceAll(RegExp(r'[^\d]'), '');
-    
+
     if (cleanSiret.length != 14) {
       throw ArgumentError('Le SIRET doit contenir exactement 14 chiffres');
     }
@@ -109,23 +110,25 @@ class EmployerValidationService {
     }
   }
 
-  /// Valide un code APE
+  // Valide un code APE
   static bool validateApeCode(String apeCode) {
     final apeRegex = RegExp(r'^[0-9]{4}[A-Z]$');
     return apeRegex.hasMatch(apeCode.trim().toUpperCase());
   }
 
-  /// Récupère le libellé d'un code APE
+  // Récupère le libellé d'un code APE
   static String getApeLibelle(String apeCode) {
-    return _apeLibelles[apeCode.trim().toUpperCase()] ?? 'Activité non répertoriée';
+    return _apeLibelles[apeCode.trim().toUpperCase()] ??
+        'Activité non répertoriée';
   }
 
-  /// Valide la cohérence SIRET/APE
-  static Future<bool> validateSiretApeConsistency(String siret, String apeCode) async {
+  // Valide la cohérence SIRET/APE
+  static Future<bool> validateSiretApeConsistency(
+      String siret, String apeCode) async {
     try {
       final companyInfo = await validateSiret(siret);
       if (companyInfo == null) return false;
-      
+
       final companySiretApe = companyInfo['activitePrincipaleUniteLegale'];
       return companySiretApe == apeCode.trim().toUpperCase();
     } catch (e) {
@@ -134,38 +137,43 @@ class EmployerValidationService {
     }
   }
 
-  /// Parse la réponse de l'API INSEE
+  // Parse la réponse de l'API INSEE
   static Map<String, dynamic> _parseInseeResponse(Map<String, dynamic> data) {
     final etablissement = data['etablissement'];
     final uniteLegale = etablissement['uniteLegale'];
-    
+
     return {
       'siret': etablissement['siret'],
-      'denomination': uniteLegale['denominationUniteLegale'] ?? 
-                     '${uniteLegale['prenomUsuelUniteLegale'] ?? ''} ${uniteLegale['nomUniteLegale'] ?? ''}',
-      'activitePrincipaleUniteLegale': uniteLegale['activitePrincipaleUniteLegale'],
-      'activitePrincipaleLibelle': getApeLibelle(uniteLegale['activitePrincipaleUniteLegale']),
+      'denomination': uniteLegale['denominationUniteLegale'] ??
+          '${uniteLegale['prenomUsuelUniteLegale'] ?? ''} ${uniteLegale['nomUniteLegale'] ?? ''}',
+      'activitePrincipaleUniteLegale':
+          uniteLegale['activitePrincipaleUniteLegale'],
+      'activitePrincipaleLibelle':
+          getApeLibelle(uniteLegale['activitePrincipaleUniteLegale']),
       'adresse': '${etablissement['adresseEtablissement']['numeroVoieEtablissement'] ?? ''} '
-                 '${etablissement['adresseEtablissement']['typeVoieEtablissement'] ?? ''} '
-                 '${etablissement['adresseEtablissement']['libelleVoieEtablissement'] ?? ''} '
-                 '${etablissement['adresseEtablissement']['codePostalEtablissement'] ?? ''} '
-                 '${etablissement['adresseEtablissement']['libelleCommuneEtablissement'] ?? ''}',
-      'secteur': _getSecteurFromApe(uniteLegale['activitePrincipaleUniteLegale']),
-      'effectif': etablissement['trancheEffectifsEtablissement'] ?? 'Non renseigné',
+          '${etablissement['adresseEtablissement']['typeVoieEtablissement'] ?? ''} '
+          '${etablissement['adresseEtablissement']['libelleVoieEtablissement'] ?? ''} '
+          '${etablissement['adresseEtablissement']['codePostalEtablissement'] ?? ''} '
+          '${etablissement['adresseEtablissement']['libelleCommuneEtablissement'] ?? ''}',
+      'secteur':
+          _getSecteurFromApe(uniteLegale['activitePrincipaleUniteLegale']),
+      'effectif':
+          etablissement['trancheEffectifsEtablissement'] ?? 'Non renseigné',
       'created': DateTime.now().toIso8601String().split('T')[0],
     };
   }
 
-  /// Récupère les données fictives pour le développement/test
+  // Récupère les données fictives pour le développement/test
   static Map<String, dynamic>? _getFakeCompanyData(String siret) {
     if (_fakeCompanies.containsKey(siret)) {
-      if (kDebugMode) print('Utilisation des données fictives pour SIRET: $siret');
+      if (kDebugMode)
+        print('Utilisation des données fictives pour SIRET: $siret');
       return Map<String, dynamic>.from(_fakeCompanies[siret]!);
     }
     throw Exception('SIRET non trouvé (simulation)');
   }
 
-  /// Détermine le secteur d'activité à partir du code APE
+  // Détermine le secteur d'activité à partir du code APE
   static String _getSecteurFromApe(String apeCode) {
     if (apeCode.startsWith('62') || apeCode.startsWith('63')) {
       return 'Informatique';
@@ -177,26 +185,28 @@ class EmployerValidationService {
     return 'Autre';
   }
 
-  /// Génère des données fictives cohérentes pour les tests
+  // Génère des données fictives cohérentes pour les tests
   static Map<String, dynamic> generateFakeEmployerData({
     required String siret,
     required String companyName,
     required String email,
   }) {
-    final apeCode = _fakeCompanies[siret]?['activitePrincipaleUniteLegale'] ?? '6201Z';
-    
+    final apeCode =
+        _fakeCompanies[siret]?['activitePrincipaleUniteLegale'] ?? '6201Z';
+
     return {
       'email': email,
       'companyName': companyName,
       'siretCode': siret,
       'apeCode': apeCode,
-      'companyInfo': _fakeCompanies[siret] ?? {
-        'siret': siret,
-        'denomination': companyName,
-        'activitePrincipaleUniteLegale': apeCode,
-        'activitePrincipaleLibelle': getApeLibelle(apeCode),
-        'secteur': _getSecteurFromApe(apeCode),
-      },
+      'companyInfo': _fakeCompanies[siret] ??
+          {
+            'siret': siret,
+            'denomination': companyName,
+            'activitePrincipaleUniteLegale': apeCode,
+            'activitePrincipaleLibelle': getApeLibelle(apeCode),
+            'secteur': _getSecteurFromApe(apeCode),
+          },
       'isVerified': true,
       'createdAt': DateTime.now(),
       'lastLoginAt': DateTime.now(),
@@ -205,12 +215,12 @@ class EmployerValidationService {
     };
   }
 
-  /// Liste des SIRET fictifs disponibles pour les tests
+  // Liste des SIRET fictifs disponibles pour les tests
   static List<String> getAvailableFakeSirets() {
     return _fakeCompanies.keys.toList();
   }
 
-  /// Informations détaillées sur les entreprises fictives
+  // Informations détaillées sur les entreprises fictives
   static List<Map<String, dynamic>> getFakeCompaniesDetails() {
     return _fakeCompanies.values.toList();
   }

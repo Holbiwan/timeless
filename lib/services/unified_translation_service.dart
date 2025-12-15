@@ -8,15 +8,15 @@ import 'package:timeless/services/google_translation_service.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/utils/app_theme.dart';
 
-/// Unified Translation Service
-/// This service replaces TranslationService, EasyTranslationService, and ComprehensiveTranslationService
-/// It combines static translations, Easy Localization support, and dynamic Google Translate
+// Unified Translation Service
+// This service replaces TranslationService, EasyTranslationService, and ComprehensiveTranslationService
+// It combines static translations, Easy Localization support, and dynamic Google Translate
 class UnifiedTranslationService extends GetxController {
   static UnifiedTranslationService get instance => Get.find();
 
   // Current language observable
   var currentLanguage = 'en'.obs;
-  
+
   // Dynamic translation features
   var isAutoTranslateEnabled = false.obs;
   var isTranslating = false.obs;
@@ -38,7 +38,7 @@ class UnifiedTranslationService extends GetxController {
   // Emoji flags for each language
   final Map<String, String> languageFlags = {
     'en': '🇺🇸',
-    'fr': '🇫🇷', 
+    'fr': '🇫🇷',
     'es': '🇪🇸',
     'ar': '🇸🇦',
     'de': '🇩🇪',
@@ -73,7 +73,8 @@ class UnifiedTranslationService extends GetxController {
       // }
 
       // Load auto-translate preference
-      isAutoTranslateEnabled.value = PreferencesService.getBool('auto_translate_enabled');
+      isAutoTranslateEnabled.value =
+          PreferencesService.getBool('auto_translate_enabled');
     } catch (e) {
       if (kDebugMode) print('Error loading translation preferences: $e');
       // Default values
@@ -123,10 +124,11 @@ class UnifiedTranslationService extends GetxController {
   // Toggle auto-translate feature
   void toggleAutoTranslate() {
     isAutoTranslateEnabled.value = !isAutoTranslateEnabled.value;
-    
+
     try {
-      PreferencesService.setValue('auto_translate_enabled', isAutoTranslateEnabled.value);
-      
+      PreferencesService.setValue(
+          'auto_translate_enabled', isAutoTranslateEnabled.value);
+
       AppTheme.showStandardSnackBar(
         title: "Auto Translation",
         message: isAutoTranslateEnabled.value ? "Enabled" : "Disabled",
@@ -147,7 +149,7 @@ class UnifiedTranslationService extends GetxController {
     if (text.trim().isEmpty) return text;
 
     final target = targetLang ?? currentLanguage.value;
-    
+
     // Skip translation if already in target language
     if (target == 'en' && await _isEnglishText(text)) {
       return text;
@@ -155,8 +157,9 @@ class UnifiedTranslationService extends GetxController {
 
     try {
       isTranslating.value = true;
-      
-      final translatedText = await GoogleUnifiedTranslationService.translateText(
+
+      final translatedText =
+          await GoogleUnifiedTranslationService.translateText(
         text: text,
         targetLanguage: target,
       );
@@ -164,7 +167,8 @@ class UnifiedTranslationService extends GetxController {
       return translatedText ?? text;
     } catch (e) {
       if (kDebugMode) print('Translation error: $e');
-      _showTranslationError('Translation failed. Check your internet connection.');
+      _showTranslationError(
+          'Translation failed. Check your internet connection.');
       return text;
     } finally {
       isTranslating.value = false;
@@ -172,7 +176,8 @@ class UnifiedTranslationService extends GetxController {
   }
 
   // Auto-translate text if enabled
-  Future<String> autoTranslateIfEnabled(String text, {String? targetLang}) async {
+  Future<String> autoTranslateIfEnabled(String text,
+      {String? targetLang}) async {
     if (isAutoTranslateEnabled.value) {
       return await translateDynamicText(text, targetLang: targetLang);
     }
@@ -220,13 +225,28 @@ class UnifiedTranslationService extends GetxController {
 
   // Simple English text detection heuristic
   Future<bool> _isEnglishText(String text) async {
-    final commonEnglishWords = ['the', 'and', 'is', 'in', 'to', 'of', 'a', 'that', 'it', 'with'];
+    final commonEnglishWords = [
+      'the',
+      'and',
+      'is',
+      'in',
+      'to',
+      'of',
+      'a',
+      'that',
+      'it',
+      'with'
+    ];
     final cleanText = text.toLowerCase().replaceAll(RegExp(r'[^\w\s]'), ' ');
-    final words = cleanText.split(RegExp(r'\s+')).where((word) => word.isNotEmpty).toList();
-    
+    final words = cleanText
+        .split(RegExp(r'\s+'))
+        .where((word) => word.isNotEmpty)
+        .toList();
+
     if (words.isEmpty) return false;
-    
-    final englishWordsFound = words.where((word) => commonEnglishWords.contains(word)).length;
+
+    final englishWordsFound =
+        words.where((word) => commonEnglishWords.contains(word)).length;
     return englishWordsFound > words.length * 0.2;
   }
 
@@ -239,7 +259,7 @@ class UnifiedTranslationService extends GetxController {
 
       PreferencesService.setValue(PrefKeys.currentLanguage, 'en');
       PreferencesService.setValue('auto_translate_enabled', false);
-      
+
       Get.context?.setLocale(const Locale('en'));
 
       AppTheme.showStandardSnackBar(
@@ -282,7 +302,8 @@ class UnifiedTranslationService extends GetxController {
   }
 
   // Getters for UI
-  String get currentLanguageName => supportedLanguages[currentLanguage.value] ?? 'English';
+  String get currentLanguageName =>
+      supportedLanguages[currentLanguage.value] ?? 'English';
   String get currentFlag => languageFlags[currentLanguage.value] ?? '🇺🇸';
   List<String> get availableLanguageCodes => supportedLanguages.keys.toList();
   String getLanguageName(String code) => supportedLanguages[code] ?? 'Unknown';
@@ -318,7 +339,8 @@ class UnifiedTranslationService extends GetxController {
       // Smart Matching
       'smart_matching': 'Smart Job Matching',
       'intelligent_matching_system': 'Intelligent Matching System',
-      'algorithm_description': 'Our algorithm analyzes your profile and skills to find the best matching jobs',
+      'algorithm_description':
+          'Our algorithm analyzes your profile and skills to find the best matching jobs',
       'find_matches': 'Find My Matches',
       'analyzing_profile': 'Analyzing Profile...',
       'processing_skills': 'Processing skills and preferences',
@@ -407,7 +429,8 @@ class UnifiedTranslationService extends GetxController {
       'select_your_cv_label': 'Select your CV *',
       'accepted_formats_label': 'PDF, DOC, DOCX accepted',
       'cover_letter_title': 'Cover Letter (optional)',
-      'cover_letter_hint': 'Explain why you are the ideal candidate for this position...',
+      'cover_letter_hint':
+          'Explain why you are the ideal candidate for this position...',
       'send_my_application': 'Send my application',
 
       // Error Messages
@@ -442,19 +465,23 @@ class UnifiedTranslationService extends GetxController {
       'cv_selected': '✅ CV Selected',
       'contact_info': 'Contact Information',
       'cover_letter': 'Cover Letter (optional)',
-      'cover_letter_placeholder': 'Explain why you are interested in this position...',
+      'cover_letter_placeholder':
+          'Explain why you are interested in this position...',
       'submit_application': 'Submit my application',
       'application_sent': 'Application Sent!',
-      'application_success': 'Your application for {title} has been successfully submitted',
+      'application_success':
+          'Your application for {title} has been successfully submitted',
       'cv_required': '⚠️ CV Required',
       'please_select_cv': 'Please select your CV',
       'email_required': '⚠️ Email Required',
       'application_sent_message': 'Your application has been sent successfully',
-      'confirmation_email_info': 'A confirmation email has been sent to your inbox',
+      'confirmation_email_info':
+          'A confirmation email has been sent to your inbox',
       'apply_button': 'Apply',
       'cancel_button': 'Cancel',
       'confirm_application': 'Confirm Application',
-      'confirm_application_message': 'Are you sure you want to apply for this position?',
+      'confirm_application_message':
+          'Are you sure you want to apply for this position?',
     },
     'fr': {
       // Navigation & Général
@@ -484,7 +511,8 @@ class UnifiedTranslationService extends GetxController {
       // Smart Matching
       'smart_matching': 'Smart Job Matching',
       'intelligent_matching_system': 'Système de Matching Intelligent',
-      'algorithm_description': 'Notre algorithme analyse votre profil et compétences pour trouver les meilleurs emplois correspondants',
+      'algorithm_description':
+          'Notre algorithme analyse votre profil et compétences pour trouver les meilleurs emplois correspondants',
       'find_matches': 'Trouver mes correspondances',
       'analyzing_profile': 'Analyse en cours...',
       'processing_skills': 'Traitement des compétences et préférences',
@@ -570,19 +598,23 @@ class UnifiedTranslationService extends GetxController {
       'cv_selected': '✅ CV Sélectionné',
       'contact_info': 'Informations de contact',
       'cover_letter': 'Lettre de motivation (optionnel)',
-      'cover_letter_placeholder': 'Expliquez pourquoi vous êtes intéressé par ce poste...',
+      'cover_letter_placeholder':
+          'Expliquez pourquoi vous êtes intéressé par ce poste...',
       'send_application': 'Envoyer ma candidature',
       'application_sent': 'Candidature Envoyée!',
-      'application_success': 'Votre candidature pour {title} a été soumise avec succès',
+      'application_success':
+          'Votre candidature pour {title} a été soumise avec succès',
       'cv_required': '⚠️ CV Requis',
       'please_select_cv': 'Veuillez sélectionner votre CV',
       'email_required': '⚠️ Email Requis',
       'application_sent_message': 'Votre candidature a été envoyée avec succès',
-      'confirmation_email_info': 'Un email de confirmation a été envoyé dans votre boîte de réception',
+      'confirmation_email_info':
+          'Un email de confirmation a été envoyé dans votre boîte de réception',
       'apply_button': 'Postuler',
       'cancel_button': 'Annuler',
       'confirm_application': 'Confirmer la candidature',
-      'confirm_application_message': 'Êtes-vous sûr de vouloir postuler pour ce poste ?',
+      'confirm_application_message':
+          'Êtes-vous sûr de vouloir postuler pour ce poste ?',
     },
     'es': {
       // Navegación y General
