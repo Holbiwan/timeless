@@ -1,6 +1,7 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:timeless/controllers/employer_profile_controller.dart';
 import 'package:timeless/services/preferences_service.dart';
@@ -10,14 +11,24 @@ import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/utils/string.dart';
-import 'package:timeless/utils/app_theme.dart';
 
-class EmployerSettingsScreen extends StatelessWidget {
+class EmployerSettingsScreen extends StatefulWidget {
   const EmployerSettingsScreen({super.key});
-  
-  // Obtenir une instance du EmployerProfileController pour la mise à jour en temps réel
-  EmployerProfileController get employerProfileController => Get.put(EmployerProfileController());
-  AuthService get authService => Get.put(AuthService());
+
+  @override
+  State<EmployerSettingsScreen> createState() => _EmployerSettingsScreenState();
+}
+
+class _EmployerSettingsScreenState extends State<EmployerSettingsScreen> {
+  late EmployerProfileController employerProfileController;
+  late AuthService authService;
+
+  @override
+  void initState() {
+    super.initState();
+    employerProfileController = Get.put(EmployerProfileController());
+    authService = Get.put(AuthService());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -338,7 +349,6 @@ class EmployerSettingsScreen extends StatelessWidget {
 
   // Fonction pour modifier le profil employeur avec mise à jour temps réel
   void _showEditProfile(BuildContext context) {
-    final controller = employerProfileController;
     
     Get.bottomSheet(
       Container(
@@ -385,7 +395,7 @@ class EmployerSettingsScreen extends StatelessWidget {
                       leading: const Icon(Icons.business, color: Color(0xFF000647)),
                       title: Text("Company name", style: appTextStyle(fontSize: 15, color: ColorRes.black)),
                       subtitle: Obx(() => Text(
-                        controller.companyName.value.isEmpty ? 'No company name set' : controller.companyName.value,
+                        employerProfileController.companyName.value.isEmpty ? 'No company name set' : employerProfileController.companyName.value,
                         style: appTextStyle(fontSize: 13, color: Colors.grey[600]),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -404,7 +414,7 @@ class EmployerSettingsScreen extends StatelessWidget {
                       leading: const Icon(Icons.email, color: Color(0xFF000647)),
                       title: Text("Email", style: appTextStyle(fontSize: 15, color: ColorRes.black)),
                       subtitle: Obx(() => Text(
-                        controller.email.value.isEmpty ? 'No email set' : controller.email.value,
+                        employerProfileController.email.value.isEmpty ? 'No email set' : employerProfileController.email.value,
                         style: appTextStyle(fontSize: 13, color: Colors.grey[600]),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -423,7 +433,7 @@ class EmployerSettingsScreen extends StatelessWidget {
                       leading: const Icon(Icons.phone, color: Color(0xFF000647)),
                       title: Text("Phone", style: appTextStyle(fontSize: 15, color: ColorRes.black)),
                       subtitle: Obx(() => Text(
-                        controller.phoneNumber.value.isEmpty ? 'No phone set' : controller.phoneNumber.value,
+                        employerProfileController.phoneNumber.value.isEmpty ? 'No phone set' : employerProfileController.phoneNumber.value,
                         style: appTextStyle(fontSize: 13, color: Colors.grey[600]),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -442,7 +452,7 @@ class EmployerSettingsScreen extends StatelessWidget {
                       leading: const Icon(Icons.language, color: Color(0xFF000647)),
                       title: Text("Website", style: appTextStyle(fontSize: 15, color: ColorRes.black)),
                       subtitle: Obx(() => Text(
-                        controller.website.value.isEmpty ? 'No website set' : controller.website.value,
+                        employerProfileController.website.value.isEmpty ? 'No website set' : employerProfileController.website.value,
                         style: appTextStyle(fontSize: 13, color: Colors.grey[600]),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -461,7 +471,7 @@ class EmployerSettingsScreen extends StatelessWidget {
                       leading: const Icon(Icons.location_on, color: Color(0xFF000647)),
                       title: Text("Location", style: appTextStyle(fontSize: 15, color: ColorRes.black)),
                       subtitle: Obx(() => Text(
-                        controller.location.value.isEmpty ? 'No location set' : controller.location.value,
+                        employerProfileController.location.value.isEmpty ? 'No location set' : employerProfileController.location.value,
                         style: appTextStyle(fontSize: 13, color: Colors.grey[600]),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -480,7 +490,7 @@ class EmployerSettingsScreen extends StatelessWidget {
                       leading: const Icon(Icons.image, color: Color(0xFF000647)),
                       title: Text("Company logo", style: appTextStyle(fontSize: 15, color: ColorRes.black)),
                       subtitle: Obx(() => Text(
-                        controller.hasProfileImage() ? 'Logo set' : 'No logo',
+                        employerProfileController.hasProfileImage() ? 'Logo set' : 'No logo',
                         style: appTextStyle(fontSize: 13, color: Colors.grey[600]),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -508,9 +518,8 @@ class EmployerSettingsScreen extends StatelessWidget {
 
   // Fonctions d'édition pour chaque champ
   void _showEditCompanyNameDialog(BuildContext context) {
-    final controller = employerProfileController;
     final TextEditingController nameController = TextEditingController();
-    nameController.text = controller.companyName.value;
+    nameController.text = employerProfileController.companyName.value;
     
     Get.dialog(
       AlertDialog(
@@ -552,13 +561,13 @@ class EmployerSettingsScreen extends StatelessWidget {
             child: Text("Cancel", style: appTextStyle(color: Colors.grey, fontSize: 14)),
           ),
           Obx(() => ElevatedButton(
-            onPressed: controller.isLoading.value ? null : () async {
+            onPressed: employerProfileController.isLoading.value ? null : () async {
               final newName = nameController.text.trim();
-              if (newName.isNotEmpty && newName != controller.companyName.value) {
+              if (newName.isNotEmpty && newName != employerProfileController.companyName.value) {
                 try {
-                  controller.isLoading.value = true;
-                  controller.companyNameController.text = newName;
-                  await controller.onTapSubmit();
+                  employerProfileController.isLoading.value = true;
+                  employerProfileController.companyNameController.text = newName;
+                  await employerProfileController.onTapSubmit();
                   Get.back();
                   Get.snackbar(
                     "Success",
@@ -575,7 +584,7 @@ class EmployerSettingsScreen extends StatelessWidget {
                     colorText: Colors.white,
                   );
                 } finally {
-                  controller.isLoading.value = false;
+                  employerProfileController.isLoading.value = false;
                 }
               } else if (newName.isEmpty) {
                 Get.snackbar(
@@ -594,7 +603,7 @@ class EmployerSettingsScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               minimumSize: const Size(0, 36),
             ),
-            child: controller.isLoading.value 
+            child: employerProfileController.isLoading.value 
                 ? const SizedBox(
                     width: 16,
                     height: 16,
@@ -608,9 +617,8 @@ class EmployerSettingsScreen extends StatelessWidget {
   }
 
   void _showEditEmailDialog(BuildContext context) {
-    final controller = employerProfileController;
     final TextEditingController emailController = TextEditingController();
-    emailController.text = controller.email.value;
+    emailController.text = employerProfileController.email.value;
     
     Get.dialog(
       AlertDialog(
@@ -646,13 +654,13 @@ class EmployerSettingsScreen extends StatelessWidget {
             child: Text("Cancel", style: appTextStyle(color: Colors.grey, fontSize: 14)),
           ),
           Obx(() => ElevatedButton(
-            onPressed: controller.isLoading.value ? null : () async {
+            onPressed: employerProfileController.isLoading.value ? null : () async {
               final newEmail = emailController.text.trim();
-              if (newEmail.isNotEmpty && newEmail.contains('@') && newEmail != controller.email.value) {
+              if (newEmail.isNotEmpty && newEmail.contains('@') && newEmail != employerProfileController.email.value) {
                 try {
-                  controller.isLoading.value = true;
-                  controller.emailController.text = newEmail;
-                  await controller.onTapSubmit();
+                  employerProfileController.isLoading.value = true;
+                  employerProfileController.emailController.text = newEmail;
+                  await employerProfileController.onTapSubmit();
                   Get.back();
                   Get.snackbar(
                     "Success",
@@ -668,7 +676,7 @@ class EmployerSettingsScreen extends StatelessWidget {
                     colorText: Colors.white,
                   );
                 } finally {
-                  controller.isLoading.value = false;
+                  employerProfileController.isLoading.value = false;
                 }
               } else if (newEmail.isEmpty || !newEmail.contains('@')) {
                 Get.snackbar(
@@ -687,7 +695,7 @@ class EmployerSettingsScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               minimumSize: const Size(0, 36),
             ),
-            child: controller.isLoading.value 
+            child: employerProfileController.isLoading.value 
                 ? const SizedBox(
                     width: 16,
                     height: 16,
@@ -701,9 +709,8 @@ class EmployerSettingsScreen extends StatelessWidget {
   }
 
   void _showEditPhoneDialog(BuildContext context) {
-    final controller = employerProfileController;
     final TextEditingController phoneController = TextEditingController();
-    phoneController.text = controller.phoneNumber.value;
+    phoneController.text = employerProfileController.phoneNumber.value;
     
     Get.dialog(
       AlertDialog(
@@ -734,13 +741,13 @@ class EmployerSettingsScreen extends StatelessWidget {
             child: Text("Cancel", style: appTextStyle(color: Colors.grey, fontSize: 14)),
           ),
           Obx(() => ElevatedButton(
-            onPressed: controller.isLoading.value ? null : () async {
+            onPressed: employerProfileController.isLoading.value ? null : () async {
               final newPhone = phoneController.text.trim();
-              if (newPhone != controller.phoneNumber.value) {
+              if (newPhone != employerProfileController.phoneNumber.value) {
                 try {
-                  controller.isLoading.value = true;
-                  controller.phoneController.text = newPhone;
-                  await controller.onTapSubmit();
+                  employerProfileController.isLoading.value = true;
+                  employerProfileController.phoneController.text = newPhone;
+                  await employerProfileController.onTapSubmit();
                   Get.back();
                   Get.snackbar(
                     "Success",
@@ -756,7 +763,7 @@ class EmployerSettingsScreen extends StatelessWidget {
                     colorText: Colors.white,
                   );
                 } finally {
-                  controller.isLoading.value = false;
+                  employerProfileController.isLoading.value = false;
                 }
               } else {
                 Get.back();
@@ -768,7 +775,7 @@ class EmployerSettingsScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               minimumSize: const Size(0, 36),
             ),
-            child: controller.isLoading.value 
+            child: employerProfileController.isLoading.value 
                 ? const SizedBox(
                     width: 16,
                     height: 16,
@@ -782,9 +789,8 @@ class EmployerSettingsScreen extends StatelessWidget {
   }
 
   void _showEditWebsiteDialog(BuildContext context) {
-    final controller = employerProfileController;
     final TextEditingController websiteController = TextEditingController();
-    websiteController.text = controller.website.value;
+    websiteController.text = employerProfileController.website.value;
     
     Get.dialog(
       AlertDialog(
@@ -816,13 +822,13 @@ class EmployerSettingsScreen extends StatelessWidget {
             child: Text("Cancel", style: appTextStyle(color: Colors.grey, fontSize: 14)),
           ),
           Obx(() => ElevatedButton(
-            onPressed: controller.isLoading.value ? null : () async {
+            onPressed: employerProfileController.isLoading.value ? null : () async {
               final newWebsite = websiteController.text.trim();
-              if (newWebsite != controller.website.value) {
+              if (newWebsite != employerProfileController.website.value) {
                 try {
-                  controller.isLoading.value = true;
-                  controller.websiteController.text = newWebsite;
-                  await controller.onTapSubmit();
+                  employerProfileController.isLoading.value = true;
+                  employerProfileController.websiteController.text = newWebsite;
+                  await employerProfileController.onTapSubmit();
                   Get.back();
                   Get.snackbar(
                     "Success",
@@ -838,7 +844,7 @@ class EmployerSettingsScreen extends StatelessWidget {
                     colorText: Colors.white,
                   );
                 } finally {
-                  controller.isLoading.value = false;
+                  employerProfileController.isLoading.value = false;
                 }
               } else {
                 Get.back();
@@ -850,7 +856,7 @@ class EmployerSettingsScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               minimumSize: const Size(0, 36),
             ),
-            child: controller.isLoading.value 
+            child: employerProfileController.isLoading.value 
                 ? const SizedBox(
                     width: 16,
                     height: 16,
@@ -864,9 +870,8 @@ class EmployerSettingsScreen extends StatelessWidget {
   }
 
   void _showEditLocationDialog(BuildContext context) {
-    final controller = employerProfileController;
     final TextEditingController locationController = TextEditingController();
-    locationController.text = controller.location.value;
+    locationController.text = employerProfileController.location.value;
     
     Get.dialog(
       AlertDialog(
@@ -898,13 +903,13 @@ class EmployerSettingsScreen extends StatelessWidget {
             child: Text("Cancel", style: appTextStyle(color: Colors.grey, fontSize: 14)),
           ),
           Obx(() => ElevatedButton(
-            onPressed: controller.isLoading.value ? null : () async {
+            onPressed: employerProfileController.isLoading.value ? null : () async {
               final newLocation = locationController.text.trim();
-              if (newLocation != controller.location.value) {
+              if (newLocation != employerProfileController.location.value) {
                 try {
-                  controller.isLoading.value = true;
-                  controller.locationController.text = newLocation;
-                  await controller.onTapSubmit();
+                  employerProfileController.isLoading.value = true;
+                  employerProfileController.locationController.text = newLocation;
+                  await employerProfileController.onTapSubmit();
                   Get.back();
                   Get.snackbar(
                     "Success",
@@ -920,7 +925,7 @@ class EmployerSettingsScreen extends StatelessWidget {
                     colorText: Colors.white,
                   );
                 } finally {
-                  controller.isLoading.value = false;
+                  employerProfileController.isLoading.value = false;
                 }
               } else {
                 Get.back();
@@ -932,7 +937,7 @@ class EmployerSettingsScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               minimumSize: const Size(0, 36),
             ),
-            child: controller.isLoading.value 
+            child: employerProfileController.isLoading.value 
                 ? const SizedBox(
                     width: 16,
                     height: 16,
@@ -946,7 +951,6 @@ class EmployerSettingsScreen extends StatelessWidget {
   }
 
   void _showEditCompanyLogoDialog(BuildContext context) {
-    final controller = employerProfileController;
     
     Get.bottomSheet(
       Container(
@@ -982,7 +986,7 @@ class EmployerSettingsScreen extends StatelessWidget {
               title: Text("Take a photo", style: appTextStyle(fontSize: 16, color: ColorRes.black)),
               onTap: () async {
                 Get.back();
-                await controller.onTapImage();
+                await employerProfileController.onTapImage();
               },
             ),
             const Divider(),
@@ -991,18 +995,18 @@ class EmployerSettingsScreen extends StatelessWidget {
               title: Text("Choose from gallery", style: appTextStyle(fontSize: 16, color: ColorRes.black)),
               onTap: () async {
                 Get.back();
-                await controller.onTapGallery1();
+                await employerProfileController.onTapGallery1();
               },
             ),
-            if (controller.hasProfileImage()) ...[
+            if (employerProfileController.hasProfileImage()) ...[
               const Divider(),
               ListTile(
                 leading: Icon(Icons.delete, color: Colors.red[600]),
                 title: Text("Remove logo", style: appTextStyle(fontSize: 16, color: Colors.red[600])),
-                onTap: () {
+                onTap: () async {
                   Get.back();
-                  controller.profileImageUrl.value = '';
-                  controller.onTapSubmit();
+                  employerProfileController.profileImageUrl.value = '';
+                  await employerProfileController.onTapSubmit();
                   Get.snackbar(
                     "Success",
                     "Company logo removed",
@@ -1019,8 +1023,6 @@ class EmployerSettingsScreen extends StatelessWidget {
   }
 
   void _showChangePassword(BuildContext context) {
-    final controller = employerProfileController;
-    
     Get.bottomSheet(
       Container(
         padding: const EdgeInsets.all(20),
@@ -1072,7 +1074,7 @@ class EmployerSettingsScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Obx(() => Text(
-                    "We'll send instructions to:\n${controller.email.value}",
+                    "We'll send instructions to:\n${employerProfileController.email.value}",
                     textAlign: TextAlign.center,
                     style: appTextStyle(
                       fontSize: 14,
@@ -1144,8 +1146,7 @@ class EmployerSettingsScreen extends StatelessWidget {
   }
 
   void _sendPasswordResetEmail() async {
-    final controller = employerProfileController;
-    final email = controller.email.value;
+    final email = employerProfileController.email.value;
     
     if (email.isNotEmpty) {
       try {
@@ -1233,9 +1234,8 @@ class EmployerSettingsScreen extends StatelessWidget {
   }
 
   void _showValidateSiret(BuildContext context) {
-    final controller = employerProfileController;
     final TextEditingController siretController = TextEditingController();
-    siretController.text = controller.siretCode.value;
+    siretController.text = employerProfileController.siretCode.value;
     
     Get.dialog(
       AlertDialog(
@@ -1279,22 +1279,22 @@ class EmployerSettingsScreen extends StatelessWidget {
             child: Text("Cancel", style: appTextStyle(color: Colors.grey, fontSize: 14)),
           ),
           Obx(() => ElevatedButton(
-            onPressed: controller.isLoading.value ? null : () async {
+            onPressed: employerProfileController.isLoading.value ? null : () async {
               final siret = siretController.text.trim();
               if (siret.length == 14) {
                 try {
-                  controller.isLoading.value = true;
-                  controller.siretController.text = siret;
-                  final isValid = await controller.validateSiretCode();
+                  employerProfileController.isLoading.value = true;
+                  employerProfileController.siretController.text = siret;
+                  final isValid = await employerProfileController.validateSiretCode();
                   
                   if (isValid) {
-                    await controller.onTapSubmit();
+                    await employerProfileController.onTapSubmit();
                     Get.back();
                   }
                 } catch (e) {
                   // Error handled in validateSiretCode
                 } finally {
-                  controller.isLoading.value = false;
+                  employerProfileController.isLoading.value = false;
                 }
               } else {
                 Get.snackbar(
@@ -1311,7 +1311,7 @@ class EmployerSettingsScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               minimumSize: const Size(0, 36),
             ),
-            child: controller.isLoading.value 
+            child: employerProfileController.isLoading.value 
                 ? const SizedBox(
                     width: 16,
                     height: 16,
@@ -1325,7 +1325,6 @@ class EmployerSettingsScreen extends StatelessWidget {
   }
 
   void _showDeleteAccount(BuildContext context) {
-    final controller = employerProfileController;
     
     Get.dialog(
       AlertDialog(
@@ -1397,7 +1396,7 @@ class EmployerSettingsScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(6),
               ),
               child: Text(
-                'Company: ${controller.companyName.value}\nEmail: ${controller.email.value}',
+                'Company: ${employerProfileController.companyName.value}\nEmail: ${employerProfileController.email.value}',
                 style: appTextStyle(
                   fontSize: 12,
                   color: Colors.grey[700],
@@ -1458,7 +1457,6 @@ class EmployerSettingsScreen extends StatelessWidget {
   }
 
   void _confirmDeleteAccount() async {
-    final controller = employerProfileController;
     final TextEditingController confirmController = TextEditingController();
     final RxBool canDelete = false.obs;
     
@@ -1590,7 +1588,6 @@ class EmployerSettingsScreen extends StatelessWidget {
   }
   
   Future<void> _performAccountDeletion() async {
-    final controller = employerProfileController;
     
     try {
       Get.dialog(
@@ -1615,7 +1612,7 @@ class EmployerSettingsScreen extends StatelessWidget {
         barrierDismissible: false,
       );
       
-      await controller.clearEmployerProfileData();
+      await employerProfileController.clearEmployerProfileData();
       
       final user = FirebaseAuth.instance.currentUser;
       if (user != null) {
@@ -1696,7 +1693,6 @@ class EmployerSettingsScreen extends StatelessWidget {
   }
 
   void _showLogoutConfirmation(BuildContext context) async {
-    final controller = employerProfileController;
     
     final confirmed = await Get.dialog<bool>(
       AlertDialog(
@@ -1749,7 +1745,7 @@ class EmployerSettingsScreen extends StatelessWidget {
                     radius: 16,
                     backgroundColor: const Color(0xFF000647),
                     child: Text(
-                      controller.getInitials(),
+                      employerProfileController.getInitials(),
                       style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
                     ),
                   ),
@@ -1759,11 +1755,11 @@ class EmployerSettingsScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          controller.companyName.value.isEmpty ? 'Employer' : controller.companyName.value,
+                          employerProfileController.companyName.value.isEmpty ? 'Employer' : employerProfileController.companyName.value,
                           style: appTextStyle(fontSize: 12, fontWeight: FontWeight.w600),
                         ),
                         Text(
-                          controller.email.value,
+                          employerProfileController.email.value,
                           style: appTextStyle(fontSize: 11, color: Colors.grey[600]),
                         ),
                       ],
@@ -1848,7 +1844,7 @@ class EmployerSettingsScreen extends StatelessWidget {
       );
       
       await authService.signOut();
-      employerProfileController.clearEmployerProfileData();
+      await employerProfileController.clearEmployerProfileData();
       await _clearAllPreferences();
       
       await Future.delayed(const Duration(milliseconds: 500));

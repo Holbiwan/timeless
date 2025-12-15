@@ -1,3 +1,4 @@
+// introduction_screen.dart
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -148,7 +149,7 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
                   ),
                   _IntroPage(
                     asset: AssetRes.page2,
-                    title: "Job Search App",
+                    title: "App for jobs seekers",
                     subtitle: "Bridging the gap with timeless talent",
                     subtitleColor: ColorRes.textSecondary,
                     highlightWords: ["Job", "Applications"],

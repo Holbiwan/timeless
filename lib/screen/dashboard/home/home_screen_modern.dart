@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:timeless/screen/dashboard/home/tipsforyou_screen.dart';
+import 'package:timeless/screen/dashboard/my_applications_screen.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:timeless/services/preferences_service.dart';
+import 'package:timeless/utils/pref_keys.dart';
+import 'dart:io';
 import 'package:timeless/screen/dashboard/home/widgets/appbar.dart';
 import 'package:timeless/utils/app_res.dart';
 import 'package:timeless/utils/app_theme.dart';
@@ -38,10 +44,8 @@ class HomeScreenModern extends StatelessWidget {
                         children: [
                           const SizedBox(height: AppTheme.spacingSmall),
                           
-                          // --- SECTION: 
-
-                          // Tips section modernisée ---
-                          _buildTipsSection(context, translationService, accessibilityService),
+                          // --- SECTION: PHOTO DE PROFIL ---
+                          _buildProfilePhotoSection(context, translationService, accessibilityService),
                           
                           const SizedBox(height: AppTheme.spacingLarge),
 
@@ -71,82 +75,230 @@ class HomeScreenModern extends StatelessWidget {
     ));
   }
 
-  Widget _buildTipsSection(BuildContext context, UnifiedTranslationService translationService, AccessibilityService accessibilityService) {
-    return accessibilityService.buildAccessibleWidget(
-      semanticLabel: 'Tips section',
-      onTap: () {
-        accessibilityService.triggerHapticFeedback();
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (con) => const TipsForYouScreen()),
-        );
-      },
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(AppTheme.spacingMedium),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              AppTheme.primaryOrange.withOpacity(0.1),
-              AppTheme.secondaryGold.withOpacity(0.05),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
-          border: Border.all(
-            color: AppTheme.primaryOrange.withOpacity(0.2),
-            width: 1,
-          ),
-          boxShadow: AppTheme.shadowLight,
-        ),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(AppTheme.spacingSmall),
+  Widget _buildProfilePhotoSection(BuildContext context, UnifiedTranslationService translationService, AccessibilityService accessibilityService) {
+    return StatefulBuilder(
+      builder: (context, setState) {
+        return FutureBuilder<String?>(
+          future: _getUserProfilePhoto(),
+          builder: (context, snapshot) {
+            final photoUrl = snapshot.data;
+            
+            return Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(AppTheme.spacingMedium),
               decoration: BoxDecoration(
-                color: AppTheme.primaryOrange.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(AppTheme.radiusRegular),
+                gradient: LinearGradient(
+                  colors: [
+                    AppTheme.primaryOrange.withOpacity(0.1),
+                    AppTheme.secondaryGold.withOpacity(0.05),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
+                border: Border.all(
+                  color: AppTheme.primaryOrange.withOpacity(0.2),
+                  width: 1,
+                ),
+                boxShadow: AppTheme.shadowLight,
               ),
-              child: Icon(
-                Icons.lightbulb_outline,
-                color: AppTheme.primaryOrange,
-                size: 24,
-              ),
-            ),
-            const SizedBox(width: AppTheme.spacingRegular),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Row(
                 children: [
-                  Text(
-                    'Tips for You',
-                    style: accessibilityService.getAccessibleTextStyle(
-                      fontSize: AppTheme.fontSizeLarge,
-                      fontWeight: FontWeight.w600,
-                      color: AppTheme.primaryRed,
+                  GestureDetector(
+                    onTap: () => _showPhotoOptions(context),
+                    child: Container(
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        color: AppTheme.primaryOrange.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(40),
+                        border: Border.all(
+                          color: AppTheme.primaryOrange.withOpacity(0.3),
+                          width: 2,
+                        ),
+                      ),
+                      child: photoUrl != null
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(38),
+                              child: Image.network(
+                                photoUrl,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) => _buildDefaultAvatar(),
+                              ),
+                            )
+                          : _buildDefaultAvatar(),
                     ),
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Discover personalized career advice',
-                    style: accessibilityService.getAccessibleTextStyle(
-                      fontSize: AppTheme.fontSizeRegular,
-                      color: accessibilityService.secondaryTextColor,
+                  const SizedBox(width: AppTheme.spacingRegular),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Photo de profil',
+                          style: accessibilityService.getAccessibleTextStyle(
+                            fontSize: AppTheme.fontSizeLarge,
+                            fontWeight: FontWeight.w600,
+                            color: AppTheme.primaryRed,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          photoUrl != null ? 'Appuyez pour modifier' : 'Appuyez pour ajouter une photo',
+                          style: accessibilityService.getAccessibleTextStyle(
+                            fontSize: AppTheme.fontSizeRegular,
+                            color: accessibilityService.secondaryTextColor,
+                          ),
+                        ),
+                      ],
                     ),
+                  ),
+                  Icon(
+                    Icons.camera_alt,
+                    color: AppTheme.primaryOrange,
+                    size: 24,
                   ),
                 ],
               ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildDefaultAvatar() {
+    return Icon(
+      Icons.person,
+      color: AppTheme.primaryOrange,
+      size: 40,
+    );
+  }
+
+  Future<String?> _getUserProfilePhoto() async {
+    try {
+      final userId = PreferencesService.getString(PrefKeys.userId);
+      final doc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
+      if (doc.exists) {
+        return doc.data()?['profilePhotoUrl'];
+      }
+    } catch (e) {
+      print('Error getting profile photo: $e');
+    }
+    return null;
+  }
+
+  Future<void> _showPhotoOptions(BuildContext context) async {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(2),
+              ),
             ),
-            Icon(
-              Icons.arrow_forward_ios,
-              color: AppTheme.primaryOrange,
-              size: 16,
+            const SizedBox(height: 20),
+            Text(
+              'Photo de profil',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: AppTheme.primaryRed,
+              ),
             ),
+            const SizedBox(height: 20),
+            ListTile(
+              leading: Icon(Icons.photo_camera, color: AppTheme.primaryOrange),
+              title: const Text('Prendre une photo'),
+              onTap: () {
+                Navigator.pop(context);
+                _pickImage(ImageSource.camera);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.photo_library, color: AppTheme.primaryOrange),
+              title: const Text('Choisir dans la galerie'),
+              onTap: () {
+                Navigator.pop(context);
+                _pickImage(ImageSource.gallery);
+              },
+            ),
+            const SizedBox(height: 10),
           ],
         ),
       ),
     );
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
+    try {
+      final picker = ImagePicker();
+      final pickedFile = await picker.pickImage(
+        source: source,
+        imageQuality: 70,
+        maxWidth: 800,
+        maxHeight: 800,
+      );
+
+      if (pickedFile != null) {
+        await _uploadProfilePhoto(File(pickedFile.path));
+      }
+    } catch (e) {
+      Get.snackbar(
+        'Erreur',
+        'Impossible de sélectionner l\'image: $e',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
+  }
+
+  Future<void> _uploadProfilePhoto(File imageFile) async {
+    try {
+      Get.dialog(
+        const Center(
+          child: CircularProgressIndicator(),
+        ),
+        barrierDismissible: false,
+      );
+
+      final userId = PreferencesService.getString(PrefKeys.userId);
+      final storageRef = FirebaseStorage.instance.ref().child('profile_photos/$userId.jpg');
+      
+      await storageRef.putFile(imageFile);
+      final downloadUrl = await storageRef.getDownloadURL();
+
+      await FirebaseFirestore.instance.collection('users').doc(userId).update({
+        'profilePhotoUrl': downloadUrl,
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+
+      Get.back(); // Close loading dialog
+      Get.snackbar(
+        'Succès',
+        'Photo de profil mise à jour!',
+        backgroundColor: AppTheme.primaryOrange,
+        colorText: Colors.white,
+      );
+    } catch (e) {
+      Get.back(); // Close loading dialog
+      Get.snackbar(
+        'Erreur',
+        'Impossible de télécharger la photo: $e',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
   }
 
   Widget _buildMainActions(UnifiedTranslationService translationService, AccessibilityService accessibilityService) {
@@ -183,7 +335,10 @@ class HomeScreenModern extends StatelessWidget {
                 icon: Icons.analytics_outlined,
                 title: 'Applications',
                 subtitle: 'Track status',
-                onTap: () => accessibilityService.triggerHapticFeedback(),
+                onTap: () {
+                  accessibilityService.triggerHapticFeedback();
+                  Get.to(() => const MyApplicationsScreen());
+                },
                 accessibilityService: accessibilityService,
               ),
             ),

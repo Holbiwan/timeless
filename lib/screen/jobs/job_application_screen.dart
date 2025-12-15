@@ -387,6 +387,13 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
               // Nom complet
               TextFormField(
                 controller: _nameController,
+                enableInteractiveSelection: true,
+                toolbarOptions: const ToolbarOptions(
+                  copy: true,
+                  cut: true,
+                  paste: true,
+                  selectAll: true,
+                ),
                 decoration: InputDecoration(
                   labelText: translationService.getText('full_name_label'),
                   border: OutlineInputBorder(

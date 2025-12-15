@@ -14,7 +14,7 @@ class PrefKeys {
   static const openConfirmSignUpPage = "openConfirmSignUpPage";
   static const totalPost = "totalPost";
   static const allCountryData = "allCountryData";
-  static const allDesignation = "allDesignation";
+
   static const emailRememberManager = "emailRememberManager";
   static const emailRememberUser = "emailRememberUser";
   static const passwordRememberUser = "passwordRememberUser";

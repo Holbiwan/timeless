@@ -79,7 +79,7 @@ class _EmployerApeSignInScreenState extends State<EmployerApeSignInScreen> {
                 // Titre
                 Center(
                   child: Text(
-                    'Connexion sécurisée',
+                    'Secure Connection',
                     style: GoogleFonts.poppins(
                       fontSize: 24,
                       fontWeight: FontWeight.w700,
@@ -92,7 +92,7 @@ class _EmployerApeSignInScreenState extends State<EmployerApeSignInScreen> {
 
                 Center(
                   child: Text(
-                    'Code APE + Email + Mot de passe',
+                    'APE Code + Email + Password',
                     style: GoogleFonts.poppins(
                       fontSize: 14,
                       fontWeight: FontWeight.w400,

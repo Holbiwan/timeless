@@ -31,6 +31,9 @@ import 'package:timeless/screen/manager_section/auth_manager/first_page/first_sc
     as ManagerFirstScreen;
 import 'package:timeless/screen/manager_section/dashboard/manager_dashboard_screen.dart';
 
+// Employer screens
+import 'package:timeless/screen/employer/employer_dashboard_screen.dart';
+
 // Config and resources
 import 'package:timeless/utils/app_res.dart';
 import 'package:timeless/utils/pref_keys.dart';
@@ -164,6 +167,12 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: AppRes.managerDashboardScreen,
           page: () => ManagerDashBoardScreen(),
+        ),
+
+        // Employer dashboard
+        GetPage(
+          name: AppRes.employerDashboardScreen,
+          page: () => const EmployerDashboardScreen(),
         ),
       ],
 

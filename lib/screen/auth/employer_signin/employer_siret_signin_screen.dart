@@ -9,6 +9,9 @@ import 'package:timeless/services/unified_translation_service.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/app_theme.dart';
 import 'package:timeless/utils/asset_res.dart';
+import 'package:timeless/utils/app_res.dart';
+import 'package:timeless/services/preferences_service.dart';
+import 'package:timeless/utils/pref_keys.dart';
 
 class EmployerSiretSignInScreen extends StatefulWidget {
   const EmployerSiretSignInScreen({super.key});
@@ -74,7 +77,7 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
                 // Titre
                 Center(
                   child: Text(
-                    'Connexion par SIRET',
+                    'SIRET Connection',
                     style: GoogleFonts.poppins(
                       fontSize: 24,
                       fontWeight: FontWeight.w700,
@@ -87,7 +90,7 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
 
                 Center(
                   child: Text(
-                    'Saisissez votre numéro SIRET pour accéder à votre espace employeur',
+                    'Enter your SIRET number to access your employer space',
                     style: GoogleFonts.poppins(
                       fontSize: 14,
                       fontWeight: FontWeight.w400,
@@ -100,7 +103,7 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
 
                 // Champ SIRET
                 Text(
-                  'Code SIRET *',
+                  'SIRET Code *',
                   style: GoogleFonts.poppins(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -166,10 +169,10 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
                       const SizedBox(width: 10),
                       Expanded(
                         child: Text(
-                          'Le SIRET est un identifiant unique de 14 chiffres attribué à chaque établissement d\'entreprise en France.',
+                          'SIRET is a unique 14-digit identifier assigned to each business establishment in France.',
                           style: GoogleFonts.poppins(
                             fontSize: 12,
-                            color: Colors.amber[800],
+                            color: const Color.fromRGBO(2, 2, 2, 1),
                           ),
                         ),
                       ),
@@ -193,7 +196,7 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
                       elevation: 2,
                     ),
                     child: Text(
-                      'Se connecter',
+                      'Sign In',
                       style: GoogleFonts.poppins(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
@@ -208,7 +211,7 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
                   child: TextButton(
                     onPressed: () => Navigator.pop(context),
                     child: Text(
-                      'Utiliser une autre méthode de connexion',
+                      'Use another connection method',
                       style: GoogleFonts.poppins(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
@@ -242,8 +245,8 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
     
     if (siret.isEmpty) {
       AppTheme.showStandardSnackBar(
-        title: "⚠️ Champ requis",
-        message: "Veuillez saisir votre code SIRET",
+        title: "⚠️ Required Field",
+        message: "Please enter your SIRET code",
         isError: true,
       );
       return;
@@ -251,8 +254,8 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
 
     if (siret.length != 14) {
       AppTheme.showStandardSnackBar(
-        title: "⚠️ SIRET invalide",
-        message: "Le code SIRET doit contenir exactement 14 chiffres",
+        title: "⚠️ Invalid SIRET",
+        message: "SIRET code must contain exactly 14 digits",
         isError: true,
       );
       return;
@@ -272,8 +275,8 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
 
       if (querySnapshot.docs.isEmpty) {
         AppTheme.showStandardSnackBar(
-          title: "❌ Compte non trouvé",
-          message: "Aucun compte employeur trouvé avec ce SIRET. Veuillez créer un compte d'abord.",
+          title: "❌ Account Not Found",
+          message: "No employer account found with this SIRET. Please create an account first.",
           isError: true,
         );
         return;
@@ -287,8 +290,8 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
       
       if (email == null) {
         AppTheme.showStandardSnackBar(
-          title: "❌ Erreur",
-          message: "Données de compte incomplètes. Contactez le support.",
+          title: "❌ Error",
+          message: "Incomplete account data. Contact support.",
           isError: true,
         );
         return;
@@ -299,8 +302,8 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
 
     } catch (e) {
       AppTheme.showStandardSnackBar(
-        title: "❌ Erreur",
-        message: "Une erreur s'est produite: $e",
+        title: "❌ Error",
+        message: "An error occurred: $e",
         isError: true,
       );
     } finally {
@@ -323,7 +326,7 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
             borderRadius: BorderRadius.circular(15),
           ),
           title: Text(
-            'Mot de passe requis',
+            'Password Required',
             style: GoogleFonts.poppins(
               fontWeight: FontWeight.w600,
               fontSize: 18,
@@ -334,7 +337,7 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Compte trouvé pour: $email',
+                'Account found for: $email',
                 style: GoogleFonts.poppins(
                   fontSize: 14,
                   color: Colors.grey[600],
@@ -342,7 +345,7 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
               ),
               const SizedBox(height: 15),
               Text(
-                'Mot de passe:',
+                'Password:',
                 style: GoogleFonts.poppins(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
@@ -353,7 +356,7 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
                 controller: passwordController,
                 obscureText: true,
                 decoration: InputDecoration(
-                  hintText: 'Saisissez votre mot de passe',
+                  hintText: 'Enter your password',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -368,7 +371,7 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
                 Navigator.of(context).pop();
               },
               child: Text(
-                'Annuler',
+                'Cancel',
                 style: GoogleFonts.poppins(
                   color: Colors.grey[600],
                 ),
@@ -379,8 +382,8 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
                 final password = passwordController.text.trim();
                 if (password.isEmpty) {
                   AppTheme.showStandardSnackBar(
-                    title: "⚠️ Champ requis",
-                    message: "Veuillez saisir votre mot de passe",
+                    title: "⚠️ Required Field",
+                    message: "Please enter your password",
                     isError: true,
                   );
                   return;
@@ -400,42 +403,48 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
                   Navigator.of(context).pop(); // Fermer la dialog
                   
                   AppTheme.showStandardSnackBar(
-                    title: "✅ Connexion réussie",
-                    message: "Bienvenue dans votre espace employeur!",
+                    title: "✅ Sign In Successful",
+                    message: "Welcome to your employer space!",
                     isError: false,
                   );
 
-                  // Redirection vers le dashboard employeur (à adapter selon votre routing)
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pop();
+                  // Redirection vers le dashboard employeur
+                  await PreferencesService.setUserType('employer');
+                  await PreferencesService.setString(PrefKeys.employerId, uid);
+                  await PreferencesService.setValue(PrefKeys.isLogin, true);
+                  
+                  Navigator.of(context).pop(); // Close dialog
+                  Navigator.of(context).pop(); // Close SIRET screen
+                  Navigator.of(context).pop(); // Close choice screen
+                  Get.offAllNamed(AppRes.employerDashboardScreen);
 
                 } on FirebaseAuthException catch (e) {
                   String message;
                   switch (e.code) {
                     case 'wrong-password':
-                      message = 'Mot de passe incorrect';
+                      message = 'Incorrect password';
                       break;
                     case 'user-not-found':
-                      message = 'Compte non trouvé';
+                      message = 'Account not found';
                       break;
                     case 'invalid-email':
-                      message = 'Email invalide';
+                      message = 'Invalid email';
                       break;
                     case 'user-disabled':
-                      message = 'Compte désactivé';
+                      message = 'Account disabled';
                       break;
                     default:
-                      message = 'Erreur de connexion: ${e.message}';
+                      message = 'Connection error: ${e.message}';
                   }
                   AppTheme.showStandardSnackBar(
-                    title: "❌ Erreur",
+                    title: "❌ Error",
                     message: message,
                     isError: true,
                   );
                 } catch (e) {
                   AppTheme.showStandardSnackBar(
-                    title: "❌ Erreur",
-                    message: "Une erreur s'est produite: $e",
+                    title: "❌ Error",
+                    message: "An error occurred: $e",
                     isError: true,
                   );
                 } finally {
@@ -458,7 +467,7 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
                       ),
                     )
                   : Text(
-                      'Se connecter',
+                      'Sign In',
                       style: GoogleFonts.poppins(
                         fontWeight: FontWeight.w600,
                       ),

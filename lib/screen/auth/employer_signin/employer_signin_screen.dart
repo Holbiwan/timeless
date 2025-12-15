@@ -93,44 +93,6 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
 
                   const SizedBox(height: 16),
 
-                  // Bouton pour changer de société de test
-                  Center(
-                    child: Container(
-                      margin: const EdgeInsets.only(bottom: 16),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Test Data: ',
-                            style: accessibilityService.getAccessibleTextStyle(
-                              fontSize: AppTheme.fontSizeSmall,
-                              color: accessibilityService.secondaryTextColor,
-                            ),
-                          ),
-                          Obx(() => TextButton(
-                            onPressed: () {
-                              accessibilityService.triggerHapticFeedback();
-                              ctrl.switchTestCompany();
-                            },
-                            style: TextButton.styleFrom(
-                              backgroundColor: const Color(0xFF000647).withOpacity(0.1),
-                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                            ),
-                            child: Text(
-                              ctrl.selectedTestCompany.value == 0 
-                                  ? 'ETABLISSEMENT SAINTE THERESE' 
-                                  : 'X DIGITAL',
-                              style: accessibilityService.getAccessibleTextStyle(
-                                fontSize: AppTheme.fontSizeSmall,
-                                fontWeight: FontWeight.w600,
-                                color: const Color(0xFF000647),
-                              ),
-                            ),
-                          )),
-                        ],
-                      ),
-                    ),
-                  ),
 
                   // --- SECTION: 
 
@@ -458,6 +420,40 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
                   ),
 
                   const SizedBox(height: 16),
+
+                  // Remember me checkbox
+                  GetBuilder<EmployerSignInController>(
+                    id: "remember_me",
+                    builder: (_) {
+                      return Row(
+                        children: [
+                          Checkbox(
+                            activeColor: const Color(0xFF000647),
+                            checkColor: Colors.white,
+                            side: const BorderSide(
+                              width: 1.2,
+                              color: Color(0xFF000647),
+                            ),
+                            value: ctrl.rememberMe,
+                            onChanged: ctrl.onRememberMeChange,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(
+                              'Remember me',
+                              style: accessibilityService.getAccessibleTextStyle(
+                                fontSize: AppTheme.fontSizeSmall,
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+
+                  const SizedBox(height: 8),
 
                   // Checkbox pour les termes et conditions
                   Row(

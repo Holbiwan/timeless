@@ -44,7 +44,7 @@ class ManagerDashBoardScreen extends StatelessWidget {
               return const EmployerApplicationsScreen();
             case 2:
               return const Center(
-                  child: Text('Chat temporairement indisponible'));
+                  child: Text('Chat temporarily unavailable'));
             default:
               return const EmployerProfileScreen();
           }

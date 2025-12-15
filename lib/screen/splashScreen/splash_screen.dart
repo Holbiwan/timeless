@@ -45,15 +45,15 @@ class _SplashScreenState extends State<SplashScreen>
       'isLogo': true
     },
     {
-      'title': 'A New',
-      'subtitle': 'Job Search App',
+      'title': 'A new app for',
+      'subtitle': 'jobs seekers',
       'description': 'Apply to multiple offers',
       'isImage': true,
       'imagePath': 'assets/images/search_job.jpg'
     },
     {
-      'title': 'Go',
-      'subtitle': 'Now',
+      'title': 'Ready to',
+      'subtitle': 'Join now ?',
       'description': 'Join our job seekers',
       'icon': '✨'
     },

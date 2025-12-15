@@ -26,7 +26,7 @@ class _PostJobScreenState extends State<PostJobScreen> {
   final TextEditingController _descriptionCtrl = TextEditingController();
 
   String? _category = 'Data';
-  String? _jobType = 'CDI';
+  String? _jobType = 'Full-time';
   bool _remote = true;
   Map<String, dynamic>? _employerData;
 
@@ -62,7 +62,7 @@ class _PostJobScreenState extends State<PostJobScreen> {
         }
       }
     } catch (e) {
-      debugPrint('Erreur chargement données employeur: $e');
+      debugPrint('Error loading employer data: $e');
     }
   }
 
@@ -80,7 +80,7 @@ class _PostJobScreenState extends State<PostJobScreen> {
     if (_employerData == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('❌ Données employeur non chargées'),
+          content: Text('❌ Employer data not loaded'),
           backgroundColor: Colors.red,
         ),
       );
@@ -94,7 +94,7 @@ class _PostJobScreenState extends State<PostJobScreen> {
     try {
       final user = FirebaseAuth.instance.currentUser!;
 
-      // Préparer les données de l'annonce avec les vraies données employeur
+      // Prepare job posting data with real employer data
       final jobData = {
         'Position': _titleCtrl.text.trim(),
         'category': _category, // Correspond aux filtres existants
@@ -108,7 +108,7 @@ class _PostJobScreenState extends State<PostJobScreen> {
         'description': _descriptionCtrl.text.trim(),
         // Données de l'employeur depuis Firestore
         'CompanyName': _employerData!['companyName'],
-        'employerId': user.uid,
+        'EmployerId': user.uid,
         'employerEmail': _employerData!['email'],
         'siretCode': _employerData!['siretCode'],
         'apeCode': _employerData!['apeCode'],
@@ -117,27 +117,28 @@ class _PostJobScreenState extends State<PostJobScreen> {
         'isActive': true,
         'status': 'Active',
         'createdAt': FieldValue.serverTimestamp(),
+        'timestamp': FieldValue.serverTimestamp(),
         'applicationsCount': 0,
         'viewsCount': 0,
         'logoUrl':
             _employerData!['logoUrl'] ?? 'https://i.imgur.com/bdlYq1p.png',
       };
 
-      // Sauvegarder dans Firebase
+      // Save to Firebase
       await FirebaseFirestore.instance.collection('allPost').add(jobData);
 
       debugPrint(
           '✅ JOB PUBLISHED TO FIREBASE: ${_titleCtrl.text} by ${_employerData!['companyName']}');
 
-      // Afficher popup de confirmation moderne
+      // Show modern confirmation popup
       await _showSuccessDialog();
 
       Get.back();
     } catch (e) {
-      debugPrint('❌ Erreur publication Firebase: $e');
+      debugPrint('❌ Firebase publication error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('❌ Erreur: $e'),
+          content: Text('❌ Error: $e'),
           backgroundColor: Colors.red,
         ),
       );
@@ -168,7 +169,7 @@ class _PostJobScreenState extends State<PostJobScreen> {
                   Icon(Icons.check_circle, color: Colors.green[700], size: 24),
             ),
             const SizedBox(width: 12),
-            const Text('🎉 Annonce publiée !'),
+            const Text('🎉 Job Posted!'),
           ],
         ),
         content: Column(
@@ -185,24 +186,24 @@ class _PostJobScreenState extends State<PostJobScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('📋 Poste: ${_titleCtrl.text}',
+                  Text('📋 Position: ${_titleCtrl.text}',
                       style: const TextStyle(fontWeight: FontWeight.w500)),
                   const SizedBox(height: 4),
-                  Text('🏢 Entreprise: ${_employerData!['companyName']}',
+                  Text('🏢 Company: ${_employerData!['companyName']}',
                       style: const TextStyle(fontWeight: FontWeight.w500)),
                   const SizedBox(height: 4),
-                  Text('📍 Lieu: ${_locationCtrl.text}',
+                  Text('📍 Location: ${_locationCtrl.text}',
                       style: const TextStyle(fontWeight: FontWeight.w500)),
                   const SizedBox(height: 4),
                   Text(
-                      '💰 Salaire: ${_salaryMinCtrl.text}-${_salaryMaxCtrl.text}€',
+                      '💰 Salary: ${_salaryMinCtrl.text}-${_salaryMaxCtrl.text}€',
                       style: const TextStyle(fontWeight: FontWeight.w500)),
                 ],
               ),
             ),
             const SizedBox(height: 12),
             const Text(
-                'Votre offre est maintenant visible par tous les candidats !',
+                'Your job offer is now visible to all candidates!',
                 style: TextStyle(color: Colors.grey)),
           ],
         ),
@@ -215,7 +216,7 @@ class _PostJobScreenState extends State<PostJobScreen> {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8)),
             ),
-            child: const Text('Parfait !'),
+            child: const Text('Perfect!'),
           ),
         ],
       ),
@@ -230,19 +231,19 @@ class _PostJobScreenState extends State<PostJobScreen> {
       'Security',
     ];
 
-    const jobTypes = <String>['CDI', 'CDD', 'Stage', 'Freelance', 'Intérim'];
+    const jobTypes = <String>['Full-time', 'Contract', 'Internship', 'Freelance', 'Temporary'];
 
     // Afficher un loader si les données employeur se chargent
     if (_employerData == null) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Créer une annonce')),
+        appBar: AppBar(title: const Text('Create Job Posting')),
         body: const Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               CircularProgressIndicator(),
               SizedBox(height: 16),
-              Text('Chargement de vos informations employeur...'),
+              Text('Loading your employer information...'),
             ],
           ),
         ),
@@ -275,7 +276,7 @@ class _PostJobScreenState extends State<PostJobScreen> {
                   children: [
                     Expanded(
                       child: DropdownButtonFormField<String>(
-                        decoration: _dec('Catégorie'),
+                        decoration: _dec('Category'),
                         value: _category,
                         items: categories
                             .map((c) =>
@@ -287,7 +288,7 @@ class _PostJobScreenState extends State<PostJobScreen> {
                     const SizedBox(width: 12),
                     Expanded(
                       child: DropdownButtonFormField<String>(
-                        decoration: _dec('Type de contrat'),
+                        decoration: _dec('Contract Type'),
                         value: _jobType,
                         items: jobTypes
                             .map((t) =>

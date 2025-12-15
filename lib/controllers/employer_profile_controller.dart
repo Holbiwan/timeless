@@ -8,7 +8,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:timeless/utils/app_theme.dart';
 import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/pref_keys.dart';
-import 'package:timeless/models/employer_model.dart';
 import 'package:timeless/services/employer_validation_service.dart';
 
 class EmployerProfileController extends GetxController {

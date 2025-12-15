@@ -54,7 +54,7 @@ class EmployerSignInChoiceScreen extends StatelessWidget {
 
                 // Titre
                 Text(
-                  'Se connecter en tant que PRO',
+                  'Sign in as PRO',
                   style: GoogleFonts.poppins(
                     fontSize: 24,
                     fontWeight: FontWeight.w700,
@@ -65,7 +65,7 @@ class EmployerSignInChoiceScreen extends StatelessWidget {
                 const SizedBox(height: 10),
 
                 Text(
-                  'Choisissez votre méthode de connexion',
+                  'Choose your connection method',
                   style: GoogleFonts.poppins(
                     fontSize: 14,
                     fontWeight: FontWeight.w400,
@@ -118,7 +118,7 @@ class EmployerSignInChoiceScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 15),
                           Text(
-                            'Se connecter avec votre code SIRET',
+                            'Sign in with your SIRET code + Password',
                             style: GoogleFonts.poppins(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
@@ -128,7 +128,7 @@ class EmployerSignInChoiceScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            'Utilisez votre numéro SIRET pour accéder rapidement à votre compte employeur',
+                            'Use your SIRET number to quickly access your employer account',
                             style: GoogleFonts.poppins(
                               fontSize: 12,
                               color: Colors.grey[600],
@@ -140,7 +140,7 @@ class EmployerSignInChoiceScreen extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                'Accès rapide',
+                                'Fast access',
                                 style: GoogleFonts.poppins(
                                   fontSize: 10,
                                   fontWeight: FontWeight.w600,
@@ -176,7 +176,7 @@ class EmployerSignInChoiceScreen extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 15),
                         child: Text(
-                          'OU',
+                          'OR',
                           style: GoogleFonts.poppins(
                             fontSize: 12,
                             fontWeight: FontWeight.w500,
@@ -238,7 +238,7 @@ class EmployerSignInChoiceScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 15),
                           Text(
-                            'Se connecter avec APE + Email + Mot de passe',
+                            'Sign in with APE + Email + Password',
                             style: GoogleFonts.poppins(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
@@ -248,7 +248,7 @@ class EmployerSignInChoiceScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            'Utilisez votre code APE, email professionnel et mot de passe pour accéder à votre compte',
+                            'Use your APE code, professional email and password to access your account',
                             style: GoogleFonts.poppins(
                               fontSize: 12,
                               color: Colors.grey[600],
@@ -260,7 +260,7 @@ class EmployerSignInChoiceScreen extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                'Connexion sécurisée',
+                                'Secure connection',
                                 style: GoogleFonts.poppins(
                                   fontSize: 10,
                                   fontWeight: FontWeight.w600,
@@ -302,7 +302,7 @@ class EmployerSignInChoiceScreen extends StatelessWidget {
                         const SizedBox(width: 10),
                         Expanded(
                           child: Text(
-                            'Première connexion ? Votre compte doit être créé au préalable avec vos informations d\'entreprise.',
+                            'First connection? Your account must be created beforehand with your company information.',
                             style: GoogleFonts.poppins(
                               fontSize: 11,
                               color: Colors.blue[800],

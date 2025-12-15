@@ -6,7 +6,6 @@ import 'package:timeless/screen/employer/post_job_screen.dart';
 import 'package:timeless/screen/employer/my_jobs_screen.dart';
 import 'package:timeless/screen/employer/employer_settings_screen.dart';
 import 'package:timeless/screen/manager_section/auth_manager/Sign_in/sign_in_screen.dart';
-import 'package:timeless/controllers/employer_profile_controller.dart';
 import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/utils/color_res.dart';
@@ -63,7 +62,7 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
           });
         }
       } catch (e) {
-        debugPrint('Erreur chargement données: $e');
+        debugPrint('Error loading data: $e');
       }
     }
   }
@@ -74,13 +73,13 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
     final userId = PreferencesService.getString(PrefKeys.userId);
     if (userId.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('❌ Erreur: Utilisateur non connecté')),
+        const SnackBar(content: Text('❌ Error: User not connected')),
       );
       return;
     }
 
     try {
-      // Préparer les données de l'entreprise
+      // Prepare company data
       final companyData = {
         'name': _companyCtrl.text.trim(),
         'website': _websiteCtrl.text.trim(),
@@ -89,7 +88,7 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
         'UpdatedAt': FieldValue.serverTimestamp(),
       };
 
-      // Mettre à jour dans Firebase
+      // Update in Firebase
       final companyRef = FirebaseFirestore.instance
           .collection("Auth")
           .doc("Manager")
@@ -100,30 +99,30 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
       final existingDocs = await companyRef.get();
       
       if (existingDocs.docs.isNotEmpty) {
-        // Mettre à jour le document existant
+        // Update existing document
         await companyRef.doc(existingDocs.docs.first.id).update(companyData);
       } else {
-        // Créer un nouveau document
+        // Create new document
         await companyRef.add({
           ...companyData,
           'CreatedAt': FieldValue.serverTimestamp(),
         });
       }
 
-      // Mettre à jour les préférences locales
+      // Update local preferences
       await PreferencesService.setValue(PrefKeys.companyName, _companyCtrl.text.trim());
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('✅ Profil sauvegardé avec succès!'),
+          content: Text('✅ Profile saved successfully!'),
           backgroundColor: Colors.green,
         ),
       );
     } catch (e) {
-      debugPrint('Erreur sauvegarde profil: $e');
+      debugPrint('Error saving profile: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('❌ Erreur: $e'),
+          content: Text('❌ Error: $e'),
           backgroundColor: ColorRes.royalBlue,
         ),
       );
@@ -131,17 +130,17 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
   }
 
   void _logout() async {
-    // Déconnexion Firebase
+    // Firebase logout
     await FirebaseAuth.instance.signOut();
     
-    // Effacer toutes les préférences de session
+    // Clear all session preferences
     await PreferencesService.setValue(PrefKeys.rol, "");
     await PreferencesService.setValue(PrefKeys.totalPost, 0);
     await PreferencesService.setValue(PrefKeys.company, false);
     await PreferencesService.setValue(PrefKeys.userId, "");
     await PreferencesService.setValue(PrefKeys.companyName, "");
     
-    // Rediriger vers l'écran de connexion employeur
+    // Redirect to employer login screen
     Get.offAll(() => const SignInScreenM());
   }
 
@@ -169,7 +168,7 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: const Text('Espace Professionnel', style: TextStyle(color: Colors.white)),
+        title: const Text('Professional Space', style: TextStyle(color: Colors.white)),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: Get.back,
@@ -196,6 +195,13 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
                   decoration: _dec('Company name', hint: 'Ex: Timeless SAS'),
                   validator: (v) =>
                       (v == null || v.trim().isEmpty) ? 'Required' : null,
+                  enableInteractiveSelection: true,
+                  toolbarOptions: const ToolbarOptions(
+                    copy: true,
+                    cut: true,
+                    paste: true,
+                    selectAll: true,
+                  ),
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
@@ -203,12 +209,26 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
                   style: const TextStyle(color: Colors.white),
                   decoration: _dec('Website', hint: 'https://example.com'),
                   keyboardType: TextInputType.url,
+                  enableInteractiveSelection: true,
+                  toolbarOptions: const ToolbarOptions(
+                    copy: true,
+                    cut: true,
+                    paste: true,
+                    selectAll: true,
+                  ),
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: _locationCtrl,
                   style: const TextStyle(color: Colors.white),
                   decoration: _dec('Location', hint: 'City, Country'),
+                  enableInteractiveSelection: true,
+                  toolbarOptions: const ToolbarOptions(
+                    copy: true,
+                    cut: true,
+                    paste: true,
+                    selectAll: true,
+                  ),
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
@@ -217,6 +237,13 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
                   minLines: 4,
                   maxLines: 6,
                   decoration: _dec('About the company'),
+                  enableInteractiveSelection: true,
+                  toolbarOptions: const ToolbarOptions(
+                    copy: true,
+                    cut: true,
+                    paste: true,
+                    selectAll: true,
+                  ),
                 ),
                 const SizedBox(height: 20),
                 SizedBox(
@@ -270,7 +297,7 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
                       side: const BorderSide(color: ColorRes.royalBlue),
                     ),
                     icon: const Icon(Icons.logout),
-                    label: const Text('Retour à la connexion'),
+                    label: const Text('Back to Login'),
                   ),
                 ),
               ],
