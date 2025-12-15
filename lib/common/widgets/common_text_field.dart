@@ -22,9 +22,17 @@ Widget commonTextFormField(
       decoration: textDecoration,
       style: const TextStyle(fontWeight: FontWeight.bold),
       onTap: onTap ?? () {},
-      onChanged: onChanged ??(value) {},
+      onChanged: onChanged ?? (value) {},
       obscureText: obscureText ?? false,
-       readOnly: readOnly ?? false,
+      readOnly: readOnly ?? false,
+      // Ensure copy/paste always works
+      enableInteractiveSelection: true,
+      toolbarOptions: const ToolbarOptions(
+        copy: true,
+        cut: true,
+        paste: true,
+        selectAll: true,
+      ),
     ),
   );
 }

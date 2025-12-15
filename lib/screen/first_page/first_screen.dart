@@ -1,3 +1,4 @@
+// lib/screen/first_page/first_screen.dart
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -9,16 +10,16 @@ import 'package:timeless/screen/auth/employer_signin/employer_signin_choice_scre
 import 'package:timeless/screen/auth/employer_signin/employer_signin_screen.dart';
 import 'package:timeless/screen/first_page/first_controller.dart';
 import 'package:timeless/screen/accessibility/accessibility_panel.dart';
-import 'package:timeless/screen/dashboard/home/tipsforyou_screen.dart';
-import 'package:timeless/services/translation_service.dart';
+import 'package:timeless/services/unified_translation_service.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 
 class FirstScreen extends StatelessWidget {
   FirstScreen({super.key});
 
   final FirstScreenController controller = Get.put(FirstScreenController());
-  final TranslationService translationService = TranslationService.instance;
+  final UnifiedTranslationService translationService = UnifiedTranslationService.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +52,10 @@ class FirstScreen extends StatelessWidget {
             child: Column(
               children: [
                 const SizedBox(height: 80), // Espace pour les boutons fixes
+                
+                
+
+                
                 SizedBox(height: Get.height * 0.04),
                 // Logo principal TIMELESS
                 SizedBox(
@@ -66,43 +71,13 @@ class FirstScreen extends StatelessWidget {
                 // "L'app pratique pour la recherche d'emploi" text
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: RichText(
+                  child: Text(
+                    "The practical app for job searching",
                     textAlign: TextAlign.center,
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: "L'app ",
-                          style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14,
-                            color: ColorRes.textSecondary,
-                          ),
-                        ),
-                        TextSpan(
-                          text: "pratique",
-                          style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.w700,
-                            fontSize: 14,
-                            color: const Color(0xFF000647),
-                          ),
-                        ),
-                        TextSpan(
-                          text: " pour la ",
-                          style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14,
-                            color: ColorRes.textSecondary,
-                          ),
-                        ),
-                        TextSpan(
-                          text: "recherche d'emploi",
-                          style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.w700,
-                            fontSize: 14,
-                            color: const Color(0xFF000647),
-                          ),
-                        ),
-                      ],
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                      color: ColorRes.textSecondary,
                     ),
                   ),
                 ),
@@ -131,7 +106,7 @@ class FirstScreen extends StatelessWidget {
                       color: Colors.white,
                     ),
                     child: Text(
-                          "Connexion en tant que candidat",
+                          "Sign in as candidate",
                           style: GoogleFonts.poppins(
                             fontWeight: FontWeight.w500,
                             fontSize: 14,
@@ -165,7 +140,7 @@ class FirstScreen extends StatelessWidget {
                           color: const Color(0xFF000647), width: 2.0),
                     ),
                     child: Text(
-                          "Créer un compte candidat",
+                          "Create candidate account",
                           style: GoogleFonts.poppins(
                             fontWeight: FontWeight.w500,
                             fontSize: 14,
@@ -210,7 +185,7 @@ class FirstScreen extends StatelessWidget {
                       children: [
                         Flexible(
                           child: Obx(() => Text(
-                                translationService.getText('sign_in_as'),
+                                translationService.getText('Sign in as'),
                                 style: GoogleFonts.poppins(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500,
@@ -242,7 +217,7 @@ class FirstScreen extends StatelessWidget {
                 ),
                 SizedBox(height: Get.height * 0.025),
 
-                // Bouton Create pro Account
+                // Bouton Create Account for PRO
                 InkWell(
                   onTap: () {
                     Navigator.push(
@@ -276,7 +251,7 @@ class FirstScreen extends StatelessWidget {
                       children: [
                         Flexible(
                           child: Obx(() => Text(
-                                translationService.getText('Create pro Account'),
+                                translationService.getText('create_account_as_pro'),
                                 style: GoogleFonts.poppins(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500,
@@ -412,559 +387,3 @@ class FirstScreen extends StatelessWidget {
   }
 }
 
-class GuestJobBrowser extends StatelessWidget {
-  const GuestJobBrowser({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final TranslationService translationService = TranslationService.instance;
-
-    return Scaffold(
-      backgroundColor: ColorRes.backgroundColor,
-      appBar: AppBar(
-        title: Obx(() => Text(
-              translationService.getText('continue_as_guest'),
-              style: GoogleFonts.poppins(
-                fontWeight: FontWeight.w600,
-                color: Colors.black,
-              ),
-            )),
-        backgroundColor: Colors.white,
-        elevation: 2,
-        iconTheme: const IconThemeData(color: Colors.black),
-        centerTitle: true,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const SizedBox(height: 20),
-
-            // Logo sans encadrement
-            SizedBox(
-              width: 300,
-              height: 200,
-              child: Image.asset(
-                'assets/images/logo.png',
-                fit: BoxFit.contain,
-              ),
-            ),
-
-            const SizedBox(height: 40),
-
-            // Tips for You button
-            _buildActionButton(
-              context: context,
-              title: translationService.getText('tips_for_you'),
-              subtitle: translationService.getText('tips_for_you_subtitle'),
-              icon: Icons.lightbulb_outline,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => TipsForYouScreen(),
-                  ),
-                );
-              },
-            ),
-
-            const SizedBox(height: 20),
-
-            // See Job Offers button
-            _buildActionButton(
-              context: context,
-              title: translationService.getText('see_job_offers'),
-              subtitle: translationService.getText('see_job_offers_subtitle'),
-              icon: Icons.work_outline,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const GuestJobListScreen(),
-                  ),
-                );
-              },
-            ),
-
-            const Spacer(),
-
-            // Sign up CTA
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    const Color(0xFF000647),
-                    const Color(0xFF000647),
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: Column(
-                children: [
-                  Obx(() => Text(
-                        translationService.getText('ready_to_apply'),
-                        style: GoogleFonts.poppins(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
-                      )),
-                  const SizedBox(height: 8),
-                  Obx(() => Text(
-                        translationService
-                            .getText('ready_to_apply_description'),
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.poppins(
-                          fontSize: 12,
-                          color: Colors.white.withOpacity(0.9),
-                        ),
-                      )),
-                  const SizedBox(height: 15),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const SignUpScreen(),
-                              ),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            foregroundColor: const Color(0xFF000647),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          child: Obx(() => Text(
-                                translationService
-                                    .getText('create_account_cta'),
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.w600),
-                              )),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const SigninScreenU(),
-                              ),
-                            );
-                          },
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: Colors.white,
-                            side: const BorderSide(color: Colors.white),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          child: Obx(() => Text(
-                                translationService.getText('sign_in_cta'),
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.w600),
-                              )),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildActionButton({
-    required BuildContext context,
-    required String title,
-    required String subtitle,
-    required IconData icon,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(15),
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(15),
-          border: Border.all(color: const Color(0xFF000647), width: 2.0),
-        ),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: const Color(0xFF000647).withOpacity(0.1),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Icon(
-                icon,
-                color: const Color(0xFF000647),
-                size: 24,
-              ),
-            ),
-            const SizedBox(width: 15),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    subtitle,
-                    style: GoogleFonts.poppins(
-                      fontSize: 12,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Icon(
-              Icons.arrow_forward_ios,
-              color: Colors.grey[400],
-              size: 16,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class GuestJobListScreen extends StatelessWidget {
-  const GuestJobListScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final TranslationService translationService = TranslationService.instance;
-
-    return Scaffold(
-      backgroundColor: ColorRes.backgroundColor,
-      appBar: AppBar(
-        title: Obx(() => Text(
-              translationService.getText('job_offers_title'),
-              style: GoogleFonts.poppins(
-                fontWeight: FontWeight.w600,
-                color: Colors.black,
-              ),
-            )),
-        backgroundColor: Colors.white,
-        elevation: 2,
-        iconTheme: const IconThemeData(color: Colors.black),
-        centerTitle: true,
-      ),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(20),
-        itemCount: _sampleJobs.length,
-        itemBuilder: (context, index) {
-          final job = _sampleJobs[index];
-          return _buildJobCard(
-              context, job, index.toString(), translationService);
-        },
-      ),
-    );
-  }
-
-  Widget _buildJobCard(BuildContext context, Map<String, dynamic> job,
-      String docId, TranslationService translationService) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 15),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: const Color(0xFF000647), width: 1.0),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF000647).withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(
-                  Icons.work,
-                  color: const Color(0xFF000647),
-                  size: 20,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      job['Position'] ?? '',
-                      style: GoogleFonts.poppins(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black,
-                      ),
-                    ),
-                    Text(
-                      job['companyName'] ?? '',
-                      style: GoogleFonts.poppins(
-                        fontSize: 14,
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 15),
-          Text(
-            job['requirement'] ?? '',
-            maxLines: 3,
-            overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.poppins(
-              fontSize: 12,
-              color: Colors.grey[700],
-            ),
-          ),
-          const SizedBox(height: 15),
-          Row(
-            children: [
-              if (job['salary'] != null)
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.green.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Text(
-                    job['salary'].toString(),
-                    style: GoogleFonts.poppins(
-                      fontSize: 10,
-                      color: Colors.green[700],
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              if (job['location'] != null) ...[
-                const SizedBox(width: 8),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.blue.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Text(
-                    job['location'].toString(),
-                    style: GoogleFonts.poppins(
-                      fontSize: 10,
-                      color: Colors.blue[700],
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ],
-              const Spacer(),
-              InkWell(
-                onTap: () =>
-                    _showAuthenticationDialog(context, translationService),
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border:
-                        Border.all(color: const Color(0xFF000647), width: 2.0),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    translationService.getText('apply'),
-                    style: GoogleFonts.poppins(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showAuthenticationDialog(
-      BuildContext context, TranslationService translationService) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-          title: Row(
-            children: [
-              Icon(
-                Icons.login,
-                color: const Color(0xFF000647),
-              ),
-              const SizedBox(width: 10),
-              Obx(() => Text(
-                    translationService.getText('login_required'),
-                    style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 18,
-                    ),
-                  )),
-            ],
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Obx(() => Text(
-                    translationService.getText('login_required_message'),
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.poppins(
-                      fontSize: 14,
-                      color: Colors.grey[700],
-                    ),
-                  )),
-              const SizedBox(height: 20),
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const SigninScreenU(),
-                          ),
-                        );
-                      },
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: const Color(0xFF000647),
-                        side: const BorderSide(color: Color(0xFF000647)),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      child: Obx(() => Text(
-                            translationService.getText('sign_in'),
-                            style: GoogleFonts.poppins(
-                              fontWeight: FontWeight.w600,
-                            ),
-                          )),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const SignUpScreen(),
-                          ),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF000647),
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      child: Obx(() => Text(
-                            translationService.getText('sign_up'),
-                            style: GoogleFonts.poppins(
-                              fontWeight: FontWeight.w600,
-                            ),
-                          )),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  static final List<Map<String, dynamic>> _sampleJobs = [
-    {
-      'Position': 'Flutter Developer',
-      'companyName': 'TechCorp',
-      'requirement':
-          'Développer des applications mobiles cross-platform avec Flutter. Expérience de 2+ ans requise.',
-      'salary': '45 000€ - 55 000€',
-      'location': 'Paris',
-    },
-    {
-      'Position': 'UI/UX Designer',
-      'companyName': 'DesignStudio',
-      'requirement':
-          'Créer des interfaces utilisateur modernes et intuitives. Portfolio requis.',
-      'salary': '40 000€ - 50 000€',
-      'location': 'Lyon',
-    },
-    {
-      'Position': 'Data Scientist',
-      'companyName': 'DataFlow',
-      'requirement':
-          'Analyser des données complexes et créer des modèles prédictifs. Python/R requis.',
-      'salary': '50 000€ - 65 000€',
-      'location': 'Remote',
-    },
-    {
-      'Position': 'Product Manager',
-      'companyName': 'StartupXYZ',
-      'requirement':
-          'Gérer le cycle de vie des produits digitaux. 3+ ans d\'expérience.',
-      'salary': '55 000€ - 70 000€',
-      'location': 'Marseille',
-    },
-    {
-      'Position': 'DevOps Engineer',
-      'companyName': 'CloudTech',
-      'requirement':
-          'Automatiser les déploiements et gérer l\'infrastructure cloud. AWS/Azure.',
-      'salary': '48 000€ - 62 000€',
-      'location': 'Toulouse',
-    },
-  ];
-}

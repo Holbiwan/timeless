@@ -272,10 +272,11 @@ class JobCard extends StatelessWidget {
                   color: const Color(0xFF000647).withOpacity(0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Icon(
-                  Icons.work,
-                  color: const Color(0xFF000647),
-                  size: 20,
+                child: Image.network(
+                  'https://zupimages.net/up/25/51/vaft.png',
+                  width: 20, // Match the original icon size
+                  height: 20, // Match the original icon size
+                  fit: BoxFit.cover,
                 ),
               ),
               const SizedBox(width: 12),

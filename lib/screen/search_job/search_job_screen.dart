@@ -76,8 +76,7 @@ class SearchJobScreen extends StatelessWidget {
                           onItemTap: (int index, String value) {
                             controller.skills = value;
                           },
-                          searchItems:
-                              PreferencesService.getList(PrefKeys.allDesignation),
+                          searchItems: [],
                         ),
                       ),
                       (controller.skillError != "")

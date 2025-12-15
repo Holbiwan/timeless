@@ -5,11 +5,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:timeless/common/widgets/common_loader.dart';
 import 'package:timeless/screen/dashboard/home/home_controller.dart';
 import 'package:timeless/screen/job_recommendation_screen/job_recommendation_controller.dart';
+import 'package:timeless/services/unified_translation_service.dart';
 import 'package:timeless/utils/app_res.dart';
 import 'package:timeless/utils/app_style.dart';
 
 Widget allJobs(Stream stream, {bool? seeAll = false}) {
   final HomeController controller = Get.put(HomeController());
+  final UnifiedTranslationService translationService = Get.find<UnifiedTranslationService>();
 
   return GetBuilder<JobRecommendationController>(
     id: "search",
@@ -47,8 +49,8 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
                     const SizedBox(height: 10),
                     Text(
                       jrController.hasActiveFilters() 
-                          ? "Aucun résultat trouvé avec ces filtres"
-                          : "Aucune offre d'emploi disponible",
+                          ? translationService.getText("no_results_found_filters")
+                          : translationService.getText("no_job_offers_available"),
                       style: const TextStyle(
                         fontSize: 16,
                         color: Colors.grey,
@@ -60,7 +62,7 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
                       const SizedBox(height: 10),
                       TextButton(
                         onPressed: () => jrController.clearAllFilters(),
-                        child: const Text("Réinitialiser les filtres"),
+                        child: Text(translationService.getText("reset_filters")),
                       ),
                     ],
                   ],
@@ -82,9 +84,9 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
 
                 final doc = filteredDocs[revIndex];
                 final docData = doc.data() as Map<String, dynamic>;
-                final position = docData["Position"] ?? "Non spécifié";
-                final company = docData["CompanyName"] ?? "Entreprise";
-                final location = docData["location"] ?? "Non spécifié";
+                final position = docData["Position"] ?? translationService.getText("not_specified");
+                final company = docData["CompanyName"] ?? translationService.getText("company_name_default");
+                final location = docData["location"] ?? translationService.getText("not_specified");
                 final salary = docData["salary"] ?? "0";
 
                 // Filtrer les données de démo indésirables
@@ -115,17 +117,11 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
                     children: [
                       Row(
                         children: [
-                          Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF000647).withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Icon(
-                              Icons.work,
-                              color: const Color(0xFF000647),
-                              size: 20,
-                            ),
+                          Image.network(
+                            'https://zupimages.net/up/25/51/vaft.png',
+                            width: 48, // Increased size further
+                            height: 48, // Increased size further
+                            fit: BoxFit.cover,
                           ),
                           const SizedBox(width: 12),
                           Expanded(
@@ -154,7 +150,7 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
                       ),
                       const SizedBox(height: 15),
                       Text(
-                        docData['description'] ?? 'Description non disponible',
+                        docData['description'] ?? translationService.getText("description_not_available"),
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,
                         style: appTextStyle(
@@ -208,7 +204,7 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Text(
-                                'Apply',
+                                translationService.getText('apply'),
                                 style: appTextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w600,
@@ -226,8 +222,8 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
             );
           } catch (e) {
             if (kDebugMode) print(' AllJobs error: $e');
-            return const Center(
-              child: Text('Chargement des emplois...', style: TextStyle(fontSize: 16)),
+            return Center(
+              child: Text(translationService.getText('loading_jobs'), style: TextStyle(fontSize: 16)),
             );
           }
         },
@@ -237,6 +233,7 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
 }
 
 void _showApplicationDialog(BuildContext context, Map<String, dynamic> jobData, QueryDocumentSnapshot doc) {
+  final UnifiedTranslationService translationService = Get.find<UnifiedTranslationService>();
   print('🎯 POPUP APPELÉ - Job: ${jobData["Position"]}');
   showDialog(
     context: context,
@@ -255,7 +252,7 @@ void _showApplicationDialog(BuildContext context, Map<String, dynamic> jobData, 
             const SizedBox(width: 10),
             Expanded(
               child: Text(
-                '${'Postuler pour'.tr} ${jobData["Position"] ?? "ce poste"}',
+                '${translationService.getText('apply_for')} ${jobData["Position"] ?? translationService.getText("this_position")}',
                 style: appTextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 15,
@@ -268,7 +265,7 @@ void _showApplicationDialog(BuildContext context, Map<String, dynamic> jobData, 
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              '${'Vous allez postuler pour le poste de'.tr} ${jobData["Position"] ?? "Non spécifié"} ${'chez'.tr} ${jobData["CompanyName"] ?? "cette entreprise"}.',
+              '${translationService.getText('you_are_applying_for')} ${jobData["Position"] ?? translationService.getText("not_specified")} ${translationService.getText('at')} ${jobData["CompanyName"] ?? translationService.getText("this_company")}.',
               textAlign: TextAlign.center,
               style: appTextStyle(
                 fontSize: 13,
@@ -294,7 +291,7 @@ void _showApplicationDialog(BuildContext context, Map<String, dynamic> jobData, 
                       ),
                     ),
                     child: Text(
-                      'Annuler'.tr,
+                      translationService.getText('cancel'),
                       style: appTextStyle(
                         fontWeight: FontWeight.w500,
                         fontSize: MediaQuery.of(context).size.width > 600 ? 15 : 14,
@@ -324,7 +321,7 @@ void _showApplicationDialog(BuildContext context, Map<String, dynamic> jobData, 
                       ),
                     ),
                     child: Text(
-                      'Postuler'.tr,
+                      translationService.getText('apply'),
                       style: appTextStyle(
                         fontWeight: FontWeight.w500,
                         fontSize: MediaQuery.of(context).size.width > 600 ? 15 : 14,

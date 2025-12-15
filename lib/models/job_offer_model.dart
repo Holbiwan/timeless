@@ -58,21 +58,34 @@ class JobOfferModel {
 
   factory JobOfferModel.fromFirestore(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    
+    // Parse salary from string format "min-max"
+    double? salaryMinParsed;
+    double? salaryMaxParsed;
+    String? salaryStr = data['salary'];
+    if (salaryStr != null && salaryStr.isNotEmpty) {
+      List<String> salaryParts = salaryStr.split('-');
+      if (salaryParts.length == 2) {
+        salaryMinParsed = double.tryParse(salaryParts[0].trim());
+        salaryMaxParsed = double.tryParse(salaryParts[1].trim());
+      }
+    }
+    
     return JobOfferModel(
       id: doc.id,
-      employerId: data['employerId'] ?? '',
-      companyName: data['companyName'] ?? '',
-      title: data['title'] ?? '',
+      employerId: data['EmployerId'] ?? '',
+      companyName: data['CompanyName'] ?? '',
+      title: data['Position'] ?? '',
       description: data['description'] ?? '',
-      requirements: List<String>.from(data['requirements'] ?? []),
+      requirements: [], // Not stored in current structure
       location: data['location'] ?? '',
-      jobType: _parseJobType(data['jobType']),
-      experienceLevel: _parseExperienceLevel(data['experienceLevel']),
-      salaryMin: data['salaryMin']?.toDouble(),
-      salaryMax: data['salaryMax']?.toDouble(),
-      skills: List<String>.from(data['skills'] ?? []),
-      industry: data['industry'] ?? '',
-      createdAt: (data['createdAt'] as Timestamp).toDate(),
+      jobType: _parseJobTypeFromString(data['jobType']),
+      experienceLevel: ExperienceLevel.mid, // Default for now
+      salaryMin: salaryMinParsed ?? double.tryParse(data['salaryMin']?.toString() ?? '0'),
+      salaryMax: salaryMaxParsed ?? double.tryParse(data['salaryMax']?.toString() ?? '0'),
+      skills: [], // Not stored in current structure  
+      industry: data['category'] ?? '',
+      createdAt: data['createdAt'] != null ? (data['createdAt'] as Timestamp).toDate() : DateTime.now(),
       deadline: data['deadline'] != null ? (data['deadline'] as Timestamp).toDate() : null,
       isActive: data['isActive'] ?? true,
       applicationsCount: data['applicationsCount'] ?? 0,
@@ -101,11 +114,12 @@ class JobOfferModel {
   }
 
   // Helper methods for enum conversion
-  static JobType _parseJobType(String? type) {
-    switch (type) {
-      case 'fullTime':
+  
+  static JobType _parseJobTypeFromString(String? type) {
+    switch (type?.toLowerCase()) {
+      case 'full-time':
         return JobType.fullTime;
-      case 'partTime':
+      case 'part-time':
         return JobType.partTime;
       case 'contract':
         return JobType.contract;
@@ -113,27 +127,10 @@ class JobOfferModel {
         return JobType.internship;
       case 'freelance':
         return JobType.freelance;
+      case 'temporary':
+        return JobType.contract;
       default:
         return JobType.fullTime;
-    }
-  }
-
-  static ExperienceLevel _parseExperienceLevel(String? level) {
-    switch (level) {
-      case 'entry':
-        return ExperienceLevel.entry;
-      case 'junior':
-        return ExperienceLevel.junior;
-      case 'mid':
-        return ExperienceLevel.mid;
-      case 'senior':
-        return ExperienceLevel.senior;
-      case 'lead':
-        return ExperienceLevel.lead;
-      case 'executive':
-        return ExperienceLevel.executive;
-      default:
-        return ExperienceLevel.entry;
     }
   }
 

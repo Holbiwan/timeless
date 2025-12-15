@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:timeless/utils/app_theme.dart';
 import 'package:timeless/screen/dashboard/home/widgets/all_jobs.dart';
 import 'package:timeless/screen/job_recommendation_screen/job_recommendation_controller.dart';
-import 'package:timeless/services/translation_service.dart';
+import 'package:timeless/services/unified_translation_service.dart';
 import 'package:timeless/services/accessibility_service.dart';
 
 class JobRecommendationScreen extends StatelessWidget {
@@ -13,7 +13,7 @@ class JobRecommendationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(JobRecommendationController());
-    final TranslationService translationService = Get.find<TranslationService>();
+    final UnifiedTranslationService translationService = Get.find<UnifiedTranslationService>();
     final AccessibilityService accessibilityService = Get.find<AccessibilityService>();
     
     return Obx(() => Scaffold(
@@ -21,7 +21,7 @@ class JobRecommendationScreen extends StatelessWidget {
       appBar: AppBar(
         toolbarHeight: 50,
         title: Text(
-          translationService.getText('job_recommendation'),
+          translationService.getText('job recommendation'),
           style: accessibilityService.getAccessibleTextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w500,
@@ -104,7 +104,7 @@ class JobRecommendationScreen extends StatelessWidget {
                     children: [
                       // Filtres avec badges
                       _buildFilterChip(
-                        'Catégorie', 
+                        'Category', 
                         controller.selectedCategory.value,
                         () => _showCategoryFilter(context, controller),
                         controller,
@@ -118,21 +118,21 @@ class JobRecommendationScreen extends StatelessWidget {
                       ),
                       const SizedBox(width: 8),
                       _buildFilterChip(
-                        'Lieu', 
+                        'Location', 
                         controller.selectedLocation.value,
                         () => _showLocationFilter(context, controller),
                         controller,
                       ),
                       const SizedBox(width: 8),
                       _buildFilterChip(
-                        'Salaire', 
+                        'Salary', 
                         controller.selectedSalaryRange.value,
                         () => _showSalaryFilter(context, controller),
                         controller,
                       ),
                       const SizedBox(width: 8),
                       _buildFilterChip(
-                        'Expérience', 
+                        'Experience', 
                         controller.selectedExperienceLevel.value,
                         () => _showExperienceFilter(context, controller),
                         controller,
@@ -142,63 +142,58 @@ class JobRecommendationScreen extends StatelessWidget {
                         IconButton(
                           onPressed: () => controller.clearAllFilters(),
                           icon: const Icon(Icons.clear_all, color: Colors.red),
-                          tooltip: 'Réinitialiser les filtres',
+                          tooltip: 'Reset Filters',
                         ),
                       ],
                     ],
                   ),
                 ),
                 
-                // Affichage du nombre de résultats
-                Padding(
-                  padding: const EdgeInsets.only(top: 8, bottom: 4),
-                  child: Obx(() => Text(
-                    '${controller.getFilteredResultsCount()} offre(s) trouvée(s)',
-                    style: accessibilityService.getAccessibleTextStyle(
-                      fontSize: 12,
-                      color: accessibilityService.secondaryTextColor,
-                    ),
-                  )),
-                ),
+
                 
                 // Filtres de catégories
                 SizedBox(
                   height: 35,
                   child: GetBuilder<JobRecommendationController>(
                     builder: (jrController) {
-                      return Center(
-                        child: Wrap(
-                          spacing: 6,
-                          alignment: WrapAlignment.center,
+                      return SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
                           children: List.generate(jrController.jobs2.length, (index) {
-                            return Obx(() => GestureDetector(
-                              onTap: () => jrController.onTapJobs2(index),
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 6,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: jrController.selectedJobs2.value == index
-                                      ? AppTheme.white
-                                      : Colors.transparent,
-                                  borderRadius: BorderRadius.circular(18),
-                                  border: Border.all(
-                                    color: AppTheme.white.withOpacity(0.5),
-                                  ),
-                                ),
-                                child: Text(
-                                  jrController.jobs2[index],
-                                  style: TextStyle(
-                                    color: jrController.selectedJobs2.value == index
-                                        ? Colors.black
-                                        : AppTheme.white,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 11,
-                                  ),
-                                ),
+                            return Padding(
+                              padding: EdgeInsets.only(
+                                left: index == 0 ? 16 : 0,
+                                right: 6,
                               ),
-                            ));
+                              child: Obx(() => GestureDetector(
+                                onTap: () => jrController.onTapJobs2(index),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 6,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: jrController.selectedJobs2.value == index
+                                        ? AppTheme.white
+                                        : Colors.transparent,
+                                    borderRadius: BorderRadius.circular(18),
+                                    border: Border.all(
+                                      color: AppTheme.white.withOpacity(0.5),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    jrController.jobs2[index],
+                                    style: TextStyle(
+                                      color: jrController.selectedJobs2.value == index
+                                          ? Colors.black
+                                          : AppTheme.white,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 11,
+                                    ),
+                                  ),
+                                ),
+                              )),
+                            );
                           }),
                         ),
                       );
@@ -211,43 +206,10 @@ class JobRecommendationScreen extends StatelessWidget {
           
           // Liste des emplois
           Expanded(
-            child: GetBuilder<JobRecommendationController>(
-              builder: (jrController) {
-                return Obx(() {
-                  // Sélectionner le stream approprié selon la catégorie
-                  Stream<QuerySnapshot> stream;
-                  
-                  switch (jrController.selectedJobs2.value) {
-                    case 0:
-                      stream = FirebaseFirestore.instance.collection("allPost").snapshots();
-                      break;
-                    case 1:
-                      stream = FirebaseFirestore.instance
-                          .collection("category")
-                          .doc("UX")
-                          .collection("UX")
-                          .snapshots();
-                      break;
-                    case 2:
-                      stream = FirebaseFirestore.instance
-                          .collection("category")
-                          .doc("Data")
-                          .collection("Data")
-                          .snapshots();
-                      break;
-                    case 3:
-                      stream = FirebaseFirestore.instance
-                          .collection("category")
-                          .doc("Security")
-                          .collection("Security")
-                          .snapshots();
-                      break;
-                    default:
-                      stream = FirebaseFirestore.instance.collection("allPost").snapshots();
-                  }
-                  
-                  return allJobs(stream, seeAll: true);
-                });
+            child: StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance.collection("allPost").snapshots(),
+              builder: (context, snapshot) {
+                return allJobs(FirebaseFirestore.instance.collection("allPost").snapshots(), seeAll: true);
               },
             ),
           ),
@@ -263,12 +225,12 @@ class JobRecommendationScreen extends StatelessWidget {
     VoidCallback onTap, 
     JobRecommendationController controller,
   ) {
-    final isActive = value != 'Tous' && value != 'Toutes';
+    final isActive = value != 'All';
     
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
         decoration: BoxDecoration(
           color: isActive ? const Color(0xFF4A90E2) : Colors.white,
           borderRadius: BorderRadius.circular(16),
@@ -283,7 +245,7 @@ class JobRecommendationScreen extends StatelessWidget {
               isActive ? '$label: $value' : label,
               style: TextStyle(
                 color: isActive ? Colors.white : Colors.black87,
-                fontSize: 10,
+                fontSize: 9,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -306,7 +268,13 @@ class JobRecommendationScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Sélectionner une catégorie'),
+        title: const Text('Select a category'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
+          ),
+        ],
         content: SizedBox(
           width: double.minPositive,
           child: ListView.builder(
@@ -341,7 +309,13 @@ class JobRecommendationScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Sélectionner un type de poste'),
+        title: const Text('Select a job type'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
+          ),
+        ],
         content: SizedBox(
           width: double.minPositive,
           child: ListView.builder(
@@ -376,7 +350,13 @@ class JobRecommendationScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Sélectionner une localisation'),
+        title: const Text('Select a location'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
+          ),
+        ],
         content: SizedBox(
           width: double.minPositive,
           child: ListView.builder(
@@ -411,7 +391,13 @@ class JobRecommendationScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Sélectionner une tranche de salaire'),
+        title: const Text('Select a salary range'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
+          ),
+        ],
         content: SizedBox(
           width: double.minPositive,
           child: ListView.builder(
@@ -446,7 +432,13 @@ class JobRecommendationScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Sélectionner un niveau d\'expérience'),
+        title: const Text('Select an experience level'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
+          ),
+        ],
         content: SizedBox(
           width: double.minPositive,
           child: ListView.builder(

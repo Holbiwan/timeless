@@ -18,4 +18,5 @@ class AppRes {
   static String firstPageScreenM = "/FirstPageScreenM";
   static String newHomePageUi = "/NewHomePageUi";
   static String dashBoardScreen = "/DashBoardScreen";
+  static String employerDashboardScreen = "/employer-dashboard";
 }

@@ -246,7 +246,7 @@ class SignInScreenControllerM extends GetxController {
         
         Get.snackbar(
           "Demo Mode", 
-          "✅ Connecté en mode démo sécurisé!", 
+          "✅ Connected in secure demo mode!", 
           backgroundColor: Colors.green,
           colorText: Colors.white,
         );
@@ -275,7 +275,7 @@ class SignInScreenControllerM extends GetxController {
     
     Get.snackbar(
       "Demo Mode Local", 
-      "✅ Mode démo local activé!", 
+      "✅ Local demo mode activated!", 
       backgroundColor: ColorRes.appleGreen,
       colorText: Colors.white,
     );
@@ -310,7 +310,7 @@ class SignInScreenControllerM extends GetxController {
         "name": "Timeless Demo Corp",
         "website": "https://demo.timeless.app",
         "location": "Paris, France",
-        "description": "Entreprise de démonstration pour Timeless - Session temporaire",
+        "description": "Demonstration company for Timeless - Temporary session",
         "CreatedAt": FieldValue.serverTimestamp(),
       });
 
@@ -321,8 +321,8 @@ class SignInScreenControllerM extends GetxController {
       await PreferencesService.setValue(PrefKeys.userId, userId);
       await PreferencesService.setValue(PrefKeys.companyName, "Timeless Demo Corp");
     } catch (e) {
-      debugPrint('Erreur création profil démo: $e');
-      // Continue quand même avec les données locales
+      debugPrint('Demo profile creation error: $e');
+      // Continue anyway with local data
     }
   }
 

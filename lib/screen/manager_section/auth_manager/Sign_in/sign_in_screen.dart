@@ -5,8 +5,9 @@ import 'package:timeless/common/widgets/common_loader.dart';
 import 'package:timeless/common/widgets/common_text_field.dart';
 import 'package:timeless/screen/job_detail_screen/job_detail_upload_cv_screen/upload_cv_controller.dart';
 import 'package:timeless/screen/manager_section/auth_manager/Sign_in/sign_in_controller.dart';
-import 'package:timeless/screen/manager_section/auth_manager/forgot_Password/forgot_password_screen.dart';
+import 'package:timeless/screen/auth/forgot_password/forgot_password_screen.dart';
 import 'package:timeless/screen/manager_section/auth_manager/sign_up_new/sign_up_new_screen.dart';
+import 'package:timeless/services/demo_data_service.dart';
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/color_res.dart';
@@ -345,7 +346,7 @@ class _SignInScreenMState extends State<SignInScreenM> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (con) => ForgotPasswordScreenM()));
+                                    builder: (con) => ForgotPasswordScreen()));
                           },
                           child: Text(Strings.forgotThePassword,
                               style: appTextStyle(
@@ -356,6 +357,69 @@ class _SignInScreenMState extends State<SignInScreenM> {
                       ),
                       
                       const SizedBox(height: 28),
+                      
+                      // Demo Data Button
+                      Center(
+                        child: ElevatedButton.icon(
+                          onPressed: () async {
+                            try {
+                              showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (context) => AlertDialog(
+                                  title: Text('Data Initialization'),
+                                  content: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      CircularProgressIndicator(),
+                                      SizedBox(height: 16),
+                                      Text('Creating demo employers and job postings...'),
+                                    ],
+                                  ),
+                                ),
+                              );
+                              
+                              // Create demo data
+                              await DemoDataService.createAllDemoData();
+                              
+                              Navigator.pop(context); // Close progress dialog
+                              
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('✅ Demo data created successfully!'),
+                                  backgroundColor: Colors.green,
+                                ),
+                              );
+                            } catch (e) {
+                              Navigator.pop(context); // Close progress dialog
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('❌ Erreur: $e'),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            }
+                          },
+                          icon: Icon(Icons.dataset, color: Colors.white),
+                          label: Text(
+                            'Initialize demo data',
+                            style: appTextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                            ),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.green[600],
+                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                        ),
+                      ),
+                      
+                      const SizedBox(height: 20),
                       
                       // Or continue with
                       Center(

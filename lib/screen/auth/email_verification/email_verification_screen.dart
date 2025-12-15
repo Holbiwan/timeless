@@ -1,4 +1,6 @@
 // lib/screen/auth/email_verification/email_verification_screen.dart
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -124,7 +126,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
         Get.snackbar(
           " Verification Email Sent",
           "A new verification email has been sent to ${widget.email}",
-          backgroundColor: Colors.blue,
+          backgroundColor: const Color(0xFF000647),
           colorText: Colors.white,
           duration: const Duration(seconds: 3),
         );
@@ -164,40 +166,6 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
         });
       }
     });
-  }
-
-  Future<void> _checkEmailManually() async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      await _auth.currentUser?.reload();
-      final user = _auth.currentUser;
-      
-      if (user != null && user.emailVerified) {
-        await _updateUserVerificationStatus(user);
-        _navigateToDashboard();
-      } else {
-        Get.snackbar(
-          "Email Not Verified",
-          "Please check your email and click the verification link first.",
-          backgroundColor: Colors.orange,
-          colorText: Colors.white,
-        );
-      }
-    } catch (e) {
-      Get.snackbar(
-        "Error",
-        "Failed to check verification status. Please try again.",
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
   }
 
   @override
@@ -291,15 +259,15 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.blue.withOpacity(0.1),
+                  color: const Color(0xFF000647),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.blue.withOpacity(0.3)),
+                  border: Border.all(color: const Color(0xFF000647).withOpacity(0.3)),
                 ),
                 child: Column(
                   children: [
                     Icon(
                       Icons.info_outline,
-                      color: Colors.blue,
+                      color: const Color(0xFF000647),
                       size: 24,
                     ),
                     const SizedBox(height: 8),
@@ -307,7 +275,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                       "Please check your email and click the verification link to activate your account. The verification will be detected automatically.",
                       style: GoogleFonts.poppins(
                         fontSize: 14,
-                        color: Colors.blue.shade700,
+                        color: Colors.white,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -316,33 +284,6 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
               ),
               
               const SizedBox(height: 30),
-              
-              // Check manually button
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: _isLoading ? null : _checkEmailManually,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: ColorRes.primaryAccent,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  child: _isLoading
-                      ? const CircularProgressIndicator(color: Colors.white)
-                      : Text(
-                          "I've Verified My Email",
-                          style: GoogleFonts.poppins(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          ),
-                        ),
-                ),
-              ),
-              
-              const SizedBox(height: 20),
               
               // Resend email button
               SizedBox(

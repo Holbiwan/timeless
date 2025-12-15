@@ -38,10 +38,19 @@ class SignInScreenController extends GetxController {
   void getRememberEmailDataUser() {
     final email = PreferencesService.getString(PrefKeys.emailRememberUser);
     final pwd = PreferencesService.getString(PrefKeys.passwordRememberUser);
-    if (email.isNotEmpty) {
+    
+    // Seulement pré-remplir si on a des données ET que Remember Me était activé
+    if (email.isNotEmpty && pwd.isNotEmpty) {
+      rememberMe = true;
       emailController.text = email;
       passwordController.text = pwd;
-      update(["showEmail", "showPassword"]);
+      update(["showEmail", "showPassword", "remember_me"]);
+    } else {
+      // S'assurer que les champs sont vides si rien n'est mémorisé
+      rememberMe = false;
+      emailController.clear();
+      passwordController.clear();
+      update(["showEmail", "showPassword", "remember_me"]);
     }
   }
 
@@ -200,6 +209,16 @@ class SignInScreenController extends GetxController {
           }
         }
 
+        // Sauvegarder les données seulement si Remember Me est activé ET la connexion réussie
+        if (rememberMe) {
+          await PreferencesService.setValue(PrefKeys.emailRememberUser, email);
+          await PreferencesService.setValue(PrefKeys.passwordRememberUser, password);
+        } else {
+          // Si Remember Me n'est pas activé, s'assurer de supprimer les données sauvegardées
+          PreferencesService.remove(PrefKeys.emailRememberUser);
+          PreferencesService.remove(PrefKeys.passwordRememberUser);
+        }
+
         emailController.clear();
         passwordController.clear();
 
@@ -229,12 +248,6 @@ class SignInScreenController extends GetxController {
   }
 
   Future<void> onLoginBtnTap() async {
-    if (rememberMe) {
-      await PreferencesService.setValue(
-          PrefKeys.emailRememberUser, emailController.text);
-      await PreferencesService.setValue(
-          PrefKeys.passwordRememberUser, passwordController.text);
-    }
     if (!validator()) return;
 
     await signInWithEmailAndPassword(

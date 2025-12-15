@@ -72,6 +72,7 @@
   "application_sent_message": "Your application for the {{position}} position at {{company}} has been successfully submitted.",
   "confirmation_email_info": "You will receive a confirmation email.",
   "perfect_button": "Perfect!",
+  "sign in as": "Sign in as PRO",
   
   "employer_signin_title": "Sign In as PRO",
   "employer_signin_subtitle": "Choose your connection method",

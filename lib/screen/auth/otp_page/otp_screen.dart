@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:timeless/common/widgets/back_button.dart';
-import 'package:timeless/screen/auth/reset_password_page/reset_password_screen.dart';
+// import removed - reset_password_page no longer exists
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/color_res.dart';
@@ -135,8 +135,9 @@ class OtpScreen extends StatelessWidget {
             child: InkWell(
               onTap: () {
                 // controller.startTimer();
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (con) => ResetPasswordScreen()));
+                // Redirection vers l'écran de connexion après vérification OTP
+                Get.back();
+                Get.back();
               },
               child: Text(Strings.verify,
                   style: appTextStyle(

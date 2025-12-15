@@ -6,6 +6,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:timeless/utils/app_theme.dart';
+import 'package:timeless/services/preferences_service.dart';
+import 'package:timeless/utils/pref_keys.dart';
 
 class ProfileController extends GetxController {
   // Firebase instances
@@ -52,6 +54,64 @@ class ProfileController extends GetxController {
   void onInit() {
     super.onInit();
     loadProfileFromFirebase();
+    _setupRealTimeListeners();
+  }
+  
+  // Configurer les listeners pour la mise à jour en temps réel
+  void _setupRealTimeListeners() {
+    // Listener pour le nom complet - mise à jour en temps réel de l'affichage
+    fullNameController.addListener(() {
+      fullName.value = fullNameController.text.trim();
+    });
+    
+    // Listener pour l'email
+    emailController.addListener(() {
+      email.value = emailController.text.trim();
+    });
+    
+    // Listener pour le téléphone
+    phoneController.addListener(() {
+      phoneNumber.value = phoneController.text.trim();
+    });
+    
+    // Listener pour la ville
+    cityController.addListener(() {
+      city.value = cityController.text.trim();
+    });
+    
+    // Listener pour le pays
+    countryController.addListener(() {
+      country.value = countryController.text.trim();
+    });
+    
+    // Listener pour l'occupation
+    occupationController.addListener(() {
+      occupation.value = occupationController.text.trim();
+    });
+    
+    // Listener pour la bio
+    bioController.addListener(() {
+      bio.value = bioController.text.trim();
+    });
+    
+    // Listener pour le poste
+    jobPositionController.addListener(() {
+      jobPosition.value = jobPositionController.text.trim();
+    });
+    
+    // Listener pour les compétences
+    skillsController.addListener(() {
+      skills.value = skillsController.text.trim();
+    });
+    
+    // Listener pour les salaires
+    salaryMinController.addListener(() {
+      salaryRangeMin.value = salaryMinController.text.trim();
+    });
+    
+    salaryMaxController.addListener(() {
+      salaryRangeMax.value = salaryMaxController.text.trim();
+    });
   }
 
   // Charger le profil depuis Firebase
@@ -61,8 +121,11 @@ class ProfileController extends GetxController {
       final user = _auth.currentUser;
       
       if (user != null) {
+        // Charger depuis la collection Auth/User/register (comme utilisé dans sign-in)
         final doc = await _firestore
-            .collection('users')
+            .collection('Auth')
+            .doc('User')
+            .collection('register')
             .doc(user.uid)
             .get();
         
@@ -70,17 +133,20 @@ class ProfileController extends GetxController {
           final data = doc.data()!;
           
           // Charger toutes les données du profil
-          fullName.value = data['fullName'] ?? '';
-          email.value = data['email'] ?? '';
-          phoneNumber.value = data['phoneNumber'] ?? '';
-          dateOfBirth.value = data['dateOfBirth'] ?? '';
-          city.value = data['city'] ?? '';
-          country.value = data['country'] ?? '';
-          occupation.value = data['occupation'] ?? '';
-          jobPosition.value = data['jobPosition'] ?? '';
-          experienceLevel.value = data['experience'] ?? '';
-          bio.value = data['bio'] ?? '';
-          profileImageUrl.value = data['photoURL'] ?? '';
+          fullName.value = data['fullName'] ?? user.displayName ?? '';
+          email.value = data['Email'] ?? user.email ?? '';
+          phoneNumber.value = data['Phone'] ?? '';
+          dateOfBirth.value = data['DateOfBirth'] ?? '';
+          city.value = data['City'] ?? '';
+          country.value = data['Country'] ?? '';
+          occupation.value = data['Occupation'] ?? '';
+          jobPosition.value = data['JobPosition'] ?? '';
+          experienceLevel.value = data['ExperienceLevel'] ?? '';
+          bio.value = data['Bio'] ?? '';
+          profileImageUrl.value = data['photoURL'] ?? user.photoURL ?? '';
+          skills.value = data['Skills'] ?? '';
+          salaryRangeMin.value = data['SalaryRangeMin'] ?? '';
+          salaryRangeMax.value = data['SalaryRangeMax'] ?? '';
           
           // Remplir aussi les contrôleurs pour l'édition
           fullNameController.text = fullName.value;
@@ -92,25 +158,21 @@ class ProfileController extends GetxController {
           bioController.text = bio.value;
           dateController.text = dateOfBirth.value;
           jobPositionController.text = jobPosition.value;
-          
-          // Skills et salary depuis jobPreferences si disponible
-          final jobPrefs = data['jobPreferences'] as Map<String, dynamic>?;
-          if (jobPrefs != null) {
-            skills.value = (jobPrefs['skills'] as List<dynamic>?)?.join(', ') ?? '';
-            skillsController.text = skills.value;
-            
-            final salaryRange = jobPrefs['salaryRange'] as Map<String, dynamic>?;
-            if (salaryRange != null) {
-              salaryRangeMin.value = salaryRange['min']?.toString() ?? '';
-              salaryRangeMax.value = salaryRange['max']?.toString() ?? '';
-              salaryMinController.text = salaryRangeMin.value;
-              salaryMaxController.text = salaryRangeMax.value;
-            }
-          }
+          skillsController.text = skills.value;
+          salaryMinController.text = salaryRangeMin.value;
+          salaryMaxController.text = salaryRangeMax.value;
           
           print('✅ Profil chargé depuis Firebase');
         } else {
-          print('❌ Aucun document profil trouvé');
+          // Si pas de document, utiliser les données de Firebase Auth
+          fullName.value = user.displayName ?? '';
+          email.value = user.email ?? '';
+          profileImageUrl.value = user.photoURL ?? '';
+          
+          fullNameController.text = fullName.value;
+          emailController.text = email.value;
+          
+          print('❓ Aucun document profil trouvé, utilisation des données Firebase Auth');
         }
       }
     } catch (e) {
@@ -182,15 +244,17 @@ class ProfileController extends GetxController {
         image = File(pickedFile.path);
         update(['image']);
         AppTheme.showStandardSnackBar(
-          title: "Succès",
-          message: "Photo capturée avec succès",
+          title: "Success",
+          message: "Photo captured successfully",
           isSuccess: true,
         );
+        // Automatically save the profile with the new photo
+        await onTapSubmit();
       }
     } catch (e) {
       AppTheme.showStandardSnackBar(
-        title: "Erreur",
-        message: "Problème avec la caméra",
+        title: "Error",
+        message: "Camera problem",
         isError: true,
       );
     }
@@ -210,15 +274,17 @@ class ProfileController extends GetxController {
         image = File(pickedFile.path);
         update(['image']);
         AppTheme.showStandardSnackBar(
-          title: "Succès",
-          message: "Photo sélectionnée avec succès",
+          title: "Success",
+          message: "Photo selected successfully",
           isSuccess: true,
         );
+        // Automatically save the profile with the new photo
+        await onTapSubmit();
       }
     } catch (e) {
       AppTheme.showStandardSnackBar(
-        title: "Erreur",
-        message: "Problème avec la galerie",
+        title: "Error",
+        message: "Gallery problem",
         isError: true,
       );
     }
@@ -237,6 +303,9 @@ class ProfileController extends GetxController {
         if (imageUrl != null) {
           profileImageUrl.value = imageUrl;
         }
+        // Clear the image after successful upload
+        image = null;
+        update(['image']);
       }
       
       // Save to Firebase
@@ -246,15 +315,15 @@ class ProfileController extends GetxController {
       _updateLocalValues();
       
       AppTheme.showStandardSnackBar(
-        title: "Profil mis à jour",
-        message: "Votre profil a été sauvegardé avec succès !",
+        title: "Profile Updated",
+        message: "Your profile has been saved successfully!",
         isSuccess: true,
       );
       
     } catch (e) {
       AppTheme.showStandardSnackBar(
-        title: "Erreur",
-        message: "Impossible de sauvegarder le profil",
+        title: "Error",
+        message: "Unable to save profile",
         isError: true,
       );
     } finally {
@@ -290,34 +359,42 @@ class ProfileController extends GetxController {
     
     final Map<String, dynamic> profileData = {
       'uid': user.uid,
-      'email': emailController.text.trim(),
+      'Email': emailController.text.trim(),
       'fullName': fullNameController.text.trim(),
-      'phoneNumber': phoneController.text.trim(),
-      'city': cityController.text.trim(),
-      'country': countryController.text.trim(),
-      'occupation': occupationController.text.trim(),
-      'bio': bioController.text.trim(),
-      'dateOfBirth': dateController.text.trim(),
-      'jobPosition': jobPositionController.text.trim(),
+      'Phone': phoneController.text.trim(),
+      'City': cityController.text.trim(),
+      'Country': countryController.text.trim(),
+      'Occupation': occupationController.text.trim(),
+      'Bio': bioController.text.trim(),
+      'DateOfBirth': dateController.text.trim(),
+      'JobPosition': jobPositionController.text.trim(),
+      'Skills': skillsController.text.trim(),
+      'SalaryRangeMin': salaryMinController.text.trim(),
+      'SalaryRangeMax': salaryMaxController.text.trim(),
       'updatedAt': FieldValue.serverTimestamp(),
-      
-      'jobPreferences': {
-        'skills': skillsController.text.trim().split(',').map((s) => s.trim()).where((s) => s.isNotEmpty).toList(),
-        'workType': ['remote', 'hybrid', 'onsite'],
-        'contractType': ['fulltime'],
-        'salaryRange': {
-          'min': salaryMinController.text.trim().isNotEmpty ? int.tryParse(salaryMinController.text.trim()) : null,
-          'max': salaryMaxController.text.trim().isNotEmpty ? int.tryParse(salaryMaxController.text.trim()) : null,
-          'currency': 'EUR'
-        }
-      },
     };
     
     if (imageUrl != null) {
       profileData['photoURL'] = imageUrl;
     }
     
-    await _firestore.collection('users').doc(user.uid).set(profileData, SetOptions(merge: true));
+    // Sauvegarder dans Auth/User/register (comme utilisé dans sign-in)
+    await _firestore
+        .collection('Auth')
+        .doc('User')
+        .collection('register')
+        .doc(user.uid)
+        .set(profileData, SetOptions(merge: true));
+    
+    // Mettre à jour Firebase Auth displayName et photoURL pour synchronisation
+    await user.updateDisplayName(fullNameController.text.trim());
+    if (imageUrl != null) {
+      await user.updatePhotoURL(imageUrl);
+    }
+    await user.reload(); // Recharger les données utilisateur
+    
+    // Mettre à jour les préférences locales pour synchronisation avec le reste de l'app
+    await _updateLocalPreferences();
   }
 
   void _updateLocalValues() {
@@ -334,13 +411,39 @@ class ProfileController extends GetxController {
     salaryRangeMin.value = salaryMinController.text.trim();
     salaryRangeMax.value = salaryMaxController.text.trim();
   }
+  
+  // Mettre à jour les préférences locales pour synchronisation
+  Future<void> _updateLocalPreferences() async {
+    await PreferencesService.setValue(PrefKeys.fullName, fullNameController.text.trim());
+    await PreferencesService.setValue(PrefKeys.email, emailController.text.trim());
+    await PreferencesService.setValue(PrefKeys.phoneNumber, phoneController.text.trim());
+    await PreferencesService.setValue(PrefKeys.city, cityController.text.trim());
+    await PreferencesService.setValue(PrefKeys.country, countryController.text.trim());
+    await PreferencesService.setValue(PrefKeys.occupation, occupationController.text.trim());
+    await PreferencesService.setValue(PrefKeys.bio, bioController.text.trim());
+    await PreferencesService.setValue(PrefKeys.dateOfBirth, dateController.text.trim());
+    await PreferencesService.setValue(PrefKeys.jobPosition, jobPositionController.text.trim());
+    await PreferencesService.setValue(PrefKeys.skills, skillsController.text.trim());
+    await PreferencesService.setValue(PrefKeys.salaryMin, salaryMinController.text.trim());
+    await PreferencesService.setValue(PrefKeys.salaryMax, salaryMaxController.text.trim());
+    
+    if (profileImageUrl.value.isNotEmpty) {
+      await PreferencesService.setValue(PrefKeys.profileImageUrl, profileImageUrl.value);
+    }
+  }
 
   // Méthode pour vider le profil Firebase
   Future<void> clearProfileData() async {
     try {
       final user = _auth.currentUser;
       if (user != null) {
-        await _firestore.collection('users').doc(user.uid).delete();
+        // Supprimer de la collection Auth/User/register
+        await _firestore
+            .collection('Auth')
+            .doc('User')
+            .collection('register')
+            .doc(user.uid)
+            .delete();
         
         // Clear all values
         fullName.value = '';

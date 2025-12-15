@@ -11,7 +11,7 @@ import 'package:timeless/common/widgets/common_loader.dart';
 import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/app_theme.dart';
-import 'package:timeless/services/translation_service.dart';
+import 'package:timeless/services/unified_translation_service.dart';
 import 'package:timeless/services/accessibility_service.dart';
 
 import 'package:timeless/screen/auth/employer_signin/employer_signin_controller.dart';
@@ -25,7 +25,7 @@ class EmployerSignInScreen extends StatefulWidget {
 
 class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
   final EmployerSignInController ctrl = Get.put(EmployerSignInController());
-  final TranslationService translationService = Get.find<TranslationService>();
+  final UnifiedTranslationService translationService = Get.find<UnifiedTranslationService>();
   final AccessibilityService accessibilityService = Get.find<AccessibilityService>();
 
   bool isLoading = false;
@@ -83,7 +83,7 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
 
                   Center(
                     child: Text(
-                      'Créer un compte PRO',
+                      'Create PRO Account',
                       style: accessibilityService.getAccessibleTextStyle(
                         fontSize: AppTheme.fontSizeXLarge,
                         fontWeight: FontWeight.w600,
@@ -93,6 +93,7 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
 
                   const SizedBox(height: 16),
 
+
                   // --- SECTION: 
 
 
@@ -100,7 +101,7 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
 
 
 
-                  _buildLabel('Nom de la société *'),
+                  _buildLabel('Company Name *'),
                   _buildInputField(
                     child: TextFormField(
                       controller: ctrl.companyNameController,
@@ -119,7 +120,7 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
 
 
 
-                  _buildLabel('Adresse complète *'),
+                  _buildLabel('Complete Address *'),
                   _buildInputField(
                     child: TextFormField(
                       controller: ctrl.addressController,
@@ -138,7 +139,7 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
 
 
 
-                  _buildLabel('Code postal *'),
+                  _buildLabel('Postal Code *'),
                   _buildInputField(
                     child: TextFormField(
                       controller: ctrl.postalCodeController,
@@ -160,7 +161,7 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
 
 
 
-                  _buildLabel('Pays *'),
+                  _buildLabel('Country *'),
                   _buildInputField(
                     child: TextFormField(
                       controller: ctrl.countryController,
@@ -179,24 +180,24 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
 
 
 
-                  _buildLabel('Code SIRET *'),
+                  _buildLabel('SIRET Code *'),
                   _buildInputField(
                     child: TextFormField(
                       controller: ctrl.siretController,
                       keyboardType: TextInputType.number,
                       maxLength: 14,
                       decoration: AppTheme.getInputDecoration(
-                        hint: '14 chiffres',
+                        hint: '14 digits',
                         suffixIcon: IconButton(
-                          tooltip: 'Copier SIRET',
+                          tooltip: 'Copy SIRET',
                           onPressed: () async {
                             accessibilityService.triggerHapticFeedback();
                             await Clipboard.setData(
                               ClipboardData(text: ctrl.siretController.text),
                             );
                             Get.snackbar(
-                              'Copié', 
-                              'SIRET copié dans le presse-papier',
+                              'Copied', 
+                              'SIRET copied to clipboard',
                               snackPosition: SnackPosition.BOTTOM,
                               backgroundColor: accessibilityService.primaryColor,
                               colorText: AppTheme.white,
@@ -221,22 +222,22 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
 
 
 
-                  _buildLabel('Code APE *'),
+                  _buildLabel('APE Code *'),
                   _buildInputField(
                     child: TextFormField(
                       controller: ctrl.apeController,
                       decoration: AppTheme.getInputDecoration(
                         hint: 'Ex: 6201Z',
                         suffixIcon: IconButton(
-                          tooltip: 'Copier APE',
+                          tooltip: 'Copy APE',
                           onPressed: () async {
                             accessibilityService.triggerHapticFeedback();
                             await Clipboard.setData(
                               ClipboardData(text: ctrl.apeController.text),
                             );
                             Get.snackbar(
-                              'Copié', 
-                              'Code APE copié dans le presse-papier',
+                              'Copied', 
+                              'APE code copied to clipboard',
                               snackPosition: SnackPosition.BOTTOM,
                               backgroundColor: accessibilityService.primaryColor,
                               colorText: AppTheme.white,
@@ -260,23 +261,23 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
 
 
 
-                  _buildLabel('Email professionnel *'),
+                  _buildLabel('Business Email *'),
                   _buildInputField(
                     child: TextFormField(
                       controller: ctrl.emailController,
                       keyboardType: TextInputType.emailAddress,
                       decoration: AppTheme.getInputDecoration(
-                        hint: 'contact@votre-entreprise.com',
+                        hint: 'contact@your-company.com',
                         suffixIcon: IconButton(
-                          tooltip: 'Copier email',
+                          tooltip: 'Copy email',
                           onPressed: () async {
                             accessibilityService.triggerHapticFeedback();
                             await Clipboard.setData(
                               ClipboardData(text: ctrl.emailController.text),
                             );
                             Get.snackbar(
-                              'Copié', 
-                              'Email copié dans le presse-papier',
+                              'Copied', 
+                              'Email copied to clipboard',
                               snackPosition: SnackPosition.BOTTOM,
                               backgroundColor: accessibilityService.primaryColor,
                               colorText: AppTheme.white,
@@ -301,26 +302,26 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
 
 
 
-                  _buildLabel('Mot de passe *'),
+                  _buildLabel('Password *'),
                   Obx(() => _buildInputField(
                     child: TextFormField(
                       controller: ctrl.passwordController,
                       obscureText: ctrl.isPasswordHidden.value,
                       decoration: AppTheme.getInputDecoration(
-                        hint: 'Minimum 8 caractères',
+                        hint: 'Minimum 8 characters',
                         suffixIcon: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             IconButton(
-                              tooltip: 'Copier mot de passe',
+                              tooltip: 'Copy password',
                               onPressed: () async {
                                 accessibilityService.triggerHapticFeedback();
                                 await Clipboard.setData(
                                   ClipboardData(text: ctrl.passwordController.text),
                                 );
                                 Get.snackbar(
-                                  'Copié', 
-                                  'Mot de passe copié dans le presse-papier',
+                                  'Copied', 
+                                  'Password copied to clipboard',
                                   snackPosition: SnackPosition.BOTTOM,
                                   backgroundColor: accessibilityService.primaryColor,
                                   colorText: AppTheme.white,
@@ -333,8 +334,8 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
                             ),
                             IconButton(
                               tooltip: ctrl.isPasswordHidden.value 
-                                  ? 'Afficher le mot de passe' 
-                                  : 'Masquer le mot de passe',
+                                  ? 'Show password' 
+                                  : 'Hide password',
                               onPressed: () {
                                 accessibilityService.triggerHapticFeedback();
                                 ctrl.togglePasswordVisibility();
@@ -362,17 +363,17 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
 
 
 
-                  _buildLabel('Confirmer le mot de passe *'),
+                  _buildLabel('Confirm Password *'),
                   Obx(() => _buildInputField(
                     child: TextFormField(
                       controller: ctrl.confirmPasswordController,
                       obscureText: ctrl.isConfirmPasswordHidden.value,
                       decoration: AppTheme.getInputDecoration(
-                        hint: 'Confirmez votre mot de passe',
+                        hint: 'Confirm your password',
                         suffixIcon: IconButton(
                           tooltip: ctrl.isConfirmPasswordHidden.value 
-                              ? 'Afficher le mot de passe' 
-                              : 'Masquer le mot de passe',
+                              ? 'Show password' 
+                              : 'Hide password',
                           onPressed: () {
                             accessibilityService.triggerHapticFeedback();
                             ctrl.toggleConfirmPasswordVisibility();
@@ -407,7 +408,7 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
                           elevation: 2,
                         ),
                         child: Text(
-                          'Créer mon compte PRO',
+                          'Create My PRO Account',
                           style: accessibilityService.getAccessibleTextStyle(
                             fontSize: AppTheme.fontSizeRegular,
                             fontWeight: FontWeight.w600,
@@ -419,6 +420,40 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
                   ),
 
                   const SizedBox(height: 16),
+
+                  // Remember me checkbox
+                  GetBuilder<EmployerSignInController>(
+                    id: "remember_me",
+                    builder: (_) {
+                      return Row(
+                        children: [
+                          Checkbox(
+                            activeColor: const Color(0xFF000647),
+                            checkColor: Colors.white,
+                            side: const BorderSide(
+                              width: 1.2,
+                              color: Color(0xFF000647),
+                            ),
+                            value: ctrl.rememberMe,
+                            onChanged: ctrl.onRememberMeChange,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(
+                              'Remember me',
+                              style: accessibilityService.getAccessibleTextStyle(
+                                fontSize: AppTheme.fontSizeSmall,
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+
+                  const SizedBox(height: 8),
 
                   // Checkbox pour les termes et conditions
                   Row(
@@ -438,13 +473,13 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
                           padding: const EdgeInsets.only(top: 12),
                           child: Text.rich(
                             TextSpan(
-                              text: 'En créant un compte, j\'accepte les ',
+                              text: 'By creating an account, I accept the ',
                               style: accessibilityService.getAccessibleTextStyle(
                                 fontSize: AppTheme.fontSizeSmall,
                               ),
                               children: [
                                 TextSpan(
-                                  text: 'Conditions d\'utilisation',
+                                  text: 'Terms of Service',
                                   style: accessibilityService.getAccessibleTextStyle(
                                     fontSize: AppTheme.fontSizeSmall,
                                     color: accessibilityService.primaryColor,
@@ -461,9 +496,9 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
                                       }
                                     },
                                 ),
-                                const TextSpan(text: ' et la '),
+                                const TextSpan(text: ' and the '),
                                 TextSpan(
-                                  text: 'Politique de confidentialité',
+                                  text: 'Privacy Policy',
                                   style: accessibilityService.getAccessibleTextStyle(
                                     fontSize: AppTheme.fontSizeSmall,
                                     color: accessibilityService.primaryColor,
@@ -503,7 +538,7 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
                       ),
                     ),
                     child: Text(
-                      '⚖️ Votre code SIRET et APE seront vérifiés automatiquement selon la base INSEE pour valider la légalité de votre entreprise.',
+                      '⚖️ Your SIRET and APE codes will be automatically verified against the INSEE database to validate your company\'s legality.',
                       style: accessibilityService.getAccessibleTextStyle(
                         fontSize: AppTheme.fontSizeSmall,
                         color: accessibilityService.secondaryTextColor,
@@ -550,8 +585,8 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
   Future<void> _createEmployerAccount() async {
     if (!acceptTerms) {
       AppTheme.showStandardSnackBar(
-        title: "⚠️ Conditions requises",
-        message: "Veuillez accepter les conditions d'utilisation",
+        title: "⚠️ Terms Required",
+        message: "Please accept the terms of service",
         isError: true,
       );
       return;
@@ -591,8 +626,8 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
               .set(employerData);
 
           AppTheme.showStandardSnackBar(
-            title: "✅ Compte créé !",
-            message: "Votre compte employeur a été créé avec succès",
+            title: "✅ Account Created!",
+            message: "Your employer account has been created successfully",
             isError: false,
           );
 
@@ -603,26 +638,26 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
         String message;
         switch (e.code) {
           case 'email-already-in-use':
-            message = 'Cette adresse email est déjà utilisée';
+            message = 'This email address is already in use';
             break;
           case 'weak-password':
-            message = 'Le mot de passe est trop faible';
+            message = 'The password is too weak';
             break;
           case 'invalid-email':
-            message = 'Adresse email invalide';
+            message = 'Invalid email address';
             break;
           default:
-            message = 'Erreur lors de la création du compte: ${e.message}';
+            message = 'Error creating account: ${e.message}';
         }
         AppTheme.showStandardSnackBar(
-          title: "❌ Erreur",
+          title: "❌ Error",
           message: message,
           isError: true,
         );
       } catch (e) {
         AppTheme.showStandardSnackBar(
-          title: "❌ Erreur",
-          message: "Une erreur s'est produite: $e",
+          title: "❌ Error",
+          message: "An error occurred: $e",
           isError: true,
         );
       } finally {
@@ -636,8 +671,8 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
   bool _validateFields() {
     if (ctrl.companyNameController.text.trim().isEmpty) {
       AppTheme.showStandardSnackBar(
-        title: "⚠️ Champ requis",
-        message: "Le nom de la société est requis",
+        title: "⚠️ Required Field",
+        message: "Company name is required",
         isError: true,
       );
       return false;
@@ -645,8 +680,8 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
 
     if (ctrl.addressController.text.trim().isEmpty) {
       AppTheme.showStandardSnackBar(
-        title: "⚠️ Champ requis",
-        message: "L'adresse est requise",
+        title: "⚠️ Required Field",
+        message: "Address is required",
         isError: true,
       );
       return false;
@@ -654,8 +689,8 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
 
     if (ctrl.postalCodeController.text.trim().length != 5) {
       AppTheme.showStandardSnackBar(
-        title: "⚠️ Code postal invalide",
-        message: "Le code postal doit contenir 5 chiffres",
+        title: "⚠️ Invalid Postal Code",
+        message: "Postal code must contain 5 digits",
         isError: true,
       );
       return false;
@@ -663,8 +698,8 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
 
     if (ctrl.siretController.text.trim().length != 14) {
       AppTheme.showStandardSnackBar(
-        title: "⚠️ SIRET invalide",
-        message: "Le code SIRET doit contenir 14 chiffres",
+        title: "⚠️ Invalid SIRET",
+        message: "SIRET code must contain 14 digits",
         isError: true,
       );
       return false;
@@ -672,8 +707,8 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
 
     if (ctrl.apeController.text.trim().isEmpty) {
       AppTheme.showStandardSnackBar(
-        title: "⚠️ Champ requis",
-        message: "Le code APE est requis",
+        title: "⚠️ Required Field",
+        message: "APE code is required",
         isError: true,
       );
       return false;
@@ -681,8 +716,8 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
 
     if (!GetUtils.isEmail(ctrl.emailController.text.trim())) {
       AppTheme.showStandardSnackBar(
-        title: "⚠️ Email invalide",
-        message: "Veuillez entrer un email valide",
+        title: "⚠️ Invalid Email",
+        message: "Please enter a valid email",
         isError: true,
       );
       return false;
@@ -690,8 +725,8 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
 
     if (ctrl.passwordController.text.length < 8) {
       AppTheme.showStandardSnackBar(
-        title: "⚠️ Mot de passe trop court",
-        message: "Le mot de passe doit contenir au moins 8 caractères",
+        title: "⚠️ Password Too Short",
+        message: "Password must contain at least 8 characters",
         isError: true,
       );
       return false;
@@ -699,8 +734,8 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
 
     if (ctrl.passwordController.text != ctrl.confirmPasswordController.text) {
       AppTheme.showStandardSnackBar(
-        title: "⚠️ Mots de passe différents",
-        message: "Les mots de passe ne correspondent pas",
+        title: "⚠️ Passwords Don't Match",
+        message: "Passwords do not match",
         isError: true,
       );
       return false;

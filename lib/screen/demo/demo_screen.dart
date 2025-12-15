@@ -33,12 +33,12 @@ class _DemoScreenState extends State<DemoScreen> {
     setState(() => _isLoading = true);
     
     try {
-      await DemoDataService.generateDemoJobs();
+      await DemoDataService.createAllDemoData();
       setState(() => _isDemoDataGenerated = true);
       
       AppTheme.showStandardSnackBar(
         title: "✅ Données de démo créées",
-        message: "120+ offres d'emploi générées avec succès",
+        message: "120+ offres d'emploi générées (françaises + anglaises) avec succès",
       );
     } catch (e) {
       AppTheme.showStandardSnackBar(

@@ -1,70 +1,134 @@
 import 'package:flutter/material.dart';
 
+/// Palette de couleurs Timeless - Design moderne et harmonieux
+/// Couleurs autorisées: Bleu foncé, Noir, Blanc, Gris, Orange
 class ColorRes {
-  // === TIMELESS PALETTE: ROYAL BLUE, ===
+  // ==========================================
+  // PALETTE PRINCIPALE TIMELESS
+  // ==========================================
   
-  // === FONDS PRINCIPAUX ===
-  static const backgroundColor = Color(0xFFF8FAFC); // Light background (like carousel)
-  static const surfaceColor = Color(0xFFFFFFFF); // Pure white surface
-  static const cardColor = Color(0xFFFFFFFF); // White cards
+  /// Bleu foncé principal - identité de marque
+  static const primaryBlue = Color(0xFF1E40AF);      // Bleu foncé profond
+  static const primaryBlueDark = Color(0xFF1E3A8A);  // Bleu très foncé
+  static const primaryBlueLight = Color(0xFF3B82F6); // Bleu moyen
   
-  // === TEXTES ===
-  static const white = Color(0xFFFFFFFF); // Pure white
-  static const black = Color(0xFF000000); // Pure black for maximum contrast
-  static const textPrimary = Color(0xFF000000); // Primary text - pure black
-  static const textSecondary = Color(0xFF374151); // Secondary text - dark gray
-  static const textTertiary = Color(0xFF6B7280); // Tertiary text - medium gray
-  static const textColor = Color(0xFF000000); // Text color alias - pure black
-  static const black2 = Color(0xFF2D3748); // Texte sombre (alias)
-  static const lightBlack = Color(0xFF4A5568); // Texte moyen (alias)
-  static const grey = Color(0xFF718096); // Gris neutre
+  /// Orange pour accents et éléments de surbrillance
+  static const primaryOrange = Color(0xFFF97316);     // Orange principal
+  static const primaryOrangeLight = Color(0xFFEA580C); // Orange foncé
+  static const primaryOrangeSoft = Color(0xFFFF9742); // Orange doux
   
-  // === MAIN THEME COLORS ===
-  static const royalBlue = Color(0xFF3B82F6); // Softer royal blue primary
-  static const brightYellow = Color(0xFFFFD700); // Bright gold yellow
-  static const vibrantRed = Color(0xFF3B82F6); // Vibrant blue (pas de rouge)
-  static const darkBlue = Color(0xFF3B82F6); // Softer blue (alias)
-  static const deepBordeaux = Color(0xFF7C2D12); // Deep bordeaux for keywords
+  // ==========================================
+  // FONDAMENTAUX
+  // ==========================================
   
-  // === ACCENT COLORS ===
-  static const containerColor = Color(0xFFFFD700); // Bright yellow containers
-  static const primaryAccent = Color(0xFF3B82F6); // Softer blue accent
-  static const secondaryAccent = Color(0xFF3B82F6); // Blue accent (pas de rouge)
+  /// Couleurs de base
+  static const white = Color(0xFFFFFFFF);
+  static const black = Color(0xFF000000);
+  static const transparent = Colors.transparent;
   
-  // === FUNCTIONAL COLORS ===
-  static const successColor = Color(0xFF16A34A); // Green success
-  static const warningColor = Color(0xFFFFD700); // Yellow warning
-  static const errorColor = Color(0xFF3B82F6); // Blue error (pas de rouge)
-  static const infoColor = Color(0xFF3B82F6); // Softer blue info
+  // ==========================================
+  // FONDS ET SURFACES
+  // ==========================================
   
-  // === ACTION COLORS ===
-  static const gradientColor = Color(0xFF3B82F6); // Softer blue gradient
-  static const starColor = Color(0xFFFFD700); // Gold yellow stars
-  static const red = Color(0xFF3B82F6); // Blue actions (pas de rouge)
-  static const orange = Color(0xFF000000); // Black pour l'espace employeur
-  static const blueColor = Color(0xFF3B82F6); // Softer blue actions
-  static const iconColor = Color(0xFFFFD700); // Gold yellow icons
+  static const backgroundColor = Color(0xFFF8FAFC);   // Fond général très clair
+  static const surfaceColor = Color(0xFFFFFFFF);      // Surface blanche
+  static const cardColor = Color(0xFFFFFFFF);         // Cartes blanches
+  static const overlayColor = Color(0x80000000);      // Overlay sombre
   
-  // === BORDURES ET SÉPARATEURS ===
-  static const borderColor = Color(0xFFE2E8F0); // Bordures gris-bleu clair
-  static const dividerColor = Color(0xFFF1F5F9); // Dividers
+  // ==========================================
+  // TEXTES
+  // ==========================================
   
-  // === ALIASES POUR COMPATIBILITÉ ===
-  static const logoColor = Color(0xFF00ACC1); // Bleu turquoise logo
-  static const deleteColor = Color(0xFFFEF2F2); // Surface de suppression rouge clair
-  static const white2 = Color(0xFFF8FAFC); // Blanc cassé
-  static const invalidColor = Color(0xFFFEF2F2); // Surface invalide rouge clair
-  static const splashLogoColor = Color(0xFF00ACC1); // Bleu turquoise splash
-  static const lightGrey = Color(0xFFF1F5F9); // Gris très clair
-  static const lightGreen = Color(0xFF3B82F6); // Bleu remplaçant le vert succès
-  static const darkGreen = Color(0xFF1E40AF); // Bleu foncé remplaçant le vert foncé
-  static const appleGreen = Color(0xFFFBBF24); // Replaced with yellow
-  static const lightAppleGreen = Color(0xFFFDE047); // Jaune clair
-  static const softSand = Color(0xFFFEF3C7); // Jaune très clair
-  static const warmSand = Color(0xFFFBBF24); // Jaune chaud
-  static const darkSand = Color(0xFFE2E8F0); // Gris-bleu moyen
-  static const goldAccent = Color(0xFFFBBF24); // Jaune accent
-  static const charcoal = Color(0xFF1A1A1A); // Noir lisible
-  static const darkGold = Color(0xFFD97706); // Orange doré
-  static const creamWhite = Color(0xFFFEFBF7); // Blanc crème
+  static const textPrimary = Color(0xFF000000);       // Texte principal noir
+  static const textSecondary = Color(0xFF374151);     // Texte secondaire gris foncé
+  static const textTertiary = Color(0xFF6B7280);      // Texte tertiaire gris moyen
+  static const textDisabled = Color(0xFF9CA3AF);      // Texte désactivé gris clair
+  static const textOnPrimary = Color(0xFFFFFFFF);     // Texte sur fond bleu/orange
+  
+  // ==========================================
+  // GRIS - ÉCHELLE HARMONISÉE
+  // ==========================================
+  
+  static const grey100 = Color(0xFFF3F4F6);          // Gris très clair
+  static const grey200 = Color(0xFFE5E7EB);          // Gris clair
+  static const grey300 = Color(0xFFD1D5DB);          // Gris moyen-clair
+  static const grey400 = Color(0xFF9CA3AF);          // Gris moyen
+  static const grey500 = Color(0xFF6B7280);          // Gris standard
+  static const grey600 = Color(0xFF4B5563);          // Gris foncé
+  static const grey700 = Color(0xFF374151);          // Gris très foncé
+  static const grey800 = Color(0xFF1F2937);          // Gris presque noir
+  static const grey900 = Color(0xFF111827);          // Gris noir
+  
+  // ==========================================
+  // BORDURES ET SÉPARATEURS
+  // ==========================================
+  
+  static const borderColor = grey200;                // Bordures standard
+  static const borderColorFocus = primaryBlue;       // Bordures focus
+  static const dividerColor = grey100;               // Séparateurs
+  
+  // ==========================================
+  // ÉTATS FONCTIONNELS
+  // ==========================================
+  
+  static const successColor = primaryBlue;           // Succès en bleu
+  static const warningColor = primaryOrange;         // Avertissement en orange
+  static const errorColor = grey700;                 // Erreur en gris foncé
+  static const infoColor = primaryBlueLight;         // Information en bleu clair
+  
+  // ==========================================
+  // ALIASES POUR COMPATIBILITÉ
+  // ==========================================
+  
+  // Couleurs héritées - remappées sur la nouvelle palette
+  static const royalBlue = primaryBlue;
+  static const darkBlue = primaryBlueDark;
+  static const blueColor = primaryBlue;
+  static const orange = primaryOrange;
+  static const darkGold = primaryOrangeLight;
+  static const goldAccent = primaryOrange;
+  static const containerColor = primaryOrange;
+  static const iconColor = primaryOrange;
+  static const starColor = primaryOrange;
+  
+  // Textes (compatibilité)
+  static const textColor = textPrimary;
+  static const black2 = textSecondary;
+  static const lightBlack = textTertiary;
+  static const grey = grey500;
+  static const lightGrey = grey100;
+  static const charcoal = grey800;
+  
+  // Surfaces (compatibilité)
+  static const white2 = backgroundColor;
+  static const creamWhite = backgroundColor;
+  static const deleteColor = grey100;
+  static const invalidColor = grey100;
+  
+  // Anciens rouges/verts -> remappés
+  static const vibrantRed = primaryBlue;
+  static const red = primaryBlue;
+  static const successGreen = primaryBlue;
+  static const lightGreen = primaryBlueLight;
+  static const darkGreen = primaryBlueDark;
+  static const appleGreen = primaryOrange;
+  static const lightAppleGreen = primaryOrangeSoft;
+  
+  // Nettoyage des couleurs sables
+  static const softSand = backgroundColor;
+  static const warmSand = primaryOrange;
+  static const darkSand = grey200;
+  
+  // Logo et splash
+  static const logoColor = primaryBlue;
+  static const splashLogoColor = primaryBlue;
+  
+  // Couleurs diverses
+  static const primaryAccent = primaryBlue;
+  static const secondaryAccent = primaryOrange;
+  static const gradientColor = primaryBlue;
+  
+  // Ajouts pour compatibility avec l'ancien code
+  static const brightYellow = primaryOrange;         // Remplacé par orange
+  static const deepBordeaux = primaryBlueDark;       // Remplacé par bleu foncé
 }

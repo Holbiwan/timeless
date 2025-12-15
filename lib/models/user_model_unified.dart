@@ -19,8 +19,7 @@ class UserModel {
   final String experience;
   final String city;
   
-  // Préférences de travail
-  final Map<String, dynamic> jobPreferences;
+  // Job preferences removed
   
   // Activité
   final List<String> savedJobs;
@@ -47,7 +46,6 @@ class UserModel {
     required this.bio,
     required this.experience,
     required this.city,
-    required this.jobPreferences,
     required this.savedJobs,
     required this.appliedJobs,
     required this.provider,
@@ -75,12 +73,7 @@ class UserModel {
       bio: data['bio'] ?? '',
       experience: data['experience'] ?? 'junior',
       city: data['city'] ?? '',
-      jobPreferences: Map<String, dynamic>.from(data['jobPreferences'] ?? {
-        'categories': [],
-        'workType': ['remote', 'hybrid', 'onsite'],
-        'contractType': ['fulltime'],
-        'salaryRange': {'min': null, 'max': null, 'currency': 'EUR'}
-      }),
+      // jobPreferences removed
       savedJobs: List<String>.from(data['savedJobs'] ?? []),
       appliedJobs: List<String>.from(data['appliedJobs'] ?? []),
       provider: data['provider'] ?? 'email',
@@ -107,7 +100,7 @@ class UserModel {
       'bio': bio,
       'experience': experience,
       'city': city,
-      'jobPreferences': jobPreferences,
+      // jobPreferences removed
       'savedJobs': savedJobs,
       'appliedJobs': appliedJobs,
       'provider': provider,
@@ -141,7 +134,7 @@ class UserModel {
     String? bio,
     String? experience,
     String? city,
-    Map<String, dynamic>? jobPreferences,
+    // jobPreferences parameter removed
     List<String>? savedJobs,
     List<String>? appliedJobs,
     String? provider,
@@ -164,7 +157,7 @@ class UserModel {
       bio: bio ?? this.bio,
       experience: experience ?? this.experience,
       city: city ?? this.city,
-      jobPreferences: jobPreferences ?? this.jobPreferences,
+      // jobPreferences removed
       savedJobs: savedJobs ?? this.savedJobs,
       appliedJobs: appliedJobs ?? this.appliedJobs,
       provider: provider ?? this.provider,
