@@ -1,6 +1,6 @@
-// Main entry point of the Timeless application
-// This file initializes Firebase, global services, localization, and sets up the main app widget.
-// GetX dependencies are also used for state management and routing.
+// Main entry point of the Timeless app
+// This file initializes Firebase, localization, global services,
+// and defines the main application widget using GetX.
 
 // ignore_for_file: deprecated_member_use
 
@@ -29,7 +29,8 @@ import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/screen/manager_section/Notification/notification_services.dart';
 
 // Recruiter screens
-import 'package:timeless/screen/manager_section/auth_manager/first_page/first_screen.dart' as manager_auth;
+import 'package:timeless/screen/manager_section/auth_manager/first_page/first_screen.dart'
+    as manager_auth;
 
 import 'package:timeless/screen/manager_section/dashboard/manager_dashboard_screen.dart'
     show ManagerDashBoardScreen;
@@ -37,20 +38,19 @@ import 'package:timeless/screen/manager_section/dashboard/manager_dashboard_scre
 // Employer screens
 import 'package:timeless/screen/employer/employer_dashboard_screen.dart';
 
-// Config and resources
+// App configuration and shared resources
 import 'package:timeless/utils/app_res.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/app_dimensions.dart';
 import 'package:timeless/utils/app_style.dart';
 
-// Entry point of the app
-// This function sets up everything needed before launching the app
+// App entry point
 Future<void> main() async {
-  // Needed for async operations before runApp
+  // Required to run async code before runApp
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Easy Localization
+  // Initialize localization
   await EasyLocalization.ensureInitialized();
 
   // Initialize Firebase
@@ -58,27 +58,27 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // Configure shared preferences and notification services
+  // Initialize local storage and notifications
   await PreferencesService.init();
   await NotificationService.init();
 
-  // Force the app to remain in portrait mode only
+  // Lock app orientation to portrait mode
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
 
-  // Configure push notifications with Firebase
+  // Get and store Firebase Cloud Messaging token
   try {
     final fcmToken = await FirebaseMessaging.instance.getToken();
     if (fcmToken != null) {
       await PreferencesService.setValue(PrefKeys.deviceToken, fcmToken);
     }
   } catch (e) {
-    print('Erreur notifications: $e');
+    print('Notification error: $e');
   }
 
-  // Status bar and navigation bar styling
+  // Configure system UI (status bar & navigation bar)
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
     statusBarIconBrightness: Brightness.dark,
@@ -86,13 +86,12 @@ Future<void> main() async {
     systemNavigationBarIconBrightness: Brightness.light,
   ));
 
-  // Initialize global services using GetX
-  Get.put(
-      UnifiedTranslationService()); // Unified translation service (replaces 3 old services)
-  Get.put(ThemeService()); // Enhanced theme service
-  Get.put(AccessibilityService()); // Accessibility service for all
+  // Register global services with GetX
+  Get.put(UnifiedTranslationService()); // Centralized translation service
+  Get.put(ThemeService());              // App theme management
+  Get.put(AccessibilityService());      // Accessibility options
 
-  // Launch the application with Easy Localization
+  // Start the app with localization support
   runApp(
     EasyLocalization(
       supportedLocales: const [
@@ -107,7 +106,7 @@ Future<void> main() async {
   );
 }
 
-// Widget principal of the application
+// Root widget of the application
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -115,13 +114,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'Timeless',
-      debugShowCheckedModeBanner: false, // Remove debug banner
+      debugShowCheckedModeBanner: false,
 
-      // Easy Localization setup
+      // Localization configuration
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,
-      // Theme Timeless harmonisé avec palette bleu/orange/gris
+
+      // Global app theme
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: ColorRes.primaryBlue,
@@ -176,19 +176,19 @@ class MyApp extends StatelessWidget {
         progressIndicatorTheme: ProgressIndicatorThemeData(
           color: ColorRes.primaryBlue,
         ),
-        // Interface épurée sans éléments de focus/hover
+        // Disable focus/hover visual noise
         focusColor: Colors.transparent,
         hoverColor: Colors.transparent,
         highlightColor: Colors.transparent,
         splashColor: ColorRes.primaryBlue.withOpacity(0.1),
       ),
 
-      // First screen to show when the app starts
+      // Initial screen displayed at launch
       home: const SplashScreen(),
 
-      // Main routes for navigating the app
+      // App navigation routes
       getPages: [
-        // Screens for candidates
+        // Candidate routes
         GetPage(
           name: AppRes.jobDetailScreen,
           page: () => JobDetailScreen(),
@@ -204,20 +204,22 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: AppRes.jobApplicationScreen,
           page: () => JobApplicationScreen(
-              job: Get.arguments?['job'], docId: Get.arguments?['docId']),
+            job: Get.arguments?['job'],
+            docId: Get.arguments?['docId'],
+          ),
         ),
         GetPage(
           name: AppRes.applicationsUser,
           page: () => ApplicationsScreen(),
         ),
 
-        // Login screen for recruiters
+        // Recruiter login
         GetPage(
           name: AppRes.firstPageScreenM,
           page: () => manager_auth.FirstPageScreenM(),
         ),
 
-        // Dashboard for recruiters
+        // Recruiter dashboard
         GetPage(
           name: AppRes.managerDashboardScreen,
           page: () => ManagerDashBoardScreen(),
@@ -230,7 +232,7 @@ class MyApp extends StatelessWidget {
         ),
       ],
 
-      // Page not found
+      // Fallback route
       unknownRoute: GetPage(
         name: '/404',
         page: () => candidate_auth.FirstScreen(),
