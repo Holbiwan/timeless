@@ -38,6 +38,9 @@ import 'package:timeless/screen/employer/employer_dashboard_screen.dart';
 // Config and resources
 import 'package:timeless/utils/app_res.dart';
 import 'package:timeless/utils/pref_keys.dart';
+import 'package:timeless/utils/color_res.dart';
+import 'package:timeless/utils/app_dimensions.dart';
+import 'package:timeless/utils/app_style.dart';
 
 // Entry point of the app
 // This function sets up everything needed before launching the app
@@ -115,21 +118,66 @@ class MyApp extends StatelessWidget {
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,
-      // Theme with Timeless blue colors
+      // Theme Timeless harmonisé avec palette bleu/orange/gris
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFF3B82F6)), // Royal blue instead of red
-        progressIndicatorTheme: const ProgressIndicatorThemeData(
-          color: Color(0xFF000647), // Dark blue for loading indicators
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: ColorRes.primaryBlue,
+          primary: ColorRes.primaryBlue,
+          secondary: ColorRes.primaryOrange,
+          surface: ColorRes.white,
+          background: ColorRes.backgroundColor,
+          onPrimary: ColorRes.white,
+          onSecondary: ColorRes.white,
+          onSurface: ColorRes.textPrimary,
+          onBackground: ColorRes.textPrimary,
         ),
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.transparent,
+        scaffoldBackgroundColor: ColorRes.backgroundColor,
+        appBarTheme: AppBarTheme(
+          backgroundColor: ColorRes.white,
+          foregroundColor: ColorRes.textPrimary,
           elevation: 0,
+          centerTitle: true,
+          titleTextStyle: AppTextStyles.h4,
         ),
-        // Disable focus outlines completely
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: ColorRes.primaryBlue,
+            foregroundColor: ColorRes.white,
+            elevation: 2,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppDimensions.buttonRadius),
+            ),
+            textStyle: AppTextStyles.buttonText,
+          ),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppDimensions.inputRadius),
+            borderSide: BorderSide(color: ColorRes.borderColor),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppDimensions.inputRadius),
+            borderSide: BorderSide(color: ColorRes.primaryBlue, width: 2),
+          ),
+          contentPadding: AppDimensions.inputPaddingInsets,
+          filled: true,
+          fillColor: ColorRes.white,
+        ),
+        cardTheme: CardThemeData(
+          color: ColorRes.cardColor,
+          elevation: AppDimensions.cardElevation,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppDimensions.cardRadius),
+          ),
+        ),
+        progressIndicatorTheme: ProgressIndicatorThemeData(
+          color: ColorRes.primaryBlue,
+        ),
+        // Interface épurée sans éléments de focus/hover
         focusColor: Colors.transparent,
         hoverColor: Colors.transparent,
         highlightColor: Colors.transparent,
-        splashColor: Colors.transparent,
+        splashColor: ColorRes.primaryBlue.withOpacity(0.1),
       ),
 
       // First screen to show when the app starts
