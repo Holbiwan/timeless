@@ -344,6 +344,7 @@ class UnifiedTranslationService extends GetxController {
       'already_have_account': 'Already have an account?',
       'sign_in': 'Sign In',
       'sign_up': 'Sign Up',
+      'create_account_as_pro': 'Create account as',
 
       // Profile
       'my_profile': 'My Profile',
@@ -509,6 +510,7 @@ class UnifiedTranslationService extends GetxController {
       'already_have_account': 'Vous avez déjà un compte ?',
       'sign_in': 'Se Connecter',
       'sign_up': 'S\'inscrire',
+      'create_account_as_pro': 'Créer un compte en tant que',
 
       // Profil
       'my_profile': 'Mon Profil',
@@ -615,8 +617,9 @@ class UnifiedTranslationService extends GetxController {
       'create_account': 'Crear Tu Cuenta',
       'sign_in': 'Iniciar Sesión',
       'sign_up': 'Registrarse',
+      'create_account_as_pro': 'Crear cuenta como',
 
-      // Perfil
+      // Profil
       'my_profile': 'Mi Perfil',
       'edit_profile': 'Editar Perfil',
       'full_name': 'Nombre Completo',

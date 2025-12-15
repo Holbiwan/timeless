@@ -23,7 +23,7 @@ class ApplicationDetailScreen extends StatelessWidget {
     final job = controller.getJobForApplication(application);
 
     return TimelessScaffold(
-      title: 'Détail de candidature',
+      title: 'Application Details',
       actions: [
         PopupMenuButton<String>(
           onSelected: (value) => _handleMenuAction(value, controller),
@@ -34,7 +34,7 @@ class ApplicationDetailScreen extends StatelessWidget {
                 children: [
                   Icon(Icons.email, size: 20, color: ColorRes.darkGold),
                   const SizedBox(width: 8),
-                  Text('Contacter par email'),
+                  Text('Contact by Email'),
                 ],
               ),
             ),
@@ -45,7 +45,7 @@ class ApplicationDetailScreen extends StatelessWidget {
                   children: [
                     Icon(Icons.phone, size: 20, color: ColorRes.darkGold),
                     const SizedBox(width: 8),
-                    Text('Appeler'),
+                    Text('Call'),
                   ],
                 ),
               ),
@@ -55,7 +55,7 @@ class ApplicationDetailScreen extends StatelessWidget {
                 children: [
                   Icon(Icons.download, size: 20, color: ColorRes.darkGold),
                   const SizedBox(width: 8),
-                  Text('Télécharger CV'),
+                  Text('Download CV'),
                 ],
               ),
             ),
@@ -141,7 +141,7 @@ class ApplicationDetailScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'Candidat',
+                        'Candidate',
                         style: GoogleFonts.poppins(
                           fontSize: 14,
                           color: ColorRes.textSecondary,
@@ -159,7 +159,7 @@ class ApplicationDetailScreen extends StatelessWidget {
             _buildContactRow(Icons.email, 'Email', application.candidateEmail),
             if (application.candidatePhone?.isNotEmpty ?? false) ...[
               const SizedBox(height: 12),
-              _buildContactRow(Icons.phone, 'Téléphone', application.candidatePhone!),
+              _buildContactRow(Icons.phone, 'Phone', application.candidatePhone!),
             ],
             
             const SizedBox(height: 16),
@@ -252,7 +252,7 @@ class ApplicationDetailScreen extends StatelessWidget {
                 Icon(Icons.work, color: ColorRes.darkGold, size: 24),
                 const SizedBox(width: 8),
                 Text(
-                  'Poste visé',
+                  'Applied Position',
                   style: GoogleFonts.poppins(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -331,7 +331,7 @@ class ApplicationDetailScreen extends StatelessWidget {
                 Icon(Icons.info, color: ColorRes.darkGold, size: 24),
                 const SizedBox(width: 8),
                 Text(
-                  'Détails de la candidature',
+                  'Application Details',
                   style: GoogleFonts.poppins(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -342,19 +342,19 @@ class ApplicationDetailScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             _buildDetailRow(
-              'Date de candidature',
-              DateFormat('EEEE dd MMMM yyyy à HH:mm', 'fr_FR').format(application.appliedAt),
+              'Application Date',
+              DateFormat('EEEE, MMMM dd, yyyy at HH:mm', 'en_US').format(application.appliedAt),
             ),
             const SizedBox(height: 12),
             _buildDetailRow(
-              'ID de candidature',
+              'Application ID',
               application.id,
             ),
             if (application.candidateProfile != null) ...[
               const SizedBox(height: 12),
               _buildDetailRow(
-                'Profil candidat',
-                'Informations disponibles',
+                'Candidate Profile',
+                'Information Available',
               ),
             ],
           ],
@@ -432,7 +432,7 @@ class ApplicationDetailScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'CV de ${application.candidateName}',
+                          'CV of ${application.candidateName}',
                           style: GoogleFonts.poppins(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
@@ -440,7 +440,7 @@ class ApplicationDetailScreen extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          'Fichier PDF disponible',
+                          'PDF file available',
                           style: GoogleFonts.poppins(
                             fontSize: 12,
                             color: ColorRes.textSecondary,
@@ -453,7 +453,7 @@ class ApplicationDetailScreen extends StatelessWidget {
                     onPressed: () => _downloadCv(),
                     icon: Icon(Icons.download, size: 16),
                     label: Text(
-                      'Télécharger',
+                      'Download',
                       style: GoogleFonts.poppins(fontSize: 12),
                     ),
                     style: ElevatedButton.styleFrom(
@@ -485,7 +485,7 @@ class ApplicationDetailScreen extends StatelessWidget {
                 Icon(Icons.message, color: ColorRes.darkGold, size: 24),
                 const SizedBox(width: 8),
                 Text(
-                  'Lettre de motivation',
+                  'Cover Letter',
                   style: GoogleFonts.poppins(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -527,7 +527,7 @@ class ApplicationDetailScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Actions sur la candidature',
+              'Application Actions',
               style: GoogleFonts.poppins(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
@@ -552,13 +552,13 @@ class ApplicationDetailScreen extends StatelessWidget {
     if (application.status == ApplicationStatus.pending) {
       buttons.addAll([
         _buildActionButton(
-          'Marquer comme vue',
+          'Mark as Viewed',
           Icons.visibility,
           Colors.blue,
           () => controller.updateApplicationStatus(application.id, ApplicationStatus.viewed),
         ),
         _buildActionButton(
-          'Présélectionner',
+          'Shortlist',
           Icons.star,
           Colors.purple,
           () => controller.updateApplicationStatus(application.id, ApplicationStatus.shortlisted),
@@ -570,14 +570,14 @@ class ApplicationDetailScreen extends StatelessWidget {
         application.status == ApplicationStatus.shortlisted) {
       buttons.addAll([
         _buildActionButton(
-          'Convoquer entretien',
+          'Schedule Interview',
           Icons.event,
           Colors.teal,
           () => controller.updateApplicationStatus(application.id, ApplicationStatus.interview),
         ),
         if (application.status == ApplicationStatus.viewed)
           _buildActionButton(
-            'Présélectionner',
+            'Shortlist',
             Icons.star,
             Colors.purple,
             () => controller.updateApplicationStatus(application.id, ApplicationStatus.shortlisted),
@@ -588,7 +588,7 @@ class ApplicationDetailScreen extends StatelessWidget {
     if (application.status == ApplicationStatus.interview) {
       buttons.addAll([
         _buildActionButton(
-          'Embaucher',
+          'Hire',
           Icons.check_circle,
           Colors.green,
           () => controller.updateApplicationStatus(application.id, ApplicationStatus.hired),
@@ -601,7 +601,7 @@ class ApplicationDetailScreen extends StatelessWidget {
         application.status != ApplicationStatus.hired) {
       buttons.add(
         _buildActionButton(
-          'Refuser',
+          'Reject',
           Icons.close,
           ColorRes.royalBlue,
           () => _showRejectConfirmation(controller),
@@ -640,17 +640,17 @@ class ApplicationDetailScreen extends StatelessWidget {
     Get.dialog(
       AlertDialog(
         title: Text(
-          'Refuser la candidature',
+          'Reject Application',
           style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
         ),
         content: Text(
-          'Êtes-vous sûr de vouloir refuser cette candidature ? Cette action est définitive.',
+          'Are you sure you want to reject this application? This action is final.',
           style: GoogleFonts.poppins(fontSize: 14),
         ),
         actions: [
           TextButton(
             onPressed: () => Get.back(),
-            child: Text('Annuler'),
+            child: Text('Cancel'),
           ),
           ElevatedButton(
             onPressed: () {
@@ -661,7 +661,7 @@ class ApplicationDetailScreen extends StatelessWidget {
               backgroundColor: ColorRes.royalBlue,
               foregroundColor: Colors.white,
             ),
-            child: Text('Refuser'),
+            child: Text('Reject'),
           ),
         ],
       ),
@@ -687,7 +687,7 @@ class ApplicationDetailScreen extends StatelessWidget {
       scheme: 'mailto',
       path: application.candidateEmail,
       queryParameters: {
-        'subject': 'Votre candidature - ${Get.find<EmployerApplicationsController>().getJobForApplication(application)?.title ?? "Poste"}',
+        'subject': 'Your Application - ${Get.find<EmployerApplicationsController>().getJobForApplication(application)?.title ?? "Position"}',
       },
     );
 
@@ -695,8 +695,8 @@ class ApplicationDetailScreen extends StatelessWidget {
       await launchUrl(emailUri);
     } catch (e) {
       Get.snackbar(
-        'Erreur',
-        'Impossible d\'ouvrir l\'application email',
+        'Error',
+        'Unable to open email application',
         backgroundColor: ColorRes.royalBlue,
         colorText: Colors.white,
       );
@@ -715,8 +715,8 @@ class ApplicationDetailScreen extends StatelessWidget {
       await launchUrl(phoneUri);
     } catch (e) {
       Get.snackbar(
-        'Erreur',
-        'Impossible de passer l\'appel',
+        'Error',
+        'Unable to make phone call',
         backgroundColor: ColorRes.royalBlue,
         colorText: Colors.white,
       );
@@ -727,15 +727,15 @@ class ApplicationDetailScreen extends StatelessWidget {
     try {
       // TODO: Implement CV download functionality
       Get.snackbar(
-        'Téléchargement',
-        'Fonctionnalité de téléchargement en cours de développement',
+        'Download',
+        'Download functionality in development',
         backgroundColor: Colors.blue,
         colorText: Colors.white,
       );
     } catch (e) {
       Get.snackbar(
-        'Erreur',
-        'Impossible de télécharger le CV',
+        'Error',
+        'Unable to download CV',
         backgroundColor: ColorRes.royalBlue,
         colorText: Colors.white,
       );
@@ -787,21 +787,21 @@ class ApplicationDetailScreen extends StatelessWidget {
   String _getStatusLabel(ApplicationStatus status) {
     switch (status) {
       case ApplicationStatus.pending:
-        return 'En attente';
+        return 'Pending';
       case ApplicationStatus.viewed:
-        return 'Vue';
+        return 'Viewed';
       case ApplicationStatus.shortlisted:
-        return 'Présélectionnée';
+        return 'Shortlisted';
       case ApplicationStatus.interview:
-        return 'Entretien';
+        return 'Interview';
       case ApplicationStatus.rejected:
-        return 'Refusée';
+        return 'Rejected';
       case ApplicationStatus.hired:
-        return 'Embauchée';
+        return 'Hired';
       case ApplicationStatus.withdrawn:
-        return 'Retirée';
+        return 'Withdrawn';
       case ApplicationStatus.accepted:
-        return 'Acceptée';
+        return 'Accepted';
     }
   }
 }

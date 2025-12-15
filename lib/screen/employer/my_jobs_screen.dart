@@ -14,6 +14,7 @@ class MyJobsScreen extends StatefulWidget {
 
 class _MyJobsScreenState extends State<MyJobsScreen> {
   final String currentUserId = PreferencesService.getString(PrefKeys.userId);
+  final String employerId = PreferencesService.getString(PrefKeys.employerId);
   final String companyName = PreferencesService.getString(PrefKeys.companyName);
 
   @override
@@ -35,7 +36,7 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('allPost')
-            .where('EmployerId', isEqualTo: currentUserId)
+            .where('EmployerId', isEqualTo: employerId.isNotEmpty ? employerId : currentUserId)
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -49,11 +50,11 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
                 children: [
                   const Icon(Icons.error, color: ColorRes.royalBlue, size: 50),
                   const SizedBox(height: 16),
-                  Text('Erreur: ${snapshot.error}'),
+                  Text('Error: ${snapshot.error}'),
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () => setState(() {}),
-                    child: const Text('Réessayer'),
+                    child: const Text('Retry'),
                   ),
                 ],
               ),
@@ -62,12 +63,12 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
 
           final jobs = snapshot.data?.docs ?? [];
           
-          // Trier les annonces par date de création (les plus récentes en premier)
+          // Sort job postings by creation date (most recent first)
           jobs.sort((a, b) {
             final aData = a.data() as Map<String, dynamic>;
             final bData = b.data() as Map<String, dynamic>;
-            final aDate = aData['CreatedAt'] as Timestamp?;
-            final bDate = bData['CreatedAt'] as Timestamp?;
+            final aDate = aData['createdAt'] as Timestamp?;
+            final bDate = bData['createdAt'] as Timestamp?;
             
             if (aDate == null && bDate == null) return 0;
             if (aDate == null) return 1;
@@ -84,21 +85,22 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
                   const Icon(Icons.work_off, color: Colors.grey, size: 80),
                   const SizedBox(height: 16),
                   const Text(
-                    'Aucune annonce publiée',
+                    'No job postings published',
                     style: TextStyle(fontSize: 18, color: Colors.grey),
                   ),
                   const SizedBox(height: 8),
                   const Text(
-                    'Créez votre première annonce !',
+                    'Create your first job posting!',
                     style: TextStyle(color: Colors.grey),
                   ),
                   const SizedBox(height: 20),
                   ElevatedButton.icon(
                     onPressed: Get.back,
                     icon: const Icon(Icons.add),
-                    label: const Text('Créer une annonce'),
+                    label: const Text('Create Job Posting'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: ColorRes.containerColor,
+                      backgroundColor: const Color(0xFF000647),
+                      foregroundColor: Colors.white,
                     ),
                   ),
                 ],
@@ -120,18 +122,23 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    _buildStatCard('Total', jobs.length.toString(), Icons.work),
                     _buildStatCard(
-                      'Actives', 
-                      jobs.where((job) => job['Status'] == 'Active').length.toString(),
+                      'Total', 
+                      jobs.length.toString(), 
+                      Icons.work, 
+                      color: const Color.fromARGB(255, 0, 6, 71),
+                    ),
+                    _buildStatCard(
+                      'Active', 
+                      jobs.where((job) => (job.data() as Map<String, dynamic>)['isActive'] == true).length.toString(),
                       Icons.trending_up,
                       color: Colors.green,
                     ),
                     _buildStatCard(
-                      'Vues', 
-                      jobs.fold<int>(0, (sum, job) => sum + (job['Views'] as int? ?? 0)).toString(),
+                      'Views', 
+                      jobs.fold<int>(0, (sum, job) => sum + ((job.data() as Map<String, dynamic>)['viewsCount'] as int? ?? 0)).toString(),
                       Icons.visibility,
-                      color: Colors.blue,
+                      color: const Color.fromARGB(255, 0, 6, 71),
                     ),
                   ],
                 ),
@@ -182,7 +189,7 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
   }
 
   Widget _buildJobCard(Map<String, dynamic> job, String docId) {
-    final isActive = job['Status'] == 'Active';
+    final isActive = job['isActive'] == true;
     
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -199,7 +206,7 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
           ),
         ],
         border: Border.all(
-          color: isActive ? Colors.green.withOpacity(0.3) : Colors.grey.withOpacity(0.3),
+          color: isActive ?  const Color.fromARGB(255, 0, 6, 71) : Colors.grey,
         ),
       ),
       child: Column(
@@ -224,9 +231,9 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
-                  job['Status'] ?? 'Inconnu',
+                  job['Status'] ?? '',
                   style: TextStyle(
-                    color: isActive ? Colors.green : Colors.grey,
+                    color: isActive ? const Color.fromARGB(255, 0, 6, 71) : Colors.grey,
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
                   ),
@@ -244,7 +251,7 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
               const SizedBox(width: 4),
               Flexible(
                 child: Text(
-                  job['Category'] ?? 'Non spécifié',
+                  job['category'] ?? 'Non spécifié',
                   style: TextStyle(color: Colors.grey[600], fontSize: 14),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -271,8 +278,8 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
               const SizedBox(width: 4),
               Text(
                 job['salary'] ?? 'Non spécifié',
-                style: TextStyle(
-                  color: ColorRes.containerColor,
+                style: const TextStyle(
+                  color: Color.fromARGB(255, 0, 6, 71),
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
                 ),
@@ -285,7 +292,7 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
-                  job['type'] ?? 'Non spécifié',
+                  job['jobType'] ?? 'Non spécifié',
                   style: TextStyle(
                     color: job['remote'] == true ? Colors.blue : ColorRes.appleGreen,
                     fontSize: 12,
@@ -304,13 +311,13 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
               Expanded(
                 child: Row(
                   children: [
-                    Icon(Icons.visibility, size: 14, color: Colors.grey[600]),
+                    Icon(Icons.visibility, size: 20, color: Colors.grey[600]),
                     const SizedBox(width: 2),
-                    Text('${job['Views'] ?? 0}', style: const TextStyle(fontSize: 11)),
+                    Text('${job['viewsCount'] ?? 0}', style: const TextStyle(fontSize: 11)),
                     const SizedBox(width: 8),
-                    Icon(Icons.people, size: 14, color: Colors.grey[600]),
+                    Icon(Icons.people, size: 20, color: Colors.grey[600]),
                     const SizedBox(width: 2),
-                    Text('${job['Applications'] ?? 0}', style: const TextStyle(fontSize: 11)),
+                    Text('${job['applicationsCount'] ?? 0}', style: const TextStyle(fontSize: 11)),
                   ],
                 ),
               ),
@@ -321,7 +328,7 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
                 children: [
                   IconButton(
                     onPressed: () => _editJob(job, docId),
-                    icon: const Icon(Icons.edit, size: 18),
+                    icon: const Icon(Icons.edit, size: 24),
                     padding: const EdgeInsets.all(4),
                     constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
                   ),
@@ -329,15 +336,15 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
                     onPressed: () => _toggleJobStatus(docId, isActive),
                     icon: Icon(
                       isActive ? Icons.pause_circle : Icons.play_circle,
-                      size: 18,
-                      color: isActive ? ColorRes.appleGreen : Colors.green,
+                      size: 24,
+                      color: isActive ? Colors.orange : Colors.green,
                     ),
                     padding: const EdgeInsets.all(4),
                     constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
                   ),
                   IconButton(
                     onPressed: () => _deleteJob(docId, job['Position']),
-                    icon: const Icon(Icons.delete, size: 18, color: ColorRes.royalBlue),
+                    icon: const Icon(Icons.delete, size: 24, color: ColorRes.royalBlue),
                     padding: const EdgeInsets.all(4),
                     constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
                   ),
@@ -362,23 +369,23 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
 
   void _toggleJobStatus(String docId, bool isCurrentlyActive) async {
     try {
-      final newStatus = isCurrentlyActive ? 'Paused' : 'Active';
+      final newStatus = !isCurrentlyActive;
       
       await FirebaseFirestore.instance
           .collection('allPost')
           .doc(docId)
-          .update({'Status': newStatus});
+          .update({'isActive': newStatus, 'status': newStatus ? 'Active' : 'Paused'});
       
       Get.snackbar(
-        'Statut modifié', 
-        'Annonce ${isCurrentlyActive ? 'mise en pause' : 'réactivée'}',
+        'Status Updated', 
+        'Job posting ${isCurrentlyActive ? 'paused' : 'reactivated'}',
         backgroundColor: Colors.green,
         colorText: Colors.white,
       );
     } catch (e) {
       Get.snackbar(
         'Erreur', 
-        'Impossible de modifier le statut: $e',
+        'Unable to update status: $e',
         backgroundColor: ColorRes.royalBlue,
         colorText: Colors.white,
       );
@@ -388,12 +395,12 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
   void _deleteJob(String docId, String? jobTitle) {
     Get.dialog(
       AlertDialog(
-        title: const Text('Supprimer l\'annonce'),
-        content: Text('Êtes-vous sûr de vouloir supprimer "${jobTitle ?? 'cette annonce'}" ?'),
+        title: const Text('Delete Job Posting'),
+        content: Text('Are you sure you want to delete "${jobTitle ?? 'this job posting'}"?'),
         actions: [
           TextButton(
             onPressed: Get.back,
-            child: const Text('Annuler'),
+            child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () async {
@@ -406,20 +413,20 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
                 
                 Get.snackbar(
                   'Supprimée', 
-                  'Annonce supprimée avec succès',
+                  'Job posting deleted successfully',
                   backgroundColor: Colors.green,
                   colorText: Colors.white,
                 );
               } catch (e) {
                 Get.snackbar(
                   'Erreur', 
-                  'Impossible de supprimer: $e',
+                  'Unable to delete: $e',
                   backgroundColor: ColorRes.royalBlue,
                   colorText: Colors.white,
                 );
               }
             },
-            child: const Text('Supprimer', style: TextStyle(color: ColorRes.royalBlue)),
+            child: const Text('Delete', style: TextStyle(color: ColorRes.royalBlue)),
           ),
         ],
       ),

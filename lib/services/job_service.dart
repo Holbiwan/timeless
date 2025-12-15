@@ -91,7 +91,7 @@ class JobService {
     try {
       QuerySnapshot snapshot = await _firestore
           .collection(jobsCollection)
-          .where('employerId', isEqualTo: employerId)
+          .where('EmployerId', isEqualTo: employerId)
           .orderBy('createdAt', descending: true)
           .get();
 

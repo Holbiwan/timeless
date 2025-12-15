@@ -19,7 +19,7 @@ class EmployerApplicationsScreen extends StatelessWidget {
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: const Text('Espace Professionnel - Candidatures', style: TextStyle(color: Colors.white)),
+        title: const Text('Professional Space - Applications', style: TextStyle(color: Colors.white)),
         iconTheme: const IconThemeData(color: Colors.white),
         actions: [
           IconButton(
@@ -83,14 +83,14 @@ class EmployerApplicationsScreen extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.analytics, color: Colors.white, size: 24),
+              Icon(Icons.analytics, color: Colors.black, size: 24),
               const SizedBox(width: 8),
               Text(
-                'Tableau de bord',
+                'Dashboard',
                 style: GoogleFonts.poppins(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
-                  color: Colors.white,
+                  color: Colors.black,
                 ),
               ),
             ],
@@ -107,14 +107,14 @@ class EmployerApplicationsScreen extends StatelessWidget {
               ),
               Expanded(
                 child: _buildStatItem(
-                  'Aujourd\'hui',
+                  'Today',
                   controller.todayApplications.length.toString(),
                   Icons.today,
                 ),
               ),
               Expanded(
                 child: _buildStatItem(
-                  'En attente',
+                  'Pending',
                   controller.pendingApplications.toString(),
                   Icons.hourglass_empty,
                 ),
@@ -126,21 +126,21 @@ class EmployerApplicationsScreen extends StatelessWidget {
             children: [
               Expanded(
                 child: _buildStatItem(
-                  'Entretiens',
+                  'Interviews',
                   controller.interviewApplications.toString(),
                   Icons.event,
                 ),
               ),
               Expanded(
                 child: _buildStatItem(
-                  'Embauchées',
+                  'Hired',
                   controller.hiredApplications.toString(),
                   Icons.check_circle,
                 ),
               ),
               Expanded(
                 child: _buildStatItem(
-                  'Cette semaine',
+                  'This Week',
                   controller.thisWeekApplications.length.toString(),
                   Icons.date_range,
                 ),
@@ -155,21 +155,21 @@ class EmployerApplicationsScreen extends StatelessWidget {
   Widget _buildStatItem(String label, String value, IconData icon) {
     return Column(
       children: [
-        Icon(icon, color: Colors.white.withOpacity(0.8), size: 20),
+        Icon(icon, color: Colors.black.withOpacity(0.7), size: 20),
         const SizedBox(height: 4),
         Text(
           value,
           style: GoogleFonts.poppins(
             fontSize: 16,
             fontWeight: FontWeight.w700,
-            color: Colors.white,
+            color: Colors.black,
           ),
         ),
         Text(
           label,
           style: GoogleFonts.poppins(
             fontSize: 10,
-            color: Colors.white.withOpacity(0.8),
+            color: Colors.black.withOpacity(0.7),
           ),
           textAlign: TextAlign.center,
         ),
@@ -297,7 +297,7 @@ class EmployerApplicationsScreen extends StatelessWidget {
                           style: GoogleFonts.poppins(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
-                            color: Colors.white,
+                            color: Colors.black,
                           ),
                         ),
                         Text(
@@ -343,7 +343,7 @@ class EmployerApplicationsScreen extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.work, size: 16, color: Colors.white),
+                      Icon(Icons.work, size: 16, color: Colors.black),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
@@ -351,7 +351,7 @@ class EmployerApplicationsScreen extends StatelessWidget {
                           style: GoogleFonts.poppins(
                             fontSize: 13,
                             fontWeight: FontWeight.w500,
-                            color: Colors.white,
+                            color: Colors.black,
                           ),
                         ),
                       ),
@@ -457,7 +457,7 @@ class EmployerApplicationsScreen extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'Les candidatures reçues apparaîtront ici',
+            'Received applications will appear here',
             style: GoogleFonts.poppins(
               fontSize: 14,
               color: ColorRes.textTertiary,
@@ -486,20 +486,20 @@ class EmployerApplicationsScreen extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(Icons.filter_list, color: Colors.white),
+                Icon(Icons.filter_list, color: Colors.black),
                 const SizedBox(width: 8),
                 Text(
                   'Filtres et tri',
                   style: GoogleFonts.poppins(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
-                    color: Colors.white,
+                    color: Colors.black,
                   ),
                 ),
                 const Spacer(),
                 IconButton(
                   onPressed: () => Navigator.pop(context),
-                  icon: Icon(Icons.close),
+                  icon: Icon(Icons.close, color: Colors.black),
                 ),
               ],
             ),
@@ -512,7 +512,7 @@ class EmployerApplicationsScreen extends StatelessWidget {
               style: GoogleFonts.poppins(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
-                color: Colors.white,
+                color: Colors.black,
               ),
             ),
             const SizedBox(height: 12),
@@ -535,7 +535,7 @@ class EmployerApplicationsScreen extends StatelessWidget {
               style: GoogleFonts.poppins(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
-                color: Colors.white,
+                color: Colors.black,
               ),
             ),
             const SizedBox(height: 12),
@@ -555,7 +555,7 @@ class EmployerApplicationsScreen extends StatelessWidget {
               style: GoogleFonts.poppins(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
-                color: Colors.white,
+                color: Colors.black,
               ),
             ),
             const SizedBox(height: 12),
@@ -583,7 +583,7 @@ class EmployerApplicationsScreen extends StatelessWidget {
         title,
         style: GoogleFonts.poppins(
           fontSize: 12,
-          color: isSelected ? Colors.white : Colors.white,
+          color: isSelected ? Colors.white : Colors.black,
           fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
         ),
       ),
@@ -591,7 +591,7 @@ class EmployerApplicationsScreen extends StatelessWidget {
       onSelected: (selected) => controller.selectJob(selected ? job : null),
       backgroundColor: Colors.transparent,
       selectedColor: Colors.white,
-      side: BorderSide(color: Colors.white.withOpacity(0.5)),
+      side: BorderSide(color: isSelected ? Colors.blue : Colors.grey.withOpacity(0.5)),
     );
   }
 
@@ -629,12 +629,12 @@ class EmployerApplicationsScreen extends StatelessWidget {
         label,
         style: GoogleFonts.poppins(
           fontSize: 14,
-          color: isSelected ? Colors.white : Colors.white,
+          color: isSelected ? Colors.white : Colors.black,
           fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
         ),
       ),
       trailing: isSelected 
-          ? Icon(Icons.check, color: Colors.white)
+          ? Icon(Icons.check, color: Colors.blue)
           : null,
       onTap: () {
         controller.changeSortOrder(value);

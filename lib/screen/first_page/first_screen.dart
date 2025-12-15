@@ -217,7 +217,7 @@ class FirstScreen extends StatelessWidget {
                 ),
                 SizedBox(height: Get.height * 0.025),
 
-                // Bouton Create pro Account
+                // Bouton Create Account for PRO
                 InkWell(
                   onTap: () {
                     Navigator.push(
@@ -251,7 +251,7 @@ class FirstScreen extends StatelessWidget {
                       children: [
                         Flexible(
                           child: Obx(() => Text(
-                                translationService.getText('Create pro Account'),
+                                translationService.getText('create_account_as_pro'),
                                 style: GoogleFonts.poppins(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500,

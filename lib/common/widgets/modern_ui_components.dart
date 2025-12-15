@@ -170,6 +170,14 @@ class ModernUIComponents {
             validator: validator,
             onChanged: onChanged,
             style: accessibilityService.getAccessibleTextStyle(),
+            // Ensure copy/paste always works
+            enableInteractiveSelection: true,
+            toolbarOptions: const ToolbarOptions(
+              copy: true,
+              cut: true,
+              paste: true,
+              selectAll: true,
+            ),
             decoration: InputDecoration(
               hintText: hint,
               hintStyle: accessibilityService.getAccessibleTextStyle(
