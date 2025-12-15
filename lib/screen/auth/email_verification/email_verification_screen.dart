@@ -1,4 +1,6 @@
 // lib/screen/auth/email_verification/email_verification_screen.dart
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -164,40 +166,6 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
         });
       }
     });
-  }
-
-  Future<void> _checkEmailManually() async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      await _auth.currentUser?.reload();
-      final user = _auth.currentUser;
-      
-      if (user != null && user.emailVerified) {
-        await _updateUserVerificationStatus(user);
-        _navigateToDashboard();
-      } else {
-        Get.snackbar(
-          "Email Not Verified",
-          "Please check your email and click the verification link first.",
-          backgroundColor: Colors.orange,
-          colorText: Colors.white,
-        );
-      }
-    } catch (e) {
-      Get.snackbar(
-        "Error",
-        "Failed to check verification status. Please try again.",
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
   }
 
   @override
