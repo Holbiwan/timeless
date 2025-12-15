@@ -117,17 +117,11 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
                     children: [
                       Row(
                         children: [
-                          Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF000647).withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Icon(
-                              Icons.work,
-                              color: const Color(0xFF000647),
-                              size: 20,
-                            ),
+                          Image.network(
+                            'https://zupimages.net/up/25/51/vaft.png',
+                            width: 48, // Increased size further
+                            height: 48, // Increased size further
+                            fit: BoxFit.cover,
                           ),
                           const SizedBox(width: 12),
                           Expanded(
