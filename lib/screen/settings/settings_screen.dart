@@ -26,10 +26,11 @@ class SettingsScreenU extends StatelessWidget {
     DashBoardController controller = Get.put(DashBoardController());
     return Scaffold(
       backgroundColor: ColorRes.backgroundColor,
-      body: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+      body: SingleChildScrollView(
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
             const SizedBox(height: 60),
             Stack(
               children: [
@@ -418,7 +419,8 @@ class SettingsScreenU extends StatelessWidget {
               ),
             ),
           ]),
-    );
+        ),
+      );
   }
 
   settingModalBottomSheet(context) async {

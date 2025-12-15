@@ -37,7 +37,17 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
           ),
         ),
         centerTitle: true,
-        automaticallyImplyLeading: false,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            if (Navigator.canPop(context)) {
+              Navigator.pop(context);
+            } else {
+              // Si aucune page précédente, retourner à l'écran de connexion
+              Get.offAllNamed('/');
+            }
+          },
+        ),
         elevation: 0,
         actions: [
           IconButton(
@@ -154,6 +164,7 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
                     .snapshots(),
                 icon: Icons.description,
                 color: const Color(0xFF000647),
+                onTap: () => Get.to(() => const SimpleApplicationsScreen()),
               ),
             ),
           ],
@@ -205,6 +216,9 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
                     color: Colors.black87,
                     fontWeight: FontWeight.w500,
                   ),
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
@@ -324,20 +338,7 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
             }
 
             if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-              return Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: const Color(0xFF000647).withOpacity(0.2)),
-                ),
-                child: Center(
-                  child: Text(
-                    'No job posts yet. Click "Post New Job" to get started!',
-                    style: GoogleFonts.poppins(color: Colors.black87),
-                  ),
-                ),
-              );
+              return const SizedBox.shrink();
             }
 
             return Column(
@@ -452,21 +453,7 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
             }
 
             if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-              return Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: const Color(0xFF000647).withOpacity(0.2)),
-                ),
-                child: Center(
-                  child: Text(
-                    'No applications yet. Applications will appear here once candidates apply!',
-                    style: GoogleFonts.poppins(color: Colors.black87),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              );
+              return const SizedBox.shrink();
             }
 
             return Column(

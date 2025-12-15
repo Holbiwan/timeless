@@ -32,7 +32,7 @@ class WebinairesScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Prochains Webinaires',
+              'Upcoming webinars',
               style: GoogleFonts.poppins(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
@@ -41,18 +41,74 @@ class WebinairesScreen extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              'Participez aux webinaires emploi et formation',
+              'Participate in employment and training webinars',
               style: GoogleFonts.poppins(
                 fontSize: 14,
                 color: Colors.grey[600],
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16), // Reduced from 24
+            
+            // Information footer
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.grey[300]!),
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.video_call,
+                        color: Colors.grey[600],
+                        size: 20,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          'Click on a webinar to register or access the replay.',
+                          style: GoogleFonts.poppins(
+                            fontSize: 12,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.notifications_active,
+                        color: Colors.orange,
+                        size: 20,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          'Webinars marked “Live” are upcoming.',
+                          style: GoogleFonts.poppins(
+                            fontSize: 12,
+                            color: Colors.grey[600],
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 16), // Reduced from 32
             
             // Webinar Emploi & Credit Management
             _buildWebinarCard(
               title: 'Webinar "Emploi & Credit Management"',
-              date: '20 Janvier 2026',
+              date: '20 January 2026',
               organizer: 'AFDCC',
               description: 'Découvrez les opportunités d\'emploi dans le secteur du Credit Management',
               url: 'https://www.afdcc.fr/produit/manifestations/20-janvier-2026-save-the-date-webinar-emploi-credit-management/',
@@ -75,61 +131,7 @@ class WebinairesScreen extends StatelessWidget {
               isLive: false,
             ),
             
-            const SizedBox(height: 32),
-            
-            // Information footer
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey[300]!),
-              ),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.video_call,
-                        color: Colors.grey[600],
-                        size: 20,
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(
-                          'Cliquez sur un webinaire pour vous inscrire ou accéder au replay',
-                          style: GoogleFonts.poppins(
-                            fontSize: 12,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.notifications_active,
-                        color: Colors.orange,
-                        size: 20,
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(
-                          'Les webinaires marqués "En direct" sont à venir',
-                          style: GoogleFonts.poppins(
-                            fontSize: 12,
-                            color: Colors.grey[600],
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
+
           ],
         ),
       ),
@@ -292,7 +294,7 @@ class WebinairesScreen extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    isLive ? 'S\'inscrire' : 'Voir les détails',
+                    isLive ? 'Register' : 'See details',
                     style: GoogleFonts.poppins(
                       fontSize: 12,
                       fontWeight: FontWeight.w500,

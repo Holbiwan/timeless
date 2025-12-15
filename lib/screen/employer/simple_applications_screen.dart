@@ -223,18 +223,40 @@ class _SimpleApplicationsScreenState extends State<SimpleApplicationsScreen> {
   }
 
   Widget _buildApplicationCard(Map<String, dynamic> application) {
-    final String candidateName = application['candidateName'] ?? 'Unknown Candidate';
-    final String jobTitle = application['jobTitle'] ?? 'Unknown Position';
+    final String candidateName = application['candidateName'] ?? 
+                                application['fullName'] ?? 
+                                application['name'] ?? 
+                                'Unknown Candidate';
+    
+    // Récupérer le titre du poste depuis les différents champs possibles
+    String jobTitle = application['jobTitle'] ?? 
+                     application['positionTitle'] ?? 
+                     application['jobName'] ?? 
+                     application['position'] ?? 
+                     application['JobTitle'] ?? 
+                     'Position not found';
+                     
+    // Si on a un jobId, essayer de récupérer le titre depuis l'annonce originale
+    final String jobId = application['jobId'] ?? application['JobId'] ?? '';
+    if (jobId.isNotEmpty && jobTitle == 'Position not found') {
+      // TODO: Fetch from allPost collection using jobId
+      jobTitle = 'Loading position...';
+    }
+    
     final String status = application['status'] ?? 'pending';
-    final String candidateEmail = application['candidateEmail'] ?? '';
+    final String candidateEmail = application['candidateEmail'] ?? 
+                                  application['email'] ?? 
+                                  '';
     
     Color statusColor;
     switch (status.toLowerCase()) {
+      case 'selected':
       case 'accepted':
-        statusColor = Colors.green;
+        statusColor = const Color(0xFF000647);
         break;
+      case 'refused':
       case 'rejected':
-        statusColor = Colors.red;
+        statusColor = Colors.black;
         break;
       default:
         statusColor = Colors.orange;
@@ -289,11 +311,14 @@ class _SimpleApplicationsScreenState extends State<SimpleApplicationsScreen> {
                       ),
                     ),
                     Text(
-                      'Applied for: $jobTitle',
+                      jobTitle,
                       style: GoogleFonts.poppins(
                         fontSize: 13,
                         color: Colors.grey[600],
+                        fontWeight: FontWeight.w500,
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     if (candidateEmail.isNotEmpty)
                       Text(
@@ -332,15 +357,15 @@ class _SimpleApplicationsScreenState extends State<SimpleApplicationsScreen> {
               if (status.toLowerCase() == 'pending') ...[
                 Expanded(
                   child: ElevatedButton.icon(
-                    onPressed: () => _updateApplicationStatus(application, 'accepted'),
+                    onPressed: () => _updateApplicationStatus(application, 'selected'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
+                      backgroundColor: const Color(0xFF000647),
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 8),
                     ),
                     icon: const Icon(Icons.check, size: 16),
                     label: Text(
-                      'Accept',
+                      'Selected',
                       style: GoogleFonts.poppins(fontSize: 12),
                     ),
                   ),
@@ -348,15 +373,15 @@ class _SimpleApplicationsScreenState extends State<SimpleApplicationsScreen> {
                 const SizedBox(width: 8),
                 Expanded(
                   child: ElevatedButton.icon(
-                    onPressed: () => _updateApplicationStatus(application, 'rejected'),
+                    onPressed: () => _updateApplicationStatus(application, 'refused'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
+                      backgroundColor: Colors.black,
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 8),
                     ),
                     icon: const Icon(Icons.close, size: 16),
                     label: Text(
-                      'Reject',
+                      'Refused',
                       style: GoogleFonts.poppins(fontSize: 12),
                     ),
                   ),
@@ -385,23 +410,237 @@ class _SimpleApplicationsScreenState extends State<SimpleApplicationsScreen> {
     );
   }
 
-  void _updateApplicationStatus(Map<String, dynamic> application, String newStatus) {
-    // TODO: Implement application status update
-    Get.snackbar(
-      'Status Updated',
-      'Application ${newStatus == 'accepted' ? 'accepted' : 'rejected'}',
-      backgroundColor: newStatus == 'accepted' ? Colors.green : Colors.red,
-      colorText: Colors.white,
-    );
+  Future<void> _updateApplicationStatus(Map<String, dynamic> application, String newStatus) async {
+    try {
+      // Find the application document ID
+      final String employerId = PreferencesService.getString(PrefKeys.employerId);
+      final String currentUserId = PreferencesService.getString(PrefKeys.userId);
+      final String actualEmployerId = employerId.isNotEmpty ? employerId : currentUserId;
+      
+      // Essayer différents champs pour l'email du candidat
+      final String candidateEmail = application['candidateEmail'] ?? 
+                                   application['email'] ?? 
+                                   application['userEmail'] ?? '';
+                                   
+      // Essayer différents champs pour le nom du candidat (fallback)
+      final String candidateName = application['candidateName'] ?? 
+                                   application['fullName'] ?? 
+                                   application['name'] ?? '';
+      
+      // Utiliser l'ID du document si disponible
+      final String docId = application['id'] ?? application['docId'] ?? '';
+      
+      QuerySnapshot querySnapshot;
+      
+      if (docId.isNotEmpty) {
+        // Si on a l'ID du document, l'utiliser directement
+        querySnapshot = await FirebaseFirestore.instance
+            .collection('applications')
+            .where(FieldPath.documentId, isEqualTo: docId)
+            .limit(1)
+            .get();
+      } else if (candidateEmail.isNotEmpty) {
+        // Sinon, chercher par email candidat et employerId
+        querySnapshot = await FirebaseFirestore.instance
+            .collection('applications')
+            .where('employerId', isEqualTo: actualEmployerId)
+            .where('candidateEmail', isEqualTo: candidateEmail)
+            .limit(1)
+            .get();
+      } else if (candidateName.isNotEmpty) {
+        // En dernier recours, chercher par nom du candidat
+        querySnapshot = await FirebaseFirestore.instance
+            .collection('applications')
+            .where('employerId', isEqualTo: actualEmployerId)
+            .where('candidateName', isEqualTo: candidateName)
+            .limit(1)
+            .get();
+      } else {
+        Get.snackbar(
+          'Error',
+          'Unable to update application: missing candidate information',
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+        return;
+      }
+      
+      if (querySnapshot.docs.isNotEmpty) {
+        // Update the application status
+        await querySnapshot.docs.first.reference.update({
+          'status': newStatus,
+          'statusUpdatedAt': FieldValue.serverTimestamp(),
+          'updatedBy': actualEmployerId,
+        });
+        
+        // Show success message
+        String message = '';
+        Color bgColor = const Color(0xFF000647);
+        
+        switch (newStatus.toLowerCase()) {
+          case 'selected':
+            message = 'Candidate has been selected successfully';
+            bgColor = const Color(0xFF000647);
+            break;
+          case 'refused':
+            message = 'Candidate has been refused';
+            bgColor = Colors.black;
+            break;
+          default:
+            message = 'Application status updated successfully';
+        }
+        
+        Get.snackbar(
+          'Status Updated',
+          message,
+          backgroundColor: bgColor,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 3),
+        );
+        
+        // Refresh the UI
+        setState(() {});
+      } else {
+        Get.snackbar(
+          'Error',
+          'Unable to find this application in the database',
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+      }
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Failed to update application status: ${e.toString()}',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
   }
 
   void _viewApplicationDetails(Map<String, dynamic> application) {
-    // TODO: Implement view application details
-    Get.snackbar(
-      'Application Details',
-      'Viewing details for ${application['candidateName']}',
-      backgroundColor: const Color(0xFF000647),
-      colorText: Colors.white,
+    final String candidateName = application['candidateName'] ?? 
+                                application['fullName'] ?? 
+                                application['name'] ?? 
+                                'Unknown Candidate';
+    
+    final String candidateEmail = application['candidateEmail'] ?? 
+                                  application['email'] ?? 
+                                  'N/A';
+    
+    final String jobTitle = application['jobTitle'] ?? 
+                            application['positionTitle'] ?? 
+                            application['jobName'] ?? 
+                            application['position'] ?? 
+                            'Position not specified';
+    final String status = application['status'] ?? 'pending';
+    final String candidatePhone = application['candidatePhone'] ?? 'N/A';
+    final String experience = application['experience'] ?? 'N/A';
+    final String coverLetter = application['coverLetter'] ?? 'No cover letter provided';
+    
+    Get.dialog(
+      AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        title: Text(
+          'Application Details',
+          style: GoogleFonts.poppins(
+            fontWeight: FontWeight.w600,
+            color: const Color(0xFF000647),
+          ),
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildDetailRow('Candidate Name', candidateName),
+              _buildDetailRow('Email', candidateEmail),
+              _buildDetailRow('Phone', candidatePhone),
+              _buildDetailRow('Position Applied', jobTitle),
+              _buildDetailRow('Experience', experience),
+              _buildDetailRow('Status', status.toUpperCase()),
+              const SizedBox(height: 10),
+              Text(
+                'Cover Letter:',
+                style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                  color: const Color(0xFF000647),
+                ),
+              ),
+              const SizedBox(height: 5),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.grey[100],
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.grey[300]!),
+                ),
+                child: Text(
+                  coverLetter,
+                  style: GoogleFonts.poppins(fontSize: 13),
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(),
+            child: Text(
+              'Close',
+              style: GoogleFonts.poppins(color: const Color(0xFF000647)),
+            ),
+          ),
+          if (status.toLowerCase() == 'pending') ...[
+            ElevatedButton(
+              onPressed: () {
+                Get.back();
+                _updateApplicationStatus(application, 'selected');
+              },
+              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF000647)),
+              child: Text('Selected', style: GoogleFonts.poppins()),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Get.back();
+                _updateApplicationStatus(application, 'refused');
+              },
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.grey[600]),
+              child: Text('Refused', style: GoogleFonts.poppins()),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+  
+  Widget _buildDetailRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 100,
+            child: Text(
+              '$label:',
+              style: GoogleFonts.poppins(
+                fontWeight: FontWeight.w600,
+                fontSize: 13,
+                color: const Color(0xFF000647),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: GoogleFonts.poppins(fontSize: 13),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

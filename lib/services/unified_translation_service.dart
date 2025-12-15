@@ -509,7 +509,7 @@ class UnifiedTranslationService extends GetxController {
       'create_account': 'Créer Votre Compte',
       'already_have_account': 'Vous avez déjà un compte ?',
       'sign_in': 'Se Connecter',
-      'sign_up': 'S\'inscrire',
+      'sign_up': 'Sign in',
       'create_account_as_pro': 'Créer un compte en tant que',
 
       // Profil

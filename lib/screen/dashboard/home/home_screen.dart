@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
-import 'package:timeless/screen/dashboard/home/tipsforyou_screen.dart';
 import 'package:timeless/screen/dashboard/home/salons_emploi_screen.dart';
 import 'package:timeless/screen/dashboard/home/webinaires_screen.dart';
 import 'package:timeless/screen/dashboard/home/widgets/appbar.dart';
-import 'package:timeless/screen/dashboard/home/widgets/tips_for_you_section.dart';
 import 'package:timeless/screen/job_detail_screen/job_detail_upload_cv_screen/upload_cv_controller.dart';
 import 'package:timeless/utils/app_res.dart';
 import 'package:timeless/utils/color_res.dart';
@@ -35,18 +33,39 @@ class HomeScreen extends StatelessWidget {
                 children: [
                   // --- SECTION: 
 
-                  // Tips for you section ---
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (con) => const TipsForYouScreen()),
-                      );
-                    },
-                    child: tipsForYouSection(),
+                  // My Applications button ---
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        Get.toNamed(AppRes.applicationsUser);
+                      },
+                      icon: const Icon(
+                        Icons.assignment_outlined,
+                        color: Colors.white,
+                        size: 18,
+                      ),
+                      label: Text(
+                        "My Applications Sent",
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF000647),
+                        foregroundColor: Colors.white,
+                        minimumSize: const Size(double.infinity, 40), // Reduced from 45
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        elevation: 5,
+                      ),
+                    ),
                   ),
 
-                  const SizedBox(height: 15),
+                  const SizedBox(height: 8), // Reduced from 15
 
                   // --- SECTION: 
 
@@ -61,7 +80,7 @@ class HomeScreen extends StatelessWidget {
                         backgroundColor: Colors.white,
                         foregroundColor: Colors.black,
                         side: const BorderSide(color: Color(0xFF000647), width: 2.0),
-                        minimumSize: const Size(double.infinity, 50),
+                        minimumSize: const Size(double.infinity, 40), // Reduced from 42
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -69,7 +88,7 @@ class HomeScreen extends StatelessWidget {
                       child: Text(
                         "See Jobs Offers",
                         style: GoogleFonts.poppins(
-                          fontSize: 16,
+                          fontSize: 14,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -85,7 +104,7 @@ class HomeScreen extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 18.0),
                     child: Container(
                       width: double.infinity,
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(12), // Reduced from 16
                       decoration: BoxDecoration(
                         color: const Color(0xFF000647),
                         borderRadius: BorderRadius.circular(12),
@@ -118,15 +137,15 @@ class HomeScreen extends StatelessWidget {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 12),
+                          const SizedBox(height: 8), // Reduced from 12
                           Text(
-                            "Découvrez les salons de l'emploi et événements à venir",
+                            "Discover upcoming job fairs and professional events",
                             style: GoogleFonts.poppins(
                               fontSize: 12,
                               color: Colors.white.withOpacity(0.9),
                             ),
                           ),
-                          const SizedBox(height: 15),
+                          const SizedBox(height: 10), // Reduced from 15
                           
                           // YouTube Video Player
                           ClipRRect(
@@ -144,12 +163,12 @@ class HomeScreen extends StatelessWidget {
                             ),
                           ),
                           
-                          const SizedBox(height: 15),
+                          const SizedBox(height: 10), // Reduced from 15
                           Row(
                             children: [
                               Expanded(
                                 child: _buildEventButton(
-                                  "Salons emploi",
+                                  "Jobs fairs",
                                   Icons.business,
                                   () {
                                     Get.to(() => const SalonsEmploiScreen());
@@ -159,7 +178,7 @@ class HomeScreen extends StatelessWidget {
                               const SizedBox(width: 8),
                               Expanded(
                                 child: _buildEventButton(
-                                  "Webinaires",
+                                  "Webinars",
                                   Icons.play_circle,
                                   () {
                                     Get.to(() => const WebinairesScreen());

@@ -244,15 +244,17 @@ class ProfileController extends GetxController {
         image = File(pickedFile.path);
         update(['image']);
         AppTheme.showStandardSnackBar(
-          title: "Succès",
-          message: "Photo capturée avec succès",
+          title: "Success",
+          message: "Photo captured successfully",
           isSuccess: true,
         );
+        // Automatically save the profile with the new photo
+        await onTapSubmit();
       }
     } catch (e) {
       AppTheme.showStandardSnackBar(
-        title: "Erreur",
-        message: "Problème avec la caméra",
+        title: "Error",
+        message: "Camera problem",
         isError: true,
       );
     }
@@ -272,15 +274,17 @@ class ProfileController extends GetxController {
         image = File(pickedFile.path);
         update(['image']);
         AppTheme.showStandardSnackBar(
-          title: "Succès",
-          message: "Photo sélectionnée avec succès",
+          title: "Success",
+          message: "Photo selected successfully",
           isSuccess: true,
         );
+        // Automatically save the profile with the new photo
+        await onTapSubmit();
       }
     } catch (e) {
       AppTheme.showStandardSnackBar(
-        title: "Erreur",
-        message: "Problème avec la galerie",
+        title: "Error",
+        message: "Gallery problem",
         isError: true,
       );
     }
@@ -299,6 +303,9 @@ class ProfileController extends GetxController {
         if (imageUrl != null) {
           profileImageUrl.value = imageUrl;
         }
+        // Clear the image after successful upload
+        image = null;
+        update(['image']);
       }
       
       // Save to Firebase
@@ -308,15 +315,15 @@ class ProfileController extends GetxController {
       _updateLocalValues();
       
       AppTheme.showStandardSnackBar(
-        title: "Profil mis à jour",
-        message: "Votre profil a été sauvegardé avec succès !",
+        title: "Profile Updated",
+        message: "Your profile has been saved successfully!",
         isSuccess: true,
       );
       
     } catch (e) {
       AppTheme.showStandardSnackBar(
-        title: "Erreur",
-        message: "Impossible de sauvegarder le profil",
+        title: "Error",
+        message: "Unable to save profile",
         isError: true,
       );
     } finally {

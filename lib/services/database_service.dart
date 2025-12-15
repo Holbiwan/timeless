@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:timeless/models/candidate_profile_model.dart';
 
 class DatabaseService extends GetxController {
   static DatabaseService get instance => Get.find();
@@ -123,6 +124,20 @@ class DatabaseService extends GetxController {
     }
   }
 
+  // Get a candidate profile by ID
+  Future<CandidateProfileModel?> getCandidateProfile(String candidateId) async {
+    try {
+      DocumentSnapshot doc = await _firestore.collection('users').doc(candidateId).get();
+      if (doc.exists) {
+        return CandidateProfileModel.fromJson(doc.data() as Map<String, dynamic>);
+      }
+      return null;
+    } catch (e) {
+      print('Error retrieving candidate profile: $e');
+      return null;
+    }
+  }
+
   // Create an application (adapted to your existing structure)
   Future<bool> createApplication({
     required String jobId,
@@ -133,6 +148,21 @@ class DatabaseService extends GetxController {
     String? cvUrl,
   }) async {
     try {
+      final jobData = await getJob(jobId);
+      if (jobData == null) {
+        Get.snackbar('Error', 'Job not found.');
+        return false;
+      }
+      final String jobTitle = jobData['title'] ?? 'N/A';
+      final String companyName = jobData['company'] ?? 'N/A';
+      final candidateProfile = await getCandidateProfile(candidateId);
+      String latestExperience = 'N/A';
+      if (candidateProfile != null && (candidateProfile.experience as List).isNotEmpty) {
+        List<dynamic> experiences = candidateProfile.experience as List<dynamic>;
+        if (experiences.isNotEmpty && experiences.first is Map) {
+          latestExperience = (experiences.first as Map<String, dynamic>)['position'] ?? 'N/A';
+        }
+      }
       Map<String, dynamic> application = {
         'jobId': jobId,
         'uid': candidateId,
@@ -144,10 +174,13 @@ class DatabaseService extends GetxController {
         'appliedAt': Timestamp.now(),
         'applicationSource': 'mobile_app',
         'matchScore': 85, // Default score
+        'jobTitle': jobTitle,
+        'companyName': companyName,
+        'candidateExperience': latestExperience,
       };
 
       await _firestore.collection('Apply').add(application);
-      
+
       // Increment the job application counter
       await _firestore.collection('jobs').doc(jobId).update({
         'applicationsCount': FieldValue.increment(1),
