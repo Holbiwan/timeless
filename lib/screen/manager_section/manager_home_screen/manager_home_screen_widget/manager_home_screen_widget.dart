@@ -1,10 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-// Import supprimé : chat_box_screen.dart n'existe plus
 import 'package:timeless/screen/create_vacancies/create_vacancies_controller.dart';
 import 'package:timeless/screen/job_detail_screen/job_detail_upload_cv_screen/upload_cv_controller.dart';
-// Import supprimé : video_joinig_screen.dart n'existe plus
 import 'package:timeless/screen/manager_section/manager_home_screen/manager_home_screen_controller.dart';
 import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/app_res.dart';

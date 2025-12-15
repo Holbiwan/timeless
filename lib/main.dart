@@ -1,7 +1,8 @@
-
 // Main entry point of the Timeless application
 // This file initializes Firebase, global services, localization, and sets up the main app widget.
 // GetX dependencies are also used for state management and routing.
+
+// ignore_for_file: deprecated_member_use
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -14,7 +15,7 @@ import 'firebase_options.dart';
 
 // Candidate screens
 import 'package:timeless/screen/splashScreen/splash_screen.dart';
-import 'package:timeless/screen/first_page/first_screen.dart';
+import 'package:timeless/screen/first_page/first_screen.dart' as candidate_auth;
 import 'package:timeless/screen/job_detail_screen/job_detail_screen.dart';
 import 'package:timeless/screen/job_recommendation_screen/job_recommendation_screen.dart';
 import 'package:timeless/screen/jobs/job_application_screen.dart';
@@ -28,9 +29,10 @@ import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/screen/manager_section/Notification/notification_services.dart';
 
 // Recruiter screens
-import 'package:timeless/screen/manager_section/auth_manager/first_page/first_screen.dart'
-    as ManagerFirstScreen;
-import 'package:timeless/screen/manager_section/dashboard/manager_dashboard_screen.dart';
+import 'package:timeless/screen/manager_section/auth_manager/first_page/first_screen.dart' as manager_auth;
+
+import 'package:timeless/screen/manager_section/dashboard/manager_dashboard_screen.dart'
+    show ManagerDashBoardScreen;
 
 // Employer screens
 import 'package:timeless/screen/employer/employer_dashboard_screen.dart';
@@ -47,7 +49,7 @@ import 'package:timeless/utils/app_style.dart';
 Future<void> main() async {
   // Needed for async operations before runApp
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Initialize Easy Localization
   await EasyLocalization.ensureInitialized();
 
@@ -80,12 +82,13 @@ Future<void> main() async {
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
     statusBarIconBrightness: Brightness.dark,
-    systemNavigationBarColor: Color.fromARGB(255, 110, 8, 3),
-    systemNavigationBarIconBrightness: Brightness.dark,
+    systemNavigationBarColor: ColorRes.primaryBlueDark,
+    systemNavigationBarIconBrightness: Brightness.light,
   ));
 
   // Initialize global services using GetX
-  Get.put(UnifiedTranslationService()); // Unified translation service (replaces 3 old services)
+  Get.put(
+      UnifiedTranslationService()); // Unified translation service (replaces 3 old services)
   Get.put(ThemeService()); // Enhanced theme service
   Get.put(AccessibilityService()); // Accessibility service for all
 
@@ -113,7 +116,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Timeless',
       debugShowCheckedModeBanner: false, // Remove debug banner
-      
+
       // Easy Localization setup
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
@@ -196,14 +199,12 @@ class MyApp extends StatelessWidget {
         ),
         GetPage(
           name: AppRes.firstScreen,
-          page: () => FirstScreen(),
+          page: () => candidate_auth.FirstScreen(),
         ),
         GetPage(
           name: AppRes.jobApplicationScreen,
           page: () => JobApplicationScreen(
-            job: Get.arguments?['job'], 
-            docId: Get.arguments?['docId']
-          ),
+              job: Get.arguments?['job'], docId: Get.arguments?['docId']),
         ),
         GetPage(
           name: AppRes.applicationsUser,
@@ -213,9 +214,9 @@ class MyApp extends StatelessWidget {
         // Login screen for recruiters
         GetPage(
           name: AppRes.firstPageScreenM,
-          page: () => const ManagerFirstScreen.FirstPageScreenM(),
+          page: () => manager_auth.FirstPageScreenM(),
         ),
-        
+
         // Dashboard for recruiters
         GetPage(
           name: AppRes.managerDashboardScreen,
@@ -232,7 +233,7 @@ class MyApp extends StatelessWidget {
       // Page not found
       unknownRoute: GetPage(
         name: '/404',
-        page: () => FirstScreen(),
+        page: () => candidate_auth.FirstScreen(),
       ),
     );
   }

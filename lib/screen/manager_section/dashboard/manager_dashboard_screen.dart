@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
-
-// Import supprimé : chat_box_screen.dart n'existe plus
 import 'package:timeless/screen/employer/employer_profile_screen.dart';
 
 import 'package:timeless/screen/manager_section/dashboard/manager_dashboard_screen_controller.dart';
