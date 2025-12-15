@@ -344,7 +344,7 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
                   ),
                   IconButton(
                     onPressed: () => _deleteJob(docId, job['Position']),
-                    icon: const Icon(Icons.delete, size: 24, color: ColorRes.royalBlue),
+                    icon: const Icon(Icons.delete, size: 24, color: Color.fromARGB(255, 0, 6, 71)),
                     padding: const EdgeInsets.all(4),
                     constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
                   ),

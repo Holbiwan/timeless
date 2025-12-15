@@ -34,7 +34,7 @@ class EmployerSignInChoiceScreen extends StatelessWidget {
           SingleChildScrollView(
             child: Column(
               children: [
-                const SizedBox(height: 100),
+                const SizedBox(height: 80),
                 
                 // Logo
                 Center(
@@ -50,13 +50,13 @@ class EmployerSignInChoiceScreen extends StatelessWidget {
                     child: const Image(image: AssetImage(AssetRes.logo)),
                   ),
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 20),
 
                 // Titre
                 Text(
                   'Sign in as PRO',
                   style: GoogleFonts.poppins(
-                    fontSize: 24,
+                    fontSize: 20,
                     fontWeight: FontWeight.w700,
                     color: Colors.black,
                   ),
@@ -67,13 +67,13 @@ class EmployerSignInChoiceScreen extends StatelessWidget {
                 Text(
                   'Choose your connection method',
                   style: GoogleFonts.poppins(
-                    fontSize: 14,
+                    fontSize: 12,
                     fontWeight: FontWeight.w400,
                     color: ColorRes.textSecondary,
                   ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 40),
+                const SizedBox(height: 25),
 
                 // Option 1: Connexion par SIRET
                 Padding(
@@ -89,7 +89,7 @@ class EmployerSignInChoiceScreen extends StatelessWidget {
                     },
                     child: Container(
                       width: double.infinity,
-                      padding: const EdgeInsets.all(20),
+                      padding: const EdgeInsets.all(15),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(15),
@@ -105,7 +105,7 @@ class EmployerSignInChoiceScreen extends StatelessWidget {
                       child: Column(
                         children: [
                           Container(
-                            padding: const EdgeInsets.all(15),
+                            padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
                               color: const Color(0xFF000647).withOpacity(0.1),
                               borderRadius: BorderRadius.circular(12),
@@ -113,29 +113,29 @@ class EmployerSignInChoiceScreen extends StatelessWidget {
                             child: const Icon(
                               Icons.business,
                               color: Color(0xFF000647),
-                              size: 30,
+                              size: 24,
                             ),
                           ),
-                          const SizedBox(height: 15),
+                          const SizedBox(height: 12),
                           Text(
                             'Sign in with your SIRET code + Password',
                             style: GoogleFonts.poppins(
-                              fontSize: 16,
+                              fontSize: 14,
                               fontWeight: FontWeight.w600,
                               color: Colors.black,
                             ),
                             textAlign: TextAlign.center,
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: 6),
                           Text(
                             'Use your SIRET number to quickly access your employer account',
                             style: GoogleFonts.poppins(
-                              fontSize: 12,
+                              fontSize: 11,
                               color: Colors.grey[600],
                             ),
                             textAlign: TextAlign.center,
                           ),
-                          const SizedBox(height: 15),
+                          const SizedBox(height: 12),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -160,7 +160,7 @@ class EmployerSignInChoiceScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 15),
 
                 // Séparateur
                 Padding(
@@ -193,7 +193,7 @@ class EmployerSignInChoiceScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 15),
 
                 // Option 2: Connexion par APE + Email + Mot de passe
                 Padding(
@@ -209,7 +209,7 @@ class EmployerSignInChoiceScreen extends StatelessWidget {
                     },
                     child: Container(
                       width: double.infinity,
-                      padding: const EdgeInsets.all(20),
+                      padding: const EdgeInsets.all(15),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(15),
@@ -225,7 +225,7 @@ class EmployerSignInChoiceScreen extends StatelessWidget {
                       child: Column(
                         children: [
                           Container(
-                            padding: const EdgeInsets.all(15),
+                            padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
                               color: const Color(0xFF000647).withOpacity(0.1),
                               borderRadius: BorderRadius.circular(12),
@@ -233,29 +233,29 @@ class EmployerSignInChoiceScreen extends StatelessWidget {
                             child: const Icon(
                               Icons.security,
                               color: Color(0xFF000647),
-                              size: 30,
+                              size: 24,
                             ),
                           ),
-                          const SizedBox(height: 15),
+                          const SizedBox(height: 12),
                           Text(
                             'Sign in with APE + Email + Password',
                             style: GoogleFonts.poppins(
-                              fontSize: 16,
+                              fontSize: 14,
                               fontWeight: FontWeight.w600,
                               color: Colors.black,
                             ),
                             textAlign: TextAlign.center,
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: 6),
                           Text(
                             'Use your APE code, professional email and password to access your account',
                             style: GoogleFonts.poppins(
-                              fontSize: 12,
+                              fontSize: 11,
                               color: Colors.grey[600],
                             ),
                             textAlign: TextAlign.center,
                           ),
-                          const SizedBox(height: 15),
+                          const SizedBox(height: 12),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -281,39 +281,6 @@ class EmployerSignInChoiceScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 40),
-
-                // Note informative
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Container(
-                    padding: const EdgeInsets.all(15),
-                    decoration: BoxDecoration(
-                      color: Colors.blue[50],
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.blue[200]!, width: 1),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.info_outline,
-                          color: Colors.blue[700],
-                          size: 20,
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Text(
-                            'First connection? Your account must be created beforehand with your company information.',
-                            style: GoogleFonts.poppins(
-                              fontSize: 11,
-                              color: Colors.blue[800],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 80),
               ],
             ),
           ),

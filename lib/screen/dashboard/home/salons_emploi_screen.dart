@@ -32,18 +32,18 @@ class SalonsEmploiScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Prochains Salons Emploi',
+              'Upcoming Job Fairs',
               style: GoogleFonts.poppins(
-                fontSize: 22,
+                fontSize: 18, // Reduced from 22
                 fontWeight: FontWeight.bold,
                 color: const Color(0xFF000647),
               ),
             ),
             const SizedBox(height: 8),
             Text(
-              'Découvrez les événements emploi à ne pas manquer',
+              'Discover the job events you won\'t want to miss',
               style: GoogleFonts.poppins(
-                fontSize: 14,
+                fontSize: 12, // Reduced from 14
                 color: Colors.grey[600],
               ),
             ),
@@ -52,7 +52,7 @@ class SalonsEmploiScreen extends StatelessWidget {
             // Salon du Travail et de la Mobilité Professionnelle
             _buildSalonCard(
               title: 'Salon du Travail et de la Mobilité Professionnelle',
-              date: '22 et 23 Janvier 2026',
+              date: '22 & 23 January 2026',
               location: 'Grande Halle de la Villette, Paris',
               url: 'https://paris.salondutravail.fr/',
               icon: Icons.work,
@@ -64,43 +64,26 @@ class SalonsEmploiScreen extends StatelessWidget {
             // Salon Your Future
             _buildSalonCard(
               title: 'Salon Your Future',
-              date: '23 & 24 Janvier 2026',
+              date: '23 & 24 January 2026',
               location: 'Parc des Princes, Paris',
               url: 'https://www.your-future.fr/',
               icon: Icons.rocket_launch,
               color: const Color(0xFF1565C0),
             ),
             
-            const SizedBox(height: 32),
-            
-            // Information footer
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey[300]!),
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.info_outline,
-                    color: Colors.grey[600],
-                    size: 20,
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      'Cliquez sur un salon pour accéder aux informations complètes et vous inscrire',
-                      style: GoogleFonts.poppins(
-                        fontSize: 12,
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+            const SizedBox(height: 16),
+
+            // Salon Formations Coding & Informatique
+            _buildSalonCard(
+              title: 'Salon Formations Coding & Informatique',
+              date: 'Samedi 17 January 2026',
+              location: 'ESPACE CHAMPERRET - HALL A, 75017 Paris',
+              url: 'https://www.studyrama.com/salons/salon-studyrama-des-formations-gaming-et-coding-paris-201',
+              icon: Icons.code,
+              color: const Color(0xFF0D47A1),
             ),
+            
+            const SizedBox(height: 32),
           ],
         ),
       ),
@@ -119,7 +102,7 @@ class SalonsEmploiScreen extends StatelessWidget {
       onTap: () => _launchUrl(url),
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(12), // Reduced from 20
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16),
@@ -138,7 +121,7 @@ class SalonsEmploiScreen extends StatelessWidget {
             Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(8), // Reduced from 12
                   decoration: BoxDecoration(
                     color: color.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
@@ -146,42 +129,27 @@ class SalonsEmploiScreen extends StatelessWidget {
                   child: Icon(
                     icon,
                     color: color,
-                    size: 24,
+                    size: 20, // Reduced from 24
                   ),
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    title,
-                    style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: const Color(0xFF1A1A1A),
+                const SizedBox(width: 8), // Reduced from 12
+                  Expanded(
+                    child: Text(
+                      title,
+                      style: GoogleFonts.poppins(
+                        fontSize: 13, // Reduced from 14
+                        fontWeight: FontWeight.w600,
+                        color: const Color.fromARGB(255, 0, 6, 71),
+                      ),
                     ),
                   ),
-                ),
-                Icon(
-                  Icons.arrow_forward_ios,
-                  color: Colors.grey[400],
-                  size: 16,
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Icon(
-                  Icons.calendar_today,
-                  color: color,
-                  size: 16,
-                ),
-                const SizedBox(width: 8),
+                // ...
                 Text(
                   date,
                   style: GoogleFonts.poppins(
-                    fontSize: 14,
+                    fontSize: 13, // Reduced from 14
                     fontWeight: FontWeight.w500,
-                    color: color,
+                    color: const Color.fromARGB(255, 0, 6, 71),
                   ),
                 ),
               ],
@@ -199,14 +167,14 @@ class SalonsEmploiScreen extends StatelessWidget {
                   child: Text(
                     location,
                     style: GoogleFonts.poppins(
-                      fontSize: 14,
+                      fontSize: 13, // Reduced from 14
                       color: Colors.grey[600],
                     ),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 8), // Reduced from 12
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
@@ -214,11 +182,11 @@ class SalonsEmploiScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
-                'Cliquez pour plus d\'infos',
+                'Click for more information',
                 style: GoogleFonts.poppins(
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
-                  color: color,
+                  color: const Color.fromARGB(255, 0, 6, 71), // Changed color
                 ),
               ),
             ),

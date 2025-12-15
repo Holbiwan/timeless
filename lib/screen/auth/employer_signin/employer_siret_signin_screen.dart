@@ -61,8 +61,8 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
                 // Logo
                 Center(
                   child: Container(
-                    height: 80,
-                    width: 80,
+                    height: 100,
+                    width: 100,
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       color: AppTheme.primaryOrange,
@@ -79,33 +79,33 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
                   child: Text(
                     'SIRET Connection',
                     style: GoogleFonts.poppins(
-                      fontSize: 24,
+                      fontSize: 18,
                       fontWeight: FontWeight.w700,
                       color: Colors.black,
                     ),
                     textAlign: TextAlign.center,
                   ),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 6),
 
                 Center(
                   child: Text(
                     'Enter your SIRET number to access your employer space',
                     style: GoogleFonts.poppins(
-                      fontSize: 14,
+                      fontSize: 12,
                       fontWeight: FontWeight.w400,
                       color: ColorRes.textSecondary,
                     ),
                     textAlign: TextAlign.center,
                   ),
                 ),
-                const SizedBox(height: 40),
+                const SizedBox(height: 20),
 
                 // Champ SIRET
                 Text(
                   'SIRET Code *',
                   style: GoogleFonts.poppins(
-                    fontSize: 16,
+                    fontSize: 13,
                     fontWeight: FontWeight.w600,
                     color: Colors.black,
                   ),
@@ -126,12 +126,12 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
                       hintText: 'Ex: 12345678901234',
                       hintStyle: GoogleFonts.poppins(
                         color: Colors.grey[400],
-                        fontSize: 14,
+                        fontSize: 11,
                       ),
                       border: InputBorder.none,
-                      contentPadding: const EdgeInsets.all(16),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                       suffixIcon: Container(
-                        margin: const EdgeInsets.all(8),
+                        margin: const EdgeInsets.all(4),
                         decoration: BoxDecoration(
                           color: const Color(0xFF000647).withOpacity(0.1),
                           borderRadius: BorderRadius.circular(8),
@@ -144,12 +144,12 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
                     ),
                     buildCounter: (context, {required currentLength, required isFocused, maxLength}) => null,
                     style: GoogleFonts.poppins(
-                      fontSize: 16,
+                      fontSize: 12,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 8),
 
                 // Information
                 Container(
@@ -164,14 +164,14 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
                       Icon(
                         Icons.lightbulb_outline,
                         color: Colors.amber[700],
-                        size: 20,
+                        size: 18,
                       ),
                       const SizedBox(width: 10),
                       Expanded(
                         child: Text(
                           'SIRET is a unique 14-digit identifier assigned to each business establishment in France.',
                           style: GoogleFonts.poppins(
-                            fontSize: 12,
+                            fontSize: 10,
                             color: const Color.fromRGBO(2, 2, 2, 1),
                           ),
                         ),
@@ -179,7 +179,7 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 40),
+                const SizedBox(height: 20),
 
                 // Bouton de connexion
                 SizedBox(
@@ -204,7 +204,7 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 8),
 
                 // Lien vers l'autre méthode
                 Center(
@@ -316,6 +316,7 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
   void _showPasswordDialog(String email, String uid) {
     final passwordController = TextEditingController();
     bool isPasswordLoading = false;
+    bool isPasswordHidden = true;
 
     showDialog(
       context: context,
@@ -352,15 +353,28 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
                 ),
               ),
               const SizedBox(height: 8),
-              TextFormField(
-                controller: passwordController,
-                obscureText: true,
-                decoration: InputDecoration(
-                  hintText: 'Enter your password',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
+              StatefulBuilder(
+                builder: (context, setPasswordState) => TextFormField(
+                  controller: passwordController,
+                  obscureText: isPasswordHidden,
+                  decoration: InputDecoration(
+                    hintText: 'Enter your password',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    contentPadding: const EdgeInsets.all(12),
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        setPasswordState(() {
+                          isPasswordHidden = !isPasswordHidden;
+                        });
+                      },
+                      icon: Icon(
+                        isPasswordHidden ? Icons.visibility : Icons.visibility_off,
+                        color: const Color(0xFF000647),
+                      ),
+                    ),
                   ),
-                  contentPadding: const EdgeInsets.all(12),
                 ),
               ),
             ],

@@ -114,22 +114,6 @@ class JobOfferModel {
   }
 
   // Helper methods for enum conversion
-  static JobType _parseJobType(String? type) {
-    switch (type) {
-      case 'fullTime':
-        return JobType.fullTime;
-      case 'partTime':
-        return JobType.partTime;
-      case 'contract':
-        return JobType.contract;
-      case 'internship':
-        return JobType.internship;
-      case 'freelance':
-        return JobType.freelance;
-      default:
-        return JobType.fullTime;
-    }
-  }
   
   static JobType _parseJobTypeFromString(String? type) {
     switch (type?.toLowerCase()) {
@@ -147,25 +131,6 @@ class JobOfferModel {
         return JobType.contract;
       default:
         return JobType.fullTime;
-    }
-  }
-
-  static ExperienceLevel _parseExperienceLevel(String? level) {
-    switch (level) {
-      case 'entry':
-        return ExperienceLevel.entry;
-      case 'junior':
-        return ExperienceLevel.junior;
-      case 'mid':
-        return ExperienceLevel.mid;
-      case 'senior':
-        return ExperienceLevel.senior;
-      case 'lead':
-        return ExperienceLevel.lead;
-      case 'executive':
-        return ExperienceLevel.executive;
-      default:
-        return ExperienceLevel.entry;
     }
   }
 

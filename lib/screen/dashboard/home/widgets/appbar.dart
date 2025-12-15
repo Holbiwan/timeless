@@ -7,10 +7,12 @@ import 'package:timeless/utils/app_theme.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/screen/settings/settings_screen.dart';
 import 'package:timeless/screen/accessibility/accessibility_panel.dart';
+import 'package:timeless/screen/profile/profile_controller.dart';
 
 Widget homeAppBar() {
   final UnifiedTranslationService translationService = Get.find<UnifiedTranslationService>();
   final AccessibilityService accessibilityService = Get.find<AccessibilityService>();
+  final ProfileController profileController = Get.put(ProfileController());
   
   return Obx(() => Container(
     padding: const EdgeInsets.all(AppTheme.spacingMedium),
@@ -43,11 +45,54 @@ Widget homeAppBar() {
         
         const SizedBox(width: 12),
         
-        // Section de salutation centrée et moderne
+        // Section de salutation centrée et moderne avec photo
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              // Photo du candidat (taille agrandie)
+              Obx(() => Container(
+                width: 100,
+                height: 100,
+                margin: const EdgeInsets.only(bottom: 8),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: const Color(0xFF000647), width: 2),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      spreadRadius: 1,
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(50),
+                  child: profileController.profileImageUrl.value.isNotEmpty
+                    ? Image.network(
+                        profileController.profileImageUrl.value,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          color: Colors.grey[100],
+                          child: const Icon(
+                            Icons.person,
+                            size: 50,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      )
+                    : Container(
+                        color: Colors.grey[100],
+                        child: const Icon(
+                          Icons.person,
+                          size: 50,
+                          color: Colors.grey,
+                        ),
+                      ),
+                ),
+              )),
+              // Texte de bienvenue
               RichText(
                 textAlign: TextAlign.center,
                 text: TextSpan(
