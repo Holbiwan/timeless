@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class TextFieldHelper {
-  /// Ensures TextFormField always allows copy/paste interactions
+  // Ensures TextFormField always allows copy/paste interactions
   static InputDecoration ensureCopyPasteEnabled(InputDecoration decoration) {
     return decoration;
   }
-  
-  /// Configuration to ensure copy/paste always works
+
+  // Configuration to ensure copy/paste always works
   static Map<String, dynamic> getCopyPasteEnabledConfig() {
     return {
       'enableInteractiveSelection': true,
@@ -21,8 +21,8 @@ class TextFieldHelper {
       ),
     };
   }
-  
-  /// Universal TextFormField with guaranteed copy/paste support
+
+  // Universal TextFormField with guaranteed copy/paste support
   static Widget buildCopyPasteEnabledTextField({
     required TextEditingController controller,
     InputDecoration? decoration,
@@ -78,8 +78,8 @@ class TextFieldHelper {
       ),
     );
   }
-  
-  /// Add copy button to any text field
+
+  // Add copy button to any text field
   static Widget addCopyButton({
     required TextEditingController controller,
     required String label,

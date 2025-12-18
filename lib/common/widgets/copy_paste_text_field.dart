@@ -78,7 +78,7 @@ class CopyPasteTextField extends StatelessWidget {
   }
 }
 
-/// Enhanced TextField with copy/paste guarantee
+// Enhanced TextField with copy/paste guarantee
 class CopyPasteField extends StatelessWidget {
   final TextEditingController controller;
   final InputDecoration? decoration;
@@ -130,7 +130,7 @@ class CopyPasteField extends StatelessWidget {
   }
 }
 
-/// Utility to show copy success message
+// Utility to show copy success message
 void showCopySuccessMessage({String? label}) {
   Get.snackbar(
     '✅ Copied!',
@@ -144,7 +144,7 @@ void showCopySuccessMessage({String? label}) {
   );
 }
 
-/// Copy text to clipboard with visual feedback
+// Copy text to clipboard with visual feedback
 Future<void> copyTextToClipboard(String text, {String? label}) async {
   await Clipboard.setData(ClipboardData(text: text));
   showCopySuccessMessage(label: label);

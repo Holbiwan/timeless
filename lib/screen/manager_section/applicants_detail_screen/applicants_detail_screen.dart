@@ -3,8 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-// Import supprimé : video_receive_screen.dart n'existe plus
-// Import supprimé : chat_box_screen.dart n'existe plus
 import 'package:timeless/screen/manager_section/Notification/notification_services.dart';
 import 'package:timeless/screen/manager_section/applicants_detail_screen/applicants_detail_screen_widget/applicants_details_screen_widget.dart';
 import 'package:timeless/screen/manager_section/applicants_detail_screen/applicants_details_controller.dart';

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:timeless/common/widgets/back_button.dart';
-// Import supprimé : chat_box_user_screen.dart n'existe plus
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/color_res.dart';
