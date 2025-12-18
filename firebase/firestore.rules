@@ -1,123 +1,159 @@
+// Firestore rules for Timeless
 rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    
-    // === Règles pour l'authentification ===
+
+    // --- Auth data ---
+
     match /Auth/User/register/{userId} {
-      // Un utilisateur peut seulement lire/écrire ses propres données
+
+      // User can access own data only
       allow read, write: if request.auth != null && request.auth.uid == userId;
-      
-      // Validation des données utilisateur
+
+      // Validate user registration data
       allow create: if request.auth != null 
         && request.auth.uid == userId
         && request.resource.data.keys().hasAll(['Email', 'fullName', 'uid'])
         && request.resource.data.uid == userId
         && request.resource.data.Email == request.auth.token.email;
     }
-    
-    // === Règles pour les offres d'emploi ===
+
+    // --- Job posts ---
+
     match /allPost/{jobId} {
-      // 
-      ecture publique des offres (pour browsing)
+
+      // Read job posts
       allow read: if request.auth != null;
-      
-      // Seuls les managers/admins peuvent créer/modifier des offres
+
+      // Only managers and admins can write
       allow write: if request.auth != null 
         && exists(/databases/$(database)/documents/Auth/User/register/$(request.auth.uid))
-        && get(/databases/$(database)/documents/Auth/User/register/$(request.auth.uid)).data.role in ['manager', 'admin'];
+        && get(/databases/$(database)/documents/Auth/User/register/$(request.auth.uid))
+             .data.role in ['manager', 'admin'];
     }
-    
-    // === Règles pour les catégories d'emploi ===
+
+    // --- Job categories ---
+
     match /category/{categoryName}/{categoryDocument} {
-      // Lecture publique pour navigation
+
+      // Read categories
       allow read: if request.auth != null;
-      
-      // Écriture limitée aux managers
+
+      // Write restricted to managers
       allow write: if request.auth != null 
         && exists(/databases/$(database)/documents/Auth/User/register/$(request.auth.uid))
-        && get(/databases/$(database)/documents/Auth/User/register/$(request.auth.uid)).data.role in ['manager', 'admin'];
+        && get(/databases/$(database)/documents/Auth/User/register/$(request.auth.uid))
+             .data.role in ['manager', 'admin'];
     }
-    
-    // === Règles pour les candidatures ===
+
+    // --- Job applications ---
+
     match /Apply/{userId} {
-      // Un utilisateur peut seulement gérer ses propres candidatures
+
+      // User manages own applications
       allow read, write: if request.auth != null && request.auth.uid == userId;
-      
-      // Validation des candidatures
+
+      // Validate application data
       allow create: if request.auth != null 
         && request.auth.uid == userId
         && request.resource.data.keys().hasAll(['userName', 'email', 'apply'])
         && request.resource.data.apply == true;
     }
-    
-    // === Règles pour les favoris/bookmarks ===
+
+    // --- Bookmarks ---
+
     match /BookMark/{userId}/BookMark1/{bookmarkId} {
-      // Un utilisateur peut seulement gérer ses propres favoris
+
+      // User manages own bookmarks
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }
-    
-    // === Règles pour les chats/messages ===
+
+    // --- Chat rooms ---
+
     match /chatRoom/{chatId} {
-      // Participants du chat peuvent lire/écrire
+
+      // Chat participants only
       allow read, write: if request.auth != null 
         && request.auth.uid in resource.data.participants;
     }
-    
+
     match /chatRoom/{chatId}/messages/{messageId} {
-      // Participants du chat peuvent lire/écrire les messages
+
+      // Chat messages access
       allow read, write: if request.auth != null 
-        && request.auth.uid in get(/databases/$(database)/documents/chatRoom/$(chatId)).data.participants;
+        && request.auth.uid in get(/databases/$(database)/documents/chatRoom/$(chatId))
+             .data.participants;
     }
-    
-    // === Règles pour les données publiques (lecture seule) ===
+
+    // --- Public read-only data ---
+
     match /publicData/{document} {
-      // Données publiques lisibles par tous les utilisateurs connectés
+
+      // Read-only public data
       allow read: if request.auth != null;
-      allow write: if false; // Pas d'écriture depuis l'app
+      allow write: if false;
     }
-    
-    // === Règles par défaut (restrictives) ===
+
+    // --- Default rule ---
+
+    // Block everything else
     match /{document=**} {
       allow read, write: if false;
     }
   }
 }
 
-// === Règles pour Firebase Storage ===
+
+// ------------------------------------------------------------
+// Firebase Storage rules
+// ------------------------------------------------------------
+
 service firebase.storage {
   match /b/{bucket}/o {
-    
-    // === CV et documents utilisateur ===
+
+    // --- User CV files ---
+
     match /cv/{userId}/{fileName} {
-      // Un utilisateur peut seulement uploader/lire ses propres CV
+
+      // User uploads and reads own CV
       allow read, write: if request.auth != null && request.auth.uid == userId;
-      
-      // Validation des types de fichiers (PDF seulement)
+
+      // PDF only, max 10MB
       allow create: if request.auth != null 
         && request.auth.uid == userId
         && resource.contentType == 'application/pdf'
-        && resource.size < 10 * 1024 * 1024; // Max 10MB
+        && resource.size < 10 * 1024 * 1024;
     }
-    
-    // === Photos de profil ===
+
+    // --- Profile pictures ---
+
     match /profile_pictures/{userId}/{fileName} {
+
+      // User profile images
       allow read, write: if request.auth != null && request.auth.uid == userId;
-      
-      // Validation des images
+
+      // Image only, max 5MB
       allow create: if request.auth != null 
         && request.auth.uid == userId
         && resource.contentType.matches('image/.*')
-        && resource.size < 5 * 1024 * 1024; // Max 5MB
+        && resource.size < 5 * 1024 * 1024;
     }
-    
-    // === Images d'entreprise (pour les managers) ===
+
+    // --- Company images ---
+
     match /company_images/{userId}/{fileName} {
+
+      // Read company images
       allow read: if request.auth != null;
+
+      // Owner upload only
       allow write: if request.auth != null && request.auth.uid == userId;
     }
-    
-    // === Règles par défaut ===
+
+    // --- Default rule ---
+
+    // Block everything else
     match /{allPaths=**} {
       allow read, write: if false;
     }
