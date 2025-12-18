@@ -1,28 +1,28 @@
-// Règles de sécurité Firestore pour Timeless
+// Firestore security rules for Timeless
 rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    // === FONCTIONS DE VALIDATION ===
+    // --- Validation helpers ---
     
-    // Vérifie si l'utilisateur est authentifié
+    // Check if user is logged in
     function isAuthenticated() {
       return request.auth != null;
     }
     
-    // Vérifie si l'utilisateur est le propriétaire du document
+    // Check if user is the owner of the document
     function isOwner(userId) {
       return request.auth.uid == userId;
     }
     
-    // Vérifie si l'utilisateur a un rôle spécifique
+    // Check if user has a specific role
     function hasRole(role) {
       return isAuthenticated() && 
              get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == role;
     }
     
-    // Validation des données de profil candidat
+    // Validation candidate profile data
     function isValidCandidateProfile() {
       return request.resource.data.keys().hasAll(['email', 'fullName', 'role']) &&
              request.resource.data.role == 'candidate' &&
@@ -31,36 +31,36 @@ service cloud.firestore {
              request.resource.data.email.matches('.*@.*\\..*');
     }
     
-    // Validation des données de CV
+    // Validation candidate CV data 
     function isValidCVData() {
       return request.resource.data.keys().hasAll(['fileName', 'fileSize', 'contentType', 'uploadedAt']) &&
              request.resource.data.fileSize <= 10485760 && // 10MB max
              request.resource.data.contentType in ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
     }
     
-    // Validation des candidatures
+    // Validation job application data
     function isValidApplication() {
       return request.resource.data.keys().hasAll(['jobId', 'candidateId', 'appliedAt', 'status']) &&
              request.resource.data.status in ['pending', 'reviewed', 'accepted', 'rejected'] &&
              exists(/databases/$(database)/documents/jobs/$(request.resource.data.jobId));
     }
 
-    // === COLLECTIONS PRINCIPALES ===
+    // --- MAIN COLLECTIONS---
     
-    // Collection des utilisateurs
+    // Users collection
     match /users/{userId} {
       allow read, write: if isAuthenticated() && isOwner(userId);
       allow create: if isAuthenticated() && isOwner(userId) && isValidCandidateProfile();
     }
     
-    // Collection des profils candidats détaillés
+    // Candidate profiles collection
     match /candidate_profiles/{candidateId} {
       allow read: if isAuthenticated() && (isOwner(candidateId) || hasRole('recruiter'));
       allow write: if isAuthenticated() && isOwner(candidateId);
       allow create: if isAuthenticated() && isOwner(candidateId);
     }
     
-    // Collection des CVs
+    // CVs collection
     match /cvs/{cvId} {
       allow read: if isAuthenticated() && 
                     (isOwner(resource.data.candidateId) || hasRole('recruiter'));
@@ -71,7 +71,7 @@ service cloud.firestore {
       allow delete: if isAuthenticated() && isOwner(resource.data.candidateId);
     }
     
-    // Collection des candidatures
+    // Job applications
     match /applications/{applicationId} {
       allow read: if isAuthenticated() && 
                     (isOwner(resource.data.candidateId) || hasRole('recruiter'));
@@ -82,38 +82,40 @@ service cloud.firestore {
                       (isOwner(resource.data.candidateId) || hasRole('recruiter'));
     }
     
-    // === COLLECTIONS PUBLIQUES (LECTURE SEULE) ===
+    // --- PUBLIC READ COLLECTIONS ---
     
-    // Annonces d'emploi - lecture publique pour les candidats authentifiés
+    // Job offers
     match /jobs/{jobId} {
       allow read: if isAuthenticated();
       allow write: if hasRole('recruiter') || hasRole('admin');
     }
     
-    // Collections legacy (à migrer progressivement)
+    // Legagcy job posts
     match /allPost/{postId} {
       allow read: if isAuthenticated();
       allow write: if hasRole('recruiter') || hasRole('admin');
     }
     
+    
+    // Jobs categories
     match /category/{categoryName}/{jobId} {
       allow read: if isAuthenticated();
       allow write: if hasRole('recruiter') || hasRole('admin');
     }
     
-    // === COLLECTIONS D'AUTHENTIFICATION ===
+    // --- AUTH RELATED DATA ---
     
     match /Auth/User/register/{userId} {
       allow read, write: if isAuthenticated() && isOwner(userId);
     }
     
-    // === COLLECTIONS ANALYTICS (ADMIN SEULEMENT) ===
+    // --- ADMIN ONLY DATA ---
     
     match /analytics/{document=**} {
       allow read, write: if hasRole('admin');
     }
     
-    // === RÈGLES PAR DÉFAUT ===
+    // --- DEFAULT RULE ---
     
     // Interdire tout accès par défaut
     match /{document=**} {
