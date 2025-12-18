@@ -5,6 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:timeless/screen/dashboard/dashboard_controller.dart';
 import 'package:timeless/screen/looking_for_screen/looking_for_screen.dart';
 import 'package:timeless/screen/profile/profile_controller.dart';
+import 'package:timeless/screen/settings/widgets/settings_menu_item.dart';
+import 'package:timeless/screen/settings/widgets/settings_divider.dart';
 import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/services/google_auth_service.dart';
 import 'package:timeless/services/auth_service.dart';
