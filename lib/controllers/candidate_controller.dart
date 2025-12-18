@@ -1,4 +1,4 @@
-// Contrôleur pour la gestion des candidats avec GetX
+// Candidate controller (GetX)
 import 'package:get/get.dart';
 import 'package:flutter/foundation.dart';
 import 'package:file_picker/file_picker.dart';
@@ -10,20 +10,21 @@ import '../services/candidate_api_service.dart';
 import '../utils/app_theme.dart';
 
 class CandidateController extends GetxController {
-  // État du profil candidat
+
+  // Candidate profile
   final Rx<CandidateProfileModel?> _candidateProfile =
       Rx<CandidateProfileModel?>(null);
   CandidateProfileModel? get candidateProfile => _candidateProfile.value;
 
-  // Liste des CVs
+  // CV list
   final RxList<CVModel> _cvs = <CVModel>[].obs;
   List<CVModel> get cvs => _cvs;
 
-  // Liste des candidatures
+  // Applications list
   final RxList<ApplicationModel> _applications = <ApplicationModel>[].obs;
   List<ApplicationModel> get applications => _applications;
 
-  // États de chargement
+  // Loading flags
   final RxBool _isLoading = false.obs;
   bool get isLoading => _isLoading.value;
 
@@ -33,11 +34,11 @@ class CandidateController extends GetxController {
   final RxBool _isApplying = false.obs;
   bool get isApplying => _isApplying.value;
 
-  // Statistiques
+  // Candidate stats
   final RxMap<String, dynamic> _stats = <String, dynamic>{}.obs;
   Map<String, dynamic> get stats => _stats;
 
-  // Messages d'erreur
+  // Error message
   final RxString _errorMessage = ''.obs;
   String get errorMessage => _errorMessage.value;
 
@@ -47,16 +48,16 @@ class CandidateController extends GetxController {
     _initializeData();
   }
 
-  // Initialiser les données du candidat
+  // Load all candidate data
   Future<void> _initializeData() async {
     try {
       _isLoading.value = true;
       _errorMessage.value = '';
 
-      // Charger le profil candidat
+      // Load profile
       await loadCandidateProfile();
 
-      // Charger les données associées si le profil existe
+      // Load related data
       if (_candidateProfile.value != null) {
         await Future.wait([
           loadCVs(),
@@ -65,27 +66,27 @@ class CandidateController extends GetxController {
         ]);
       }
     } catch (e) {
-      _errorMessage.value = 'Erreur lors du chargement des données: $e';
+      _errorMessage.value = 'Failed to load data: $e';
       if (kDebugMode) print('CandidateController init error: $e');
     } finally {
       _isLoading.value = false;
     }
   }
 
-  // === GESTION DU PROFIL ===
+  // --- Profile ---
 
-  // Charger le profil candidat
+  // Load candidate profile
   Future<void> loadCandidateProfile() async {
     try {
       final profile = await CandidateApiService.getCurrentCandidateProfile();
       _candidateProfile.value = profile;
     } catch (e) {
-      _errorMessage.value = 'Erreur lors du chargement du profil: $e';
+      _errorMessage.value = 'Failed to load profile: $e';
       if (kDebugMode) print('CandidateController loadProfile error: $e');
     }
   }
 
-  // Créer un profil candidat
+  // Create profile
   Future<bool> createProfile({
     required String email,
     required String fullName,
@@ -108,16 +109,16 @@ class CandidateController extends GetxController {
       _candidateProfile.value = profile;
 
       AppTheme.showStandardSnackBar(
-        title: 'Succès',
-        message: 'Profil candidat créé avec succès',
+        title: 'Success',
+        message: 'Profile created',
         isSuccess: true,
       );
 
       return true;
     } catch (e) {
-      _errorMessage.value = 'Erreur lors de la création du profil: $e';
+      _errorMessage.value = 'Profile creation failed: $e';
       AppTheme.showStandardSnackBar(
-        title: 'Erreur',
+        title: 'Error',
         message: _errorMessage.value,
         isError: true,
       );
@@ -128,7 +129,7 @@ class CandidateController extends GetxController {
     }
   }
 
-  // Mettre à jour le profil candidat
+  // Update profile
   Future<bool> updateProfile(CandidateProfileModel updatedProfile) async {
     try {
       _isLoading.value = true;
@@ -138,20 +139,20 @@ class CandidateController extends GetxController {
           await CandidateApiService.updateCandidateProfile(updatedProfile);
       _candidateProfile.value = profile;
 
-      // Recharger les statistiques
+      // Refresh stats
       await loadStats();
 
       AppTheme.showStandardSnackBar(
-        title: 'Succès',
-        message: 'Profil mis à jour avec succès',
+        title: 'Success',
+        message: 'Profile updated',
         isSuccess: true,
       );
 
       return true;
     } catch (e) {
-      _errorMessage.value = 'Erreur lors de la mise à jour: $e';
+      _errorMessage.value = 'Update failed: $e';
       AppTheme.showStandardSnackBar(
-        title: 'Erreur',
+        title: 'Error',
         message: _errorMessage.value,
         isError: true,
       );
@@ -162,7 +163,7 @@ class CandidateController extends GetxController {
     }
   }
 
-  // Ajouter une compétence
+  // Add a skill
   void addSkill(String skill) {
     if (_candidateProfile.value == null || skill.isEmpty) return;
 
@@ -175,7 +176,7 @@ class CandidateController extends GetxController {
     }
   }
 
-  // Supprimer une compétence
+  // Remove a skill
   void removeSkill(String skill) {
     if (_candidateProfile.value == null) return;
 
@@ -186,7 +187,7 @@ class CandidateController extends GetxController {
     updateProfile(updatedProfile);
   }
 
-  // Ajouter une expérience
+  // Add work experience
   void addExperience(WorkExperience experience) {
     if (_candidateProfile.value == null) return;
 
@@ -198,7 +199,7 @@ class CandidateController extends GetxController {
     updateProfile(updatedProfile);
   }
 
-  // Supprimer une expérience
+  // Remove work experience
   void removeExperience(String experienceId) {
     if (_candidateProfile.value == null) return;
 
@@ -210,7 +211,7 @@ class CandidateController extends GetxController {
     updateProfile(updatedProfile);
   }
 
-  // Ajouter une formation
+  // Add education
   void addEducation(Education education) {
     if (_candidateProfile.value == null) return;
 
@@ -222,7 +223,7 @@ class CandidateController extends GetxController {
     updateProfile(updatedProfile);
   }
 
-  // Supprimer une formation
+  // Remove education
   void removeEducation(String educationId) {
     if (_candidateProfile.value == null) return;
 
@@ -234,62 +235,60 @@ class CandidateController extends GetxController {
     updateProfile(updatedProfile);
   }
 
-  // === GESTION DES CVS ===
+  // --- CVs ---
 
-  // Charger la liste des CVs
+  // Load CV list
   Future<void> loadCVs() async {
     try {
       final cvsList = await CandidateApiService.getCandidateCVs();
       _cvs.value = cvsList;
     } catch (e) {
-      _errorMessage.value = 'Erreur lors du chargement des CVs: $e';
+      _errorMessage.value = 'Failed to load CVs: $e';
       if (kDebugMode) print('CandidateController loadCVs error: $e');
     }
   }
 
-  // Upload d'un CV
+  // Upload a CV
   Future<bool> uploadCV() async {
     try {
       _isUploadingCV.value = true;
       _errorMessage.value = '';
 
-      // Sélectionner un fichier
+      // Pick file
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
         allowedExtensions: ['pdf', 'doc', 'docx'],
         allowMultiple: false,
       );
 
-      if (result == null || result.files.isEmpty) {
-        return false;
-      }
+      if (result == null || result.files.isEmpty) return false;
 
       final file = File(result.files.single.path!);
       final fileName = result.files.single.name;
 
-      // Upload via le service
+      // Upload file
       final cvModel = await CandidateApiService.uploadCV(
         file: file,
         fileName: fileName,
       );
 
-      // Mettre à jour la liste des CVs
+      // Update local list
       _cvs.add(cvModel);
 
-      // Recharger le profil pour avoir le CV actuel mis à jour
+      // Refresh profile
       await loadCandidateProfile();
 
       AppTheme.showStandardSnackBar(
-        title: 'Succès',
-        message: 'CV uploadé avec succès',
+        title: 'Success',
+        message: 'CV uploaded',
         isSuccess: true,
       );
 
       return true;
     } catch (e) {
-      _errorMessage.value = 'Erreur lors de l\'upload: $e';
+      _errorMessage.value = 'Upload failed: $e';
       AppTheme.showStandardSnackBar(
-        title: 'Erreur',
+        title: 'Error',
         message: _errorMessage.value,
         isError: true,
       );
@@ -300,7 +299,7 @@ class CandidateController extends GetxController {
     }
   }
 
-  // Supprimer un CV
+  // Delete a CV
   Future<bool> deleteCV(String cvId) async {
     try {
       _isLoading.value = true;
@@ -308,23 +307,23 @@ class CandidateController extends GetxController {
 
       await CandidateApiService.deleteCV(cvId);
 
-      // Retirer de la liste locale
+      // Remove from list
       _cvs.removeWhere((cv) => cv.id == cvId);
 
-      // Recharger le profil si c'était le CV actuel
+      // Refresh profile
       await loadCandidateProfile();
 
       AppTheme.showStandardSnackBar(
-        title: 'Succès',
-        message: 'CV supprimé avec succès',
+        title: 'Success',
+        message: 'CV deleted',
         isSuccess: true,
       );
 
       return true;
     } catch (e) {
-      _errorMessage.value = 'Erreur lors de la suppression: $e';
+      _errorMessage.value = 'Delete failed: $e';
       AppTheme.showStandardSnackBar(
-        title: 'Erreur',
+        title: 'Error',
         message: _errorMessage.value,
         isError: true,
       );
@@ -335,7 +334,7 @@ class CandidateController extends GetxController {
     }
   }
 
-  // Définir un CV comme actuel
+  // Set current CV
   Future<bool> setCurrentCV(String cvId) async {
     if (_candidateProfile.value == null) return false;
 
@@ -343,21 +342,21 @@ class CandidateController extends GetxController {
     return await updateProfile(updatedProfile);
   }
 
-  // === GESTION DES CANDIDATURES ===
+  // --- Applications ---
 
-  // Charger la liste des candidatures
+  // Load applications
   Future<void> loadApplications() async {
     try {
       final applicationsList =
           await CandidateApiService.getCandidateApplications();
       _applications.value = applicationsList;
     } catch (e) {
-      _errorMessage.value = 'Erreur lors du chargement des candidatures: $e';
+      _errorMessage.value = 'Failed to load applications: $e';
       if (kDebugMode) print('CandidateController loadApplications error: $e');
     }
   }
 
-  // Postuler à une annonce
+  // Apply to a job
   Future<bool> applyToJob({
     required String jobId,
     String? coverLetter,
@@ -375,23 +374,23 @@ class CandidateController extends GetxController {
         answers: answers,
       );
 
-      // Ajouter à la liste locale
+      // Add locally
       _applications.add(application);
 
-      // Recharger les statistiques
+      // Refresh stats
       await loadStats();
 
       AppTheme.showStandardSnackBar(
-        title: 'Succès',
-        message: 'Candidature envoyée avec succès',
+        title: 'Success',
+        message: 'Application sent',
         isSuccess: true,
       );
 
       return true;
     } catch (e) {
-      _errorMessage.value = 'Erreur lors de la candidature: $e';
+      _errorMessage.value = 'Application failed: $e';
       AppTheme.showStandardSnackBar(
-        title: 'Erreur',
+        title: 'Error',
         message: _errorMessage.value,
         isError: true,
       );
@@ -402,7 +401,7 @@ class CandidateController extends GetxController {
     }
   }
 
-  // Retirer une candidature
+  // Withdraw application
   Future<bool> withdrawApplication(String applicationId) async {
     try {
       _isLoading.value = true;
@@ -410,7 +409,7 @@ class CandidateController extends GetxController {
 
       await CandidateApiService.withdrawApplication(applicationId);
 
-      // Mettre à jour le statut dans la liste locale
+      // Update local status
       final index = _applications.indexWhere((app) => app.id == applicationId);
       if (index != -1) {
         _applications[index] =
@@ -419,16 +418,16 @@ class CandidateController extends GetxController {
       }
 
       AppTheme.showStandardSnackBar(
-        title: 'Succès',
-        message: 'Candidature retirée',
+        title: 'Success',
+        message: 'Application withdrawn',
         isSuccess: true,
       );
 
       return true;
     } catch (e) {
-      _errorMessage.value = 'Erreur lors du retrait: $e';
+      _errorMessage.value = 'Withdraw failed: $e';
       AppTheme.showStandardSnackBar(
-        title: 'Erreur',
+        title: 'Error',
         message: _errorMessage.value,
         isError: true,
       );
@@ -441,15 +440,15 @@ class CandidateController extends GetxController {
     }
   }
 
-  // Vérifier si l'utilisateur a déjà postulé à une annonce
+  // Check if job already applied
   bool hasAppliedToJob(String jobId) {
     return _applications.any((app) =>
         app.jobId == jobId && app.status != ApplicationStatus.withdrawn);
   }
 
-  // === STATISTIQUES ===
+  // --- Stats ---
 
-  // Charger les statistiques du candidat
+  // Load stats
   Future<void> loadStats() async {
     try {
       final statistics = await CandidateApiService.getCandidateStats();
@@ -459,26 +458,26 @@ class CandidateController extends GetxController {
     }
   }
 
-  // === MÉTHODES UTILITAIRES ===
+  // --- Utils ---
 
-  // Vérifier si le profil est complet
+  // Profile completion status
   bool get isProfileComplete => _candidateProfile.value?.isComplete ?? false;
 
-  // Obtenir le score de complétion du profil
+  // Profile completion score
   int get profileCompletionScore =>
       _candidateProfile.value?.profileCompletionScore ?? 0;
 
-  // Obtenir le nombre de candidatures par statut
+  // Count applications by status
   int getApplicationCountByStatus(ApplicationStatus status) {
     return _applications.where((app) => app.status == status).length;
   }
 
-  // Rafraîchir toutes les données
+  // Reload all data
   Future<void> refreshAll() async {
     await _initializeData();
   }
 
-  // Nettoyer les données
+  // Clear local data
   void clearData() {
     _candidateProfile.value = null;
     _cvs.clear();
@@ -494,8 +493,10 @@ class CandidateController extends GetxController {
   }
 }
 
-// Extensions pour faciliter l'utilisation
+// Application helpers
 extension ApplicationModelExtension on ApplicationModel {
+
+  // Copy with updates
   ApplicationModel copyWith({
     String? id,
     String? jobId,
