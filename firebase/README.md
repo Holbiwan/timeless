@@ -1,32 +1,32 @@
-# Configuration Firebase - Timeless
+# Firebase Configuration - Timeless
 
-Ce dossier contient tous les fichiers de configuration Firebase pour le projet Timeless.
+This folder contains all Firebase configuration files for the Timeless project.
 
 ## 📁 Structure
 
-- `firebase.json` - Configuration principale Firebase
-- `firestore.rules` - Règles de sécurité Firestore (production)
-- `firestore.backend.rules` - Règles Firestore du backend (backup)
-- `firestore.indexes.json` - Index Firestore
+- `firebase.json` - Main Firebase configuration
+- `firestore.rules` - Firestore Security Rules
+- `firestore.backend.rules` - Firestore Backend Rules (backup)
+- `firestore.indexes.json` - Firestore Indexes
 
-## 🔧 Utilisation
+## 🔧 Usage
 
-### Déploiement des règles Firestore
+### Deploy Firestore Rules
 ```bash
 firebase deploy --only firestore:rules
 ```
 
-### Déploiement des index
+### Deploy Indexes
 ```bash
 firebase deploy --only firestore:indexes
 ```
 
-### Déploiement complet
+### Full Deployment
 ```bash
 firebase deploy
 ```
 
 ## 📝 Notes
-- Les règles principales sont dans `firestore.rules`
-- Le fichier `firebase.json` est configuré pour pointer vers ce dossier
-- Les configurations de développement sont dans `lib/firebase_options.dart`
+- The main rules are in `firestore.rules`
+- The `firebase.json` file is configured to point to this folder
+- Development configurations are in `lib/firebase_options.dart`
