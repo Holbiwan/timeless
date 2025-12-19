@@ -1,4 +1,3 @@
-// lib/screen/manager_section/auth_manager/sign_up_new/sign_up_new_screen.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

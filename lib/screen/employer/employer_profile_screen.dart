@@ -196,12 +196,6 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
                   validator: (v) =>
                       (v == null || v.trim().isEmpty) ? 'Required' : null,
                   enableInteractiveSelection: true,
-                  toolbarOptions: const ToolbarOptions(
-                    copy: true,
-                    cut: true,
-                    paste: true,
-                    selectAll: true,
-                  ),
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
@@ -210,12 +204,6 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
                   decoration: _dec('Website', hint: 'https://example.com'),
                   keyboardType: TextInputType.url,
                   enableInteractiveSelection: true,
-                  toolbarOptions: const ToolbarOptions(
-                    copy: true,
-                    cut: true,
-                    paste: true,
-                    selectAll: true,
-                  ),
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
@@ -223,12 +211,6 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
                   style: const TextStyle(color: Colors.white),
                   decoration: _dec('Location', hint: 'City, Country'),
                   enableInteractiveSelection: true,
-                  toolbarOptions: const ToolbarOptions(
-                    copy: true,
-                    cut: true,
-                    paste: true,
-                    selectAll: true,
-                  ),
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
@@ -238,12 +220,6 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
                   maxLines: 6,
                   decoration: _dec('About the company'),
                   enableInteractiveSelection: true,
-                  toolbarOptions: const ToolbarOptions(
-                    copy: true,
-                    cut: true,
-                    paste: true,
-                    selectAll: true,
-                  ),
                 ),
                 const SizedBox(height: 20),
                 SizedBox(

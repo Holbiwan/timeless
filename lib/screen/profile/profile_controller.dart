@@ -17,7 +17,7 @@ class ProfileController extends GetxController {
   // Loading state
   final RxBool isLoading = false.obs;
 
-  // Profile data - Observable pour reactivity
+  // Profile data
   final RxString fullName = ''.obs;
   final RxString email = ''.obs;
   final RxString phoneNumber = ''.obs;
@@ -33,7 +33,7 @@ class ProfileController extends GetxController {
   final RxString salaryRangeMax = ''.obs;
   final RxString profileImageUrl = ''.obs;
 
-  // Controllers pour l'édition
+  // Text controllers
   final fullNameController = TextEditingController();
   final emailController = TextEditingController();
   final phoneController = TextEditingController();
@@ -57,54 +57,43 @@ class ProfileController extends GetxController {
     _setupRealTimeListeners();
   }
   
-  // Configurer les listeners pour la mise à jour en temps réel
   void _setupRealTimeListeners() {
-    // Listener pour le nom complet - mise à jour en temps réel de l'affichage
     fullNameController.addListener(() {
       fullName.value = fullNameController.text.trim();
     });
     
-    // Listener pour l'email
     emailController.addListener(() {
       email.value = emailController.text.trim();
     });
     
-    // Listener pour le téléphone
     phoneController.addListener(() {
       phoneNumber.value = phoneController.text.trim();
     });
     
-    // Listener pour la ville
     cityController.addListener(() {
       city.value = cityController.text.trim();
     });
     
-    // Listener pour le pays
     countryController.addListener(() {
       country.value = countryController.text.trim();
     });
     
-    // Listener pour l'occupation
     occupationController.addListener(() {
       occupation.value = occupationController.text.trim();
     });
     
-    // Listener pour la bio
     bioController.addListener(() {
       bio.value = bioController.text.trim();
     });
     
-    // Listener pour le poste
     jobPositionController.addListener(() {
       jobPosition.value = jobPositionController.text.trim();
     });
     
-    // Listener pour les compétences
     skillsController.addListener(() {
       skills.value = skillsController.text.trim();
     });
     
-    // Listener pour les salaires
     salaryMinController.addListener(() {
       salaryRangeMin.value = salaryMinController.text.trim();
     });
@@ -114,14 +103,12 @@ class ProfileController extends GetxController {
     });
   }
 
-  // Charger le profil depuis Firebase
   Future<void> loadProfileFromFirebase() async {
     try {
       isLoading.value = true;
       final user = _auth.currentUser;
       
       if (user != null) {
-        // Charger depuis la collection Auth/User/register (comme utilisé dans sign-in)
         final doc = await _firestore
             .collection('Auth')
             .doc('User')
@@ -132,7 +119,6 @@ class ProfileController extends GetxController {
         if (doc.exists) {
           final data = doc.data()!;
           
-          // Charger toutes les données du profil
           fullName.value = data['fullName'] ?? user.displayName ?? '';
           email.value = data['Email'] ?? user.email ?? '';
           phoneNumber.value = data['Phone'] ?? '';
@@ -148,7 +134,6 @@ class ProfileController extends GetxController {
           salaryRangeMin.value = data['SalaryRangeMin'] ?? '';
           salaryRangeMax.value = data['SalaryRangeMax'] ?? '';
           
-          // Remplir aussi les contrôleurs pour l'édition
           fullNameController.text = fullName.value;
           emailController.text = email.value;
           phoneController.text = phoneNumber.value;
@@ -164,7 +149,6 @@ class ProfileController extends GetxController {
           
           print('✅ Profil chargé depuis Firebase');
         } else {
-          // Si pas de document, utiliser les données de Firebase Auth
           fullName.value = user.displayName ?? '';
           email.value = user.email ?? '';
           profileImageUrl.value = user.photoURL ?? '';
@@ -187,12 +171,11 @@ class ProfileController extends GetxController {
     }
   }
 
-  // Rafraîchir le profil
   Future<void> refreshProfile() async {
     await loadProfileFromFirebase();
   }
 
-  // Getters pour compatibilité avec l'écran
+  // Getters
   String get displayName => fullName.value.isNotEmpty ? fullName.value : 'Votre Nom';
   String get displayOccupation => occupation.value.isNotEmpty ? occupation.value : '';
   String get displayEmail => email.value;
@@ -207,7 +190,6 @@ class ProfileController extends GetxController {
   String get displayJobPosition => jobPosition.value;
   String get displayDateOfBirth => dateOfBirth.value;
 
-  // Méthode pour obtenir les initiales
   String getInitials() {
     if (fullName.value.isEmpty) return 'U';
     
@@ -216,17 +198,14 @@ class ProfileController extends GetxController {
     return '${names[0][0]}${names[names.length - 1][0]}'.toUpperCase();
   }
 
-  // Vérifier si une image de profil existe
   bool hasProfileImage() {
     return profileImageUrl.value.isNotEmpty;
   }
 
-  // Méthode pour forcer la mise à jour de l'UI
   void forceUpdate() {
     update();
   }
 
-  // Méthodes pour l'édition d'image
   Future<void> onTapImage() async => await _pickFromCamera();
   Future<void> onTapGallery1() async => await _pickFromGallery();
 
@@ -290,7 +269,6 @@ class ProfileController extends GetxController {
     }
   }
 
-  // Méthode de sauvegarde
   Future<void> onTapSubmit() async {
     try {
       isLoading.value = true;
@@ -378,7 +356,6 @@ class ProfileController extends GetxController {
       profileData['photoURL'] = imageUrl;
     }
     
-    // Sauvegarder dans Auth/User/register (comme utilisé dans sign-in)
     await _firestore
         .collection('Auth')
         .doc('User')
@@ -386,14 +363,12 @@ class ProfileController extends GetxController {
         .doc(user.uid)
         .set(profileData, SetOptions(merge: true));
     
-    // Mettre à jour Firebase Auth displayName et photoURL pour synchronisation
     await user.updateDisplayName(fullNameController.text.trim());
     if (imageUrl != null) {
       await user.updatePhotoURL(imageUrl);
     }
-    await user.reload(); // Recharger les données utilisateur
+    await user.reload();
     
-    // Mettre à jour les préférences locales pour synchronisation avec le reste de l'app
     await _updateLocalPreferences();
   }
 
@@ -412,7 +387,6 @@ class ProfileController extends GetxController {
     salaryRangeMax.value = salaryMaxController.text.trim();
   }
   
-  // Mettre à jour les préférences locales pour synchronisation
   Future<void> _updateLocalPreferences() async {
     await PreferencesService.setValue(PrefKeys.fullName, fullNameController.text.trim());
     await PreferencesService.setValue(PrefKeys.email, emailController.text.trim());
@@ -432,12 +406,10 @@ class ProfileController extends GetxController {
     }
   }
 
-  // Méthode pour vider le profil Firebase
   Future<void> clearProfileData() async {
     try {
       final user = _auth.currentUser;
       if (user != null) {
-        // Supprimer de la collection Auth/User/register
         await _firestore
             .collection('Auth')
             .doc('User')

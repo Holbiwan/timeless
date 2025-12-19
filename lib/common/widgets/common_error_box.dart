@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/color_res.dart';
 
+// widget to show common error box
 Widget commonErrorBox(String text) {
   return Container(
     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),

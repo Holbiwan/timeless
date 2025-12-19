@@ -1,7 +1,11 @@
+// Back navigation floating buttons
+// Reusable back buttons for different UI situations
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:timeless/utils/color_res.dart';
 
+// Main floating back button used for navigation
 class UniversalBackFab extends StatelessWidget {
   final VoidCallback? onTap;
   final String? tooltip;
@@ -17,18 +21,20 @@ class UniversalBackFab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
-      onPressed: onTap ?? () {
-        if (Navigator.canPop(context)) {
-          Navigator.pop(context);
-        } else {
-          Get.offAllNamed('/dashboard');
-        }
-      },
+      // Go back if possible, otherwise return to dashboard
+      onPressed: onTap ??
+          () {
+            if (Navigator.canPop(context)) {
+              Navigator.pop(context);
+            } else {
+              Get.offAllNamed('/dashboard');
+            }
+          },
       backgroundColor: ColorRes.white,
       foregroundColor: ColorRes.black,
       elevation: 4,
       mini: mini,
-      tooltip: tooltip ?? 'Retour',
+      tooltip: tooltip ?? 'Back',
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(mini ? 28 : 32),
         side: const BorderSide(
@@ -44,6 +50,7 @@ class UniversalBackFab extends StatelessWidget {
   }
 }
 
+// Lightweight back button for small or inline usage
 class SimpleBackFab extends StatelessWidget {
   final VoidCallback? onTap;
   final bool mini;
@@ -79,13 +86,15 @@ class SimpleBackFab extends StatelessWidget {
             ],
           ),
           child: InkWell(
-            onTap: onTap ?? () {
-              if (Navigator.canPop(context)) {
-                Navigator.pop(context);
-              } else {
-                Get.offAllNamed('/dashboard');
-              }
-            },
+            // Same navigation logic as the main FAB
+            onTap: onTap ??
+                () {
+                  if (Navigator.canPop(context)) {
+                    Navigator.pop(context);
+                  } else {
+                    Get.offAllNamed('/dashboard');
+                  }
+                },
             borderRadius: BorderRadius.circular(mini ? 28 : 32),
             child: SizedBox(
               width: mini ? 40 : 56,
@@ -103,6 +112,7 @@ class SimpleBackFab extends StatelessWidget {
   }
 }
 
+// Back button overlay for full screen pages (images, maps, etc.)
 class BackButtonOverlay extends StatelessWidget {
   final VoidCallback? onTap;
   final Alignment alignment;
@@ -126,13 +136,15 @@ class BackButtonOverlay extends StatelessWidget {
             color: Colors.transparent,
             borderRadius: BorderRadius.circular(8),
             child: InkWell(
-              onTap: onTap ?? () {
-                if (Navigator.canPop(context)) {
-                  Navigator.pop(context);
-                } else {
-                  Get.offAllNamed('/dashboard');
-                }
-              },
+              // Back navigation with dashboard fallback
+              onTap: onTap ??
+                  () {
+                    if (Navigator.canPop(context)) {
+                      Navigator.pop(context);
+                    } else {
+                      Get.offAllNamed('/dashboard');
+                    }
+                  },
               borderRadius: BorderRadius.circular(8),
               child: Container(
                 height: 40,

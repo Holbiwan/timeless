@@ -1,4 +1,3 @@
-// lib/screen/accessibility/accessibility_panel.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -27,12 +26,13 @@ class AccessibilityPanel extends StatelessWidget {
         foregroundColor: accessibilityService.textColor,
         elevation: 0,
       ),
+
       body: Obx(() => SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header
+
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -81,7 +81,6 @@ class AccessibilityPanel extends StatelessWidget {
             
             const SizedBox(height: 24),
             
-            // Visual Accessibility
             _buildSection(
               translationService.getText('visual_accessibility'),
               [
@@ -112,7 +111,6 @@ class AccessibilityPanel extends StatelessWidget {
             
             const SizedBox(height: 20),
             
-            // Hearing Accessibility
             _buildSection(
               translationService.getText('hearing_accessibility'),
               [
@@ -142,12 +140,10 @@ class AccessibilityPanel extends StatelessWidget {
             
             const SizedBox(height: 24),
             
-            // Test Section
             _buildTestSection(),
             
             const SizedBox(height: 24),
             
-            // Reset Button
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
@@ -217,7 +213,9 @@ class AccessibilityPanel extends StatelessWidget {
             color: value 
                 ? accessibilityService.primaryColor
                 : accessibilityService.borderColor,
-            width: value ? (accessibilityService.isHighContrastMode.value ? 3 : 2) : 1,
+            width: value
+                ? (accessibilityService.isHighContrastMode.value ? 3 : 2)
+                : 1,
           ),
           boxShadow: accessibilityService.isHighContrastMode.value ? [] : [
             BoxShadow(
@@ -231,7 +229,7 @@ class AccessibilityPanel extends StatelessWidget {
           children: [
             Icon(
               icon,
-              color: value 
+              color: value
                   ? accessibilityService.primaryColor
                   : accessibilityService.secondaryTextColor,
               size: 24 * accessibilityService.currentFontSize.value,
@@ -440,9 +438,10 @@ class AccessibilityPanel extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () {
-              // Reset logic here
               Navigator.pop(context);
-              accessibilityService.showAccessibilityFeedback('Settings reset to default');
+              accessibilityService.showAccessibilityFeedback(
+                'Settings reset to default',
+              );
             },
             style: accessibilityService.getAccessibleButtonStyle(),
             child: Obx(() => Text(translationService.getText('reset'))),

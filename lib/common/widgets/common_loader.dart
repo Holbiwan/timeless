@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:timeless/utils/color_res.dart';
 
+// Loading indicator widget used across the app
 class CommonLoader extends StatelessWidget {
   const CommonLoader({super.key});
 

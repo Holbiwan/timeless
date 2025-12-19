@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 
-// Palette de couleurs Timeless - Design moderne et harmonieux
-// Couleurs autorisées: Bleu foncé, Noir, Blanc, Gris, Orange
+// Timeless color palette - Modern and harmonious design
+// Allowed colors: Dark Blue, Black, White, Grey, Orange
 class ColorRes {
   // ==========================================
   // PALETTE PRINCIPALE TIMELESS
   // ==========================================
 
-  // Bleu foncé principal - identité de marque
+  // Primary dark blue - brand identity
   static const primaryBlue = Color(0xFF1E40AF); // Bleu foncé profond
   static const primaryBlueDark = Color(0xFF1E3A8A); // Bleu très foncé
   static const primaryBlueLight = Color(0xFF3B82F6); // Bleu moyen
 
-  // Orange pour accents et éléments de surbrillance
+  // Orange for accents and highlights
   static const primaryOrange = Color(0xFFF97316); // Orange principal
   static const primaryOrangeLight = Color(0xFFEA580C); // Orange foncé
   static const primaryOrangeSoft = Color(0xFFFF9742); // Orange doux
@@ -46,7 +46,7 @@ class ColorRes {
   static const textOnPrimary = Color(0xFFFFFFFF); // Texte sur fond bleu/orange
 
   // ==========================================
-  // GRIS - ÉCHELLE HARMONISÉE
+  // GREY - HARMONIZED SCALE
   // ==========================================
 
   static const grey100 = Color(0xFFF3F4F6); // Gris très clair
@@ -60,7 +60,7 @@ class ColorRes {
   static const grey900 = Color(0xFF111827); // Gris noir
 
   // ==========================================
-  // BORDURES ET SÉPARATEURS
+  // BORDERS AND SEPARATORS
   // ==========================================
 
   static const borderColor = grey200; // Bordures standard
@@ -68,7 +68,7 @@ class ColorRes {
   static const dividerColor = grey100; // Séparateurs
 
   // ==========================================
-  // ÉTATS FONCTIONNELS
+  // FUNCTIONAL STATES
   // ==========================================
 
   static const successColor = primaryBlue; // Succès en bleu
@@ -77,10 +77,10 @@ class ColorRes {
   static const infoColor = primaryBlueLight; // Information en bleu clair
 
   // ==========================================
-  // ALIASES POUR COMPATIBILITÉ
+  // ALIASES FOR COMPATIBILITY
   // ==========================================
 
-  // Couleurs héritées - remappées sur la nouvelle palette
+  // Legacy colors - remapped to new palette
   static const royalBlue = primaryBlue;
   static const darkBlue = primaryBlueDark;
   static const blueColor = primaryBlue;
@@ -91,7 +91,7 @@ class ColorRes {
   static const iconColor = primaryOrange;
   static const starColor = primaryOrange;
 
-  // Textes (compatibilité)
+  // Texts (compatibility)
   static const textColor = textPrimary;
   static const black2 = textSecondary;
   static const lightBlack = textTertiary;
@@ -99,13 +99,13 @@ class ColorRes {
   static const lightGrey = grey100;
   static const charcoal = grey800;
 
-  // Surfaces (compatibilité)
+  // Surfaces (compatibility)
   static const white2 = backgroundColor;
   static const creamWhite = backgroundColor;
   static const deleteColor = grey100;
   static const invalidColor = grey100;
 
-  // Anciens rouges/verts -> remappés
+  // Old reds/greens -> remapped
   static const vibrantRed = primaryBlue;
   static const red = primaryBlue;
   static const successGreen = primaryBlue;
@@ -114,7 +114,7 @@ class ColorRes {
   static const appleGreen = primaryOrange;
   static const lightAppleGreen = primaryOrangeSoft;
 
-  // Nettoyage des couleurs sables
+  // Sand colors cleanup
   static const softSand = backgroundColor;
   static const warmSand = primaryOrange;
   static const darkSand = grey200;
@@ -128,7 +128,7 @@ class ColorRes {
   static const secondaryAccent = primaryOrange;
   static const gradientColor = primaryBlue;
 
-  // Ajouts pour compatibility avec l'ancien code
+  // Additions for compatibility with old code
   static const brightYellow = primaryOrange; // Remplacé par orange
   static const deepBordeaux = primaryBlueDark; // Remplacé par bleu foncé
 }

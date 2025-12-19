@@ -1,4 +1,3 @@
-// lib/screen/manager_section/auth_manager/sign_up_new/sign_up_new_controller.dart
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

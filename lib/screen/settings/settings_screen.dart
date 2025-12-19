@@ -19,7 +19,6 @@ import 'package:timeless/utils/app_theme.dart';
 class SettingsScreenU extends StatelessWidget {
   const SettingsScreenU({super.key});
   
-  // Obtenir une instance du ProfileController pour la mise à jour en temps réel
   ProfileController get profileController => Get.put(ProfileController());
   AuthService get authService => Get.put(AuthService());
 
@@ -76,349 +75,29 @@ class SettingsScreenU extends StatelessWidget {
                 )
               ],
             ),
-            const SizedBox(height: 10),
-            /*  InkWell(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (con) => const NotificationScreenU()));
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          height: 55,
-                          width: 55,
-                          decoration: BoxDecoration(
-                            color: ColorRes.logoColor,
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: const Icon(
-                            Icons.notifications,
-                            color: ColorRes.containerColor,
-                          ),
-                        ),
-                        const SizedBox(width: 15),
-                        Text(
-                          Strings.notification,
-                          style: appTextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 14,
-                              color: ColorRes.black),
-                        ),
-                      ],
-                    ),
-                    const Image(
-                      image: AssetImage(AssetRes.settingaArrow),
-                      height: 15,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 3),
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 10),
-              color: ColorRes.lightGrey.withOpacity(0.8),
-              height: 1,
-            ),
-            const SizedBox(height: 10),*/
-            // InkWell(
-            //   onTap: () {
-            //     Navigator.push(
-            //         context,
-            //         MaterialPageRoute(
-            //             builder: (con) => const SecurityScreenU()));
-            //   },
-            //   child: Padding(
-            //     padding: const EdgeInsets.all(12.0),
-            //     child: Row(
-            //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //       children: [
-            //         Row(
-            //           children: [
-            //             Container(
-            //               height: 55,
-            //               width: 55,
-            //               decoration: BoxDecoration(
-            //                 color: ColorRes.logoColor,
-            //                 borderRadius: BorderRadius.circular(15),
-            //               ),
-            //               child: const Icon(
-            //                 Icons.lock,
-            //                 color: ColorRes.containerColor,
-            //               ),
-            //             ),
-            //             const SizedBox(width: 15),
-            //             Text(
-            //               Strings.security,
-            //               style: appTextStyle(
-            //                   fontWeight: FontWeight.w500,
-            //                   fontSize: 14,
-            //                   color: ColorRes.black),
-            //             ),
-            //           ],
-            //         ),
-            //         const Image(
-            //           image: AssetImage(AssetRes.settingaArrow),
-            //           height: 15,
-            //         ),
-            //       ],
-            //     ),
-            //   ),
-            // ),
-            // const SizedBox(height: 3),
-            // Container(
-            //   margin: const EdgeInsets.symmetric(horizontal: 10),
-            //   color: ColorRes.lightGrey.withOpacity(0.8),
-            //   height: 1,
-            // ),
-            const SizedBox(height: 10),
-            // Modifier le nom/email
-            InkWell(
+            const SizedBox(height: 20),
+            SettingsMenuItem(
+              icon: Icons.edit,
+              title: "Edit profile",
               onTap: () => _showEditProfile(context),
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          height: 55,
-                          width: 55,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF000647),
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: const Icon(
-                            Icons.edit,
-                            color: Colors.white,
-                          ),
-                        ),
-                        const SizedBox(width: 15),
-                        Text(
-                          "Edit profile",
-                          style: appTextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 14,
-                              color: ColorRes.black),
-                        ),
-                      ],
-                    ),
-                    const Icon(
-                      Icons.arrow_forward_ios,
-                      color: Colors.grey,
-                      size: 15,
-                    ),
-                  ],
-                ),
-              ),
             ),
-            const SizedBox(height: 3),
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 10),
-              color: ColorRes.lightGrey.withOpacity(0.8),
-              height: 1,
-            ),
-            const SizedBox(height: 10),
-            // Modifier le mot de passe
-            InkWell(
+            const SettingsDivider(),
+            SettingsMenuItem(
+              icon: Icons.lock_reset,
+              title: "Change password",
               onTap: () => _showChangePassword(context),
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          height: 55,
-                          width: 55,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF000647),
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: const Icon(
-                            Icons.lock_reset,
-                            color: Colors.white,
-                          ),
-                        ),
-                        const SizedBox(width: 15),
-                        Text(
-                          "Change password",
-                          style: appTextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 14,
-                              color: ColorRes.black),
-                        ),
-                      ],
-                    ),
-                    const Icon(
-                      Icons.arrow_forward_ios,
-                      color: Colors.grey,
-                      size: 15,
-                    ),
-                  ],
-                ),
-              ),
             ),
-            const SizedBox(height: 3),
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 10),
-              color: ColorRes.lightGrey.withOpacity(0.8),
-              height: 1,
-            ),
-            const SizedBox(height: 10),
-            // Supprimer le compte
-            InkWell(
+            const SettingsDivider(),
+            SettingsMenuItem(
+              icon: Icons.delete_forever,
+              title: "Delete account",
               onTap: () => _showDeleteAccount(context),
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          height: 55,
-                          width: 55,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF000647),
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: const Icon(
-                            Icons.delete_forever,
-                            color: Colors.white,
-                          ),
-                        ),
-                        const SizedBox(width: 15),
-                        Text(
-                          "Delete account",
-                          style: appTextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 14,
-                              color: ColorRes.black),
-                        ),
-                      ],
-                    ),
-                    const Icon(
-                      Icons.arrow_forward_ios,
-                      color: Colors.grey,
-                      size: 15,
-                    ),
-                  ],
-                ),
-              ),
             ),
-            const SizedBox(height: 3),
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 10),
-              color: ColorRes.lightGrey.withOpacity(0.8),
-              height: 1,
-            ),
-            const SizedBox(height: 10),
-
-            // const SizedBox(height: 10),
-            /* InkWell(
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (con) => const HelpScreenU()));
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          height: 55,
-                          width: 55,
-                          decoration: BoxDecoration(
-                            color: ColorRes.logoColor,
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: const Padding(
-                            padding: EdgeInsets.all(17.0),
-                            child: Image(
-                              image: AssetImage(AssetRes.settingHelp),
-                              width: 20,
-                              color: ColorRes.containerColor,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 15),
-                        Text(
-                          Strings.help,
-                          style: appTextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 14,
-                              color: ColorRes.black),
-                        ),
-                      ],
-                    ),
-                    const Image(
-                      image: AssetImage(AssetRes.settingaArrow),
-                      height: 15,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 3),
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 10),
-              color: ColorRes.lightGrey.withOpacity(0.8),
-              height: 1,
-            ),
-            */
-
-            const SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: InkWell(
-                onTap: () => _showLogoutConfirmation(context, controller),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          height: 55,
-                          width: 55,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF000647),
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: const Icon(
-                            Icons.logout,
-                            color: Colors.white,
-                          ),
-                        ),
-                        const SizedBox(width: 15),
-                        Text(
-                          Strings.logout,
-                          style: appTextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 14,
-                              color: ColorRes.black),
-                        ),
-                      ],
-                    ),
-                    const Icon(
-                      Icons.arrow_forward_ios,
-                      color: Colors.grey,
-                      size: 15,
-                    ),
-                  ],
-                ),
-              ),
+            const SizedBox(height: 20),
+            SettingsMenuItem(
+              icon: Icons.logout,
+              title: Strings.logout,
+              onTap: () => _showLogoutConfirmation(context, controller),
             ),
           ]),
         ),
@@ -531,7 +210,6 @@ class SettingsScreenU extends StatelessWidget {
         });
   }
 
-  // Fonction de déconnexion complètement améliorée
   void _showLogoutConfirmation(BuildContext context, DashBoardController dashController) async {
     final profileCtrl = profileController;
     
@@ -687,10 +365,8 @@ class SettingsScreenU extends StatelessWidget {
     }
   }
   
-  // Fonction pour effectuer la déconnexion
   Future<void> _performLogout(DashBoardController dashController) async {
     try {
-      // Afficher un dialogue de progression
       Get.dialog(
         AlertDialog(
           backgroundColor: Colors.white,
@@ -722,26 +398,19 @@ class SettingsScreenU extends StatelessWidget {
         barrierDismissible: false,
       );
       
-      // Réinitialiser l'onglet actuel du dashboard
       dashController.currentTab = 0;
       dashController.update(["bottom_bar"]);
 
-      // Déconnexion avec AuthService (plus robuste)
       await authService.signOut();
       
-      // Nettoyer le profil controller
       profileController.clearProfileData();
       
-      // Nettoyer toutes les préférences
       await _clearAllPreferences();
       
-      // Attendre un peu pour s'assurer que tout est nettoyé
       await Future.delayed(const Duration(milliseconds: 500));
       
-      // Fermer le dialogue de progression
       Get.back();
       
-      // Afficher confirmation de déconnexion
       Get.dialog(
         AlertDialog(
           backgroundColor: Colors.white,
@@ -804,7 +473,6 @@ class SettingsScreenU extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 Get.back();
-                // Navigation vers l'écran de démarrage
                 Get.offAllNamed('/');
               },
               style: ElevatedButton.styleFrom(
@@ -828,7 +496,6 @@ class SettingsScreenU extends StatelessWidget {
       );
       
     } catch (e) {
-      // Fermer le dialogue de progression si ouvert
       if (Get.isDialogOpen ?? false) {
         Get.back();
       }
@@ -844,7 +511,6 @@ class SettingsScreenU extends StatelessWidget {
   }
 
   Future<void> _clearAllPreferences() async {
-    // Nettoyer toutes les données utilisateur
     final keysToRemove = [
       PrefKeys.password,
       PrefKeys.rememberMe,
@@ -865,15 +531,13 @@ class SettingsScreenU extends StatelessWidget {
     }
   }
 
-  // Fonction pour modifier le profil avec mise à jour temps réel
   void _showEditProfile(BuildContext context) {
-    // Initialiser le ProfileController pour avoir accès aux données
     final controller = profileController;
     
     Get.bottomSheet(
       Container(
         constraints: BoxConstraints(
-          maxHeight: MediaQuery.of(context).size.height * 0.75, // Limite la hauteur à 75% de l'écran
+          maxHeight: MediaQuery.of(context).size.height * 0.75,
         ),
         decoration: const BoxDecoration(
           color: Colors.white,
@@ -885,7 +549,6 @@ class SettingsScreenU extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Header fixe
             Container(
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
               child: Row(
@@ -904,13 +567,11 @@ class SettingsScreenU extends StatelessWidget {
               ),
             ),
             
-            // Contenu scrollable
             Flexible(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.only(bottom: 20),
                 child: Column(
                   children: [
-                    // Edit Name avec affichage du nom actuel
                     ListTile(
                       leading: const Icon(Icons.person, color: Color(0xFF000647)),
                       title: Text("Edit name", style: appTextStyle(fontSize: 15, color: ColorRes.black)),
@@ -929,7 +590,6 @@ class SettingsScreenU extends StatelessWidget {
                     ),
                     const Divider(height: 1, indent: 20, endIndent: 20),
                     
-                    // Edit Email avec affichage de l'email actuel
                     ListTile(
                       leading: const Icon(Icons.email, color: Color(0xFF000647)),
                       title: Text("Edit email", style: appTextStyle(fontSize: 15, color: ColorRes.black)),
@@ -948,7 +608,6 @@ class SettingsScreenU extends StatelessWidget {
                     ),
                     const Divider(height: 1, indent: 20, endIndent: 20),
                     
-                    // Edit Phone avec affichage du téléphone actuel
                     ListTile(
                       leading: const Icon(Icons.phone, color: Color(0xFF000647)),
                       title: Text("Edit phone", style: appTextStyle(fontSize: 15, color: ColorRes.black)),
@@ -967,7 +626,6 @@ class SettingsScreenU extends StatelessWidget {
                     ),
                     const Divider(height: 1, indent: 20, endIndent: 20),
                     
-                    // Profile picture avec affichage de l'état actuel
                     ListTile(
                       leading: const Icon(Icons.photo_camera, color: Color(0xFF000647)),
                       title: Text("Profile picture", style: appTextStyle(fontSize: 15, color: ColorRes.black)),
@@ -985,7 +643,6 @@ class SettingsScreenU extends StatelessWidget {
                       contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
                     ),
                     
-                    // Espace en bas pour éviter le débordement
                     SizedBox(height: MediaQuery.of(context).viewInsets.bottom + 20),
                   ],
                 ),
@@ -994,11 +651,10 @@ class SettingsScreenU extends StatelessWidget {
           ],
         ),
       ),
-      isScrollControlled: true, // Permet au bottom sheet d'être responsive
+      isScrollControlled: true,
     );
   }
 
-  // Fonction pour changer le mot de passe améliorée
   void _showChangePassword(BuildContext context) {
     final controller = profileController;
     
@@ -1124,7 +780,6 @@ class SettingsScreenU extends StatelessWidget {
     );
   }
 
-  // Fonction pour supprimer le compte améliorée
   void _showDeleteAccount(BuildContext context) {
     final controller = profileController;
     
@@ -1245,7 +900,6 @@ class SettingsScreenU extends StatelessWidget {
     );
   }
   
-  // Widget helper pour les éléments de suppression
   Widget _buildDeleteItem(String text) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2),
@@ -1259,7 +913,6 @@ class SettingsScreenU extends StatelessWidget {
     );
   }
 
-  // Fonction pour modifier le nom avec mise à jour temps réel
   void _showEditNameDialog(BuildContext context) {
     final controller = profileController;
     final TextEditingController nameController = TextEditingController();
@@ -1311,10 +964,8 @@ class SettingsScreenU extends StatelessWidget {
                 try {
                   controller.isLoading.value = true;
                   
-                  // Mettre à jour le contrôleur - cela déclenchera la mise à jour temps réel
                   controller.fullNameController.text = newName;
                   
-                  // Sauvegarder dans Firestore avec le ProfileController
                   await controller.onTapSubmit();
                   
                   Get.back();
@@ -1366,7 +1017,6 @@ class SettingsScreenU extends StatelessWidget {
     );
   }
 
-  // Fonction pour modifier l'email avec mise à jour temps réel
   void _showEditEmailDialog(BuildContext context) {
     final controller = profileController;
     final TextEditingController emailController = TextEditingController();
@@ -1418,10 +1068,8 @@ class SettingsScreenU extends StatelessWidget {
                 try {
                   controller.isLoading.value = true;
                   
-                  // Mettre à jour le contrôleur - cela déclenchera la mise à jour temps réel
                   controller.emailController.text = newEmail;
                   
-                  // Sauvegarder dans Firestore avec le ProfileController
                   await controller.onTapSubmit();
                   
                   Get.back();
@@ -1473,7 +1121,6 @@ class SettingsScreenU extends StatelessWidget {
     );
   }
   
-  // Nouvelle fonction pour modifier le téléphone
   void _showEditPhoneDialog(BuildContext context) {
     final controller = profileController;
     final TextEditingController phoneController = TextEditingController();
@@ -1525,10 +1172,8 @@ class SettingsScreenU extends StatelessWidget {
                 try {
                   controller.isLoading.value = true;
                   
-                  // Mettre à jour le contrôleur - cela déclenchera la mise à jour temps réel
                   controller.phoneController.text = newPhone;
                   
-                  // Sauvegarder dans Firestore avec le ProfileController
                   await controller.onTapSubmit();
                   
                   Get.back();
@@ -1573,7 +1218,6 @@ class SettingsScreenU extends StatelessWidget {
     );
   }
   
-  // Nouvelle fonction pour la photo de profil
   void _showEditProfilePictureDialog(BuildContext context) {
     final controller = profileController;
     
@@ -1647,14 +1291,12 @@ class SettingsScreenU extends StatelessWidget {
     );
   }
 
-  // Fonction pour envoyer l'email de réinitialisation améliorée
   void _sendPasswordResetEmail() async {
     final controller = profileController;
     final email = controller.email.value;
     
     if (email.isNotEmpty) {
       try {
-        // Utiliser l'AuthService pour envoyer l'email de réinitialisation
         final success = await authService.resetPassword(email);
         
         if (success) {
@@ -1745,7 +1387,6 @@ class SettingsScreenU extends StatelessWidget {
     }
   }
 
-  // Fonction pour confirmer la suppression du compte améliorée
   void _confirmDeleteAccount() async {
     final controller = profileController;
     final TextEditingController confirmController = TextEditingController();
@@ -1908,7 +1549,6 @@ class SettingsScreenU extends StatelessWidget {
     final controller = profileController;
     
     try {
-      // Afficher un dialogue de progression
       Get.dialog(
         AlertDialog(
           backgroundColor: Colors.white,
@@ -1940,25 +1580,19 @@ class SettingsScreenU extends StatelessWidget {
         barrierDismissible: false,
       );
       
-      // Supprimer le profil de Firestore
       await controller.clearProfileData();
       
-      // Supprimer le compte utilisateur Firebase
       final user = FirebaseAuth.instance.currentUser;
       if (user != null) {
         await user.delete();
       }
       
-      // Déconnecter Google si nécessaire
       await GoogleAuthService.signOut();
       
-      // Nettoyer les préférences locales
       await _clearAllPreferences();
       
-      // Fermer le dialogue de progression
       Get.back();
       
-      // Afficher confirmation et rediriger
       Get.dialog(
         AlertDialog(
           backgroundColor: Colors.white,
@@ -2013,7 +1647,6 @@ class SettingsScreenU extends StatelessWidget {
       );
       
     } catch (e) {
-      // Fermer le dialogue de progression si ouvert
       if (Get.isDialogOpen ?? false) {
         Get.back();
       }

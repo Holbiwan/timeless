@@ -129,3 +129,13 @@ config/
 firebase_config/
 node_modules/
 
+# Git configuration files
+.mailmap
+
+# Flutter DevTools configuration
+devtools_options.yaml
+
+# Exam and test files
+EXAM_PREPARATION.md
+tests/test_compilation.dart
+

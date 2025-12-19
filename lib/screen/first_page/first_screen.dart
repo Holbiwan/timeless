@@ -1,4 +1,3 @@
-// lib/screen/first_page/first_screen.dart
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +31,6 @@ class FirstScreen extends StatelessWidget {
       backgroundColor: ColorRes.backgroundColor,
       body: Stack(
         children: [
-          // Arrière-plan avec gradient propre
           Container(
             width: Get.width,
             height: Get.height,
@@ -47,7 +45,6 @@ class FirstScreen extends StatelessWidget {
               ),
             ),
           ),
-          // Contenu scrollable
           SingleChildScrollView(
             child: Column(
               children: [
@@ -57,7 +54,6 @@ class FirstScreen extends StatelessWidget {
 
                 
                 SizedBox(height: Get.height * 0.04),
-                // Logo principal TIMELESS
                 SizedBox(
                   width: Get.width * 0.95,
                   height: Get.height * 0.32,
@@ -83,7 +79,6 @@ class FirstScreen extends StatelessWidget {
                 ),
                 SizedBox(height: Get.height * 0.03),
 
-                // Bouton pour se connecter
                 InkWell(
                   onTap: () {
                     Navigator.push(
@@ -118,7 +113,6 @@ class FirstScreen extends StatelessWidget {
 
                 SizedBox(height: Get.height * 0.025),
 
-                // Bouton Créer un compte
                 InkWell(
                   onTap: () {
                     Navigator.push(
@@ -217,7 +211,6 @@ class FirstScreen extends StatelessWidget {
                 ),
                 SizedBox(height: Get.height * 0.025),
 
-                // Bouton Create Account for PRO
                 InkWell(
                   onTap: () {
                     Navigator.push(
@@ -326,12 +319,10 @@ class FirstScreen extends StatelessWidget {
                         ),
                       )),
                 ),
-                // Espace supplémentaire pour garantir l'accessibilité des CGU
                 SizedBox(height: Get.height * 0.08),
               ],
             ),
           ),
-          // Boutons fixes en haut
           Positioned(
             top: 0,
             left: 0,
@@ -342,10 +333,8 @@ class FirstScreen extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  // Boutons à droite
                   Row(
                     children: [
-                      // Bouton d'accessibilité
                       InkWell(
                         onTap: () {
                           // Navigator vers AccessibilityPanel

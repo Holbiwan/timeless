@@ -1,6 +1,6 @@
 // lib/config/api_config.dart
-// Configuration des clés API - FICHIER SENSIBLE
-// ⚠️ NE PAS COMMITTER CE FICHIER SUR GIT !
+// API KEYS CONFIGURATION FILE 
+// ⚠️ NEVER COMMIT REAL API KEYS TO PUBLIC REPOS ⚠️
 
 class ApiConfig {
   // Clé API Google Cloud Translation

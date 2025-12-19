@@ -1,5 +1,3 @@
-// \lib\screen\new_home_page\new_home_page_controller.dart
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:timeless/screen/job_recomandation_search/job_recomadation_search.dart';

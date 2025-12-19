@@ -13,7 +13,7 @@ class AccessibilityFAB extends StatelessWidget {
     
     return Obx(() => Positioned(
       right: 16,
-      bottom: 80, // Au-dessus de la barre de navigation
+      bottom: 80, // Positioning it just above the navigation bar
       child: accessibilityService.buildAccessibleWidget(
         semanticLabel: 'Open accessibility settings',
         onTap: () {

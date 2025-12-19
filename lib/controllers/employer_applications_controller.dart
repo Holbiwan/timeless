@@ -1,3 +1,4 @@
+// Employer applications controller
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:timeless/models/application_model.dart';
@@ -5,15 +6,31 @@ import 'package:timeless/models/job_offer_model.dart';
 import 'package:timeless/services/job_service.dart';
 import 'package:timeless/services/preferences_service.dart';
 
+// Employer applications controller
 class EmployerApplicationsController extends GetxController {
+
+  // All applications
   final applications = <ApplicationModel>[].obs;
+
+  // Filtered applications
   final filteredApplications = <ApplicationModel>[].obs;
+
+  // Employer job offers
   final employerJobs = <JobOfferModel>[].obs;
+
+  // Loading state
   final isLoading = false.obs;
+
+  // Selected job filter
   final selectedJob = Rx<JobOfferModel?>(null);
+
+  // Selected status filters
   final selectedStatuses = <ApplicationStatus>[].obs;
+
+  // Sort option
   final sortBy = 'date_desc'.obs;
 
+  // Employer ID from preferences
   String get employerId => PreferencesService.getString('userId');
 
   @override
@@ -22,21 +39,22 @@ class EmployerApplicationsController extends GetxController {
     loadEmployerData();
   }
 
+  // Load jobs and applications
   Future<void> loadEmployerData() async {
     try {
       isLoading.value = true;
-      
+
       if (employerId.isEmpty) {
-        throw Exception('Employeur non connecté');
+        throw Exception('Employer not logged in');
       }
 
       await loadEmployerJobs();
       await loadAllApplications();
-      
+
     } catch (e) {
       Get.snackbar(
-        'Erreur',
-        'Impossible de charger les données: $e',
+        'Error',
+        'Failed to load data: $e',
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
@@ -45,28 +63,33 @@ class EmployerApplicationsController extends GetxController {
     }
   }
 
+  // Load employer jobs
   Future<void> loadEmployerJobs() async {
     List<JobOfferModel> jobs = await JobService.getEmployerJobs(employerId);
     employerJobs.value = jobs;
   }
 
+  // Load all applications for all jobs
   Future<void> loadAllApplications() async {
     List<ApplicationModel> allApps = [];
-    
+
     for (JobOfferModel job in employerJobs) {
-      List<ApplicationModel> jobApps = await JobService.getJobApplications(job.id);
+      List<ApplicationModel> jobApps =
+          await JobService.getJobApplications(job.id);
       allApps.addAll(jobApps);
     }
-    
+
     applications.value = allApps;
     _applyFilters();
   }
 
+  // Select job filter
   void selectJob(JobOfferModel? job) {
     selectedJob.value = job;
     _applyFilters();
   }
 
+  // Add status filter
   void addStatusFilter(ApplicationStatus status) {
     if (!selectedStatuses.contains(status)) {
       selectedStatuses.add(status);
@@ -74,36 +97,44 @@ class EmployerApplicationsController extends GetxController {
     }
   }
 
+  // Remove status filter
   void removeStatusFilter(ApplicationStatus status) {
     selectedStatuses.remove(status);
     _applyFilters();
   }
 
+  // Reset all filters
   void clearFilters() {
     selectedStatuses.clear();
     selectedJob.value = null;
     _applyFilters();
   }
 
+  // Change sort option
   void changeSortOrder(String newSortBy) {
     sortBy.value = newSortBy;
     _applyFilters();
   }
 
+  // Apply filters and sorting
   void _applyFilters() {
     List<ApplicationModel> filtered = List.from(applications);
-    
+
     // Filter by job
     if (selectedJob.value != null) {
-      filtered = filtered.where((app) => app.jobId == selectedJob.value!.id).toList();
+      filtered = filtered
+          .where((app) => app.jobId == selectedJob.value!.id)
+          .toList();
     }
-    
+
     // Filter by status
     if (selectedStatuses.isNotEmpty) {
-      filtered = filtered.where((app) => selectedStatuses.contains(app.status)).toList();
+      filtered = filtered
+          .where((app) => selectedStatuses.contains(app.status))
+          .toList();
     }
-    
-    // Sort
+
+    // Sort results
     switch (sortBy.value) {
       case 'date_desc':
         filtered.sort((a, b) => b.appliedAt.compareTo(a.appliedAt));
@@ -118,74 +149,105 @@ class EmployerApplicationsController extends GetxController {
         filtered.sort((a, b) => a.status.index.compareTo(b.status.index));
         break;
     }
-    
+
     filteredApplications.value = filtered;
   }
 
-  Future<void> updateApplicationStatus(String applicationId, ApplicationStatus newStatus) async {
+  // Update application status
+  Future<void> updateApplicationStatus(
+    String applicationId,
+    ApplicationStatus newStatus,
+  ) async {
     try {
       await JobService.updateApplicationStatus(applicationId, newStatus);
-      
-      // Update local data
-      int index = applications.indexWhere((app) => app.id == applicationId);
+
+      // Update local list
+      int index =
+          applications.indexWhere((app) => app.id == applicationId);
       if (index != -1) {
-        applications[index] = applications[index].copyWith(status: newStatus);
+        applications[index] =
+            applications[index].copyWith(status: newStatus);
         _applyFilters();
       }
-      
+
       Get.snackbar(
-        'Statut mis à jour',
-        'Le statut de la candidature a été modifié',
+        'Status updated',
+        'Application status changed',
         backgroundColor: Colors.green,
         colorText: Colors.white,
       );
-      
+
     } catch (e) {
       Get.snackbar(
-        'Erreur',
-        'Impossible de modifier le statut',
+        'Error',
+        'Failed to update status',
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
     }
   }
 
-  // Statistics
-  int get totalApplications => applications.length;
-  int get pendingApplications => applications.where((app) => app.status == ApplicationStatus.pending).length;
-  int get viewedApplications => applications.where((app) => app.status == ApplicationStatus.viewed).length;
-  int get shortlistedApplications => applications.where((app) => app.status == ApplicationStatus.shortlisted).length;
-  int get interviewApplications => applications.where((app) => app.status == ApplicationStatus.interview).length;
-  int get hiredApplications => applications.where((app) => app.status == ApplicationStatus.hired).length;
-  int get rejectedApplications => applications.where((app) => app.status == ApplicationStatus.rejected).length;
+  // --- Stats ---
 
+  // Total applications
+  int get totalApplications => applications.length;
+
+  // By status
+  int get pendingApplications =>
+      applications.where((app) => app.status == ApplicationStatus.pending).length;
+
+  int get viewedApplications =>
+      applications.where((app) => app.status == ApplicationStatus.viewed).length;
+
+  int get shortlistedApplications =>
+      applications.where((app) => app.status == ApplicationStatus.shortlisted).length;
+
+  int get interviewApplications =>
+      applications.where((app) => app.status == ApplicationStatus.interview).length;
+
+  int get hiredApplications =>
+      applications.where((app) => app.status == ApplicationStatus.hired).length;
+
+  int get rejectedApplications =>
+      applications.where((app) => app.status == ApplicationStatus.rejected).length;
+
+  // Applications from today
   List<ApplicationModel> get todayApplications {
     final today = DateTime.now();
     final startOfDay = DateTime(today.year, today.month, today.day);
     final endOfDay = startOfDay.add(const Duration(days: 1));
-    
-    return applications.where((app) => 
-        app.appliedAt.isAfter(startOfDay) && 
-        app.appliedAt.isBefore(endOfDay)
+
+    return applications.where((app) =>
+      app.appliedAt.isAfter(startOfDay) &&
+      app.appliedAt.isBefore(endOfDay)
     ).toList();
   }
 
+  // Applications from this week
   List<ApplicationModel> get thisWeekApplications {
     final now = DateTime.now();
-    final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
-    final startOfWeekDay = DateTime(startOfWeek.year, startOfWeek.month, startOfWeek.day);
-    
-    return applications.where((app) => app.appliedAt.isAfter(startOfWeekDay)).toList();
+    final startOfWeek =
+        now.subtract(Duration(days: now.weekday - 1));
+    final startOfWeekDay =
+        DateTime(startOfWeek.year, startOfWeek.month, startOfWeek.day);
+
+    return applications
+        .where((app) => app.appliedAt.isAfter(startOfWeekDay))
+        .toList();
   }
 
+  // Get job linked to application
   JobOfferModel? getJobForApplication(ApplicationModel application) {
-    return employerJobs.firstWhereOrNull((job) => job.id == application.jobId);
+    return employerJobs
+        .firstWhereOrNull((job) => job.id == application.jobId);
   }
 
+  // Reload all data
   Future<void> refreshData() async {
     await loadEmployerData();
   }
 
+  // Status label
   String getStatusLabel(ApplicationStatus status) {
     switch (status) {
       case ApplicationStatus.pending:
@@ -207,6 +269,7 @@ class EmployerApplicationsController extends GetxController {
     }
   }
 
+  // Status color
   Color getStatusColor(ApplicationStatus status) {
     switch (status) {
       case ApplicationStatus.pending:

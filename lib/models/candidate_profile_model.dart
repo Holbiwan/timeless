@@ -1,24 +1,35 @@
-// Modèle de profil candidat complet
+// This file contains all data models related to a candidate profile in the app.
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CandidateProfileModel {
+  // Main identifiers
   final String id;
   final String email;
   final String fullName;
+
+  // Contact and personal info
   final String? phone;
   final String? location;
   final String? photoURL;
   final String? bio;
+
+  // Professional data
   final List<String> skills;
   final List<WorkExperience> experience;
   final List<Education> education;
   final List<String> languages;
+
+  // External links
   final String? portfolioUrl;
   final String? linkedinUrl;
   final String? githubUrl;
   final String? websiteUrl;
+
+  // CV and profile state
   final String? currentCVId;
   final ProfileStatus status;
+
+  // Metadata
   final DateTime createdAt;
   final DateTime updatedAt;
   final Map<String, dynamic> preferences;
@@ -46,7 +57,7 @@ class CandidateProfileModel {
     this.preferences = const {},
   });
 
-  // Conversion depuis Firestore
+  // Create a profile model from Firestore data
   factory CandidateProfileModel.fromJson(Map<String, dynamic> json) {
     return CandidateProfileModel(
       id: json['id'] ?? '',
@@ -58,11 +69,13 @@ class CandidateProfileModel {
       bio: json['bio'],
       skills: List<String>.from(json['skills'] ?? []),
       experience: (json['experience'] as List<dynamic>?)
-          ?.map((e) => WorkExperience.fromJson(e))
-          .toList() ?? [],
+              ?.map((e) => WorkExperience.fromJson(e))
+              .toList() ??
+          [],
       education: (json['education'] as List<dynamic>?)
-          ?.map((e) => Education.fromJson(e))
-          .toList() ?? [],
+              ?.map((e) => Education.fromJson(e))
+              .toList() ??
+          [],
       languages: List<String>.from(json['languages'] ?? []),
       portfolioUrl: json['portfolioUrl'],
       linkedinUrl: json['linkedinUrl'],
@@ -79,7 +92,7 @@ class CandidateProfileModel {
     );
   }
 
-  // Conversion vers Firestore
+  // Convert the profile model to Firestore format
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -105,7 +118,7 @@ class CandidateProfileModel {
     };
   }
 
-  // Copie avec modifications
+  // Create a copy of the profile with updated fields
   CandidateProfileModel copyWith({
     String? id,
     String? email,
@@ -152,44 +165,41 @@ class CandidateProfileModel {
     );
   }
 
-  // Validation du profil
+  // Check if the profile is considered complete
   bool get isComplete {
     return fullName.isNotEmpty &&
-           email.isNotEmpty &&
-           bio != null &&
-           bio!.isNotEmpty &&
-           skills.isNotEmpty &&
-           currentCVId != null;
+        email.isNotEmpty &&
+        bio != null &&
+        bio!.isNotEmpty &&
+        skills.isNotEmpty &&
+        currentCVId != null;
   }
 
-  // Calcul du score de profil (0-100)
+  // Compute a simple completion score (0 to 100)
   int get profileCompletionScore {
     int score = 0;
-    
-    // Informations de base (40 points)
+
     if (fullName.isNotEmpty) score += 10;
     if (email.isNotEmpty) score += 10;
     if (phone?.isNotEmpty == true) score += 5;
     if (location?.isNotEmpty == true) score += 5;
     if (bio?.isNotEmpty == true) score += 10;
-    
-    // Compétences et expérience (40 points)
+
     if (skills.isNotEmpty) score += 15;
     if (experience.isNotEmpty) score += 15;
     if (education.isNotEmpty) score += 10;
-    
-    // CV et liens (20 points)
+
     if (currentCVId != null) score += 10;
     if (linkedinUrl?.isNotEmpty == true) score += 3;
     if (githubUrl?.isNotEmpty == true) score += 3;
     if (portfolioUrl?.isNotEmpty == true) score += 2;
     if (websiteUrl?.isNotEmpty == true) score += 2;
-    
+
     return score.clamp(0, 100);
   }
 }
 
-// Modèle d'expérience professionnelle
+// Describes one professional experience
 class WorkExperience {
   final String id;
   final String company;
@@ -238,7 +248,7 @@ class WorkExperience {
   }
 }
 
-// Modèle d'éducation
+// Describes an education record
 class Education {
   final String id;
   final String institution;
@@ -287,15 +297,10 @@ class Education {
   }
 }
 
-// Statut du profil
-enum ProfileStatus {
-  incomplete,
-  complete,
-  verified,
-  suspended
-}
+// Current status of a candidate profile
+enum ProfileStatus { incomplete, complete, verified, suspended }
 
-// Modèle de CV
+// Represents a CV uploaded by a candidate
 class CVModel {
   final String id;
   final String candidateId;
@@ -327,7 +332,8 @@ class CVModel {
       downloadUrl: json['downloadUrl'] ?? '',
       fileSize: json['fileSize'] ?? 0,
       contentType: json['contentType'] ?? '',
-      uploadedAt: (json['uploadedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      uploadedAt:
+          (json['uploadedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
       extractedText: json['extractedText'],
       metadata: Map<String, dynamic>.from(json['metadata'] ?? {}),
     );
@@ -347,4 +353,3 @@ class CVModel {
     };
   }
 }
-

@@ -1,4 +1,3 @@
-// lib/screen/auth/employer_signin/employer_signup_screen_new.dart
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';

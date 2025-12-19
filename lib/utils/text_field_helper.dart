@@ -13,12 +13,7 @@ class TextFieldHelper {
     return {
       'enableInteractiveSelection': true,
       'canRequestFocus': true,
-      'toolbarOptions': const ToolbarOptions(
-        copy: true,
-        cut: true,
-        paste: true,
-        selectAll: true,
-      ),
+      // Removed complex contextMenuBuilder - using default Flutter behavior
     };
   }
 
@@ -70,12 +65,6 @@ class TextFieldHelper {
       // Ensure copy/paste is always enabled
       enableInteractiveSelection: true,
       canRequestFocus: true,
-      toolbarOptions: const ToolbarOptions(
-        copy: true,
-        cut: true,
-        paste: true,
-        selectAll: true,
-      ),
     );
   }
 
