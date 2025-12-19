@@ -138,4 +138,5 @@ devtools_options.yaml
 # Exam and test files
 EXAM_PREPARATION.md
 tests/test_compilation.dart
-
+test_compile.dart
+test_email_manual.dart
