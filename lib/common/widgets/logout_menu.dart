@@ -1,4 +1,4 @@
-// lib/common/widgets/logout_menu.dart
+// Logout menu and actions
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,9 +10,10 @@ import 'package:timeless/services/preferences_service.dart';
 class LogoutMenu extends StatelessWidget {
   const LogoutMenu({super.key});
 
+  // Handle user logout with confirmation
   static Future<void> handleLogout() async {
     try {
-      // Show confirmation dialog
+      // Ask user to confirm logout
       final shouldLogout = await Get.dialog<bool>(
         AlertDialog(
           backgroundColor: Colors.white,
@@ -69,26 +70,24 @@ class LogoutMenu extends StatelessWidget {
       );
 
       if (shouldLogout == true) {
-        // Show loading
+        // Show loading while logging out
         Get.dialog(
-          const Center(
-            child: CircularProgressIndicator(),
-          ),
+          const Center(child: CircularProgressIndicator()),
           barrierDismissible: false,
         );
 
         // Clear local data
         await PreferencesService.clear();
-        
+
         // Sign out from Firebase
         await FirebaseAuth.instance.signOut();
-        
-        // Close loading
+
+        // Close loader
         Get.back();
-        
-        // Navigate to login screen
+
+        // Go back to login screen
         Get.offAllNamed(AppRes.firstScreen);
-        
+
         // Show success message
         Get.snackbar(
           'Logged Out',
@@ -100,14 +99,15 @@ class LogoutMenu extends StatelessWidget {
         );
       }
     } catch (e) {
-      // Close loading if open
+      // Close loader if still open
       if (Get.isDialogOpen == true) {
         Get.back();
       }
-      
+
+      // Show error message
       Get.snackbar(
         'Error',
-        'Unable to logout: ${e.toString()}',
+        'Unable to logout',
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red,
         colorText: Colors.white,
@@ -116,6 +116,7 @@ class LogoutMenu extends StatelessWidget {
     }
   }
 
+  // Build popup menu button
   static Widget buildMenuButton() {
     return PopupMenuButton<String>(
       icon: Container(
@@ -148,9 +149,9 @@ class LogoutMenu extends StatelessWidget {
             Get.offAllNamed(AppRes.dashBoardScreen);
             break;
           case 'profile':
-            // Navigate to profile if route exists
+            // Profile navigation (if needed)
             if (Get.routing.route?.settings.name != '/profile') {
-              // Add profile navigation here if needed
+              // TODO: Add profile navigation
             }
             break;
           case 'logout':

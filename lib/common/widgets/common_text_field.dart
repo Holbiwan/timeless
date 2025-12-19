@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:timeless/utils/color_res.dart';
 
-Widget commonTextFormField(
-    {InputDecoration? textDecoration,
-    TextEditingController? controller,
-    VoidCallback? onTap,
-    Function(String)? onChanged,
-    TextInputType? type,
-    bool? readOnly,
-    Color? color,
-    bool? obscureText}) {
+// Reusable text field used across the app
+Widget commonTextFormField({
+  InputDecoration? textDecoration,
+  TextEditingController? controller,
+  VoidCallback? onTap,
+  Function(String)? onChanged,
+  TextInputType? type,
+  bool? readOnly,
+  Color? color,
+  bool? obscureText,
+}) {
   return Container(
     height: 50,
     decoration: BoxDecoration(
@@ -25,14 +27,8 @@ Widget commonTextFormField(
       onChanged: onChanged ?? (value) {},
       obscureText: obscureText ?? false,
       readOnly: readOnly ?? false,
-      // Ensure copy/paste always works
+      // Enable copy / paste on all devices
       enableInteractiveSelection: true,
-      toolbarOptions: const ToolbarOptions(
-        copy: true,
-        cut: true,
-        paste: true,
-        selectAll: true,
-      ),
     ),
   );
 }

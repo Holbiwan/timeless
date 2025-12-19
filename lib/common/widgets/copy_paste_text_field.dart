@@ -1,8 +1,10 @@
-// lib/common/widgets/copy_paste_text_field.dart
+// Copy / paste text field helpers
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import '../../utils/color_res.dart';
 
+// TextFormField with copy / paste always enabled
 class CopyPasteTextField extends StatelessWidget {
   final TextEditingController controller;
   final InputDecoration? decoration;
@@ -66,19 +68,13 @@ class CopyPasteTextField extends StatelessWidget {
       autofocus: autofocus,
       autocorrect: autocorrect,
       enableSuggestions: enableSuggestions,
-      // ALWAYS enable copy/paste functionality
+      // Always allow copy / paste
       enableInteractiveSelection: true,
-      toolbarOptions: const ToolbarOptions(
-        copy: true,
-        cut: true,
-        paste: true,
-        selectAll: true,
-      ),
     );
   }
 }
 
-// Enhanced TextField with copy/paste guarantee
+// Simple TextField with copy / paste support
 class CopyPasteField extends StatelessWidget {
   final TextEditingController controller;
   final InputDecoration? decoration;
@@ -118,33 +114,27 @@ class CopyPasteField extends StatelessWidget {
       enabled: enabled,
       readOnly: readOnly,
       onTap: onTap,
-      // ALWAYS enable copy/paste functionality
+      // Force copy / paste support
       enableInteractiveSelection: true,
-      toolbarOptions: const ToolbarOptions(
-        copy: true,
-        cut: true,
-        paste: true,
-        selectAll: true,
-      ),
     );
   }
 }
 
-// Utility to show copy success message
+// Show a message when text is copied
 void showCopySuccessMessage({String? label}) {
   Get.snackbar(
     '✅ Copied!',
     '${label ?? 'Text'} copied to clipboard',
     snackPosition: SnackPosition.BOTTOM,
     duration: const Duration(seconds: 2),
-    backgroundColor: Colors.green,
-    colorText: Colors.white,
+    backgroundColor: ColorRes.primaryBlue,
+    colorText: ColorRes.white,
     margin: const EdgeInsets.all(8),
     borderRadius: 8,
   );
 }
 
-// Copy text to clipboard with visual feedback
+// Copy text to clipboard and show feedback
 Future<void> copyTextToClipboard(String text, {String? label}) async {
   await Clipboard.setData(ClipboardData(text: text));
   showCopySuccessMessage(label: label);
