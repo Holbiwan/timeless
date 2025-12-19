@@ -1,9 +1,9 @@
-// To parse this JSON data, do
-//
-//     final searchCountry = searchCountryFromJson(jsonString);
+// Country search model for location picker
+// Handles the hierarchical structure: Country > State > City
 
 import 'dart:convert';
 
+// Helper functions to parse JSON data from API
 List<SearchCountry> searchCountryFromJson(String str) =>
     List<SearchCountry>.from(
         json.decode(str).map((x) => SearchCountry.fromJson(x)));
@@ -21,10 +21,10 @@ class SearchCountry {
   });
 
   int? id;
-  String? name;
-  String? emoji;
-  String? emojiU;
-  List<State>? state;
+  String? name; // "France", "Canada", etc.
+  String? emoji; // 🇫🇷, 🇨🇦
+  String? emojiU; // Unicode version of flag
+  List<State>? state; // All states/regions in this country
 
   factory SearchCountry.fromJson(Map<String, dynamic> json) => SearchCountry(
         id: json["id"],
@@ -52,9 +52,9 @@ class State {
   });
 
   int? id;
-  String? name;
-  int? countryId;
-  List<City>? city;
+  String? name; // "Île-de-France", "California", "Ontario"
+  int? countryId; // Points back to parent country
+  List<City>? city; // All cities in this state
 
   factory State.fromJson(Map<String, dynamic> json) => State(
         id: json["id"],
@@ -79,8 +79,8 @@ class City {
   });
 
   int? id;
-  String? name;
-  int? stateId;
+  String? name; // "Paris", "Los Angeles", "Toronto"
+  int? stateId; // Points back to parent state
 
   factory City.fromJson(Map<String, dynamic> json) => City(
         id: json["id"],
