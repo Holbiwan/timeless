@@ -484,7 +484,7 @@ class UnifiedTranslationService extends GetxController {
           'Are you sure you want to apply for this position?',
     },
     'fr': {
-      // Navigation & Général
+      // Navigation & General
       'dashboard': 'Tableau de Bord',
       'profile': 'Profil',
       'settings': 'Paramètres',
@@ -527,7 +527,7 @@ class UnifiedTranslationService extends GetxController {
       'contract_type': 'Type de contrat',
       'category': 'Catégorie',
 
-      // Écrans d'Auth
+      // Auth Screens
       'first_name': 'Prénom',
       'last_name': 'Nom',
       'password': 'Mot de passe',
@@ -554,7 +554,7 @@ class UnifiedTranslationService extends GetxController {
       'job_position': 'Poste',
       'bio': 'Biographie',
       'edit_profile': 'Modifier le Profil',
-      // 'job_preferences': 'Préférences d\'Emploi', // Removed
+      // 'job_preferences': 'Job Preferences', // Removed
 
       // Emplois
       'position': 'Poste',
@@ -573,7 +573,7 @@ class UnifiedTranslationService extends GetxController {
       'password_too_short': 'Mot de passe trop court',
       'please_enter_password': 'Veuillez saisir un mot de passe',
 
-      // Termes & Accessibilité
+      // Terms & Accessibility
       'terms_agreement': 'En créant un compte, vous acceptez nos',
       'terms_of_service': 'Conditions d\'Utilisation',
       'accessibility': 'Accessibilité',
@@ -581,7 +581,7 @@ class UnifiedTranslationService extends GetxController {
       'welcome': 'Bienvenue',
       'app_tagline': 'Combler le fossé avec un talent intemporel',
 
-      // Thème & Apparence
+      // Theme & Appearance
       'appearance': 'Apparence',
       'dark_mode': 'Mode Sombre',
       'light_mode': 'Mode Clair',
@@ -617,7 +617,7 @@ class UnifiedTranslationService extends GetxController {
           'Êtes-vous sûr de vouloir postuler pour ce poste ?',
     },
     'es': {
-      // Navegación y General
+      // Navigation and General
       'dashboard': 'Panel de Control',
       'profile': 'Perfil',
       'settings': 'Configuración',
@@ -641,7 +641,7 @@ class UnifiedTranslationService extends GetxController {
       'switched_to_french': 'Cambiado al francés',
       'switched_to_english': 'Cambiado al inglés',
 
-      // Autenticación
+      // Authentication
       'first_name': 'Nombre',
       'last_name': 'Apellido',
       'password': 'Contraseña',

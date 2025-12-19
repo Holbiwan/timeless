@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 class RealtimeFirestoreService {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Stream en temps réel de toutes les offres d'emploi actives
+  // Real-time stream of all active job offers
   static Stream<QuerySnapshot> getJobOffersStream() {
     return _firestore
         .collection('allPost')
@@ -14,7 +14,7 @@ class RealtimeFirestoreService {
         .snapshots();
   }
 
-  // Stream en temps réel des offres d'emploi par employeur
+  // Real-time stream of job offers by employer
   static Stream<QuerySnapshot> getEmployerJobsStream(String employerId) {
     return _firestore
         .collection('allPost')
@@ -23,7 +23,7 @@ class RealtimeFirestoreService {
         .snapshots();
   }
 
-  // Stream en temps réel des candidatures pour un employeur
+  // Real-time stream of applications for employer
   static Stream<QuerySnapshot> getEmployerApplicationsStream(
       String employerId) {
     return _firestore
@@ -33,7 +33,7 @@ class RealtimeFirestoreService {
         .snapshots();
   }
 
-  // Stream en temps réel des candidatures pour un candidat
+  // Real-time stream of applications for candidate
   static Stream<QuerySnapshot> getCandidateApplicationsStream(
       String candidateId) {
     return _firestore
@@ -43,12 +43,12 @@ class RealtimeFirestoreService {
         .snapshots();
   }
 
-  // Stream en temps réel des données employeur
+  // Real-time stream of employer data
   static Stream<DocumentSnapshot> getEmployerDataStream(String employerId) {
     return _firestore.collection('employers').doc(employerId).snapshots();
   }
 
-  // Stream en temps réel des candidatures pour une offre spécifique
+  // Real-time stream of applications for specific offer
   static Stream<QuerySnapshot> getJobApplicationsStream(String jobId) {
     return _firestore
         .collection('applications')
@@ -57,12 +57,12 @@ class RealtimeFirestoreService {
         .snapshots();
   }
 
-  // Écouter les changements sur une offre d'emploi spécifique
+  // Listen to changes on specific job offer
   static Stream<DocumentSnapshot> getJobOfferStream(String jobId) {
     return _firestore.collection('allPost').doc(jobId).snapshots();
   }
 
-  // Mettre à jour le nombre de vues d'une offre en temps réel
+  // Update job offer view count in real-time
   static Future<void> incrementJobViews(String jobId) async {
     try {
       await _firestore.collection('allPost').doc(jobId).update({
@@ -74,7 +74,7 @@ class RealtimeFirestoreService {
     }
   }
 
-  // Mettre à jour le statut d'une candidature en temps réel
+  // Update application status in real-time
   static Future<void> updateApplicationStatus(
       String applicationId, String status) async {
     try {
@@ -89,7 +89,7 @@ class RealtimeFirestoreService {
     }
   }
 
-  // Obtenir les statistiques en temps réel pour un employeur
+  // Get real-time statistics for employer
   static Stream<Map<String, dynamic>> getEmployerStatsStream(
       String employerId) {
     return _firestore
@@ -106,7 +106,7 @@ class RealtimeFirestoreService {
           .where('isActive', isEqualTo: true)
           .get();
 
-      // Compter les candidatures reçues
+      // Count received applications
       final applicationsQuery = await _firestore
           .collection('applications')
           .where('employerId', isEqualTo: employerId)
@@ -127,7 +127,7 @@ class RealtimeFirestoreService {
     });
   }
 
-  // Stream combiné des données essentielles pour le dashboard employeur
+  // Combined stream of essential data for employer dashboard
   static Stream<Map<String, dynamic>> getEmployerDashboardStream(
       String employerId) {
     return _firestore
@@ -138,7 +138,7 @@ class RealtimeFirestoreService {
       if (!employerDoc.exists) return {'error': 'Employeur non trouvé'};
 
       try {
-        // Récupérer les offres avec leurs candidatures
+        // Get offers with their applications
         final jobsSnapshot = await _firestore
             .collection('allPost')
             .where('employerId', isEqualTo: employerId)
@@ -156,7 +156,7 @@ class RealtimeFirestoreService {
           totalApplications += (jobData['applicationsCount'] ?? 0) as int;
         }
 
-        // Récupérer les candidatures récentes
+        // Get recent applications
         final recentApplicationsSnapshot = await _firestore
             .collection('applications')
             .where('employerId', isEqualTo: employerId)
@@ -194,7 +194,7 @@ class RealtimeFirestoreService {
     });
   }
 
-  // Écouter les nouvelles candidatures en temps réel pour notifications
+  // Listen to new applications in real-time for notifications
   static Stream<QuerySnapshot> getNewApplicationsStream(String employerId) {
     final DateTime oneHourAgo =
         DateTime.now().subtract(const Duration(hours: 1));

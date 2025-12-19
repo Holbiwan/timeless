@@ -48,7 +48,6 @@
   "salary_expectations": "Attentes salariales",
   "salary_range_min": "Salaire minimum",
   "salary_range_max": "Salaire maximum",
-  "Tour as Guest": "Tour as Guest",
   "Annuler": "Annuler",
   "Postuler": "Postuler",
   "Postuler pour": "Postuler pour",
@@ -76,7 +75,7 @@
   
   "employer_signin_title": "Se connecter en tant que PRO",
   "employer_signin_subtitle": "Choisissez votre méthode de connexion",
-  "signin_with_siret": "Se connecter avec votre code SIRET",
+  "signin_with_siret": "Se connecter avec votre code SIRET + Mot de passe",
   "signin_with_siret_description": "Utilisez votre numéro SIRET pour accéder rapidement à votre compte employeur",
   "fast_access": "Accès rapide",
   "signin_with_ape_email_password": "Se connecter avec APE + Email + Mot de passe",
@@ -105,7 +104,7 @@
   "professional_email": "Email professionnel",
   "professional_email_placeholder": "contact@votre-entreprise.com",
   "your_password": "Votre mot de passe",
-  "ape_verification_info": "Nous vérifions que votre code APE et votre email correspondent à un compte employeur enregistré.",
+  "ape_verification_info": "We verify that your APE code and email address match a registered employer account.",
   
   "company_name": "Nom de la société",
   "company_name_placeholder": "Ex: ACME Corp",

@@ -1,4 +1,3 @@
-// lib/screen/auth/sign_in_screen/sign_in_screen.dart
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show PlatformException;
@@ -97,23 +96,19 @@ class _SigninScreenUState extends State<SigninScreenU> {
     PreferencesService.setValue(PrefKeys.fullName, user.displayName ?? "");
     PreferencesService.setValue(PrefKeys.rol, "User");
 
-    // Sauvegarder les données utilisateur dans Firestore
     await GoogleAuthService.saveUserToFirestore(user);
 
     // ⭐ NAVIGATION INTELLIGENTE ⭐
-    // Vérifier si c'est la première connexion ou un utilisateur existant
     final creationTime = user.metadata.creationTime;
     final isNewUser = creationTime != null && 
         creationTime.difference(DateTime.now()).inMinutes.abs() < 5;
     
     if (isNewUser) {
-      // Nouvel utilisateur (créé il y a moins de 5 minutes)
       AppTheme.showStandardSnackBar(
         title: "Bienvenue !",
         message: "Compte créé avec succès. Complétez votre profil.",
         isSuccess: true,
       );
-      // Aller vers l'écran de complétion de profil
       Get.offAll(() => const ProfileCompletionScreen());
     } else {
       // Utilisateur existant
@@ -405,10 +400,8 @@ class _SigninScreenUState extends State<SigninScreenU> {
                           onTap: () {
                             controller.rememberMe = !controller.rememberMe;
                             if (!controller.rememberMe) {
-                              // Si on désactive Remember Me, supprimer les données sauvegardées
                               PreferencesService.remove(PrefKeys.emailRememberUser);
                               PreferencesService.remove(PrefKeys.passwordRememberUser);
-                              // Et vider les champs pour permettre à l'utilisateur de saisir de nouvelles données
                               controller.emailController.clear();
                               controller.passwordController.clear();
                               controller.update(["showEmail", "showPassword"]);

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-// Système d'espacements et de dimensions harmonisé pour Timeless
-// Basé sur une échelle de 4px pour une cohérence parfaite
+// Harmonized spacing and dimensions system for Timeless
+// Based on 4px scale for perfect consistency
 class AppDimensions {
   // ==========================================
-  // ESPACEMENT - ÉCHELLE 4PX
+  // SPACING - 4PX SCALE
   // ==========================================
   
   static const double xxs = 2.0;    // Très petit espacement
@@ -19,7 +19,7 @@ class AppDimensions {
   static const double mega = 48.0;  // Espacement mega (pages)
   
   // ==========================================
-  // ESPACEMENTS SPÉCIALISÉS
+  // SPECIALIZED SPACINGS
   // ==========================================
   
   // Marges de page standard
@@ -67,12 +67,12 @@ class AppDimensions {
   // LAYOUT - CONTRAINTES
   // ==========================================
   
-  // Largeurs maximales pour éviter les éléments trop larges
+  // Maximum widths to avoid oversized elements
   static const double maxContentWidth = 400.0;     // Largeur max contenu
   static const double maxFormWidth = 320.0;        // Largeur max formulaire
   static const double maxCardWidth = 380.0;        // Largeur max carte
   
-  // Hauteurs minimales pour éviter les éléments trop petits
+  // Minimum heights to avoid undersized elements
   static const double minTapTarget = 44.0;         // Cible tactile minimale
   static const double minInputHeight = 48.0;       // Hauteur min input
   
@@ -90,7 +90,7 @@ class AppDimensions {
   static const double fontSizeXXXL = 28.0;         // Grand titre
   static const double fontSizeHuge = 32.0;         // Très grand titre
   
-  // Hauteurs de ligne harmonisées
+  // Harmonized line heights
   static const double lineHeightTight = 1.2;       // Ligne serrée
   static const double lineHeightNormal = 1.4;      // Ligne normale
   static const double lineHeightRelaxed = 1.6;     // Ligne aérée
@@ -120,7 +120,7 @@ class AppDimensions {
     vertical: md,
   );
   
-  // Espacement entre les éléments de formulaire
+  // Spacing between form elements
   static const EdgeInsets formFieldMargin = EdgeInsets.only(bottom: formFieldSpacing);
   
   // Espacement entre les sections

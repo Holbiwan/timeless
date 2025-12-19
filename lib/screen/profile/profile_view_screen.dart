@@ -65,7 +65,6 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
               icon: const Icon(Icons.edit_outlined, color: Colors.black),
               onPressed: () async {
                 await Get.to(() => EditProfileScreen());
-                // Rafraîchir le profil après édition
                 await controller.refreshProfile();
                 setState(() {});
               },
@@ -149,8 +148,7 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                   child: ElevatedButton.icon(
                     onPressed: () async {
                       await Get.to(() => EditProfileScreen());
-                      // Rafraîchir le profil après édition
-                      await controller.refreshProfile();
+                            await controller.refreshProfile();
                       setState(() {});
                     },
                     icon: const Icon(Icons.edit, size: 16),

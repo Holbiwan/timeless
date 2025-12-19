@@ -1,4 +1,3 @@
-// lib/screen/auth/sign_up/sign_up_screen.dart
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
