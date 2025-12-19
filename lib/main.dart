@@ -11,7 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-import 'package:timeless/utils/firebase_options.dart';
+import 'utils/firebase_options.dart';
 
 // Candidate screens
 import 'package:timeless/screen/splashScreen/splash_screen.dart';
