@@ -141,3 +141,4 @@ tests/test_compilation.dart
 test_compile.dart
 test_email_manual.dart
 REFRESH_BUTTONS_DOC.md
+DATE_SORT_FILTER_DOC.md
