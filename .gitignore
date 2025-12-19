@@ -132,3 +132,6 @@ node_modules/
 # Git configuration files
 .mailmap
 
+# Flutter DevTools configuration
+devtools_options.yaml
+
