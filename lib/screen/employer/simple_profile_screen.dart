@@ -77,7 +77,6 @@ class _SimpleProfileScreenState extends State<SimpleProfileScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Profile Header
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(20),
@@ -128,7 +127,6 @@ class _SimpleProfileScreenState extends State<SimpleProfileScreen> {
                   
                   const SizedBox(height: 24),
                   
-                  // Company Information Section
                   Text(
                     'Company Information',
                     style: GoogleFonts.poppins(
@@ -148,7 +146,6 @@ class _SimpleProfileScreenState extends State<SimpleProfileScreen> {
                   
                   const SizedBox(height: 20),
                   
-                  // Legal Information Section
                   Text(
                     'Legal Information',
                     style: GoogleFonts.poppins(
@@ -167,7 +164,6 @@ class _SimpleProfileScreenState extends State<SimpleProfileScreen> {
                   
                   const SizedBox(height: 24),
                   
-                  // Action Buttons
                   Text(
                     'Account Actions',
                     style: GoogleFonts.poppins(
@@ -194,7 +190,6 @@ class _SimpleProfileScreenState extends State<SimpleProfileScreen> {
                           onTap: () {
                             if (employerData != null) {
                               Get.to(() => EditProfileScreen(employerData: employerData!))?.then((_) {
-                                // Refresh data when returning from edit screen
                                 _loadEmployerData();
                               });
                             }

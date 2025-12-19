@@ -1,26 +1,26 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 void main() async {
-  // Test direct de l'envoi d'email
+  // Direct email sending test
   try {
     final mailDoc = await FirebaseFirestore.instance.collection("mail").add({
       "to": ["bryanomane@gmail.com"],
       "message": {
-        "subject": "🧪 Test Email - Configuration SMTP",
+        "subject": "🧪 Test Email - SMTP Configuration",
         "html": """
-          <h2>Test de Configuration Email</h2>
-          <p>Si vous recevez cet email, la configuration SMTP fonctionne correctement !</p>
+          <h2>Email Configuration Test</h2>
+          <p>If you receive this email, the SMTP configuration is working correctly!</p>
           <hr>
-          <small>Test envoyé depuis l'app Timeless</small>
+          <small>Test sent from Timeless app</small>
         """,
-        "text": "Test de configuration email - Si vous recevez cet email, la configuration SMTP fonctionne correctement !",
+        "text": "Email configuration test - If you receive this email, the SMTP configuration is working correctly!",
       },
     });
     
-    print('✅ Email de test ajouté à la queue: ${mailDoc.id}');
-    print('📧 Vérifiez votre boîte mail dans quelques minutes...');
+    print('✅ Test email added to queue: ${mailDoc.id}');
+    print('📧 Check your mailbox in a few minutes...');
     
   } catch (e) {
-    print('❌ Erreur lors du test: $e');
+    print('❌ Error during test: $e');
   }
 }

@@ -12,7 +12,6 @@ class ManagerDashBoardScreenController extends GetxController
     super.onInit();
   }
 
-  // Gestion des arguments passés à l'écran
   void _handleInitialArguments() {
     try {
       final args = Get.arguments;
@@ -28,14 +27,12 @@ class ManagerDashBoardScreenController extends GetxController
     }
   }
 
-  // Extrait l'index de l'onglet depuis différents formats d'arguments
   int? _extractTabIndexFromArguments(dynamic args) {
     if (args is int) {
       return args;
     } else if (args is String) {
       return int.tryParse(args);
     } else if (args is Map<String, dynamic>) {
-      // Cherche différentes clés possibles pour l'index
       final dynamic value = args['index'] ?? args['tab'] ?? args['currentTab'];
 
       if (value is int) return value;
@@ -44,16 +41,14 @@ class ManagerDashBoardScreenController extends GetxController
     return null;
   }
 
-  // Change l'onglet actuel et exécute la logique spécifique
   void onBottomBarChange(int index) {
-    if (index == currentTab.value) return; // Évite les traitements inutiles
+    if (index == currentTab.value) return;
 
     currentTab.value = index;
     _executeTabSpecificLogic(index);
     update(['bottom_bar']);
   }
 
-  // Exécute la logique spécifique à chaque onglet
   void _executeTabSpecificLogic(int index) {
     debugPrint("INDEX IS $index");
 
@@ -75,7 +70,6 @@ class ManagerDashBoardScreenController extends GetxController
     }
   }
 
-  // Méthodes spécifiques à chaque onglet
   void _initHomeTab() {
     debugPrint("Initializing Home Tab");
   }
@@ -105,10 +99,8 @@ class ManagerDashBoardScreenController extends GetxController
     }
   }
 
-  // Méthode utilitaire pour obtenir l'index actuel
   int get currentIndex => currentTab.value;
 
-  // Méthode pour forcer le rafraîchissement de la bottom bar
   void refreshBottomBar() {
     update(['bottom_bar']);
   }

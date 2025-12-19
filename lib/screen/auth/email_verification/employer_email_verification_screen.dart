@@ -1,4 +1,3 @@
-// lib/screen/auth/email_verification/employer_email_verification_screen.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';

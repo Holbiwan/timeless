@@ -4,7 +4,7 @@ import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/app_dimensions.dart';
 
 // ==========================================
-// STYLES DE TEXTE HARMONISÉS TIMELESS
+// HARMONIZED TIMELESS TEXT STYLES
 // ==========================================
 
 class AppTextStyles {
@@ -28,7 +28,7 @@ class AppTextStyles {
   }
 
   // ==========================================
-  // TITRES ET EN-TÊTES
+  // TITLES AND HEADERS
   // ==========================================
   
   static TextStyle get h1 => _baseStyle(
@@ -100,7 +100,7 @@ class AppTextStyles {
   );
 
   // ==========================================
-  // STYLES SPÉCIALISÉS
+  // SPECIALIZED STYLES
   // ==========================================
   
   // Navigation bottom bar
@@ -140,14 +140,14 @@ class AppTextStyles {
 }
 
 // ==========================================
-// COMPATIBILITÉ AVEC L'ANCIEN CODE
+// COMPATIBILITY WITH OLD CODE
 // ==========================================
 
 // Styles pour la bottom navigation bar
 final TextStyle bottomTitleStyle = AppTextStyles.bottomTabActive;
 final TextStyle bottomTitleStyleDisable = AppTextStyles.bottomTabInactive;
 
-// Fonction générique pour compatibilité
+// Generic function for compatibility
 TextStyle appTextStyle({
   FontWeight? fontWeight,
   Color? color,

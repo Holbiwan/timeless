@@ -1,4 +1,3 @@
-// lib/screen/auth/sign_in_screen/sign_in_controller.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb;
@@ -39,14 +38,12 @@ class SignInScreenController extends GetxController {
     final email = PreferencesService.getString(PrefKeys.emailRememberUser);
     final pwd = PreferencesService.getString(PrefKeys.passwordRememberUser);
     
-    // Seulement pré-remplir si on a des données ET que Remember Me était activé
     if (email.isNotEmpty && pwd.isNotEmpty) {
       rememberMe = true;
       emailController.text = email;
       passwordController.text = pwd;
       update(["showEmail", "showPassword", "remember_me"]);
     } else {
-      // S'assurer que les champs sont vides si rien n'est mémorisé
       rememberMe = false;
       emailController.clear();
       passwordController.clear();
@@ -209,12 +206,10 @@ class SignInScreenController extends GetxController {
           }
         }
 
-        // Sauvegarder les données seulement si Remember Me est activé ET la connexion réussie
         if (rememberMe) {
           await PreferencesService.setValue(PrefKeys.emailRememberUser, email);
           await PreferencesService.setValue(PrefKeys.passwordRememberUser, password);
         } else {
-          // Si Remember Me n'est pas activé, s'assurer de supprimer les données sauvegardées
           PreferencesService.remove(PrefKeys.emailRememberUser);
           PreferencesService.remove(PrefKeys.passwordRememberUser);
         }

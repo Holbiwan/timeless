@@ -11,7 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-import 'firebase_options.dart';
+import 'package:timeless/utils/firebase_options.dart';
 
 // Candidate screens
 import 'package:timeless/screen/splashScreen/splash_screen.dart';
@@ -88,8 +88,8 @@ Future<void> main() async {
 
   // Register global services with GetX
   Get.put(UnifiedTranslationService()); // Centralized translation service
-  Get.put(ThemeService());              // App theme management
-  Get.put(AccessibilityService());      // Accessibility options
+  Get.put(ThemeService()); // App theme management
+  Get.put(AccessibilityService()); // Accessibility options
 
   // Start the app with localization support
   runApp(

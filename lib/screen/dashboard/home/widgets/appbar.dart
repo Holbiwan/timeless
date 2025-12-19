@@ -19,12 +19,10 @@ Widget homeAppBar() {
     margin: const EdgeInsets.symmetric(horizontal: AppTheme.spacingRegular),
     child: Row(
       children: [
-        // Bouton retour à gauche
         accessibilityService.buildAccessibleWidget(
           semanticLabel: 'Back to login',
           onTap: () {
             accessibilityService.triggerHapticFeedback();
-            // Rediriger vers l'écran de connexion
             Get.offAllNamed('/');
           },
           child: Container(
@@ -45,7 +43,6 @@ Widget homeAppBar() {
         
         const SizedBox(width: 12),
         
-        // Section de salutation centrée et moderne avec photo
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -123,7 +120,6 @@ Widget homeAppBar() {
         // Actions modernes
         Row(
           children: [
-            // Menu utilisateur élégant
             accessibilityService.buildAccessibleWidget(
               semanticLabel: 'User menu',
               onTap: () {
@@ -156,7 +152,7 @@ void _showUserMenu() {
   Get.bottomSheet(
     Container(
       padding: const EdgeInsets.all(AppTheme.spacingMedium),
-      margin: const EdgeInsets.only(bottom: 80), // Marge pour éviter la barre de navigation
+      margin: const EdgeInsets.only(bottom: 80),
       decoration: const BoxDecoration(
         color: AppTheme.white,
         borderRadius: BorderRadius.only(
@@ -181,11 +177,11 @@ void _showUserMenu() {
           // Menu items
           _buildMenuItem(Icons.settings_outlined, 'Settings', () {
             Get.back();
-            Get.to(() => const SettingsScreenU()); // Navigation vers les paramètres
+            Get.to(() => const SettingsScreenU());
           }),
           _buildMenuItem(Icons.accessibility, 'Accessibility', () {
             Get.back();
-            Get.to(() => const AccessibilityPanel()); // Navigation vers l'accessibilité
+            Get.to(() => const AccessibilityPanel());
           }),
           _buildMenuItem(Icons.logout, 'Logout', () => Get.offAllNamed('/')),
         ],

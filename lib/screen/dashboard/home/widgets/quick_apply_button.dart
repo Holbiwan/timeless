@@ -1,4 +1,3 @@
-// lib/screen/dashboard/home/widgets/quick_apply_button.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:timeless/screen/job_detail_screen/job_detail_upload_cv_screen/upload_cv_controller.dart';

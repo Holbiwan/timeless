@@ -1,4 +1,3 @@
-// lib/screen/notification_screen/notification_screen.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:timeless/services/notification_service.dart';

@@ -8,17 +8,14 @@ class DashBoardController extends GetxController{
     debugPrint("onBottomBarChange called with index: $index");
     
     if (index == 0) {
-      // Home tab - forcer le retour sur Home
       currentTab = 0;
       debugPrint("Home tab selected - currentTab set to 0");
       
-      // Si on est sur une autre page, revenir à Home
       if (Get.currentRoute != '/dashboard') {
         Get.offAllNamed('/dashboard');
         debugPrint("Navigating to dashboard");
       }
     } else if (index == 1) {
-      // Jobs tab - aller vers les offres d'emploi
       currentTab = 1;
       debugPrint("Jobs tab selected");
       Get.toNamed(AppRes.jobRecommendationScreen);
