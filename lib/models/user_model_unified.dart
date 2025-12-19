@@ -1,31 +1,29 @@
-// Modèle utilisateur unifié - Compatible avec ProfileCompletionController
+// This file defines the unified user model used across the app for authentication, profile data, and activity tracking.
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserModel {
-  // Identifiants de base
+  // Basic identifiers
   final String uid;
   final String email;
-  
-  // Informations personnelles
+
+  // Personal information
   final String firstName;
-  final String lastName; 
+  final String lastName;
   final String fullName;
   final String? phoneNumber;
   final String? photoURL;
-  
-  // Informations professionnelles
+
+  // Professional information
   final String title;
   final String bio;
   final String experience;
   final String city;
-  
-  // Job preferences removed
-  
-  // Activité
+
+  // User activity
   final List<String> savedJobs;
   final List<String> appliedJobs;
-  
-  // Métadonnées
+
+  // Metadata and status
   final String provider;
   final String role;
   final bool profileCompleted;
@@ -57,10 +55,10 @@ class UserModel {
     this.lastLogin,
   });
 
-  // Conversion depuis Firestore
+  // Build a user model from a Firestore document
   factory UserModel.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
-    
+
     return UserModel(
       uid: data['uid'] ?? doc.id,
       email: data['email'] ?? '',
@@ -73,7 +71,6 @@ class UserModel {
       bio: data['bio'] ?? '',
       experience: data['experience'] ?? 'junior',
       city: data['city'] ?? '',
-      // jobPreferences removed
       savedJobs: List<String>.from(data['savedJobs'] ?? []),
       appliedJobs: List<String>.from(data['appliedJobs'] ?? []),
       provider: data['provider'] ?? 'email',
@@ -86,7 +83,7 @@ class UserModel {
     );
   }
 
-  // Conversion vers Firestore
+  // Convert the user model to Firestore format
   Map<String, dynamic> toFirestore() {
     return {
       'uid': uid,
@@ -100,7 +97,6 @@ class UserModel {
       'bio': bio,
       'experience': experience,
       'city': city,
-      // jobPreferences removed
       'savedJobs': savedJobs,
       'appliedJobs': appliedJobs,
       'provider': provider,
@@ -113,15 +109,16 @@ class UserModel {
     };
   }
 
-  // Helper pour parser les timestamps
+  // Safely parse Firestore timestamps or strings
   static DateTime _parseTimestamp(dynamic timestamp) {
     if (timestamp == null) return DateTime.now();
     if (timestamp is Timestamp) return timestamp.toDate();
-    if (timestamp is String) return DateTime.tryParse(timestamp) ?? DateTime.now();
+    if (timestamp is String)
+      return DateTime.tryParse(timestamp) ?? DateTime.now();
     return DateTime.now();
   }
 
-  // Copie avec modifications
+  // Create a copy with updated values
   UserModel copyWith({
     String? uid,
     String? email,
@@ -134,7 +131,6 @@ class UserModel {
     String? bio,
     String? experience,
     String? city,
-    // jobPreferences parameter removed
     List<String>? savedJobs,
     List<String>? appliedJobs,
     String? provider,
@@ -157,7 +153,6 @@ class UserModel {
       bio: bio ?? this.bio,
       experience: experience ?? this.experience,
       city: city ?? this.city,
-      // jobPreferences removed
       savedJobs: savedJobs ?? this.savedJobs,
       appliedJobs: appliedJobs ?? this.appliedJobs,
       provider: provider ?? this.provider,
@@ -170,18 +165,25 @@ class UserModel {
     );
   }
 
-  // Nom d'affichage complet
-  String get displayName => fullName.isNotEmpty ? fullName : '$firstName $lastName'.trim();
+  // Full name displayed in the UI
+  String get displayName =>
+      fullName.isNotEmpty ? fullName : '$firstName $lastName'.trim();
 
-  // Niveau d'expérience lisible
+  // Human-readable experience label
   String get experienceLabel {
     switch (experience) {
-      case 'internship': return 'Stage / Alternance';
-      case 'junior': return 'Junior (0-2 ans)';
-      case 'mid': return 'Confirmé (3-5 ans)';
-      case 'senior': return 'Senior (5-10 ans)';
-      case 'expert': return 'Expert (10+ ans)';
-      default: return experience;
+      case 'internship':
+        return 'Internship / Apprenticeship';
+      case 'junior':
+        return 'Junior (0-2 years)';
+      case 'mid':
+        return 'Mid-level (3-5 years)';
+      case 'senior':
+        return 'Senior (5-10 years)';
+      case 'expert':
+        return 'Expert (10+ years)';
+      default:
+        return experience;
     }
   }
 }

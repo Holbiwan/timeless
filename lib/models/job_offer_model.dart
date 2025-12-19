@@ -1,3 +1,4 @@
+// This file defines the job offer model used to store and display job postings in the application.
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 enum JobType {
@@ -56,10 +57,11 @@ class JobOfferModel {
     this.applicationsCount = 0,
   });
 
+  // Create a job offer from a Firestore document
   factory JobOfferModel.fromFirestore(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-    
-    // Parse salary from string format "min-max"
+
+    // Parse salary stored as a "min-max" string
     double? salaryMinParsed;
     double? salaryMaxParsed;
     String? salaryStr = data['salary'];
@@ -70,28 +72,35 @@ class JobOfferModel {
         salaryMaxParsed = double.tryParse(salaryParts[1].trim());
       }
     }
-    
+
     return JobOfferModel(
       id: doc.id,
       employerId: data['EmployerId'] ?? '',
       companyName: data['CompanyName'] ?? '',
       title: data['Position'] ?? '',
       description: data['description'] ?? '',
-      requirements: [], // Not stored in current structure
+      requirements: [], // Not used in current Firestore structure
       location: data['location'] ?? '',
       jobType: _parseJobTypeFromString(data['jobType']),
-      experienceLevel: ExperienceLevel.mid, // Default for now
-      salaryMin: salaryMinParsed ?? double.tryParse(data['salaryMin']?.toString() ?? '0'),
-      salaryMax: salaryMaxParsed ?? double.tryParse(data['salaryMax']?.toString() ?? '0'),
-      skills: [], // Not stored in current structure  
+      experienceLevel: ExperienceLevel.mid, // Temporary default value
+      salaryMin: salaryMinParsed ??
+          double.tryParse(data['salaryMin']?.toString() ?? '0'),
+      salaryMax: salaryMaxParsed ??
+          double.tryParse(data['salaryMax']?.toString() ?? '0'),
+      skills: [], // Not used in current Firestore structure
       industry: data['category'] ?? '',
-      createdAt: data['createdAt'] != null ? (data['createdAt'] as Timestamp).toDate() : DateTime.now(),
-      deadline: data['deadline'] != null ? (data['deadline'] as Timestamp).toDate() : null,
+      createdAt: data['createdAt'] != null
+          ? (data['createdAt'] as Timestamp).toDate()
+          : DateTime.now(),
+      deadline: data['deadline'] != null
+          ? (data['deadline'] as Timestamp).toDate()
+          : null,
       isActive: data['isActive'] ?? true,
       applicationsCount: data['applicationsCount'] ?? 0,
     );
   }
 
+  // Convert the job offer to Firestore format
   Map<String, dynamic> toFirestore() {
     return {
       'employerId': employerId,
@@ -113,8 +122,7 @@ class JobOfferModel {
     };
   }
 
-  // Helper methods for enum conversion
-  
+  // Helpers to convert enums
   static JobType _parseJobTypeFromString(String? type) {
     switch (type?.toLowerCase()) {
       case 'full-time':
@@ -142,51 +150,54 @@ class JobOfferModel {
     return level.toString().split('.').last;
   }
 
-  // Getters for display
+  // Readable job type for the UI
   String get jobTypeDisplay {
     switch (jobType) {
       case JobType.fullTime:
-        return 'Temps plein';
+        return 'Full-time';
       case JobType.partTime:
-        return 'Temps partiel';
+        return 'Part-time';
       case JobType.contract:
-        return 'Contrat';
+        return 'Contract';
       case JobType.internship:
-        return 'Stage';
+        return 'Internship';
       case JobType.freelance:
         return 'Freelance';
     }
   }
 
+  // Readable experience level for the UI
   String get experienceLevelDisplay {
     switch (experienceLevel) {
       case ExperienceLevel.entry:
-        return 'Débutant';
+        return 'Entry level';
       case ExperienceLevel.junior:
         return 'Junior';
       case ExperienceLevel.mid:
-        return 'Confirmé';
+        return 'Mid-level';
       case ExperienceLevel.senior:
         return 'Senior';
       case ExperienceLevel.lead:
         return 'Lead';
       case ExperienceLevel.executive:
-        return 'Direction';
+        return 'Executive';
     }
   }
 
+  // Salary formatted for display
   String get salaryDisplay {
     if (salaryMin == null && salaryMax == null) {
-      return 'Salaire non spécifié';
+      return 'Salary not specified';
     } else if (salaryMin != null && salaryMax != null) {
       return '${salaryMin!.toStringAsFixed(0)}€ - ${salaryMax!.toStringAsFixed(0)}€';
     } else if (salaryMin != null) {
-      return 'À partir de ${salaryMin!.toStringAsFixed(0)}€';
+      return 'From ${salaryMin!.toStringAsFixed(0)}€';
     } else {
-      return 'Jusqu\'à ${salaryMax!.toStringAsFixed(0)}€';
+      return 'Up to ${salaryMax!.toStringAsFixed(0)}€';
     }
   }
 
+  // Create a modified copy of the job offer
   JobOfferModel copyWith({
     String? id,
     String? employerId,

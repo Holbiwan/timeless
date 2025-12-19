@@ -1,3 +1,4 @@
+// This file defines the employer profile model used to represent companies on the platform.
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class EmployerModel {
@@ -29,6 +30,7 @@ class EmployerModel {
     this.isVerified = false,
   });
 
+  // Build an employer object from a Firestore document
   factory EmployerModel.fromFirestore(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     return EmployerModel(
@@ -47,6 +49,7 @@ class EmployerModel {
     );
   }
 
+  // Convert employer data to Firestore format
   Map<String, dynamic> toFirestore() {
     return {
       'email': email,
@@ -64,6 +67,7 @@ class EmployerModel {
     };
   }
 
+  // Create a new employer instance with updated values
   EmployerModel copyWith({
     String? id,
     String? email,
