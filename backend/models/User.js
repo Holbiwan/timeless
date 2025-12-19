@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
-  // Basic Information
+
+  // Basic user info
   email: {
     type: String,
     required: [true, 'Email is required'],
@@ -11,52 +12,58 @@ const userSchema = new mongoose.Schema({
     trim: true,
     match: [/^\S+@\S+\.\S+$/, 'Please enter a valid email']
   },
+
   password: {
     type: String,
     minlength: [6, 'Password must be at least 6 characters'],
-    select: false // Don't include password in queries by default
+    select: false // Hide password by default
   },
-  
-  // Profile Information
+
+  // Profile info
   firstName: {
     type: String,
     required: [true, 'First name is required'],
     trim: true,
     maxlength: [50, 'First name cannot exceed 50 characters']
   },
+
   lastName: {
     type: String,
     required: [true, 'Last name is required'],
     trim: true,
     maxlength: [50, 'Last name cannot exceed 50 characters']
   },
+
   phoneNumber: {
     type: String,
     trim: true,
     match: [/^[\+]?[1-9][\d]{0,15}$/, 'Please enter a valid phone number']
   },
-  
-  // Professional Information
+
+  // Professional details
   title: {
     type: String,
     trim: true,
     maxlength: [100, 'Title cannot exceed 100 characters']
   },
+
   bio: {
     type: String,
     maxlength: [500, 'Bio cannot exceed 500 characters']
   },
+
   skills: [{
     type: String,
     trim: true
   }],
+
   experience: {
     type: String,
     enum: ['internship', 'junior', 'mid', 'senior', 'expert'],
     default: 'junior'
   },
-  
-  // Location
+
+  // Location data
   location: {
     city: String,
     country: String,
@@ -65,12 +72,13 @@ const userSchema = new mongoose.Schema({
       default: false
     }
   },
-  
-  // Files
+
+  // Uploaded files
   profilePicture: {
     url: String,
-    publicId: String // Cloudinary public ID for deletion
+    publicId: String // Used to delete the file
   },
+
   cv: {
     url: String,
     publicId: String,
@@ -79,21 +87,22 @@ const userSchema = new mongoose.Schema({
       default: Date.now
     }
   },
-  
-  // Social Links
+
+  // Social profiles
   socialLinks: {
     linkedin: String,
     github: String,
     portfolio: String,
     behance: String
   },
-  
-  // Job Preferences
+
+  // Job preferences
   jobPreferences: {
     categories: [{
       type: String,
       enum: ['development', 'design', 'marketing', 'data', 'product', 'management', 'sales', 'other']
     }],
+
     salaryRange: {
       min: Number,
       max: Number,
@@ -102,17 +111,19 @@ const userSchema = new mongoose.Schema({
         default: 'EUR'
       }
     },
+
     workType: [{
       type: String,
       enum: ['remote', 'hybrid', 'onsite']
     }],
+
     contractType: [{
       type: String,
       enum: ['fulltime', 'parttime', 'contract', 'internship']
     }]
   },
-  
-  // Job Activity
+
+  // Job activity
   savedJobs: [{
     jobId: String,
     savedAt: {
@@ -120,6 +131,7 @@ const userSchema = new mongoose.Schema({
       default: Date.now
     }
   }],
+
   appliedJobs: [{
     jobId: String,
     appliedAt: {
@@ -132,74 +144,73 @@ const userSchema = new mongoose.Schema({
       default: 'applied'
     }
   }],
-  
-  // Authentication
+
+  // Auth data
   googleId: String,
   emailVerified: {
     type: Boolean,
     default: false
   },
+
   emailVerificationToken: String,
   passwordResetToken: String,
   passwordResetExpires: Date,
   refreshTokens: [String],
-  
-  // Account Status
+
+  // Account state
   isActive: {
     type: Boolean,
     default: true
   },
+
   role: {
     type: String,
     enum: ['user', 'employer', 'admin'],
     default: 'user'
   },
-  
-  // Analytics
+
+  // Login stats
   lastLogin: Date,
   loginCount: {
     type: Number,
     default: 0
   },
-  
+
 }, {
   timestamps: true,
   toJSON: { virtuals: true },
   toObject: { virtuals: true }
 });
 
-// Virtual for full name
+// Full name virtual
 userSchema.virtual('fullName').get(function() {
   return `${this.firstName} ${this.lastName}`;
 });
 
-// Index for better query performance
+// Indexes for faster queries
 userSchema.index({ email: 1 });
 userSchema.index({ 'location.city': 1 });
 userSchema.index({ skills: 1 });
 userSchema.index({ 'jobPreferences.categories': 1 });
 
-// Pre-save middleware to hash password
+// Hash password before save
 userSchema.pre('save', async function(next) {
-  // Only hash the password if it has been modified (or is new)
   if (!this.isModified('password')) return next();
-  
+
   try {
-    // Hash password with cost of 12
-    const hashedPassword = await bcrypt.hash(this.password, 12);
-    this.password = hashedPassword;
+    this.password = await bcrypt.hash(this.password, 12);
     next();
   } catch (error) {
     next(error);
   }
 });
 
-// Instance method to check password
+// Check password
 userSchema.methods.comparePassword = async function(candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
-// Instance method to generate JWT payload
+// Build JWT payload
 userSchema.methods.toJWT = function() {
   return {
     id: this._id,
@@ -210,7 +221,7 @@ userSchema.methods.toJWT = function() {
   };
 };
 
-// Static method to find by email
+// Find user by email
 userSchema.statics.findByEmail = function(email) {
   return this.findOne({ email: email.toLowerCase() });
 };
