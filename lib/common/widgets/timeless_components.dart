@@ -1,14 +1,16 @@
+// Timeless UI components
+// Reusable buttons, inputs, layouts and helpers used across the app
+
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/app_dimensions.dart';
 import 'package:timeless/utils/app_style.dart';
 
-// ==========================================
-// COMPOSANTS UI STANDARDISÉS TIMELESS
-// ==========================================
+// ------------------------------------------
+// BUTTONS
+// ------------------------------------------
 
-// Bouton principal standard
+// Main button used everywhere in the app
 class TimelessButton extends StatelessWidget {
   final String text;
   final VoidCallback? onPressed;
@@ -118,7 +120,11 @@ class TimelessButton extends StatelessWidget {
 
 enum ButtonSize { small, medium, large }
 
-// Champ de texte standard optimisé
+// ------------------------------------------
+// TEXT FIELDS
+// ------------------------------------------
+
+// Standard text field following the Timeless design system
 class TimelessTextField extends StatelessWidget {
   final String? label;
   final String? hintText;
@@ -156,11 +162,9 @@ class TimelessTextField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Optional field label
         if (label != null) ...[
-          Text(
-            label!,
-            style: AppTextStyles.labelMedium,
-          ),
+          Text(label!, style: AppTextStyles.labelMedium),
           SizedBox(height: AppDimensions.xs),
         ],
         Container(
@@ -214,7 +218,11 @@ class TimelessTextField extends StatelessWidget {
   }
 }
 
-// Carte standard avec padding optimisé
+// ------------------------------------------
+// CARDS & LAYOUT
+// ------------------------------------------
+
+// Basic card container with consistent style
 class TimelessCard extends StatelessWidget {
   final Widget child;
   final EdgeInsets? padding;
@@ -251,7 +259,7 @@ class TimelessCard extends StatelessWidget {
   }
 }
 
-// Container de page optimisé pour éviter le scroll
+// Page wrapper handling app bar, safe area and keyboard
 class TimelessPageContainer extends StatelessWidget {
   final Widget child;
   final String? title;
@@ -285,13 +293,16 @@ class TimelessPageContainer extends StatelessWidget {
               leading: showBackButton
                   ? IconButton(
                       icon: Icon(Icons.arrow_back, color: ColorRes.textPrimary),
-                      onPressed: onBackPressed ?? () => Navigator.of(context).pop(),
+                      onPressed:
+                          onBackPressed ?? () => Navigator.of(context).pop(),
                     )
                   : null,
               title: title != null
                   ? Text(
                       title!,
-                      style: AppTextStyles.h4.copyWith(color: ColorRes.textPrimary),
+                      style: AppTextStyles.h4.copyWith(
+                        color: ColorRes.textPrimary,
+                      ),
                     )
                   : null,
               actions: actions,
@@ -302,7 +313,9 @@ class TimelessPageContainer extends StatelessWidget {
           constraints: BoxConstraints(
             maxWidth: AppDimensions.maxContentWidth,
           ),
-          margin: EdgeInsets.symmetric(horizontal: AppDimensions.pageHorizontalPadding),
+          margin: EdgeInsets.symmetric(
+            horizontal: AppDimensions.pageHorizontalPadding,
+          ),
           child: child,
         ),
       ),
@@ -310,7 +323,11 @@ class TimelessPageContainer extends StatelessWidget {
   }
 }
 
-// Formulaire compact optimisé
+// ------------------------------------------
+// FORMS & SECTIONS
+// ------------------------------------------
+
+// Helper to build clean and compact forms
 class TimelessForm extends StatelessWidget {
   final List<Widget> children;
   final String? title;
@@ -342,15 +359,20 @@ class TimelessForm extends StatelessWidget {
             SizedBox(height: AppDimensions.sm),
           ],
           if (subtitle != null) ...[
-            Text(subtitle!, style: AppTextStyles.bodyMedium.copyWith(
-              color: ColorRes.textSecondary,
-            )),
+            Text(
+              subtitle!,
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: ColorRes.textSecondary,
+              ),
+            ),
             SizedBox(height: AppDimensions.lg),
           ],
-          ...children.map((child) => Padding(
-            padding: AppDimensions.formFieldMargin,
-            child: child,
-          )).toList(),
+          ...children.map(
+            (child) => Padding(
+              padding: AppDimensions.formFieldMargin,
+              child: child,
+            ),
+          ),
           if (submitButton != null) ...[
             SizedBox(height: AppDimensions.lg),
             submitButton!,
@@ -361,7 +383,7 @@ class TimelessForm extends StatelessWidget {
   }
 }
 
-// Section avec espacement standardisé
+// Section wrapper with optional title
 class TimelessSection extends StatelessWidget {
   final String? title;
   final Widget child;
@@ -392,7 +414,11 @@ class TimelessSection extends StatelessWidget {
   }
 }
 
-// Badge et chips standardisés
+// ------------------------------------------
+// CHIPS
+// ------------------------------------------
+
+// Small selectable chip used for tags and filters
 class TimelessChip extends StatelessWidget {
   final String text;
   final Color? backgroundColor;
@@ -411,8 +437,10 @@ class TimelessChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bgColor = backgroundColor ?? (isSelected ? ColorRes.primaryBlue : ColorRes.grey100);
-    final txtColor = textColor ?? (isSelected ? ColorRes.white : ColorRes.textSecondary);
+    final bgColor = backgroundColor ??
+        (isSelected ? ColorRes.primaryBlue : ColorRes.grey100);
+    final txtColor =
+        textColor ?? (isSelected ? ColorRes.white : ColorRes.textSecondary);
 
     return InkWell(
       onTap: onTap,

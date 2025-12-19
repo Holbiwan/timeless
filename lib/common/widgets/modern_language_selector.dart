@@ -1,3 +1,4 @@
+// Modern language selector with accessibility support
 // lib/common/widgets/modern_language_selector.dart
 // ignore_for_file: deprecated_member_use, duplicate_ignore
 
@@ -21,20 +22,30 @@ class ModernLanguageSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final UnifiedTranslationService translationService = Get.find<UnifiedTranslationService>();
-    final AccessibilityService accessibilityService = Get.find<AccessibilityService>();
+    final UnifiedTranslationService translationService =
+        Get.find<UnifiedTranslationService>();
+    final AccessibilityService accessibilityService =
+        Get.find<AccessibilityService>();
 
-    return Obx(() => GestureDetector(
-      onTap: () {
-        accessibilityService.triggerHapticFeedback();
-        _showLanguageSelection(context);
-      },
-      child: isCompact ? _buildCompactSelector(translationService, accessibilityService) 
-                      : _buildFullSelector(translationService, accessibilityService),
-    ));
+    return Obx(
+      () => GestureDetector(
+        // Open language selection sheet
+        onTap: () {
+          accessibilityService.triggerHapticFeedback();
+          _showLanguageSelection(context);
+        },
+        child: isCompact
+            ? _buildCompactSelector(translationService, accessibilityService)
+            : _buildFullSelector(translationService, accessibilityService),
+      ),
+    );
   }
 
-  Widget _buildCompactSelector(UnifiedTranslationService translationService, AccessibilityService accessibilityService) {
+  // Compact version used in tight layouts
+  Widget _buildCompactSelector(
+    UnifiedTranslationService translationService,
+    AccessibilityService accessibilityService,
+  ) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
@@ -46,7 +57,6 @@ class ModernLanguageSelector extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            // ignore: deprecated_member_use
             color: Colors.black.withOpacity(0.1),
             blurRadius: 4,
             offset: const Offset(0, 2),
@@ -56,11 +66,13 @@ class ModernLanguageSelector extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
+          // Current language flag
           Text(
             translationService.currentFlag,
             style: const TextStyle(fontSize: 18),
           ),
           const SizedBox(width: 6),
+          // Language code (EN / FR)
           Text(
             translationService.currentLanguage.value.toUpperCase(),
             style: accessibilityService.getAccessibleTextStyle(
@@ -80,7 +92,11 @@ class ModernLanguageSelector extends StatelessWidget {
     );
   }
 
-  Widget _buildFullSelector(UnifiedTranslationService translationService, AccessibilityService accessibilityService) {
+  // Full version with label and gradient
+  Widget _buildFullSelector(
+    UnifiedTranslationService translationService,
+    AccessibilityService accessibilityService,
+  ) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
@@ -91,11 +107,13 @@ class ModernLanguageSelector extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
+          // Current language flag
           Text(
             translationService.currentFlag,
             style: const TextStyle(fontSize: 20),
           ),
           const SizedBox(width: 8),
+          // Optional language label
           if (showLabel) ...[
             Text(
               translationService.currentLanguageName,
@@ -117,9 +135,12 @@ class ModernLanguageSelector extends StatelessWidget {
     );
   }
 
+  // Bottom sheet to choose language and options
   void _showLanguageSelection(BuildContext context) {
-    final UnifiedTranslationService translationService = Get.find<UnifiedTranslationService>();
-    final AccessibilityService accessibilityService = Get.find<AccessibilityService>();
+    final UnifiedTranslationService translationService =
+        Get.find<UnifiedTranslationService>();
+    final AccessibilityService accessibilityService =
+        Get.find<AccessibilityService>();
 
     showModalBottomSheet(
       context: context,
@@ -145,7 +166,7 @@ class ModernLanguageSelector extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  // Handle
+                  // Drag handle
                   Container(
                     width: 40,
                     height: 4,
@@ -155,7 +176,7 @@ class ModernLanguageSelector extends StatelessWidget {
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
-                  
+
                   // Header
                   Padding(
                     padding: const EdgeInsets.all(20),
@@ -185,26 +206,35 @@ class ModernLanguageSelector extends StatelessWidget {
                       ],
                     ),
                   ),
-                  
-                  // Auto-translate toggle
+
+                  // Auto-translation toggle
                   if (showAutoTranslateToggle) ...[
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Obx(() => _buildAutoTranslateToggle(translationService, accessibilityService)),
+                      child: Obx(
+                        () => _buildAutoTranslateToggle(
+                          translationService,
+                          accessibilityService,
+                        ),
+                      ),
                     ),
                     const Divider(height: 1),
                   ],
-                  
-                  // Languages list
+
+                  // Language list
                   Expanded(
                     child: ListView.builder(
                       controller: scrollController,
                       padding: const EdgeInsets.all(20),
-                      itemCount: translationService.availableLanguageCodes.length,
+                      itemCount:
+                          translationService.availableLanguageCodes.length,
                       itemBuilder: (context, index) {
-                        final langCode = translationService.availableLanguageCodes[index];
-                        final isSelected = translationService.currentLanguage.value == langCode;
-                        
+                        final langCode =
+                            translationService.availableLanguageCodes[index];
+                        final isSelected =
+                            translationService.currentLanguage.value ==
+                                langCode;
+
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 8),
                           child: _buildLanguageOption(
@@ -229,7 +259,11 @@ class ModernLanguageSelector extends StatelessWidget {
     );
   }
 
-  Widget _buildAutoTranslateToggle(UnifiedTranslationService translationService, AccessibilityService accessibilityService) {
+  // Toggle for automatic translation
+  Widget _buildAutoTranslateToggle(
+    UnifiedTranslationService translationService,
+    AccessibilityService accessibilityService,
+  ) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -281,6 +315,7 @@ class ModernLanguageSelector extends StatelessWidget {
     );
   }
 
+  // Single language option item
   Widget _buildLanguageOption(
     BuildContext context,
     String langCode,
@@ -301,26 +336,27 @@ class ModernLanguageSelector extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: isSelected 
+          color: isSelected
               ? accessibilityService.primaryColor.withOpacity(0.1)
               : accessibilityService.cardBackgroundColor,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected 
+            color: isSelected
                 ? accessibilityService.primaryColor
                 : accessibilityService.borderColor.withOpacity(0.3),
-            width: isSelected 
-                ? (accessibilityService.isHighContrastMode.value ? 3 : 2) 
+            width: isSelected
+                ? (accessibilityService.isHighContrastMode.value ? 3 : 2)
                 : 1,
           ),
         ),
         child: Row(
           children: [
+            // Flag icon
             Container(
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: isSelected 
+                color: isSelected
                     ? accessibilityService.primaryColor.withOpacity(0.1)
                     : Colors.grey[100],
                 borderRadius: BorderRadius.circular(20),
@@ -333,6 +369,7 @@ class ModernLanguageSelector extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 16),
+            // Language name and code
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -341,8 +378,9 @@ class ModernLanguageSelector extends StatelessWidget {
                     languageName,
                     style: accessibilityService.getAccessibleTextStyle(
                       fontSize: AppTheme.fontSizeMedium,
-                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                      color: isSelected 
+                      fontWeight:
+                          isSelected ? FontWeight.w600 : FontWeight.w500,
+                      color: isSelected
                           ? accessibilityService.primaryColor
                           : accessibilityService.textColor,
                     ),
@@ -357,6 +395,7 @@ class ModernLanguageSelector extends StatelessWidget {
                 ],
               ),
             ),
+            // Selected check icon
             if (isSelected)
               Container(
                 width: 24,
@@ -378,35 +417,40 @@ class ModernLanguageSelector extends StatelessWidget {
   }
 }
 
-// Floating action button version
+// Floating button version for quick language switch
 class FloatingLanguageSelector extends StatelessWidget {
   const FloatingLanguageSelector({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final UnifiedTranslationService translationService = Get.find<UnifiedTranslationService>();
+    final UnifiedTranslationService translationService =
+        Get.find<UnifiedTranslationService>();
 
     return Positioned(
       top: MediaQuery.of(context).padding.top + 16,
       right: 16,
-      child: Obx(() => FloatingActionButton.small(
-        heroTag: "language_selector",
-        onPressed: () {
-          _showQuickLanguageSwitch(context);
-        },
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black87,
-        elevation: 4,
-        child: Text(
-          translationService.currentFlag,
-          style: const TextStyle(fontSize: 18),
+      child: Obx(
+        () => FloatingActionButton.small(
+          heroTag: "language_selector",
+          onPressed: () {
+            _showQuickLanguageSwitch(context);
+          },
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black87,
+          elevation: 4,
+          child: Text(
+            translationService.currentFlag,
+            style: const TextStyle(fontSize: 18),
+          ),
         ),
-      )),
+      ),
     );
   }
 
+  // Quick toggle between languages
   void _showQuickLanguageSwitch(BuildContext context) {
-    final UnifiedTranslationService translationService = Get.find<UnifiedTranslationService>();
+    final UnifiedTranslationService translationService =
+        Get.find<UnifiedTranslationService>();
     translationService.toggleLanguage();
   }
 }

@@ -207,7 +207,7 @@ class LanguageSwitcher extends StatelessWidget {
           accessibilityService.triggerHapticFeedback();
           translationService.setLanguage(languageCode);
           
-          // Show feedback
+          // Provide immediate visual feedback to the user that the language has changed.
           AppTheme.showStandardSnackBar(
             title: 'Language Changed',
             message: languageCode == 'en' 
@@ -271,7 +271,7 @@ class LanguageSwitcher extends StatelessWidget {
   }
 }
 
-// Widget helper for floating language switcher
+// A floating widget that allows users to switch languages from anywhere on the screen.
 class FloatingLanguageSwitcher extends StatelessWidget {
   const FloatingLanguageSwitcher({super.key});
 

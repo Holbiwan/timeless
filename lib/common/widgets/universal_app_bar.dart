@@ -1,7 +1,11 @@
+// Universal app bar and scaffold
+// Shared layout widgets to keep navigation and headers consistent
+
 import 'package:flutter/material.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/common/widgets/back_button.dart';
 
+// Custom AppBar used across the app
 class UniversalAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String? title;
   final bool showBackButton;
@@ -30,19 +34,26 @@ class UniversalAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: backgroundColor ?? ColorRes.backgroundColor,
       elevation: elevation,
       centerTitle: centerTitle,
-      leading: leading ?? (showBackButton ? Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: universalBackButton(onTap: onBackPressed),
-      ) : null),
-      title: title != null ? Text(
-        title!,
-        style: const TextStyle(
-          color: ColorRes.black,
-          fontSize: 18,
-          fontWeight: FontWeight.w600,
-        ),
-      ) : null,
+      // Custom back button or custom leading widget
+      leading: leading ??
+          (showBackButton
+              ? Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: universalBackButton(onTap: onBackPressed),
+                )
+              : null),
+      title: title != null
+          ? Text(
+              title!,
+              style: const TextStyle(
+                color: ColorRes.black,
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+              ),
+            )
+          : null,
       actions: actions,
+      // Disable default back button behavior
       automaticallyImplyLeading: false,
     );
   }
@@ -51,6 +62,7 @@ class UniversalAppBar extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
 
+// Scaffold wrapper that includes the UniversalAppBar by default
 class TimelessScaffold extends StatelessWidget {
   final Widget body;
   final String? title;
