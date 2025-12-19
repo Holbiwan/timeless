@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+// All possible states of a job application in the app
 enum ApplicationStatus {
   pending,
   viewed,
@@ -11,21 +12,51 @@ enum ApplicationStatus {
   accepted,
 }
 
+// Main model used to represent a job application
 class ApplicationModel {
+  // Firestore document ID
   final String id;
+
+  // Related job offer ID
   final String jobId;
+
+  // ID of the candidate who applied
   final String candidateId;
+
+  // ID of the employer who owns the job offer
   final String employerId;
+
+  // Candidate full name
   final String candidateName;
+
+  // Candidate email address
   final String candidateEmail;
+
+  // Candidate phone number (optional)
   final String? candidatePhone;
+
+  // URL of the uploaded CV file
   final String cvUrl;
+
+  // Original CV file name
   final String cvFileName;
+
+  // Optional cover letter text
   final String? coverLetter;
+
+  // Current status of the application
   final ApplicationStatus status;
+
+  // Date when the application was submitted
   final DateTime appliedAt;
+
+  // Date when the application was reviewed by the employer
   final DateTime? reviewedAt;
+
+  // Optional notes written by the employer
   final String? reviewNotes;
+
+  // Optional extra data about the candidate profile
   final Map<String, dynamic>? candidateProfile;
 
   ApplicationModel({
@@ -46,6 +77,7 @@ class ApplicationModel {
     this.candidateProfile,
   });
 
+  // Build an ApplicationModel from a Firestore document
   factory ApplicationModel.fromFirestore(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     return ApplicationModel(
@@ -61,12 +93,15 @@ class ApplicationModel {
       coverLetter: data['coverLetter'],
       status: _parseApplicationStatus(data['status']),
       appliedAt: (data['appliedAt'] as Timestamp).toDate(),
-      reviewedAt: data['reviewedAt'] != null ? (data['reviewedAt'] as Timestamp).toDate() : null,
+      reviewedAt: data['reviewedAt'] != null
+          ? (data['reviewedAt'] as Timestamp).toDate()
+          : null,
       reviewNotes: data['reviewNotes'],
       candidateProfile: data['candidateProfile'],
     );
   }
 
+  // Build an ApplicationModel from a JSON object (API or local usage)
   factory ApplicationModel.fromJson(Map<String, dynamic> json) {
     return ApplicationModel(
       id: json['id'] ?? '',
@@ -80,19 +115,22 @@ class ApplicationModel {
       cvFileName: json['cvFileName'] ?? '',
       coverLetter: json['coverLetter'],
       status: _parseApplicationStatus(json['status']),
-      appliedAt: json['appliedAt'] is Timestamp 
+      appliedAt: json['appliedAt'] is Timestamp
           ? (json['appliedAt'] as Timestamp).toDate()
           : DateTime.tryParse(json['appliedAt'] ?? '') ?? DateTime.now(),
-      reviewedAt: json['reviewedAt'] is Timestamp 
+      reviewedAt: json['reviewedAt'] is Timestamp
           ? (json['reviewedAt'] as Timestamp).toDate()
-          : json['reviewedAt'] != null ? DateTime.tryParse(json['reviewedAt']) : null,
+          : json['reviewedAt'] != null
+              ? DateTime.tryParse(json['reviewedAt'])
+              : null,
       reviewNotes: json['reviewNotes'],
-      candidateProfile: json['candidateProfile'] is Map<String, dynamic> 
+      candidateProfile: json['candidateProfile'] is Map<String, dynamic>
           ? json['candidateProfile'] as Map<String, dynamic>
           : null,
     );
   }
 
+  // Convert the model into a Firestore-friendly map
   Map<String, dynamic> toFirestore() {
     return {
       'jobId': jobId,
@@ -112,6 +150,7 @@ class ApplicationModel {
     };
   }
 
+  // Convert the model into JSON format
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -132,6 +171,7 @@ class ApplicationModel {
     };
   }
 
+  // Convert a string value into an ApplicationStatus enum
   static ApplicationStatus _parseApplicationStatus(String? status) {
     switch (status) {
       case 'pending':
@@ -155,31 +195,34 @@ class ApplicationModel {
     }
   }
 
+  // Convert an enum status to a string
   static String _statusToString(ApplicationStatus status) {
     return status.toString().split('.').last;
   }
 
+  // Human-readable status label (used in the UI)
   String get statusDisplay {
     switch (status) {
       case ApplicationStatus.pending:
-        return 'En attente';
+        return 'Pending';
       case ApplicationStatus.viewed:
-        return 'Vue';
+        return 'Viewed';
       case ApplicationStatus.shortlisted:
-        return 'Présélectionnée';
+        return 'Shortlisted';
       case ApplicationStatus.interview:
-        return 'Entretien';
+        return 'Interview';
       case ApplicationStatus.rejected:
-        return 'Refusée';
+        return 'Rejected';
       case ApplicationStatus.hired:
-        return 'Embauchée';
+        return 'Hired';
       case ApplicationStatus.withdrawn:
-        return 'Retirée';
+        return 'Withdrawn';
       case ApplicationStatus.accepted:
-        return 'Acceptée';
+        return 'Accepted';
     }
   }
 
+  // Helper getters for cleaner UI conditions
   bool get isPending => status == ApplicationStatus.pending;
   bool get isViewed => status == ApplicationStatus.viewed;
   bool get isShortlisted => status == ApplicationStatus.shortlisted;
@@ -187,6 +230,7 @@ class ApplicationModel {
   bool get isRejected => status == ApplicationStatus.rejected;
   bool get isHired => status == ApplicationStatus.hired;
 
+  // Create a copy of the application with updated values
   ApplicationModel copyWith({
     String? id,
     String? jobId,
