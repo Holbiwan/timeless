@@ -129,3 +129,6 @@ config/
 firebase_config/
 node_modules/
 
+# Git configuration files
+.mailmap
+
