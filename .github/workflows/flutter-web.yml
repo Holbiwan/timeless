@@ -2,7 +2,7 @@ name: Flutter Web Build and Deploy
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, dev-v1 ]
   workflow_dispatch:
 
 jobs:
