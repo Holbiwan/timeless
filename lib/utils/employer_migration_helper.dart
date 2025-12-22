@@ -4,7 +4,7 @@ import 'package:timeless/services/employer_service.dart';
 class EmployerMigrationHelper {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  /// Migration script to validate existing employers and mark their jobs
+  // Migration script to validate existing employers and mark their jobs
   static Future<Map<String, int>> migrateExistingEmployers() async {
     int employersProcessed = 0;
     int jobsMarked = 0;
@@ -15,16 +15,17 @@ class EmployerMigrationHelper {
 
       // Get all employers from the employers collection
       final employersSnapshot = await _firestore.collection('employers').get();
-      
+
       for (var employerDoc in employersSnapshot.docs) {
         final employerId = employerDoc.id;
         final employerData = employerDoc.data();
-        
-        print('👤 Processing employer: ${employerData['companyName'] ?? 'Unknown'} ($employerId)');
+
+        print(
+            '👤 Processing employer: ${employerData['companyName'] ?? 'Unknown'} ($employerId)');
 
         // Validate employer data
         bool isValid = _validateEmployerData(employerData);
-        
+
         if (isValid) {
           // Mark employer as active and verified
           await _firestore.collection('employers').doc(employerId).update({
@@ -33,16 +34,16 @@ class EmployerMigrationHelper {
             'migratedAt': FieldValue.serverTimestamp(),
             'validationStatus': 'auto-migrated',
           });
-          
+
           employersActivated++;
           print('✅ Employer activated: ${employerData['companyName']}');
-          
+
           // Find and mark all jobs from this employer
           final jobsSnapshot = await _firestore
               .collection('allPost')
               .where('EmployerId', isEqualTo: employerId)
               .get();
-          
+
           final batch = _firestore.batch();
           for (var jobDoc in jobsSnapshot.docs) {
             batch.update(jobDoc.reference, {
@@ -52,9 +53,10 @@ class EmployerMigrationHelper {
             });
             jobsMarked++;
           }
-          
+
           await batch.commit();
-          print('📝 Marked ${jobsSnapshot.docs.length} jobs for employer ${employerData['companyName']}');
+          print(
+              '📝 Marked ${jobsSnapshot.docs.length} jobs for employer ${employerData['companyName']}');
         } else {
           // Mark employer as requiring manual review
           await _firestore.collection('employers').doc(employerId).update({
@@ -64,10 +66,10 @@ class EmployerMigrationHelper {
             'migrationStatus': 'requires-manual-review',
             'migratedAt': FieldValue.serverTimestamp(),
           });
-          
+
           print('⚠️ Employer requires review: ${employerData['companyName']}');
         }
-        
+
         employersProcessed++;
       }
 
@@ -85,14 +87,13 @@ class EmployerMigrationHelper {
         'employersActivated': employersActivated,
         'jobsMarked': jobsMarked,
       };
-
     } catch (e) {
       print('❌ Migration error: $e');
       throw e;
     }
   }
 
-  /// Validate employer data for completeness
+  // Validate employer data for completeness
   static bool _validateEmployerData(Map<String, dynamic> data) {
     // Required fields for a valid employer
     final requiredFields = [
@@ -102,8 +103,7 @@ class EmployerMigrationHelper {
     ];
 
     for (String field in requiredFields) {
-      if (data[field] == null || 
-          data[field].toString().trim().isEmpty) {
+      if (data[field] == null || data[field].toString().trim().isEmpty) {
         print('⚠️ Missing required field: $field');
         return false;
       }
@@ -126,7 +126,7 @@ class EmployerMigrationHelper {
     return true;
   }
 
-  /// Mark jobs without valid employers as unverified
+  // Mark jobs without valid employers as unverified
   static Future<void> _markOrphanJobs() async {
     try {
       print('🔍 Looking for orphan jobs...');
@@ -151,10 +151,8 @@ class EmployerMigrationHelper {
         }
 
         // Check if employer exists and is active
-        final employerDoc = await _firestore
-            .collection('employers')
-            .doc(employerId)
-            .get();
+        final employerDoc =
+            await _firestore.collection('employers').doc(employerId).get();
 
         if (!employerDoc.exists) {
           // Employer doesn't exist
@@ -166,7 +164,7 @@ class EmployerMigrationHelper {
           orphanJobs++;
         } else {
           final employerData = employerDoc.data()!;
-          if (employerData['isActive'] != true || 
+          if (employerData['isActive'] != true ||
               employerData['isVerified'] != true) {
             // Employer exists but is not active/verified
             batch.update(jobDoc.reference, {
@@ -181,13 +179,12 @@ class EmployerMigrationHelper {
 
       await batch.commit();
       print('🗑️ Marked $orphanJobs orphan jobs as unverified');
-
     } catch (e) {
       print('❌ Error marking orphan jobs: $e');
     }
   }
 
-  /// Clean up demo data and test employers
+  // Clean up demo data and test employers
   static Future<int> cleanupDemoData() async {
     try {
       print('🧹 Cleaning up demo data...');
@@ -216,14 +213,13 @@ class EmployerMigrationHelper {
 
       print('🗑️ Deleted $deletedJobs demo jobs');
       return deletedJobs;
-
     } catch (e) {
       print('❌ Error cleaning demo data: $e');
       return 0;
     }
   }
 
-  /// Generate report of current employers and jobs status
+  // Generate report of current employers and jobs status
   static Future<Map<String, dynamic>> generateStatusReport() async {
     try {
       final employersSnapshot = await _firestore.collection('employers').get();
@@ -252,13 +248,16 @@ class EmployerMigrationHelper {
           'total': totalEmployers,
           'active': activeEmployers,
           'verified': verifiedEmployers,
-          'activePercentage': totalEmployers > 0 ? (activeEmployers / totalEmployers * 100).round() : 0,
+          'activePercentage': totalEmployers > 0
+              ? (activeEmployers / totalEmployers * 100).round()
+              : 0,
         },
         'jobs': {
           'total': totalJobs,
           'verified': verifiedJobs,
           'unverified': totalJobs - verifiedJobs,
-          'verifiedPercentage': totalJobs > 0 ? (verifiedJobs / totalJobs * 100).round() : 0,
+          'verifiedPercentage':
+              totalJobs > 0 ? (verifiedJobs / totalJobs * 100).round() : 0,
         },
         'timestamp': DateTime.now().toIso8601String(),
       };

@@ -15,8 +15,6 @@ Timeless makes job hunting easier, faster, and always available, because opportu
 
 <p align="center"><small><em>See landing page by scanning the QR code</em></small></p>
 
-<p align="center"><em>Digital job search — Find, Apply & Grow.</em></p>
-
 <p align="center">
   This project is under active construction and I am still learning and improving my skills.
 </p>
