@@ -16,10 +16,6 @@ Timeless makes job hunting easier, faster, and always available, because opportu
 <p align="center"><small><em>See landing page by scanning the QR code</em></small></p>
 
 <p align="center">
-  This project is under active construction and I am still learning and improving my skills.
-</p>
-
-<p align="center">
   <a href="https://flutter.dev"><img alt="Flutter" src="https://img.shields.io/badge/Flutter-3.x-02569B?logo=flutter&logoColor=white"></a>
   <a href="https://firebase.google.com"><img alt="Firebase" src="https://img.shields.io/badge/Firebase-Auth%20%7C%20Firestore-FFCA28?logo=firebase&logoColor=black"></a>
   <img alt="Platform" src="https://img.shields.io/badge/Platform-Android-3DDC84?logo=android&logoColor=white">
