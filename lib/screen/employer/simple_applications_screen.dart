@@ -153,7 +153,7 @@ class _SimpleApplicationsScreenState extends State<SimpleApplicationsScreen> {
                           Container(
                             padding: const EdgeInsets.all(20),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF8B4513),
+                              color: const Color.fromARGB(255, 250, 117, 1),
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(color: const Color(0xFF8B4513).withOpacity(0.2)),
                             ),
