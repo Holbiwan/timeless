@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -52,7 +54,7 @@ class ReceivedApplicationsScreen extends StatelessWidget {
         foregroundColor: Colors.black,
         elevation: 0,
         actions: [
-          if (kDebugMode) // Bouton de test visible uniquement en mode debug
+          if (kDebugMode) // Bouton de test visible en debug uniquement
             PopupMenuButton<String>(
               onSelected: (value) async {
                 switch (value) {
@@ -169,7 +171,7 @@ class ReceivedApplicationsScreen extends StatelessWidget {
   Widget _buildEmptyState() {
     return Center(
       child: Container(
-        color: const Color(0xFF8B4513),
+        color: const Color.fromARGB(255, 255, 107, 1),
         width: double.infinity,
         height: double.infinity,
         child: Column(
@@ -814,8 +816,7 @@ class ReceivedApplicationsScreen extends StatelessWidget {
       });
 
       // Send email notification
-      final emailService = EmailService();
-      await emailService.sendInterviewInvitation(
+      await EmailService.sendInterviewInvitation(
         candidateEmail: application['email'] ?? '',
         candidateName: application['userName'] ?? 'Candidate',
         companyName: companyName,
