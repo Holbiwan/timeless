@@ -13,13 +13,18 @@ Timeless makes job hunting easier, faster, and always available, because opportu
   <img src="https://zupimages.net/up/25/52/65sv.png" alt="Timeless QR code" width="250">
 </p>
 
-<p align="center"><small><em>See landing page by scanning the QR code</em></small></p>
+<p align="center"><small><em>See landing page by scanning the QR code or </em></small></p>
+<p align="center">
+  <a href="https://holbiwan.github.io/timeless-landing/">
+    <img alt="Landing Page" src="https://img.shields.io/badge/Landing%20Page-Visit%20Now-02569B?style=for-the-badge&logo=web&logoColor=white">
+  </a>
+</p>
 
 <p align="center">
   <a href="https://flutter.dev"><img alt="Flutter" src="https://img.shields.io/badge/Flutter-3.x-02569B?logo=flutter&logoColor=white"></a>
   <a href="https://firebase.google.com"><img alt="Firebase" src="https://img.shields.io/badge/Firebase-Auth%20%7C%20Firestore-FFCA28?logo=firebase&logoColor=black"></a>
-  <img alt="Platform" src="https://img.shields.io/badge/Platform-Android-3DDC84?logo=android&logoColor=white">
-  <img alt="Status" src="https://img.shields.io/badge/Status-Demo%20Day-4CAF50">
+  <img alt="Platform" src="https://img.shields.io/badge/Platform-Android-02569B?logo=android&logoColor=white">
+  <img alt="Status" src="https://img.shields.io/badge/Status-Demo%20Day-FFCA28?logoColor=black">
 </p>
 
 ## 📸 Screenshots
