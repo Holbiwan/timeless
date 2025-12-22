@@ -1,0 +1,42 @@
+# =====================================================================
+# ANDROID / GRADLE
+# =====================================================================
+
+# Gradle
+.gradle/
+gradle-wrapper.jar
+gradlew
+gradlew.bat
+
+# Local configuration
+local.properties
+
+# Native build cache
+.cxx/
+
+# Flutter generated
+GeneratedPluginRegistrant.java
+
+# Build outputs
+build/
+buildlog.txt
+
+# Screenshots / captures
+captures/
+
+# =====================================================================
+# ANDROID SIGNING & SECRETS (NEVER COMMIT)
+# =====================================================================
+
+# Keystore & signing configs
+key.properties
+**/*.keystore
+**/*.jks
+
+# =====================================================================
+# MISC
+# =====================================================================
+*.log
+*.tmp
+*.temp
+*.orig

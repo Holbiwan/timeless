@@ -3,15 +3,14 @@
 
 
 Timeless is a mobile app developed with Flutter that allows candidates to view and apply for job offers directly from their phone, anytime, anywhere. Its name reflects the idea of a timeless flow of job offers: ads that are accessible at any time, without constraints. 
-
 Timeless emphasizes speed, clarity, and a smooth user experience. It offers an optimized job search feed, intuitive navigation, and simple registration via Google or email/password. Powered by Firebase, the app manages user profiles, saved jobs, and applications. 
-
 Timeless makes job hunting easier, faster, and always available, because opportunities shouldn't be limited by time. 
 
 
 <p align="center">
-  <img src="https://zupimages.net/up/25/52/eltw.png" alt="Timeless logo" width="280">
+  <img src="https://zupimages.net/up/25/52/eltw.png" alt="Timeless logo" width="270">
   &nbsp;&nbsp;&nbsp;
+<<<<<<< HEAD
   <img src="https://zupimages.net/up/25/52/65sv.png" alt="Timeless QR code" width="270"> <small><em>See landing page</em></small>
 </p>
 
@@ -19,6 +18,11 @@ Timeless makes job hunting easier, faster, and always available, because opportu
 
 <p align="center">
   This project is under active construction and I am still learning and improving my skills.
+=======
+  <img src="https://zupimages.net/up/25/52/65sv.png" alt="Timeless QR code" width="250">
+  <p align="center"><small><em>See landing page by scanning the QR code</em></small>
+    
+>>>>>>> c71426d962c036fba1981802abb632a0848e59dc
 </p>
 
 <p align="center">
@@ -40,7 +44,7 @@ Timeless makes job hunting easier, faster, and always available, because opportu
   <em>A video demonstration of the application will be available here shortly.</em>
 </p>
 
-## 🛠️ Project Structure
+##  Project Structure
 
 ```bash
 timeless/
@@ -62,7 +66,7 @@ timeless/
 └── tests/                # Flutter unit and widget tests
 ```
 
-## 🧰 Tech Stack
+##  Tech Stack
 
 ### Mobile App
 
@@ -89,7 +93,7 @@ timeless/
 | API Documentation        | Swagger                           |
 | Testing                  | Jest + Supertest                  |
 
-## 🚀 Features Overview
+## Features Overview
 
 | Feature / Service        | Purpose                                       |
 |--------------------------|-----------------------------------------------|

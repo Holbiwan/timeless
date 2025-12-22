@@ -2,17 +2,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-
-
 import 'package:timeless/screen/auth/sign_in_screen/sign_in_screen.dart';
-
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'introduction_controller.dart';
 
-// Utilisation des couleurs harmonisées
-
+// Use a StatefulWidget to manage state
 class IntroductionScreen extends StatefulWidget {
   const IntroductionScreen({super.key});
 
