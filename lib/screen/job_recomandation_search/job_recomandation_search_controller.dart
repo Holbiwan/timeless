@@ -6,7 +6,10 @@ class JobRecomandationSearchController extends GetxController{
   String totalLength='';
 
   totalJobs()async{
-  var data =await   FirebaseFirestore.instance.collection("allPost").get();
+  var data = await FirebaseFirestore.instance
+      .collection("allPost")
+      .where('isFromVerifiedEmployer', isEqualTo: true)
+      .get();
   totalLength = data.docs.length.toString();
   update(['length']);
   }

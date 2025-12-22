@@ -4,16 +4,16 @@ import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
 
-/// Default [FirebaseOptions] for use with your Firebase apps.
-///
-/// Example:
-/// ```dart
-/// import 'firebase_options.dart';
-/// // ...
-/// await Firebase.initializeApp(
-///   options: DefaultFirebaseOptions.currentPlatform,
-/// );
-/// ```
+// Default [FirebaseOptions] for use with your Firebase apps.
+//
+// Example:
+// ```dart
+// import 'firebase_options.dart';
+// // ...
+// await Firebase.initializeApp(
+//   options: DefaultFirebaseOptions.currentPlatform,
+// );
+// ```
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
@@ -64,8 +64,10 @@ class DefaultFirebaseOptions {
     messagingSenderId: '266056580802',
     projectId: 'timeless-6cdf9',
     storageBucket: 'timeless-6cdf9.firebasestorage.app',
-    androidClientId: '266056580802-s1n7ha6hvuqoiqsqqri67pprmpg10p4a.apps.googleusercontent.com',
-    iosClientId: '266056580802-otnm8oja92k0u0fu4mb09l6hj75shbol.apps.googleusercontent.com',
+    androidClientId:
+        '266056580802-s1n7ha6hvuqoiqsqqri67pprmpg10p4a.apps.googleusercontent.com',
+    iosClientId:
+        '266056580802-otnm8oja92k0u0fu4mb09l6hj75shbol.apps.googleusercontent.com',
     iosBundleId: 'com.example.timeless',
   );
 
@@ -75,8 +77,10 @@ class DefaultFirebaseOptions {
     messagingSenderId: '266056580802',
     projectId: 'timeless-6cdf9',
     storageBucket: 'timeless-6cdf9.firebasestorage.app',
-    androidClientId: '266056580802-s1n7ha6hvuqoiqsqqri67pprmpg10p4a.apps.googleusercontent.com',
-    iosClientId: '266056580802-otnm8oja92k0u0fu4mb09l6hj75shbol.apps.googleusercontent.com',
+    androidClientId:
+        '266056580802-s1n7ha6hvuqoiqsqqri67pprmpg10p4a.apps.googleusercontent.com',
+    iosClientId:
+        '266056580802-otnm8oja92k0u0fu4mb09l6hj75shbol.apps.googleusercontent.com',
     iosBundleId: 'com.example.timeless',
   );
 

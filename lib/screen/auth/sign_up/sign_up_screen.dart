@@ -56,22 +56,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Logo avec accessibilité
+                    // Logo avec accessibilité - agrandi et statique
                     accessibilityService.buildAccessibleWidget(
                       semanticLabel: 'Timeless app logo',
                       child: Center(
                         child: Container(
-                          height: 100,
-                          width: 100,
+                          height: 240,
+                          width: Get.width * 0.9,
                           alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            color: accessibilityService.isHighContrastMode.value 
-                                ? AppTheme.secondaryGold 
-                                : AppTheme.primaryOrange,
-                            borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
-                            boxShadow: AppTheme.shadowRegular,
+                          child: RepaintBoundary(
+                            child: Image.asset(
+                              'assets/images/logo.png',
+                              width: Get.width * 0.85,
+                              height: 220,
+                              fit: BoxFit.contain,
+                              filterQuality: FilterQuality.high,
+                              gaplessPlayback: false,
+                              isAntiAlias: false,
+                            ),
                           ),
-                          child: const Image(image: AssetImage(AssetRes.logo)),
                         ),
                       ),
                     ),

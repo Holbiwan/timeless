@@ -169,15 +169,22 @@ class _SigninScreenUState extends State<SigninScreenU> {
                       backButton(),
                       const SizedBox(height: 16),
 
-                      // Logo agrandi
+                      // Logo agrandi et statique
                       Center(
                         child: Container(
-                          height: 180,
-                          width: 180,
+                          height: 240,
+                          width: Get.width * 0.9,
                           alignment: Alignment.center,
-                          child: Image.asset(
-                            'assets/images/logo.png',
-                            fit: BoxFit.contain,
+                          child: RepaintBoundary(
+                            child: Image.asset(
+                              'assets/images/logo.png',
+                              width: Get.width * 0.85,
+                              height: 220,
+                              fit: BoxFit.contain,
+                              filterQuality: FilterQuality.high,
+                              gaplessPlayback: false,
+                              isAntiAlias: false,
+                            ),
                           ),
                         ),
                       ),

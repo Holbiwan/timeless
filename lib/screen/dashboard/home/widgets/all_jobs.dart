@@ -89,11 +89,12 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
                 final location = docData["location"] ?? translationService.getText("not_specified");
                 final salary = docData["salary"] ?? "0";
 
-                // Filtrer les données de démo indésirables
+                // Filtrer les données de démo indésirables et employeurs non vérifiés
                 if (company.contains('DemoToday') || 
                     company.contains('FinanceExpert') ||
                     position.contains('DemoToday') ||
-                    location.contains('DemoToday')) {
+                    location.contains('DemoToday') ||
+                    docData['isFromVerifiedEmployer'] != true) {
                   return const SizedBox.shrink(); // Ne pas afficher ces annonces
                 }
 

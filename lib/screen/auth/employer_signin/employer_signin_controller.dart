@@ -18,6 +18,7 @@ class EmployerSignInController extends GetxController {
   final companyNameController = TextEditingController();
   final addressController = TextEditingController();
   final postalCodeController = TextEditingController();
+  final cityController = TextEditingController();
   final countryController = TextEditingController();
   final siretController = TextEditingController();
   final apeController = TextEditingController();
@@ -67,6 +68,7 @@ class EmployerSignInController extends GetxController {
       companyNameController.clear();
       addressController.clear();
       postalCodeController.clear();
+      cityController.clear();
       siretController.clear();
       apeController.clear();
     }
@@ -89,6 +91,7 @@ class EmployerSignInController extends GetxController {
     companyNameController.dispose();
     addressController.dispose();
     postalCodeController.dispose();
+    cityController.dispose();
     countryController.dispose();
     siretController.dispose();
     apeController.dispose();
@@ -453,6 +456,7 @@ class EmployerSignInController extends GetxController {
           'companyName': companyNameController.text.trim(),
           'address': addressController.text.trim(),
           'postalCode': postalCodeController.text.trim(),
+          'city': cityController.text.trim(),
           'country': countryController.text.trim(),
           'siretCode': siretController.text.trim(),
           'apeCode': apeController.text.trim(),

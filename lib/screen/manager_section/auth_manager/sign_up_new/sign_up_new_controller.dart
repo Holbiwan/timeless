@@ -8,6 +8,8 @@ import 'package:get/get.dart';
 import 'package:timeless/utils/app_res.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/services/employer_validation_service.dart';
+import 'package:timeless/services/email_service.dart';
+import 'package:timeless/utils/email_debug_helper.dart';
 
 class SignUpControllerM extends GetxController {
   final TextEditingController firstnameController = TextEditingController();
@@ -85,11 +87,14 @@ class SignUpControllerM extends GetxController {
       // 3. Sauvegarder les données dans Firestore
       await _saveEmployerToFirestore(cred.user!);
 
+      // 4. Envoyer email de bienvenue
+      await _sendWelcomeEmail(cred.user!);
+
       _authCompleted = true;
       _startErrorMuffler();
       loading.value = false; update(['dark']);
 
-      // 4. Afficher popup de confirmation avec informations détaillées
+      // 5. Afficher popup de confirmation avec informations détaillées
       await _showSuccessDialog();
       await _safe(() async => Get.offAllNamed(AppRes.managerDashboardScreen));
 
@@ -219,6 +224,35 @@ class SignUpControllerM extends GetxController {
         print('❌ Erreur sauvegarde Firestore: $e');
       }
       throw Exception('Erreur lors de la sauvegarde des données: $e');
+    }
+  }
+
+  Future<void> _sendWelcomeEmail(User user) async {
+    try {
+      final fullName = '${firstnameController.text.trim()} ${lastnameController.text.trim()}'.trim();
+      final email = user.email ?? '';
+      
+      if (email.isNotEmpty) {
+        final success = await EmailService.sendEmployerWelcomeEmail(
+          email: email,
+          fullName: fullName,
+          companyName: companyNameController.text.trim(),
+          siretCode: siretController.text.trim(),
+        );
+
+        if (kDebugMode) {
+          if (success) {
+            print('✅ Email de bienvenue envoyé avec succès à: $email');
+          } else {
+            print('⚠️ Échec de l\'envoi de l\'email de bienvenue à: $email');
+          }
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('❌ Erreur lors de l\'envoi de l\'email de bienvenue: $e');
+      }
+      // Ne pas faire échouer l'inscription si l'email ne peut pas être envoyé
     }
   }
 
@@ -440,6 +474,52 @@ class SignUpControllerM extends GetxController {
   }
 
   Future<void> _safe(Future<void> Function() fn) async { try { await fn(); } catch (e) { if (kDebugMode) print('[SAFE IGNORE] $e'); } }
+
+  // Méthode pour tester l'envoi d'email manuellement
+  Future<void> testEmailSending({String? testEmail}) async {
+    final email = testEmail ?? emailController.text.trim();
+    
+    if (email.isEmpty) {
+      await _error('Test Email Error', 'Veuillez entrer un email pour le test');
+      return;
+    }
+
+    loading.value = true;
+    update(['dark']);
+
+    try {
+      if (kDebugMode) {
+        print('\n🧪 === TEST D\'ENVOI D\'EMAIL ===');
+        print('📧 Email de test: $email');
+      }
+
+      // Test de l'email de bienvenue employeur
+      final success = await EmailService.sendEmployerWelcomeEmail(
+        email: email,
+        fullName: '${firstnameController.text.trim()} ${lastnameController.text.trim()}'.trim(),
+        companyName: companyNameController.text.trim().isEmpty ? 'Test Company' : companyNameController.text.trim(),
+        siretCode: siretController.text.trim().isEmpty ? '00000000000000' : siretController.text.trim(),
+      );
+
+      if (success) {
+        await _success('Test Email Sent', 'Email de test envoyé avec succès à: $email\n\nVérifiez votre boîte de réception et le dossier spam.');
+        
+        // Vérifier le statut après l'envoi
+        await Future.delayed(Duration(seconds: 2));
+        await EmailDebugHelper.fullEmailCheck();
+      } else {
+        await _error('Test Email Failed', 'Échec de l\'envoi de l\'email de test à: $email\n\nVérifiez la configuration Firebase.');
+      }
+    } catch (e) {
+      await _error('Test Email Error', 'Erreur lors du test d\'email: $e');
+      if (kDebugMode) {
+        print('❌ Erreur test email: $e');
+      }
+    }
+
+    loading.value = false;
+    update(['dark']);
+  }
 
   @override
   void onClose() {

@@ -68,11 +68,13 @@ class JobsListController extends GetxController {
 
   void removeFilter(String filterLabel) {
     activeFilters.remove(filterLabel);
-    
+
     // Remove from specific filter lists
-    selectedJobTypes.removeWhere((type) => _getJobTypeLabel(type) == filterLabel);
-    selectedExperienceLevels.removeWhere((level) => _getExperienceLevelLabel(level) == filterLabel);
-    
+    selectedJobTypes
+        .removeWhere((type) => _getJobTypeLabel(type) == filterLabel);
+    selectedExperienceLevels
+        .removeWhere((level) => _getExperienceLevelLabel(level) == filterLabel);
+
     // Refresh results
     searchJobs();
   }
@@ -103,7 +105,7 @@ class JobsListController extends GetxController {
       isLoading.value = true;
       final jobsList = await JobService.getAllJobOffers(limit: 50);
       jobs.value = jobsList;
-      
+
       // Si pas de jobs trouvés, utiliser des données factices
       if (jobsList.isEmpty) {
         jobs.value = _getMockJobs();
@@ -130,7 +132,8 @@ class JobsListController extends GetxController {
         employerId: 'emp1',
         companyName: 'TechCorp',
         title: 'Développeur Flutter',
-        description: 'Nous recherchons un développeur Flutter expérimenté pour rejoindre notre équipe. Vous travaillerez sur des applications mobiles innovantes.',
+        description:
+            'Nous recherchons un développeur Flutter expérimenté pour rejoindre notre équipe. Vous travaillerez sur des applications mobiles innovantes.',
         requirements: ['Flutter', 'Dart', 'Firebase'],
         location: 'Paris, Île-de-France',
         jobType: JobType.fullTime,
@@ -147,7 +150,8 @@ class JobsListController extends GetxController {
         employerId: 'emp2',
         companyName: 'DesignStudio',
         title: 'UI/UX Designer',
-        description: 'Créez des interfaces utilisateur modernes et intuitives. Nous recherchons quelqu\'un de créatif avec une bonne expérience en design.',
+        description:
+            'Créez des interfaces utilisateur modernes et intuitives. Nous recherchons quelqu\'un de créatif avec une bonne expérience en design.',
         requirements: ['Figma', 'Adobe XD', 'Sketch'],
         location: 'Lyon, Auvergne-Rhône-Alpes',
         jobType: JobType.fullTime,
@@ -164,7 +168,8 @@ class JobsListController extends GetxController {
         employerId: 'emp3',
         companyName: 'DataFlow',
         title: 'Data Scientist',
-        description: 'Analysez des données complexes et créez des modèles prédictifs pour aider notre entreprise à prendre de meilleures décisions.',
+        description:
+            'Analysez des données complexes et créez des modèles prédictifs pour aider notre entreprise à prendre de meilleures décisions.',
         requirements: ['Python', 'R', 'Machine Learning'],
         location: 'Télétravail',
         jobType: JobType.fullTime,
@@ -181,7 +186,8 @@ class JobsListController extends GetxController {
         employerId: 'emp4',
         companyName: 'StartupXYZ',
         title: 'Product Manager',
-        description: 'Gérez le cycle de vie des produits digitaux de la conception à la mise sur le marché. Expérience en gestion de produit requise.',
+        description:
+            'Gérez le cycle de vie des produits digitaux de la conception à la mise sur le marché. Expérience en gestion de produit requise.',
         requirements: ['Gestion produit', 'Agile', 'Analytics'],
         location: 'Marseille, Provence-Alpes-Côte d\'Azur',
         jobType: JobType.fullTime,
@@ -198,7 +204,8 @@ class JobsListController extends GetxController {
         employerId: 'emp5',
         companyName: 'CloudTech',
         title: 'DevOps Engineer',
-        description: 'Automatisez les déploiements et gérez l\'infrastructure cloud. Expérience avec AWS ou Azure requise.',
+        description:
+            'Automatisez les déploiements et gérez l\'infrastructure cloud. Expérience avec AWS ou Azure requise.',
         requirements: ['AWS', 'Docker', 'Kubernetes'],
         location: 'Toulouse, Occitanie',
         jobType: JobType.fullTime,
@@ -215,7 +222,8 @@ class JobsListController extends GetxController {
         employerId: 'emp6',
         companyName: 'MediaCorp',
         title: 'Chef de Projet Digital',
-        description: 'Dirigez des projets digitaux innovants dans le secteur des médias. Coordonnez les équipes techniques et créatives.',
+        description:
+            'Dirigez des projets digitaux innovants dans le secteur des médias. Coordonnez les équipes techniques et créatives.',
         requirements: ['Gestion projet', 'Digital', 'Médias'],
         location: 'Bordeaux, Nouvelle-Aquitaine',
         jobType: JobType.fullTime,
@@ -232,7 +240,8 @@ class JobsListController extends GetxController {
         employerId: 'emp7',
         companyName: 'EcoTech',
         title: 'Ingénieur Environnemental',
-        description: 'Développez des solutions technologiques pour réduire l\'impact environnemental. Passion pour l\'écologie requise.',
+        description:
+            'Développez des solutions technologiques pour réduire l\'impact environnemental. Passion pour l\'écologie requise.',
         requirements: ['Environnement', 'Ingénierie', 'Durabilité'],
         location: 'Nantes, Pays de la Loire',
         jobType: JobType.fullTime,
@@ -249,7 +258,8 @@ class JobsListController extends GetxController {
         employerId: 'emp8',
         companyName: 'FinanceFirst',
         title: 'Analyste Financier',
-        description: 'Analysez les marchés financiers et conseillez nos clients sur leurs investissements. Formation en finance requise.',
+        description:
+            'Analysez les marchés financiers et conseillez nos clients sur leurs investissements. Formation en finance requise.',
         requirements: ['Finance', 'Analyse', 'Excel'],
         location: 'Lille, Hauts-de-France',
         jobType: JobType.fullTime,
@@ -266,7 +276,8 @@ class JobsListController extends GetxController {
         employerId: 'emp9',
         companyName: 'HealthTech',
         title: 'Développeur FullStack',
-        description: 'Développez des applications web pour le secteur de la santé. Respect des normes RGPD et sécurité des données crucial.',
+        description:
+            'Développez des applications web pour le secteur de la santé. Respect des normes RGPD et sécurité des données crucial.',
         requirements: ['React', 'Node.js', 'Sécurité'],
         location: 'Strasbourg, Grand Est',
         jobType: JobType.fullTime,
@@ -283,7 +294,8 @@ class JobsListController extends GetxController {
         employerId: 'emp10',
         companyName: 'EduPlatform',
         title: 'Concepteur Pédagogique',
-        description: 'Créez du contenu éducatif digital pour nos plateformes e-learning. Expérience en pédagogie numérique appréciée.',
+        description:
+            'Créez du contenu éducatif digital pour nos plateformes e-learning. Expérience en pédagogie numérique appréciée.',
         requirements: ['Pédagogie', 'E-learning', 'Créativité'],
         location: 'Rennes, Bretagne',
         jobType: JobType.partTime,
@@ -300,7 +312,8 @@ class JobsListController extends GetxController {
         employerId: 'emp11',
         companyName: 'RetailInnovate',
         title: 'Responsable E-commerce',
-        description: 'Gérez notre boutique en ligne et développez les ventes digitales. Expérience en marketing digital requise.',
+        description:
+            'Gérez notre boutique en ligne et développez les ventes digitales. Expérience en marketing digital requise.',
         requirements: ['E-commerce', 'Marketing', 'Analytics'],
         location: 'Nice, Provence-Alpes-Côte d\'Azur',
         jobType: JobType.fullTime,
@@ -317,7 +330,8 @@ class JobsListController extends GetxController {
         employerId: 'emp12',
         companyName: 'ArtisanCraft',
         title: 'Artisan Menuisier',
-        description: 'Rejoignez notre équipe d\'artisans pour créer des meubles sur mesure. Passion pour le travail du bois essentielle.',
+        description:
+            'Rejoignez notre équipe d\'artisans pour créer des meubles sur mesure. Passion pour le travail du bois essentielle.',
         requirements: ['Menuiserie', 'Artisanat', 'Précision'],
         location: 'Annecy, Auvergne-Rhône-Alpes',
         jobType: JobType.fullTime,
@@ -334,7 +348,8 @@ class JobsListController extends GetxController {
         employerId: 'emp13',
         companyName: 'SportAcademy',
         title: 'Coach Sportif',
-        description: 'Encadrez des séances de sport individuelles et collectives. Diplôme BPJEPS ou équivalent requis.',
+        description:
+            'Encadrez des séances de sport individuelles et collectives. Diplôme BPJEPS ou équivalent requis.',
         requirements: ['BPJEPS', 'Sport', 'Pédagogie'],
         location: 'Montpellier, Occitanie',
         jobType: JobType.partTime,
@@ -351,7 +366,8 @@ class JobsListController extends GetxController {
         employerId: 'emp14',
         companyName: 'LegalTech',
         title: 'Juriste en Droit du Numérique',
-        description: 'Conseillez nos clients sur les questions juridiques liées au numérique. Master en droit requis.',
+        description:
+            'Conseillez nos clients sur les questions juridiques liées au numérique. Master en droit requis.',
         requirements: ['Droit', 'RGPD', 'Numérique'],
         location: 'Rouen, Normandie',
         jobType: JobType.fullTime,
@@ -368,7 +384,8 @@ class JobsListController extends GetxController {
         employerId: 'emp15',
         companyName: 'AgriTech',
         title: 'Ingénieur Agronome',
-        description: 'Développez des solutions agricoles durables et innovantes. Connaissance en agriculture moderne requise.',
+        description:
+            'Développez des solutions agricoles durables et innovantes. Connaissance en agriculture moderne requise.',
         requirements: ['Agronomie', 'Agriculture', 'Innovation'],
         location: 'Poitiers, Nouvelle-Aquitaine',
         jobType: JobType.fullTime,
@@ -386,10 +403,13 @@ class JobsListController extends GetxController {
   Future<void> searchJobs() async {
     try {
       isLoading.value = true;
-      
-      JobType? jobTypeFilter = selectedJobTypes.isNotEmpty ? selectedJobTypes.first : null;
-      ExperienceLevel? experienceFilter = selectedExperienceLevels.isNotEmpty ? selectedExperienceLevels.first : null;
-      
+
+      JobType? jobTypeFilter =
+          selectedJobTypes.isNotEmpty ? selectedJobTypes.first : null;
+      ExperienceLevel? experienceFilter = selectedExperienceLevels.isNotEmpty
+          ? selectedExperienceLevels.first
+          : null;
+
       final jobsList = await JobService.getAllJobOffers(
         limit: 100,
         searchTerm: searchTerm.value.isNotEmpty ? searchTerm.value : null,
@@ -397,9 +417,9 @@ class JobsListController extends GetxController {
         jobType: jobTypeFilter,
         experienceLevel: experienceFilter,
       );
-      
+
       jobs.value = jobsList;
-      
+
       // Si pas de jobs trouvés, utiliser des données factices filtrées
       if (jobsList.isEmpty) {
         jobs.value = _getFilteredMockJobs(jobTypeFilter, experienceFilter);
@@ -408,7 +428,9 @@ class JobsListController extends GetxController {
       // En cas d'erreur, utiliser des données factices filtrées
       jobs.value = _getFilteredMockJobs(
         selectedJobTypes.isNotEmpty ? selectedJobTypes.first : null,
-        selectedExperienceLevels.isNotEmpty ? selectedExperienceLevels.first : null,
+        selectedExperienceLevels.isNotEmpty
+            ? selectedExperienceLevels.first
+            : null,
       );
       Get.snackbar(
         'Mode démo',
@@ -422,35 +444,46 @@ class JobsListController extends GetxController {
   }
 
   // Données factices filtrées
-  List<JobOfferModel> _getFilteredMockJobs(JobType? jobType, ExperienceLevel? experienceLevel) {
+  List<JobOfferModel> _getFilteredMockJobs(
+      JobType? jobType, ExperienceLevel? experienceLevel) {
     List<JobOfferModel> mockJobs = _getMockJobs();
-    
+
     // Filtrer par terme de recherche
     if (searchTerm.value.isNotEmpty) {
-      mockJobs = mockJobs.where((job) =>
-        job.title.toLowerCase().contains(searchTerm.value.toLowerCase()) ||
-        job.description.toLowerCase().contains(searchTerm.value.toLowerCase()) ||
-        job.companyName.toLowerCase().contains(searchTerm.value.toLowerCase())
-      ).toList();
+      mockJobs = mockJobs
+          .where((job) =>
+              job.title
+                  .toLowerCase()
+                  .contains(searchTerm.value.toLowerCase()) ||
+              job.description
+                  .toLowerCase()
+                  .contains(searchTerm.value.toLowerCase()) ||
+              job.companyName
+                  .toLowerCase()
+                  .contains(searchTerm.value.toLowerCase()))
+          .toList();
     }
-    
+
     // Filtrer par localisation
     if (location.value.isNotEmpty) {
-      mockJobs = mockJobs.where((job) =>
-        job.location.toLowerCase().contains(location.value.toLowerCase())
-      ).toList();
+      mockJobs = mockJobs
+          .where((job) =>
+              job.location.toLowerCase().contains(location.value.toLowerCase()))
+          .toList();
     }
-    
+
     // Filtrer par type de job
     if (jobType != null) {
       mockJobs = mockJobs.where((job) => job.jobType == jobType).toList();
     }
-    
+
     // Filtrer par niveau d'expérience
     if (experienceLevel != null) {
-      mockJobs = mockJobs.where((job) => job.experienceLevel == experienceLevel).toList();
+      mockJobs = mockJobs
+          .where((job) => job.experienceLevel == experienceLevel)
+          .toList();
     }
-    
+
     return mockJobs;
   }
 
@@ -468,7 +501,7 @@ class JobsListController extends GetxController {
       case JobType.contract:
         return 'Contrat';
       case JobType.internship:
-        return 'Stage';
+        return 'Internship';
       case JobType.freelance:
         return 'Freelance';
     }

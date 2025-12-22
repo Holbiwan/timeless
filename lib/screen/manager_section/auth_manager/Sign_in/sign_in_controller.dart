@@ -30,115 +30,125 @@ class SignInScreenControllerM extends GetxController {
   void signInWithEmailAndPassword({required String email, required String password}) async {
     loading.value = true;
 
-    await fireStore
-        .collection("Auth")
-        .doc("Manager")
-        .collection("register")
-        .get()
-        .then((value) async {
-      if (value.docs.length.isEqual(0)) {
-        loading.value = false;
-        Get.snackbar("Error", "Please create account,\n your email is not registered",
-            colorText: const Color(0xffDA1414));
-      } else {
-        for (int i = 0; i < value.docs.length; i++) {
+    try {
+      // D'abord, essayer de s'authentifier avec Firebase Auth
+      UserCredential credential = await auth.signInWithEmailAndPassword(
+          email: email, password: password);
+
+      if (credential.user?.email == email) {
+        // Vérifier d'abord dans la nouvelle collection 'employers'
+        final employerDoc = await fireStore
+            .collection("employers")
+            .doc(credential.user!.uid)
+            .get();
+
+        if (employerDoc.exists) {
+          // Nouvelle structure d'employeur
+          final data = employerDoc.data()!;
+          
+          PreferencesService.setValue(PrefKeys.rol, "Manager");
+          PreferencesService.setValue(PrefKeys.totalPost, 0); // Par défaut pour nouveaux employeurs
+          PreferencesService.setValue(PrefKeys.company, true);
+          PreferencesService.setValue(PrefKeys.userId, credential.user!.uid);
+          PreferencesService.setValue(PrefKeys.companyName, data['companyName'] ?? 'Unknown Company');
+
           if (kDebugMode) {
-            print("${value.docs[i]["Email"]}=||||||++++++++++");
+            print('✅ Connexion employeur réussie (nouvelle structure): ${data['companyName']}');
           }
 
-          if (value.docs[i]["Email"] == email && value.docs[i]["Email"] != "") {
-            isManager = true;
-            PreferencesService.setValue(PrefKeys.rol, "Manager");
-            PreferencesService.setValue(PrefKeys.totalPost, value.docs[i]["TotalPost"]);
-            PreferencesService.setValue(PrefKeys.company, value.docs[i]["company"]);
-            PreferencesService.setValue(PrefKeys.userId, value.docs[i].id);
-
-            await fireStore
-                .collection("Auth")
-                .doc("Manager")
-                .collection("register")
-                .doc(value.docs[i].id)
-                .collection("company")
-                .get()
-                .then((value2) {
-              for (int j = 0; j < value2.docs.length; j++) {
-                PreferencesService.setValue(PrefKeys.companyName, value2.docs[j]['name']);
-              }
-            });
-
-            if (kDebugMode) {
-              print("$isManager====]]]]]");
-            }
-
-            break;
-          } else {
-            isManager = false;
-
-            if (kDebugMode) {
-              print("$isManager====]]]]]");
-            }
-          }
+          Get.off(() => ManagerDashBoardScreen());
+          
+          emailController.text = "";
+          passwordController.text = "";
+          update(["loginForm", "showEmail", "pwdError"]);
+          loading.value = false;
+          return;
         }
 
-        if (isManager == true) {
-          try {
-            loading.value = true;
-            UserCredential credential = await auth.signInWithEmailAndPassword(
-                email: email, password: password);
+        // Si pas trouvé dans la nouvelle collection, vérifier l'ancienne
+        await fireStore
+            .collection("Auth")
+            .doc("Manager")
+            .collection("register")
+            .get()
+            .then((value) async {
+          bool foundInOldStructure = false;
 
-            if (kDebugMode) {
-              print(credential);
-            }
+          for (int i = 0; i < value.docs.length; i++) {
+            if (value.docs[i]["Email"] == email && value.docs[i]["Email"] != "") {
+              foundInOldStructure = true;
+              
+              PreferencesService.setValue(PrefKeys.rol, "Manager");
+              PreferencesService.setValue(PrefKeys.totalPost, value.docs[i]["TotalPost"] ?? 0);
+              PreferencesService.setValue(PrefKeys.company, value.docs[i]["company"] ?? true);
+              PreferencesService.setValue(PrefKeys.userId, credential.user!.uid);
 
-            if (credential.user!.email.toString() == email) {
-              PreferencesService.setValue(PrefKeys.userId, credential.user!.uid.toString());
+              // Récupérer les infos de l'entreprise depuis l'ancienne structure
+              await fireStore
+                  .collection("Auth")
+                  .doc("Manager")
+                  .collection("register")
+                  .doc(value.docs[i].id)
+                  .collection("company")
+                  .get()
+                  .then((value2) {
+                for (int j = 0; j < value2.docs.length; j++) {
+                  PreferencesService.setValue(PrefKeys.companyName, value2.docs[j]['name']);
+                }
+              });
+
+              if (kDebugMode) {
+                print('✅ Connexion employeur réussie (ancienne structure)');
+              }
+
               Get.off(() => PreferencesService.getBool(PrefKeys.company)
                   ? ManagerDashBoardScreen()
                   : const OrganizationProfileScreen());
-
-              emailController.text = "";
-              passwordController.text = "";
-              update(["loginForm", "showEmail", "pwdError"]);
+              
+              break;
             }
-          } on FirebaseAuthException catch (e) {
-            if (e.code == 'user-not-found') {
-              Get.snackbar("Error", "Wrong user", colorText: const Color(0xffDA1414));
-              loading.value = false;
-
-              if (kDebugMode) {
-                print('No user found for that email.');
-              }
-            } else if (e.code == 'wrong-password') {
-              Get.snackbar("Error", "Wrong password", colorText: const Color(0xffDA1414));
-              loading.value = false;
-
-              if (kDebugMode) {
-                print('Wrong password provided for that user.');
-              }
-            }
-
-            if (kDebugMode) {
-              print(e.code);
-            }
-            Get.snackbar("Error", e.code, colorText: const Color(0xffDA1414));
-            loading.value = false;
           }
-        } else {
-          Get.snackbar("Error", "Please create account,\n your email is not registered",
-              colorText: const Color(0xffDA1414));
-          loading.value = false;
+
+          if (!foundInOldStructure) {
+            Get.snackbar("Error", "Account not found in employer database",
+                colorText: const Color(0xffDA1414));
+          }
+
+          emailController.text = "";
+          passwordController.text = "";
+          update(["loginForm", "showEmail", "pwdError"]);
+        });
+      }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        Get.snackbar("Error", "No account found with this email", colorText: const Color(0xffDA1414));
+        if (kDebugMode) {
+          print('No user found for that email.');
         }
-        loading.value = false;
+      } else if (e.code == 'wrong-password') {
+        Get.snackbar("Error", "Incorrect password", colorText: const Color(0xffDA1414));
+        if (kDebugMode) {
+          print('Wrong password provided for that user.');
+        }
+      } else if (e.code == 'invalid-email') {
+        Get.snackbar("Error", "Invalid email format", colorText: const Color(0xffDA1414));
+      } else if (e.code == 'user-disabled') {
+        Get.snackbar("Error", "This account has been disabled", colorText: const Color(0xffDA1414));
+      } else {
+        Get.snackbar("Error", "Authentication error: ${e.message}", colorText: const Color(0xffDA1414));
       }
-
+      
       if (kDebugMode) {
-        print("${value.isBlank}=|=|=|");
+        print('Firebase Auth Error: ${e.code} - ${e.message}');
       }
-
+    } catch (e) {
+      Get.snackbar("Error", "An unexpected error occurred: $e", colorText: const Color(0xffDA1414));
       if (kDebugMode) {
-        print("${value.docs.length}=|=|=|");
+        print('Unexpected error: $e');
       }
-    });
+    }
+    
+    loading.value = false;
   }
 
   void onChanged(String value) {
@@ -350,6 +360,34 @@ class SignInScreenControllerM extends GetxController {
 
     if (user?.uid != null && user?.uid != "") {
       loading.value = true;
+      
+      // Vérifier d'abord dans la nouvelle collection 'employers'
+      final employerDoc = await fireStore
+          .collection("employers")
+          .doc(user!.uid)
+          .get();
+
+      if (employerDoc.exists) {
+        // Nouvelle structure d'employeur
+        final data = employerDoc.data()!;
+        isManager = true;
+        
+        PreferencesService.setValue(PrefKeys.rol, "Manager");
+        PreferencesService.setValue(PrefKeys.totalPost, 0); // Par défaut pour nouveaux employeurs
+        PreferencesService.setValue(PrefKeys.company, true);
+        PreferencesService.setValue(PrefKeys.userId, user.uid);
+        PreferencesService.setValue(PrefKeys.companyName, data['companyName'] ?? 'Unknown Company');
+
+        if (kDebugMode) {
+          print('✅ Connexion Google employeur réussie (nouvelle structure): ${data['companyName']}');
+        }
+
+        Get.off(() => ManagerDashBoardScreen());
+        loading.value = false;
+        return;
+      }
+
+      // Si pas trouvé dans la nouvelle collection, vérifier l'ancienne
       await fireStore
           .collection("Auth")
           .doc("Manager")
@@ -360,24 +398,50 @@ class SignInScreenControllerM extends GetxController {
           loading.value = false;
           Get.snackbar("Error", "Please create account,\n your email is not registered",
               colorText: const Color(0xffDA1414));
+          if (await googleSignIn.isSignedIn()) {
+            await googleSignIn.signOut();
+          }
         } else {
+          bool foundInOldStructure = false;
+          
           for (int i = 0; i < value.docs.length; i++) {
-            if (value.docs[i]["Email"] == user!.email && value.docs[i]["Email"] != "") {
+            if (value.docs[i]["Email"] == user.email && value.docs[i]["Email"] != "") {
               isManager = true;
+              foundInOldStructure = true;
+              
               PreferencesService.setValue(PrefKeys.rol, "Manager");
               PreferencesService.setValue(PrefKeys.totalPost, value.docs[i]["TotalPost"]);
               PreferencesService.setValue(PrefKeys.company, value.docs[i]["company"]);
               PreferencesService.setValue(PrefKeys.userId, user.uid);
+              
+              // Récupérer les infos de l'entreprise depuis l'ancienne structure
+              await fireStore
+                  .collection("Auth")
+                  .doc("Manager")
+                  .collection("register")
+                  .doc(value.docs[i].id)
+                  .collection("company")
+                  .get()
+                  .then((value2) {
+                for (int j = 0; j < value2.docs.length; j++) {
+                  PreferencesService.setValue(PrefKeys.companyName, value2.docs[j]['name']);
+                }
+              });
+              
               Get.off(() => PreferencesService.getBool(PrefKeys.company)
                   ? ManagerDashBoardScreen()
                   : const OrganizationProfileScreen());
+              
+              if (kDebugMode) {
+                print('✅ Connexion Google employeur réussie (ancienne structure)');
+              }
+              
               break;
-            } else {
-              isManager = false;
             }
           }
           
-          if (!isManager) {
+          if (!foundInOldStructure) {
+            isManager = false;
             Get.snackbar("Error", "Please create account,\n your email is not registered",
                 colorText: const Color(0xffDA1414));
             if (await googleSignIn.isSignedIn()) {
@@ -389,7 +453,7 @@ class SignInScreenControllerM extends GetxController {
         }
       });
 
-      PreferencesService.setValue(PrefKeys.userId, user?.uid.toString());
+      PreferencesService.setValue(PrefKeys.userId, user.uid);
       loading.value = false;
     } else {
       loading.value = false;

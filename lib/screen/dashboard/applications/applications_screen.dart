@@ -4,11 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:timeless/common/widgets/back_button.dart';
 import 'package:timeless/common/widgets/common_loader.dart';
-import 'package:timeless/screen/dashboard/applications/financialplanner_screen.dart';
 import 'package:timeless/screen/dashboard/applications/applications_controller.dart';
 import 'package:timeless/screen/dashboard/applications/rejected_screen.dart';
 import 'package:timeless/screen/dashboard/home/widgets/search_field.dart';
-import 'package:timeless/screen/savejobs/save_job_screen.dart';
 import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/asset_res.dart';
@@ -23,8 +21,9 @@ class ApplicationsScreen extends StatelessWidget {
 
   final applicationController = Get.put(ApplicationsController());
 
-  // Helper function pour accès sécurisé aux champs Firestore
-  String getFieldSafely(DocumentSnapshot doc, String field, [String defaultValue = 'Pending']) {
+  // Helper function for secure access to Firestore fields
+  String getFieldSafely(DocumentSnapshot doc, String field,
+      [String defaultValue = 'Pending']) {
     try {
       final data = doc.data() as Map<String, dynamic>?;
       return data?[field]?.toString() ?? defaultValue;
@@ -41,9 +40,8 @@ class ApplicationsScreen extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Container(
-        height: Get.height,
         width: Get.width,
-        color: ColorRes.backgroundColor,
+        color: Colors.white,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,7 +51,7 @@ class ApplicationsScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 18),
               child: Row(
                 children: [
-                  logo(),
+                  backButton(),
                   Expanded(
                     child: Container(
                       alignment: Alignment.center,
@@ -62,90 +60,109 @@ class ApplicationsScreen extends StatelessWidget {
                         style: appTextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.w600,
-                            color: ColorRes.textPrimary),
+                            color: const Color(0xFF1565C0)),
                       ),
                     ),
                   ),
-                  InkWell(
-                    onTap: () {
-                      debugPrint("ON TAP SAVE BTN");
+                  IconButton(
+                    onPressed: () async {
+                      // Force refresh by updating the controller and triggering stream refresh
+                      applicationController.update();
+                      Get.snackbar(
+                        'Refreshed',
+                        'Application list updated',
+                        backgroundColor: Colors.blue,
+                        colorText: Colors.white,
+                        duration: const Duration(seconds: 2),
+                        snackPosition: SnackPosition.TOP,
+                      );
                     },
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (con) => SaveJobScreen(),
-                          ),
-                        );
-                      },
-                      child: Container(
-                        height: 40,
-                        width: 40,
-                        alignment: Alignment.center,
-                        decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                            color: ColorRes.logoColor),
-                        child: Image.asset(
-                          AssetRes.bookMarkFillIcon,
-                          height: 21,
-                          width: 15,
-                        ),
-                      ),
+                    icon: const Icon(
+                      Icons.refresh,
+                      color: Color(0xFF1565C0),
+                      size: 24,
                     ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 25),
+            const SizedBox(height: 20),
+            Center(
+              child: Container(
+                alignment: Alignment.center,
+                height: 200,
+                width: Get.width * 0.85,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: RepaintBoundary(
+                  child: Image.asset(
+                    'assets/images/logo.png',
+                    height: 180,
+                    width: Get.width * 0.8,
+                    fit: BoxFit.contain,
+                    filterQuality: FilterQuality.high,
+                    gaplessPlayback: false,
+                    isAntiAlias: false,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
             searchArea(),
             const SizedBox(height: 25),
             Container(
-              padding: const EdgeInsets.only(left: 20, right: 20),
-              height: 32,
-              child: ListView.builder(
-                  itemCount: applicationController.jobs.length,
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  physics: const BouncingScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              height: 40,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: List.generate(
+                  applicationController.jobs.length,
+                  (index) => Expanded(
+                    child: GestureDetector(
                       onTap: () => applicationController.onTapJobs2(index),
                       child: Obx(
                         () => Container(
-                          margin: const EdgeInsets.only(right: 10),
-                          padding: const EdgeInsets.symmetric(horizontal: 15),
-                          height: 32,
+                          margin: EdgeInsets.only(
+                            right: index < applicationController.jobs.length - 1
+                                ? 8
+                                : 0,
+                          ),
+                          height: 40,
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                               border: Border.all(
-                                  color: ColorRes.containerColor, width: 2),
+                                  color: const Color(0xFF1565C0), width: 2),
                               borderRadius: const BorderRadius.all(
                                 Radius.circular(10),
                               ),
                               color: applicationController.selectedJobs.value ==
                                       index
-                                  ? ColorRes.containerColor
-                                  : ColorRes.white),
+                                  ? const Color(0xFF1565C0)
+                                  : Colors.white),
                           child: Text(
                             applicationController.jobs[index],
                             style: appTextStyle(
                                 color:
                                     applicationController.selectedJobs.value ==
                                             index
-                                        ? ColorRes.white
-                                        : ColorRes.containerColor,
-                                fontSize: 12,
+                                        ? Colors.white
+                                        : const Color(0xFF1565C0),
+                                fontSize: 11,
                                 fontWeight: FontWeight.w600),
+                            textAlign: TextAlign.center,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ),
-                    );
-                  }),
+                    ),
+                  ),
+                ),
+              ),
             ),
             const SizedBox(height: 15),
-            SizedBox(
-              height: Get.height - 309,
+            Expanded(
               child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                   stream: FirebaseFirestore.instance
                       .collection("Applicants")
@@ -186,562 +203,101 @@ class ApplicationsScreen extends StatelessWidget {
                                               .toString()
                                               .toLowerCase()
                                               .removeAllWhitespace)
-                                      ? Obx(
-                                          () => Column(
-                                            children: [
-                                              (applicationController
-                                                          .selectedJobs.value ==
-                                                      0)
-                                                  ? Container(
-                                                      height: 135,
-                                                      width: Get.width,
-                                                      margin: const EdgeInsets
-                                                              .symmetric(
-                                                          horizontal: 18,
-                                                          vertical: 4),
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              15),
-                                                      decoration: BoxDecoration(
+                                      ? StreamBuilder<QuerySnapshot>(
+                                          stream: FirebaseFirestore.instance
+                                              .collection('Interviews')
+                                              .where('candidateEmail', isEqualTo: PreferencesService.getString(PrefKeys.email))
+                                              .where('candidateName', isEqualTo: PreferencesService.getString(PrefKeys.fullName))
+                                              .where('jobTitle', isEqualTo: snapshot2.data!.docs[index2]['position'])
+                                              .snapshots(),
+                                          builder: (context, interviewSnapshot) {
+                                            String currentStatus = getFieldSafely(
+                                                snapshot2.data!.docs[index2],
+                                                'status');
+                                            
+                                            // If there's an interview scheduled, update status
+                                            if (interviewSnapshot.hasData && interviewSnapshot.data!.docs.isNotEmpty) {
+                                              currentStatus = 'Schedule Interview';
+                                            }
+                                            
+                                            return Obx(() {
+                                              final selectedIndex = applicationController.selectedJobs.value;
+
+                                              bool shouldShow = false;
+                                              switch (selectedIndex) {
+                                                case 0: // All
+                                                  shouldShow = true;
+                                                  break;
+                                                case 1: // Interview
+                                                  shouldShow = currentStatus == 'Schedule Interview';
+                                                  break;
+                                                case 2: // Sent
+                                                  shouldShow = currentStatus == 'Sent';
+                                                  break;
+                                                case 3: // Erase - Show all applications with delete mode
+                                                  shouldShow = true;
+                                                  break;
+                                              }
+
+                                              return Column(
+                                                children: [
+                                                  shouldShow
+                                                      ? Container(
+                                                        height: 160,
+                                                        width: Get.width,
+                                                        margin: const EdgeInsets
+                                                            .symmetric(
+                                                            horizontal: 18,
+                                                            vertical: 4),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(15),
+                                                        decoration:
+                                                            BoxDecoration(
                                                           borderRadius:
                                                               const BorderRadius
                                                                   .all(
                                                             Radius.circular(15),
                                                           ),
                                                           border: Border.all(
-                                                            color: Colors.grey.withOpacity(0.3),
+                                                            color: Colors.grey
+                                                                .withOpacity(
+                                                                    0.3),
                                                           ),
-                                                          color: Colors.black87,
+                                                          color: applicationController
+                                                                      .selectedJobs
+                                                                      .value ==
+                                                                  3
+                                                              ? Colors
+                                                                  .red.shade800
+                                                              : const Color.fromARGB(255, 0, 6, 71),
                                                           boxShadow: [
                                                             BoxShadow(
-                                                              color: Colors.black.withOpacity(0.3),
+                                                              color: Colors
+                                                                  .black
+                                                                  .withOpacity(
+                                                                      0.3),
                                                               spreadRadius: 2,
                                                               blurRadius: 8,
-                                                              offset: const Offset(0, 3),
+                                                              offset:
+                                                                  const Offset(
+                                                                      0, 3),
                                                             ),
                                                           ],
                                                         ),
-                                                      child: Column(
-                                                        children: [
-                                                          Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    bottom: 8),
-                                                            child: Row(
-                                                              children: [
-                                                                Image.asset(
-                                                                    AssetRes
-                                                                        .airBnbLogo,
-                                                                    height: 40),
-                                                                const SizedBox(
-                                                                    width: 20),
-                                                                Column(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .center,
-                                                                  crossAxisAlignment:
-                                                                      CrossAxisAlignment
-                                                                          .start,
-                                                                  children: [
-                                                                    Text(
-                                                                        snapshot2.data!.docs[index2]
-                                                                            [
-                                                                            'position'],
-                                                                        style: appTextStyle(
-                                                                            color: Colors.white,
-                                                                            fontSize:
-                                                                                16,
-                                                                            fontWeight:
-                                                                                FontWeight.w600)),
-                                                                    Text(
-                                                                        snapshot.data!.docs[index]
-                                                                            [
-                                                                            'companyName'],
-                                                                        style: appTextStyle(
-                                                                            color: ColorRes.appleGreen,
-                                                                            fontSize:
-                                                                                14,
-                                                                            fontWeight:
-                                                                                FontWeight.w500)),
-                                                                  ],
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                          const Divider(
-                                                            color:
-                                                                Colors.grey,
-                                                          ),
-                                                          const SizedBox(
-                                                              height: 10),
-                                                          InkWell(
-                                                            onTap: () {
-                                                              final status = getFieldSafely(snapshot2.data!.docs[index2], 'status');
-                                                              (status == 'Sent')
-                                                                  ? Navigator
-                                                                      .push(
-                                                                      context,
-                                                                      MaterialPageRoute(
-                                                                        builder:
-                                                                            (con) =>
-                                                                                SentScreen(
-                                                                          position: snapshot2
-                                                                              .data!
-                                                                              .docs[index2]['position'],
-                                                                          companyName: snapshot
-                                                                              .data!
-                                                                              .docs[index]['companyName'],
-                                                                          message: snapshot2
-                                                                              .data!
-                                                                              .docs[index2]['message'],
-                                                                          salary: snapshot2
-                                                                              .data!
-                                                                              .docs[index2]['salary'],
-                                                                          location: snapshot2
-                                                                              .data!
-                                                                              .docs[index2]['location'],
-                                                                          type: snapshot2
-                                                                              .data!
-                                                                              .docs[index2]['type'],
-                                                                        ),
-                                                                      ),
-                                                                    )
-                                                                  : (status == 'Rejected')
-                                                                      ? Navigator
-                                                                          .push(
-                                                                          context,
-                                                                          MaterialPageRoute(
-                                                                            builder: (con) =>
-                                                                                RejectedScreen(
-                                                                              position: snapshot2.data!.docs[index2]['position'],
-                                                                              companyName: snapshot.data!.docs[index]['companyName'],
-                                                                              message: snapshot2.data!.docs[index2]['message'],
-                                                                              salary: snapshot2.data!.docs[index2]['salary'],
-                                                                              location: snapshot2.data!.docs[index2]['location'],
-                                                                              type: snapshot2.data!.docs[index2]['type'],
-                                                                            ),
-                                                                          ),
-                                                                        )
-                                                                      : (status == 'Accepted')
-                                                                          ? Navigator
-                                                                              .push(
-                                                                              context,
-                                                                              MaterialPageRoute(
-                                                                                builder: (con) => AcceptedScreen(
-                                                                                  position: snapshot2.data!.docs[index2]['position'],
-                                                                                  companyName: snapshot.data!.docs[index]['companyName'],
-                                                                                  message: snapshot2.data!.docs[index2]['message'],
-                                                                                  salary: snapshot2.data!.docs[index2]['salary'],
-                                                                                  location: snapshot2.data!.docs[index2]['location'],
-                                                                                  type: snapshot2.data!.docs[index2]['type'],
-                                                                                ),
-                                                                              ),
-                                                                            )
-                                                                          : const SizedBox();
-                                                            },
-                                                            child: Container(
-                                                              height: 28,
-                                                              width: Get.width,
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                color: getFieldSafely(snapshot2.data!.docs[index2], 'status') == 'Schedule Interview'
-                                                                    ? const Color(0xffFFFBED)
-                                                                    : getFieldSafely(snapshot2.data!.docs[index2], 'status') == 'Sent'
-                                                                        ? const Color(0xffEEF2FA)
-                                                                        : getFieldSafely(snapshot2.data!.docs[index2], 'status') == 'Rejected'
-                                                                            ? const Color(0xffFEEFEF)
-                                                                            : getFieldSafely(snapshot2.data!.docs[index2], 'status') == 'Accepted'
-                                                                                ? const Color(0xffEDF9F0)
-                                                                                : const Color(0xffFFFBED),
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            99),
-                                                              ),
-                                                              child: Center(
-                                                                child: Text(
-                                                                  getFieldSafely(snapshot2.data!.docs[index2], 'status') == 'Schedule Interview'
-                                                                      ? "Schedule Interview"
-                                                                      : getFieldSafely(snapshot2.data!.docs[index2], 'status') == 'Sent'
-                                                                          ? "Application Sent"
-                                                                          : getFieldSafely(snapshot2.data!.docs[index2], 'status') == 'Rejected'
-                                                                              ? "Application Rejected"
-                                                                              : getFieldSafely(snapshot2.data!.docs[index2], 'status') == 'Accepted'
-                                                                                  ? "Application Accepted"
-                                                                                  : "Application Pending",
-                                                                  style:
-                                                                      appTextStyle(
-                                                                    fontSize:
-                                                                        12,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w500,
-                                                                    color: getFieldSafely(snapshot2.data!.docs[index2], 'status') == 'Schedule Interview'
-                                                                        ? const Color(0xffF1C100)
-                                                                        : getFieldSafely(snapshot2.data!.docs[index2], 'status') == 'Sent'
-                                                                            ? const Color(0xff2E5AAC)
-                                                                            : getFieldSafely(snapshot2.data!.docs[index2], 'status') == 'Rejected'
-                                                                                ? const Color(0xffDA1414)
-                                                                                : getFieldSafely(snapshot2.data!.docs[index2], 'status') == 'Accepted'
-                                                                                    ? const Color(0xff23A757)
-                                                                                    : const Color(0xffF1C100),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    )
-                                                  : const SizedBox(),
-                                              (applicationController
-                                                          .selectedJobs.value ==
-                                                      2)
-                                                  ? (getFieldSafely(snapshot2.data!.docs[index2], 'status') == 'Schedule Interview')
-                                                      ? Container(
-                                                          height: 135,
-                                                          width: Get.width,
-                                                          margin:
-                                                              const EdgeInsets
-                                                                      .symmetric(
-                                                                  horizontal:
-                                                                      18,
-                                                                  vertical: 4),
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(15),
-                                                          decoration: BoxDecoration(
-                                                              borderRadius:
-                                                                  const BorderRadius
-                                                                          .all(
-                                                                      Radius.circular(
-                                                                          15)),
-                                                              border: Border.all(
-                                                                  color: Colors.grey.withOpacity(0.3)),
-                                                              color: Colors.black87,
-                                                              boxShadow: [
-                                                                BoxShadow(
-                                                                  color: Colors.black.withOpacity(0.3),
-                                                                  spreadRadius: 2,
-                                                                  blurRadius: 8,
-                                                                  offset: const Offset(0, 3),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          child: Column(
-                                                            children: [
-                                                              Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .only(
-                                                                        bottom:
-                                                                            8),
-                                                                child: Row(
-                                                                  children: [
-                                                                    Image.asset(
-                                                                        AssetRes
-                                                                            .airBnbLogo,
-                                                                        height:
-                                                                            40),
-                                                                    const SizedBox(
-                                                                        width:
-                                                                            20),
-                                                                    Column(
-                                                                      mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .center,
-                                                                      crossAxisAlignment:
-                                                                          CrossAxisAlignment
-                                                                              .start,
-                                                                      children: [
-                                                                        Text(
-                                                                            snapshot2.data!.docs[index2][
-                                                                                'position'],
-                                                                            style: appTextStyle(
-                                                                                color: Colors.white,
-                                                                                fontSize: 16,
-                                                                                fontWeight: FontWeight.w600)),
-                                                                        Text(
-                                                                            snapshot.data!.docs[index][
-                                                                                'companyName'],
-                                                                            style: appTextStyle(
-                                                                                color: ColorRes.appleGreen,
-                                                                                fontSize: 14,
-                                                                                fontWeight: FontWeight.w500)),
-                                                                      ],
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                              const Divider(
-                                                                color: Colors.grey,
-                                                              ),
-                                                              const SizedBox(
-                                                                  height: 10),
-                                                              InkWell(
-                                                                onTap: () {
-                                                                  Navigator
-                                                                      .push(
-                                                                    context,
-                                                                    MaterialPageRoute(
-                                                                      builder:
-                                                                          (con) =>
-                                                                              ScheduleInterviewScreen(
-                                                                        position: snapshot2
-                                                                            .data!
-                                                                            .docs[index2]['position'],
-                                                                        companyName: snapshot
-                                                                            .data!
-                                                                            .docs[index]['companyName'],
-                                                                        message: snapshot2
-                                                                            .data!
-                                                                            .docs[index2]['message'],
-                                                                        salary: snapshot2
-                                                                            .data!
-                                                                            .docs[index2]['salary'],
-                                                                        location: snapshot2
-                                                                            .data!
-                                                                            .docs[index2]['location'],
-                                                                        type: snapshot2
-                                                                            .data!
-                                                                            .docs[index2]['type'],
-                                                                      ),
-                                                                    ),
-                                                                  );
-                                                                },
-                                                                child:
-                                                                    Container(
-                                                                  height: 28,
-                                                                  width:
-                                                                      Get.width,
-                                                                  decoration:
-                                                                      BoxDecoration(
-                                                                    color: const Color(
-                                                                        0xffFFFBED),
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            99),
-                                                                  ),
-                                                                  child: Center(
-                                                                    child: Text(
-                                                                      "Schedule Interview",
-                                                                      style:
-                                                                          appTextStyle(
-                                                                        fontSize:
-                                                                            12,
-                                                                        fontWeight:
-                                                                            FontWeight.w500,
-                                                                        color: const Color(
-                                                                            0xffF1C100),
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        )
-                                                      : const SizedBox()
-                                                  : const SizedBox(),
-                                              (applicationController
-                                                          .selectedJobs.value ==
-                                                      1)
-                                                  ? (getFieldSafely(snapshot2.data!.docs[index2], 'status') == 'Accepted')
-                                                      ? Container(
-                                                          height: 135,
-                                                          width: Get.width,
-                                                          margin:
-                                                              const EdgeInsets
-                                                                      .symmetric(
-                                                                  horizontal:
-                                                                      18,
-                                                                  vertical: 4),
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(15),
-                                                          decoration:
-                                                              BoxDecoration(
-                                                                  borderRadius:
-                                                                      const BorderRadius
-                                                                          .all(
-                                                                    Radius
-                                                                        .circular(
-                                                                            15),
-                                                                  ),
-                                                                  border: Border.all(
-                                                                      color: const Color(
-                                                                          0xffF3ECFF)),
-                                                                  color: ColorRes
-                                                                      .white),
-                                                          child: Column(
-                                                            children: [
-                                                              Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .only(
-                                                                        bottom:
-                                                                            8),
-                                                                child: Row(
-                                                                  children: [
-                                                                    Image.asset(
-                                                                        AssetRes
-                                                                            .airBnbLogo,
-                                                                        height:
-                                                                            40),
-                                                                    const SizedBox(
-                                                                        width:
-                                                                            20),
-                                                                    Column(
-                                                                      mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .center,
-                                                                      crossAxisAlignment:
-                                                                          CrossAxisAlignment
-                                                                              .start,
-                                                                      children: [
-                                                                        Text(
-                                                                            snapshot2.data!.docs[index2][
-                                                                                'position'],
-                                                                            style: appTextStyle(
-                                                                                color: Colors.white,
-                                                                                fontSize: 16,
-                                                                                fontWeight: FontWeight.w600)),
-                                                                        Text(
-                                                                            snapshot.data!.docs[index][
-                                                                                'companyName'],
-                                                                            style: appTextStyle(
-                                                                                color: ColorRes.appleGreen,
-                                                                                fontSize: 14,
-                                                                                fontWeight: FontWeight.w500)),
-                                                                      ],
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                              const Divider(
-                                                                color: Colors.grey,
-                                                              ),
-                                                              const SizedBox(
-                                                                  height: 10),
-                                                              InkWell(
-                                                                onTap: () {
-                                                                  Navigator
-                                                                      .push(
-                                                                    context,
-                                                                    MaterialPageRoute(
-                                                                      builder:
-                                                                          (con) =>
-                                                                              AcceptedScreen(
-                                                                        position: snapshot2
-                                                                            .data!
-                                                                            .docs[index2]['position'],
-                                                                        companyName: snapshot
-                                                                            .data!
-                                                                            .docs[index]['companyName'],
-                                                                        message: snapshot2
-                                                                            .data!
-                                                                            .docs[index2]['message'],
-                                                                        salary: snapshot2
-                                                                            .data!
-                                                                            .docs[index2]['salary'],
-                                                                        location: snapshot2
-                                                                            .data!
-                                                                            .docs[index2]['location'],
-                                                                        type: snapshot2
-                                                                            .data!
-                                                                            .docs[index2]['type'],
-                                                                      ),
-                                                                    ),
-                                                                  );
-                                                                },
-                                                                child:
-                                                                    Container(
-                                                                  height: 28,
-                                                                  width:
-                                                                      Get.width,
-                                                                  decoration:
-                                                                      BoxDecoration(
-                                                                    color: const Color(
-                                                                        0xffEDF9F0),
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            99),
-                                                                  ),
-                                                                  child: Center(
-                                                                    child: Text(
-                                                                      "Application Accepted",
-                                                                      style:
-                                                                          appTextStyle(
-                                                                        fontSize:
-                                                                            12,
-                                                                        fontWeight:
-                                                                            FontWeight.w500,
-                                                                        color: const Color(
-                                                                            0xff23A757),
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        )
-                                                      : const SizedBox()
-                                                  : const SizedBox(),
-                                              (applicationController
-                                                          .selectedJobs.value ==
-                                                      3)
-                                                  ? (getFieldSafely(snapshot2.data!.docs[index2], 'status') == 'Rejected')
-                                                      ? Container(
-                                                          height: 135,
-                                                          width: Get.width,
-                                                          margin:
-                                                              const EdgeInsets
-                                                                      .symmetric(
-                                                                  horizontal:
-                                                                      18,
-                                                                  vertical: 4),
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(15),
-                                                          decoration: BoxDecoration(
-                                                              borderRadius:
-                                                                  const BorderRadius
-                                                                          .all(
-                                                                      Radius.circular(
-                                                                          15)),
-                                                              border: Border.all(
-                                                                  color: Colors.grey.withOpacity(0.3)),
-                                                              color: Colors.black87,
-                                                              boxShadow: [
-                                                                BoxShadow(
-                                                                  color: Colors.black.withOpacity(0.3),
-                                                                  spreadRadius: 2,
-                                                                  blurRadius: 8,
-                                                                  offset: const Offset(0, 3),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          child: Column(
-                                                            children: [
-                                                              Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .only(
-                                                                        bottom:
-                                                                            8),
-                                                                child: Row(
-                                                                  children: [
-                                                                    Image.asset(
-                                                                        AssetRes
-                                                                            .airBnbLogo,
-                                                                        height:
-                                                                            40),
-                                                                    const SizedBox(
-                                                                        width:
-                                                                            20),
-                                                                    Column(
+                                                        child: Column(
+                                                          children: [
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .only(
+                                                                      bottom:
+                                                                          8),
+                                                              child: Row(
+                                                                children: [
+                                                                  Expanded(
+                                                                    child:
+                                                                        Column(
                                                                       mainAxisAlignment:
                                                                           MainAxisAlignment
                                                                               .center,
@@ -753,244 +309,226 @@ class ApplicationsScreen extends StatelessWidget {
                                                                           snapshot2
                                                                               .data!
                                                                               .docs[index2]['position'],
-                                                                          style: appTextStyle(
-                                                                              color: ColorRes.white,
-                                                                              fontSize: 15,
-                                                                              fontWeight: FontWeight.w500),
+                                                                          style:
+                                                                              appTextStyle(
+                                                                            color:
+                                                                                Colors.white,
+                                                                            fontSize:
+                                                                                16,
+                                                                            fontWeight:
+                                                                                FontWeight.w600,
+                                                                          ),
                                                                         ),
                                                                         Text(
                                                                           snapshot
                                                                               .data!
                                                                               .docs[index]['companyName'],
-                                                                          style: appTextStyle(
-                                                                              color: ColorRes.white,
-                                                                              fontSize: 12,
-                                                                              fontWeight: FontWeight.w400),
+                                                                          style:
+                                                                              appTextStyle(
+                                                                            color:
+                                                                                ColorRes.appleGreen,
+                                                                            fontSize:
+                                                                                14,
+                                                                            fontWeight:
+                                                                                FontWeight.w500,
+                                                                          ),
                                                                         ),
                                                                       ],
                                                                     ),
-                                                                  ],
-                                                                ),
+                                                                  ),
+                                                                  IconButton(
+                                                                    onPressed:
+                                                                        () async {
+                                                                      // Confirmation dialog
+                                                                      bool?
+                                                                          confirm =
+                                                                          await showDialog<
+                                                                              bool>(
+                                                                        context:
+                                                                            context,
+                                                                        builder:
+                                                                            (context) =>
+                                                                                AlertDialog(
+                                                                          title:
+                                                                              const Text('Delete Application'),
+                                                                          content:
+                                                                              const Text('Are you sure you want to delete this application?'),
+                                                                          actions: [
+                                                                            TextButton(
+                                                                              onPressed: () => Navigator.of(context).pop(false),
+                                                                              child: const Text('Cancel'),
+                                                                            ),
+                                                                            TextButton(
+                                                                              onPressed: () => Navigator.of(context).pop(true),
+                                                                              child: const Text('Delete'),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      );
+
+                                                                      if (confirm ==
+                                                                          true) {
+                                                                        try {
+                                                                          // Delete from userDetails subcollection
+                                                                          await FirebaseFirestore
+                                                                              .instance
+                                                                              .collection('Applicants')
+                                                                              .doc(snapshot.data!.docs[index].id)
+                                                                              .collection('userDetails')
+                                                                              .doc(snapshot2.data!.docs[index2].id)
+                                                                              .delete();
+
+                                                                          Get.snackbar(
+                                                                            'Deleted',
+                                                                            'Application deleted successfully',
+                                                                            backgroundColor: const Color.fromARGB(
+                                                                                255,
+                                                                                0,
+                                                                                6,
+                                                                                71),
+                                                                            colorText:
+                                                                                Colors.white,
+                                                                          );
+                                                                        } catch (e) {
+                                                                          Get.snackbar(
+                                                                            'Error',
+                                                                            'Unable to delete application',
+                                                                            backgroundColor:
+                                                                                Colors.red,
+                                                                            colorText:
+                                                                                Colors.white,
+                                                                          );
+                                                                        }
+                                                                      }
+                                                                    },
+                                                                    icon:
+                                                                        const Icon(
+                                                                      Icons
+                                                                          .delete_outline,
+                                                                      color: Colors
+                                                                          .white,
+                                                                      size: 20,
+                                                                    ),
+                                                                  ),
+                                                                ],
                                                               ),
-                                                              const Divider(
-                                                                color: Colors.grey,
-                                                              ),
-                                                              const SizedBox(
-                                                                  height: 10),
-                                                              InkWell(
-                                                                onTap: () {
-                                                                  Navigator
-                                                                      .push(
+                                                            ),
+                                                            const Divider(
+                                                              color:
+                                                                  Colors.grey,
+                                                              height: 8,
+                                                            ),
+                                                            InkWell(
+                                                              onTap: () {
+                                                                if (currentStatus == 'Sent') {
+                                                                  Navigator.push(
                                                                     context,
                                                                     MaterialPageRoute(
-                                                                      builder:
-                                                                          (con) =>
-                                                                              RejectedScreen(
-                                                                        position: snapshot2
-                                                                            .data!
-                                                                            .docs[index2]['position'],
-                                                                        companyName: snapshot
-                                                                            .data!
-                                                                            .docs[index]['companyName'],
-                                                                        message: snapshot2
-                                                                            .data!
-                                                                            .docs[index2]['message'],
-                                                                        salary: snapshot2
-                                                                            .data!
-                                                                            .docs[index2]['salary'],
-                                                                        location: snapshot2
-                                                                            .data!
-                                                                            .docs[index2]['location'],
-                                                                        type: snapshot2
-                                                                            .data!
-                                                                            .docs[index2]['type'],
+                                                                      builder: (con) => SentScreen(
+                                                                        position: snapshot2.data!.docs[index2]['position'],
+                                                                        companyName: snapshot.data!.docs[index]['companyName'],
+                                                                        message: snapshot2.data!.docs[index2]['message'],
+                                                                        salary: snapshot2.data!.docs[index2]['salary'],
+                                                                        location: snapshot2.data!.docs[index2]['location'],
+                                                                        type: snapshot2.data!.docs[index2]['type'],
                                                                       ),
                                                                     ),
                                                                   );
-                                                                },
-                                                                child:
-                                                                    Container(
-                                                                  height: 28,
-                                                                  width:
-                                                                      Get.width,
-                                                                  decoration:
-                                                                      BoxDecoration(
-                                                                    color: const Color(
-                                                                        0xffFEEFEF),
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            99),
-                                                                  ),
-                                                                  child: Center(
-                                                                    child: Text(
-                                                                      "Application Rejected",
-                                                                      style:
-                                                                          appTextStyle(
-                                                                        fontSize:
-                                                                            12,
-                                                                        fontWeight:
-                                                                            FontWeight.w500,
-                                                                        color: const Color(
-                                                                            0xffDA1414),
+                                                                } else if (currentStatus == 'Rejected') {
+                                                                  Navigator.push(
+                                                                    context,
+                                                                    MaterialPageRoute(
+                                                                      builder: (con) => RejectedScreen(
+                                                                        position: snapshot2.data!.docs[index2]['position'],
+                                                                        companyName: snapshot.data!.docs[index]['companyName'],
+                                                                        message: snapshot2.data!.docs[index2]['message'],
+                                                                        salary: snapshot2.data!.docs[index2]['salary'],
+                                                                        location: snapshot2.data!.docs[index2]['location'],
+                                                                        type: snapshot2.data!.docs[index2]['type'],
                                                                       ),
                                                                     ),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        )
-                                                      : const SizedBox()
-                                                  : const SizedBox(),
-                                              (applicationController
-                                                          .selectedJobs.value ==
-                                                      4)
-                                                  ? (getFieldSafely(snapshot2.data!.docs[index2], 'status') == 'Sent')
-                                                      ? Container(
-                                                          height: 135,
-                                                          width: Get.width,
-                                                          margin:
-                                                              const EdgeInsets
-                                                                      .symmetric(
-                                                                  horizontal:
-                                                                      18,
-                                                                  vertical: 4),
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(15),
-                                                          decoration:
-                                                              BoxDecoration(
+                                                                  );
+                                                                } else if (currentStatus == 'Schedule Interview') {
+                                                                  // Show interview details if available
+                                                                  if (interviewSnapshot.hasData && interviewSnapshot.data!.docs.isNotEmpty) {
+                                                                    final interviewDoc = interviewSnapshot.data!.docs.first;
+                                                                    final interviewData = interviewDoc.data() as Map<String, dynamic>;
+                                                                    _showInterviewDetails(context, interviewData);
+                                                                  } else {
+                                                                    Navigator.push(
+                                                                      context,
+                                                                      MaterialPageRoute(
+                                                                        builder: (con) => SentScreen(
+                                                                          position: snapshot2.data!.docs[index2]['position'],
+                                                                          companyName: snapshot.data!.docs[index]['companyName'],
+                                                                          message: snapshot2.data!.docs[index2]['message'],
+                                                                          salary: snapshot2.data!.docs[index2]['salary'],
+                                                                          location: snapshot2.data!.docs[index2]['location'],
+                                                                          type: snapshot2.data!.docs[index2]['type'],
+                                                                        ),
+                                                                      ),
+                                                                    );
+                                                                  }
+                                                                }
+                                                              },
+                                                              child: Container(
+                                                                height: 28,
+                                                                width:
+                                                                    Get.width,
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                  color: applicationController
+                                                                              .selectedJobs
+                                                                              .value ==
+                                                                          3
+                                                                      ? const Color(
+                                                                          0xffFEEFEF)
+                                                                      : currentStatus == 'Schedule Interview'
+                                                                          ? const Color(0xffFFFBED)
+                                                                          : currentStatus == 'Sent'
+                                                                              ? const Color(0xffEEF2FA)
+                                                                              : const Color(0xffFFFBED),
                                                                   borderRadius:
-                                                                      const BorderRadius
-                                                                          .all(
-                                                                    Radius
-                                                                        .circular(
-                                                                            15),
-                                                                  ),
-                                                                  border: Border
-                                                                      .all(
-                                                                    color: const Color(
-                                                                        0xffF3ECFF),
-                                                                  ),
-                                                                  color: ColorRes
-                                                                      .white),
-                                                          child: Column(
-                                                            children: [
-                                                              Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .only(
-                                                                        bottom:
-                                                                            8),
-                                                                child: Row(
-                                                                  children: [
-                                                                    Image.asset(
-                                                                        AssetRes
-                                                                            .airBnbLogo,
-                                                                        height:
-                                                                            40),
-                                                                    const SizedBox(
-                                                                        width:
-                                                                            20),
-                                                                    Column(
-                                                                      mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .center,
-                                                                      crossAxisAlignment:
-                                                                          CrossAxisAlignment
-                                                                              .start,
-                                                                      children: [
-                                                                        Text(
-                                                                            snapshot2.data!.docs[index2][
-                                                                                'position'],
-                                                                            style: appTextStyle(
-                                                                                color: Colors.white,
-                                                                                fontSize: 16,
-                                                                                fontWeight: FontWeight.w600)),
-                                                                        Text(
-                                                                            snapshot.data!.docs[index][
-                                                                                'companyName'],
-                                                                            style: appTextStyle(
-                                                                                color: ColorRes.appleGreen,
-                                                                                fontSize: 14,
-                                                                                fontWeight: FontWeight.w500)),
-                                                                      ],
-                                                                    ),
-                                                                  ],
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              99),
                                                                 ),
-                                                              ),
-                                                              const Divider(
-                                                                color: Colors.grey,
-                                                              ),
-                                                              const SizedBox(
-                                                                  height: 10),
-                                                              InkWell(
-                                                                onTap: () {
-                                                                  Navigator
-                                                                      .push(
-                                                                    context,
-                                                                    MaterialPageRoute(
-                                                                      builder:
-                                                                          (con) =>
-                                                                              SentScreen(
-                                                                        position: snapshot2
-                                                                            .data!
-                                                                            .docs[index2]['position'],
-                                                                        companyName: snapshot
-                                                                            .data!
-                                                                            .docs[index]['companyName'],
-                                                                        message: snapshot2
-                                                                            .data!
-                                                                            .docs[index2]['message'],
-                                                                        salary: snapshot2
-                                                                            .data!
-                                                                            .docs[index2]['salary'],
-                                                                        location: snapshot2
-                                                                            .data!
-                                                                            .docs[index2]['location'],
-                                                                        type: snapshot2
-                                                                            .data!
-                                                                            .docs[index2]['type'],
-                                                                      ),
-                                                                    ),
-                                                                  );
-                                                                },
-                                                                child:
-                                                                    Container(
-                                                                  height: 28,
-                                                                  width:
-                                                                      Get.width,
-                                                                  decoration:
-                                                                      BoxDecoration(
-                                                                    color: const Color(
-                                                                        0xffEEF2FA),
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            99),
-                                                                  ),
-                                                                  child: Center(
-                                                                    child: Text(
-                                                                      "Application Sent",
-                                                                      style:
-                                                                          appTextStyle(
-                                                                        fontSize:
-                                                                            12,
-                                                                        fontWeight:
-                                                                            FontWeight.w500,
-                                                                        color: const Color(
-                                                                            0xff2E5AAC),
-                                                                      ),
+                                                                child: Center(
+                                                                  child: Text(
+                                                                    applicationController.selectedJobs.value == 3
+                                                                        ? "Delete Application"
+                                                                        : currentStatus == 'Schedule Interview'
+                                                                            ? "Interview Scheduled"
+                                                                            : currentStatus == 'Sent'
+                                                                                ? "Application Sent"
+                                                                                : "Application Pending",
+                                                                    style:
+                                                                        appTextStyle(
+                                                                      fontSize:
+                                                                          12,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500,
+                                                                      color: applicationController.selectedJobs.value == 3
+                                                                          ? const Color(0xffDA1414)
+                                                                          : currentStatus == 'Schedule Interview'
+                                                                              ? const Color(0xff28a745)
+                                                                              : currentStatus == 'Sent'
+                                                                                  ? const Color(0xff2E5AAC)
+                                                                                  : const Color(0xffF1C100),
                                                                     ),
                                                                   ),
                                                                 ),
                                                               ),
-                                                            ],
-                                                          ),
-                                                        )
-                                                      : const SizedBox()
-                                                  : const SizedBox(),
-                                            ],
-                                          ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      )
+                                                    : const SizedBox(),
+                                                ],
+                                              );
+                                            });
+                                          },
                                         )
                                       : const SizedBox();
                                 },
@@ -1002,6 +540,139 @@ class ApplicationsScreen extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  // Show interview details dialog
+  void _showInterviewDetails(BuildContext context, Map<String, dynamic> interviewData) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        final interviewDate = interviewData['interviewDate']?.toDate() ?? DateTime.now();
+        final formattedDate = "${interviewDate.day}/${interviewDate.month}/${interviewDate.year}";
+        final formattedTime = "${interviewDate.hour.toString().padLeft(2, '0')}:${interviewDate.minute.toString().padLeft(2, '0')}";
+
+        return AlertDialog(
+          title: Row(
+            children: [
+              Icon(
+                Icons.calendar_month,
+                color: const Color.fromARGB(255, 0, 6, 71),
+                size: 24,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                'Interview Details',
+                style: appTextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: const Color.fromARGB(255, 0, 6, 71),
+                ),
+              ),
+            ],
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(255, 0, 6, 71).withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: const Color.fromARGB(255, 0, 6, 71).withOpacity(0.3),
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildDetailRow('Company', interviewData['companyName'] ?? 'Unknown'),
+                      _buildDetailRow('Position', interviewData['jobTitle'] ?? 'Unknown'),
+                      _buildDetailRow('Date', formattedDate),
+                      _buildDetailRow('Time', formattedTime),
+                      _buildDetailRow('Location', interviewData['location'] ?? 'TBD'),
+                      if (interviewData['additionalMessage'] != null && 
+                          interviewData['additionalMessage'].toString().isNotEmpty)
+                        _buildDetailRow('Message', interviewData['additionalMessage']),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.green.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.green.withOpacity(0.3)),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.check_circle, color: Colors.green, size: 20),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          'Interview scheduled! Please check your email for confirmation.',
+                          style: appTextStyle(
+                            fontSize: 12,
+                            color: Colors.green.shade700,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                'Close',
+                style: appTextStyle(
+                  color: const Color.fromARGB(255, 0, 6, 71),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildDetailRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 80,
+            child: Text(
+              '$label:',
+              style: appTextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: const Color.fromARGB(255, 0, 6, 71),
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              value,
+              style: appTextStyle(
+                fontSize: 12,
+                color: Colors.black87,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

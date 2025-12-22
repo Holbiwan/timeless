@@ -54,7 +54,8 @@ class _SplashScreenState extends State<SplashScreen>
       'title': 'Ready to',
       'subtitle': 'Join now ?',
       'description': 'Join our job seekers',
-      'icon': '✨'
+      'icon': Icons.phone_android.codePoint,
+      'icon_font_family': 'MaterialIcons',
     },
   ];
 
@@ -317,7 +318,7 @@ class _SplashScreenState extends State<SplashScreen>
           width: 600,
           height: 400,
           child: Image.asset(
-            'assets/images/logo.png',
+            'assets/images/splashpic.png',
             fit: BoxFit.contain,
           ),
         ),
@@ -367,10 +368,19 @@ class _SplashScreenState extends State<SplashScreen>
           ),
         ],
       ),
-      child: Text(
-        slideData['icon']!,
-        style: const TextStyle(fontSize: 80, color: Colors.white),
-      ),
+      child: slideData['icon'] is int
+          ? Icon(
+              IconData(
+                slideData['icon'] as int,
+                fontFamily: slideData['icon_font_family'] as String,
+              ),
+              size: 80,
+              color: Colors.orange,
+            )
+          : Text(
+              slideData['icon']!,
+              style: const TextStyle(fontSize: 80, color: Colors.white),
+            ),
     );
   }
 

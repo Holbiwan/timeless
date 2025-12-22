@@ -50,7 +50,8 @@ class JobsListScreen extends StatelessWidget {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: ColorRes.darkGold, width: 2),
+                      borderSide:
+                          BorderSide(color: ColorRes.darkGold, width: 2),
                     ),
                     filled: true,
                     fillColor: ColorRes.white,
@@ -65,14 +66,16 @@ class JobsListScreen extends StatelessWidget {
                         onChanged: (value) => controller.updateLocation(value),
                         decoration: InputDecoration(
                           hintText: 'Ville, région...',
-                          prefixIcon: Icon(Icons.location_on, color: ColorRes.darkGold),
+                          prefixIcon:
+                              Icon(Icons.location_on, color: ColorRes.darkGold),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                             borderSide: BorderSide(color: ColorRes.borderColor),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: ColorRes.darkGold, width: 2),
+                            borderSide:
+                                BorderSide(color: ColorRes.darkGold, width: 2),
                           ),
                           filled: true,
                           fillColor: ColorRes.white,
@@ -83,10 +86,12 @@ class JobsListScreen extends StatelessWidget {
                     ElevatedButton.icon(
                       onPressed: () => controller.searchJobs(),
                       icon: const Icon(Icons.search, color: Colors.white),
-                      label: Text('Rechercher', style: TextStyle(color: Colors.white)),
+                      label: Text('Rechercher',
+                          style: TextStyle(color: Colors.white)),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: ColorRes.darkGold,
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -105,18 +110,21 @@ class JobsListScreen extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    physics: const BouncingScrollPhysics(), // Améliore la fluidité
+                    physics:
+                        const BouncingScrollPhysics(), // Améliore la fluidité
                     cacheExtent: 200, // Optimise le cache pour les performances
                     itemCount: controller.activeFilters.length,
                     itemBuilder: (context, index) {
                       final filter = controller.activeFilters[index];
                       return Container(
-                        margin: const EdgeInsets.only(right: 8, top: 4, bottom: 4),
+                        margin:
+                            const EdgeInsets.only(right: 8, top: 4, bottom: 4),
                         child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 200), // Animation pour le retrait
+                          duration: const Duration(
+                              milliseconds: 200), // Animation pour le retrait
                           child: Chip(
                             label: Text(
-                              filter, 
+                              filter,
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 14,
@@ -127,12 +135,13 @@ class JobsListScreen extends StatelessWidget {
                             elevation: 2,
                             shadowColor: ColorRes.darkGold.withOpacity(0.3),
                             deleteIcon: const Icon(
-                              Icons.close, 
-                              color: Colors.white, 
+                              Icons.close,
+                              color: Colors.white,
                               size: 18,
                             ),
                             onDeleted: () => controller.removeFilter(filter),
-                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            materialTapTargetSize:
+                                MaterialTapTargetSize.shrinkWrap,
                           ),
                         ),
                       );
@@ -153,7 +162,8 @@ class JobsListScreen extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.work_off, size: 64, color: ColorRes.textTertiary),
+                      Icon(Icons.work_off,
+                          size: 64, color: ColorRes.textTertiary),
                       const SizedBox(height: 16),
                       Text(
                         'Aucune offre trouvée',
@@ -180,7 +190,8 @@ class JobsListScreen extends StatelessWidget {
                 onRefresh: () => controller.refreshJobs(),
                 child: ListView.builder(
                   padding: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width > 600 ? 32 : 16,
+                    horizontal:
+                        MediaQuery.of(context).size.width > 600 ? 32 : 16,
                     vertical: 16,
                   ),
                   itemCount: controller.jobs.length,
@@ -188,7 +199,9 @@ class JobsListScreen extends StatelessWidget {
                     final job = controller.jobs[index];
                     return ConstrainedBox(
                       constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width > 800 ? 700 : double.infinity,
+                        maxWidth: MediaQuery.of(context).size.width > 800
+                            ? 700
+                            : double.infinity,
                       ),
                       child: JobCard(
                         job: job,
@@ -233,7 +246,6 @@ class JobsListScreen extends StatelessWidget {
   }
 }
 
-
 class JobCard extends StatelessWidget {
   final JobOfferModel job;
   final VoidCallback onTap;
@@ -248,7 +260,8 @@ class JobCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(bottom: 15),
-      padding: EdgeInsets.all(MediaQuery.of(context).size.width > 600 ? 24 : 20),
+      padding:
+          EdgeInsets.all(MediaQuery.of(context).size.width > 600 ? 24 : 20),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(15),
@@ -319,7 +332,8 @@ class JobCard extends StatelessWidget {
             children: [
               if (job.salaryDisplay != 'Salaire non spécifié')
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: const Color(0xFF000647).withOpacity(0.1),
                     borderRadius: BorderRadius.circular(6),
@@ -333,7 +347,8 @@ class JobCard extends StatelessWidget {
                     ),
                   ),
                 ),
-              if (job.salaryDisplay != 'Salaire non spécifié') const SizedBox(width: 8),
+              if (job.salaryDisplay != 'Salaire non spécifié')
+                const SizedBox(width: 8),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
@@ -353,10 +368,12 @@ class JobCard extends StatelessWidget {
               InkWell(
                 onTap: onTap,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    border: Border.all(color: const Color(0xFF000647), width: 2.0),
+                    border:
+                        Border.all(color: const Color(0xFF000647), width: 2.0),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
@@ -441,7 +458,7 @@ class JobFiltersSheet extends StatelessWidget {
                       _FilterOption('Temps plein', JobModel.JobType.fullTime),
                       _FilterOption('Temps partiel', JobModel.JobType.partTime),
                       _FilterOption('Contrat', JobModel.JobType.contract),
-                      _FilterOption('Stage', JobModel.JobType.internship),
+                      _FilterOption('Internship', JobModel.JobType.internship),
                       _FilterOption('Freelance', JobModel.JobType.freelance),
                     ],
                   ),
@@ -510,8 +527,6 @@ class JobFiltersSheet extends StatelessWidget {
     );
   }
 
-
-
   Widget _buildFilterSection<T>(String title, List<_FilterOption<T>> options) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -541,7 +556,6 @@ class JobFiltersSheet extends StatelessWidget {
       ],
     );
   }
-
 }
 
 class _FilterOption<T> {

@@ -35,22 +35,6 @@ class EmployerSignInChoiceScreen extends StatelessWidget {
             child: Column(
               children: [
                 const SizedBox(height: 80),
-                
-                // Logo
-                Center(
-                  child: Container(
-                    height: 100,
-                    width: 100,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: AppTheme.primaryOrange,
-                      borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
-                      boxShadow: AppTheme.shadowRegular,
-                    ),
-                    child: const Image(image: AssetImage(AssetRes.logo)),
-                  ),
-                ),
-                const SizedBox(height: 20),
 
                 // Titre
                 Text(

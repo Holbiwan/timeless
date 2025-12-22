@@ -20,18 +20,18 @@ class _SimpleApplicationsScreenState extends State<SimpleApplicationsScreen> {
     final String actualEmployerId = employerId.isNotEmpty ? employerId : currentUserId;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF0A0A0A),
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF000647),
+        backgroundColor: Colors.white,
         title: Text(
           'Applications Management',
           style: GoogleFonts.poppins(
-            color: Colors.white,
+            color: const Color.fromARGB(255, 0, 6, 71),
             fontSize: 18,
             fontWeight: FontWeight.w600,
           ),
         ),
-        iconTheme: const IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Color.fromARGB(255, 0, 6, 71)),
         elevation: 0,
       ),
       body: Padding(
@@ -153,16 +153,16 @@ class _SimpleApplicationsScreenState extends State<SimpleApplicationsScreen> {
                           Container(
                             padding: const EdgeInsets.all(20),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: const Color(0xFF8B4513),
                               borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: const Color(0xFF000647).withOpacity(0.2)),
+                              border: Border.all(color: const Color(0xFF8B4513).withOpacity(0.2)),
                             ),
                             child: Column(
                               children: [
                                 const Icon(
                                   Icons.inbox_outlined,
                                   size: 60,
-                                  color: Color(0xFF000647),
+                                  color: Colors.white,
                                 ),
                                 const SizedBox(height: 16),
                                 Text(
@@ -170,7 +170,7 @@ class _SimpleApplicationsScreenState extends State<SimpleApplicationsScreen> {
                                   style: GoogleFonts.poppins(
                                     fontSize: 18,
                                     fontWeight: FontWeight.w600,
-                                    color: Colors.black87,
+                                    color: Colors.white,
                                   ),
                                 ),
                                 const SizedBox(height: 8),
@@ -178,7 +178,7 @@ class _SimpleApplicationsScreenState extends State<SimpleApplicationsScreen> {
                                   'Applications will appear here once candidates apply to your job postings',
                                   style: GoogleFonts.poppins(
                                     fontSize: 14,
-                                    color: Colors.grey[600],
+                                    color: Colors.white.withOpacity(0.9),
                                   ),
                                   textAlign: TextAlign.center,
                                 ),

@@ -26,41 +26,41 @@ class SentScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorRes.backgroundColor,
-      body: Column(
-        children: [
-          const SizedBox(height: 50),
-          Stack(
-            children: [
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding: const EdgeInsets.all(18.0),
-                  child: InkWell(
-                    child: backButton(),
+      body: SafeArea(
+        child: Column(
+          children: [
+            const SizedBox(height: 20),
+            Stack(
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child: InkWell(
+                      child: backButton(),
+                    ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 25.0),
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    'Application',
-                    style: appTextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
-                        height: 1,
-                        color: ColorRes.black),
+                Padding(
+                  padding: const EdgeInsets.only(top: 25.0),
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      'Application',
+                      style: appTextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
+                          height: 1,
+                          color: ColorRes.black),
+                    ),
                   ),
                 ),
-              ),
             ],
           ),
-          const SizedBox(height: 10),
-          SizedBox(
-            height: Get.height - 140,
-            child: SingleChildScrollView(
-              child: Column(
+            const SizedBox(height: 10),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -81,7 +81,19 @@ class SentScreen extends StatelessWidget {
                             padding: const EdgeInsets.only(bottom: 8),
                             child: Row(
                               children: [
-                                Image.asset(AssetRes.airBnbLogo, height: 40),
+                                Container(
+                                  height: 40,
+                                  width: 40,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: const Image(
+                                    image: AssetImage(AssetRes.logo),
+                                    height: 40,
+                                    width: 40,
+                                    fit: BoxFit.contain,
+                                  ),
+                                ),
                                 const SizedBox(width: 20),
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -217,38 +229,12 @@ class SentScreen extends StatelessWidget {
                             color: ColorRes.black.withOpacity(0.9)),
                       ),
                     ),
-                    const SizedBox(height: 55),
-                    InkWell(
-                      onTap: () {
-                        // Fonctionnalité Chat supprimée
-                        Get.snackbar("Info", "Fonctionnalité temporairement indisponible");
-                      },
-                      child: Container(
-                        height: 50,
-                        width: Get.width,
-                        // width: MediaQuery.of(context).size.width,
-                        margin: const EdgeInsets.symmetric(horizontal: 20),
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          gradient: const LinearGradient(
-                            colors: [
-                              ColorRes.gradientColor,
-                              ColorRes.containerColor,
-                            ],
-                          ),
-                        ),
-                        child: Text("Join Interview",
-                            style: appTextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 18,
-                                color: ColorRes.white)),
-                      ),
-                    ),
-                  ]),
+                  ],
+                ),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

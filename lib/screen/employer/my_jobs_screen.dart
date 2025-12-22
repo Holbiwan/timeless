@@ -379,7 +379,7 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
       Get.snackbar(
         'Status Updated', 
         'Job posting ${isCurrentlyActive ? 'paused' : 'reactivated'}',
-        backgroundColor: Colors.green,
+        backgroundColor: const Color.fromARGB(255, 0, 6, 71 ),
         colorText: Colors.white,
       );
     } catch (e) {
@@ -414,7 +414,7 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
                 Get.snackbar(
                   'Supprimée', 
                   'Job posting deleted successfully',
-                  backgroundColor: Colors.green,
+                  backgroundColor: const Color.fromARGB(255, 0, 6, 71),
                   colorText: Colors.white,
                 );
               } catch (e) {

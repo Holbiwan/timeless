@@ -102,6 +102,7 @@ class CompactDateSortFilter extends StatelessWidget {
   final Function(DateSortOption) onOptionChanged;
   final Color? backgroundColor;
   final Color? iconColor;
+  final bool compactMode;
 
   const CompactDateSortFilter({
     super.key,
@@ -109,17 +110,19 @@ class CompactDateSortFilter extends StatelessWidget {
     required this.onOptionChanged,
     this.backgroundColor,
     this.iconColor,
+    this.compactMode = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<DateSortOption>(
       onSelected: onOptionChanged,
+      color: Colors.white,
       icon: Container(
-        padding: const EdgeInsets.all(8),
+        padding: compactMode ? const EdgeInsets.symmetric(horizontal: 6, vertical: 4) : const EdgeInsets.all(8),
         decoration: BoxDecoration(
           color: backgroundColor ?? ColorRes.brightYellow,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(compactMode ? 6 : 8),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -127,14 +130,14 @@ class CompactDateSortFilter extends StatelessWidget {
             Icon(
               Icons.sort,
               color: iconColor ?? Colors.black,
-              size: 16,
+              size: compactMode ? 12 : 16,
             ),
-            const SizedBox(width: 4),
+            SizedBox(width: compactMode ? 2 : 4),
             Text(
               selectedOption.label.split(' ').first, // Show only first word
               style: TextStyle(
                 color: iconColor ?? Colors.black,
-                fontSize: 12,
+                fontSize: compactMode ? 9 : 12,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -150,7 +153,7 @@ class CompactDateSortFilter extends StatelessWidget {
                 _getIconForOption(option),
                 size: 18,
                 color: option == selectedOption
-                    ? ColorRes.brightYellow
+                    ? const Color(0xFF000647)
                     : Colors.grey,
               ),
               const SizedBox(width: 12),
@@ -160,8 +163,9 @@ class CompactDateSortFilter extends StatelessWidget {
                   fontWeight: option == selectedOption
                       ? FontWeight.w600
                       : FontWeight.w400,
-                  color:
-                      option == selectedOption ? Colors.black : Colors.black87,
+                  color: option == selectedOption 
+                      ? const Color(0xFF000647) 
+                      : Colors.black87,
                 ),
               ),
             ],
@@ -311,11 +315,11 @@ class DateSortHelper {
     Get.snackbar(
       '📅 Sorting Applied',
       message,
-      backgroundColor: ColorRes.brightYellow,
-      colorText: Colors.black,
+      backgroundColor: Colors.white,
+      colorText: const Color(0xFF000647),
       duration: const Duration(seconds: 2),
       snackPosition: SnackPosition.TOP,
-      icon: const Icon(Icons.sort, color: Colors.black),
+      icon: const Icon(Icons.sort, color: Color(0xFF000647)),
     );
   }
 }

@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:timeless/utils/color_res.dart';
+import 'package:timeless/services/employer_service.dart';
 
 class PostJobScreen extends StatefulWidget {
   const PostJobScreen({super.key});
@@ -47,14 +48,25 @@ class _PostJobScreenState extends State<PostJobScreen> {
     try {
       final user = FirebaseAuth.instance.currentUser;
       if (user != null) {
-        final doc = await FirebaseFirestore.instance
-            .collection('employers')
-            .doc(user.uid)
-            .get();
+        // Check if employer can access dashboard
+        final canAccess = await EmployerService.canAccessEmployerDashboard();
+        if (!canAccess) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('❌ Your employer account is not active or verified'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+          return;
+        }
 
-        if (doc.exists) {
+        // Load employer data
+        final data = await EmployerService.getCurrentEmployerData();
+        if (data != null && mounted) {
           setState(() {
-            _employerData = doc.data();
+            _employerData = data;
           });
         }
       }
@@ -91,6 +103,12 @@ class _PostJobScreenState extends State<PostJobScreen> {
     try {
       final user = FirebaseAuth.instance.currentUser!;
 
+      // Verify employer is still active before posting
+      final canPost = await EmployerService.canAccessEmployerDashboard();
+      if (!canPost) {
+        throw Exception('Employer account is not active or verified');
+      }
+
       // Prepare job posting data with real employer data
       final jobData = {
         'Position': _titleCtrl.text.trim(),
@@ -99,7 +117,7 @@ class _PostJobScreenState extends State<PostJobScreen> {
         'salaryMin': _salaryMinCtrl.text.trim(),
         'salaryMax': _salaryMaxCtrl.text.trim(),
         'salary': '${_salaryMinCtrl.text}-${_salaryMaxCtrl.text}',
-        'jobType': _jobType, // CDI, CDD, Stage, etc.
+        'jobType': _jobType, // CDI, CDD, Internship, etc.
         'remote': _remote,
         'workMode': _remote ? 'Remote' : 'On-site',
         'description': _descriptionCtrl.text.trim(),
@@ -117,12 +135,17 @@ class _PostJobScreenState extends State<PostJobScreen> {
         'timestamp': FieldValue.serverTimestamp(),
         'applicationsCount': 0,
         'viewsCount': 0,
-        'logoUrl':
-            _employerData!['logoUrl'] ?? 'https://i.imgur.com/bdlYq1p.png',
+        'logoUrl': _employerData!['logoUrl'] ?? 'https://i.imgur.com/bdlYq1p.png',
+        // Verification status - CRITICAL for filtering
+        'isFromVerifiedEmployer': true,
+        'employerVerifiedAt': FieldValue.serverTimestamp(),
       };
 
       // Save to Firebase
-      await FirebaseFirestore.instance.collection('allPost').add(jobData);
+      final docRef = await FirebaseFirestore.instance.collection('allPost').add(jobData);
+      
+      // Additional validation through service
+      await EmployerService.validateAndMarkJob(docRef.id, user.uid);
 
       debugPrint(
           '✅ JOB PUBLISHED TO FIREBASE: ${_titleCtrl.text} by ${_employerData!['companyName']}');
@@ -199,8 +222,7 @@ class _PostJobScreenState extends State<PostJobScreen> {
               ),
             ),
             const SizedBox(height: 12),
-            const Text(
-                'Your job offer is now visible to all candidates!',
+            const Text('Your job offer is now visible to all candidates!',
                 style: TextStyle(color: Colors.grey)),
           ],
         ),
@@ -228,7 +250,13 @@ class _PostJobScreenState extends State<PostJobScreen> {
       'Security',
     ];
 
-    const jobTypes = <String>['Full-time', 'Contract', 'Internship', 'Freelance', 'Temporary'];
+    const jobTypes = <String>[
+      'Full-time',
+      'Contract',
+      'Internship',
+      'Freelance',
+      'Temporary'
+    ];
 
     // Afficher un loader si les données employeur se chargent
     if (_employerData == null) {

@@ -226,7 +226,7 @@ class ApplicationModel {
   bool get isPending => status == ApplicationStatus.pending;
   bool get isViewed => status == ApplicationStatus.viewed;
   bool get isShortlisted => status == ApplicationStatus.shortlisted;
-  bool get isInterviewStage => status == ApplicationStatus.interview;
+  bool get isInterviewInternship => status == ApplicationStatus.interview;
   bool get isRejected => status == ApplicationStatus.rejected;
   bool get isHired => status == ApplicationStatus.hired;
 

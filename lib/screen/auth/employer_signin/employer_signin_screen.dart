@@ -59,26 +59,6 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Logo avec accessibilité
-                  accessibilityService.buildAccessibleWidget(
-                    semanticLabel: 'Timeless app logo',
-                    child: Center(
-                      child: Container(
-                        height: 100,
-                        width: 100,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: accessibilityService.isHighContrastMode.value 
-                              ? AppTheme.secondaryGold 
-                              : AppTheme.primaryOrange,
-                          borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
-                          boxShadow: AppTheme.shadowRegular,
-                        ),
-                        child: const Image(image: AssetImage(AssetRes.logo)),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
 
                   Center(
                     child: Text(
@@ -148,6 +128,24 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
                         hint: 'Ex: 75001',
                       ),
                       buildCounter: (context, {required currentLength, required isFocused, maxLength}) => null,
+                      style: accessibilityService.getAccessibleTextStyle(),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+
+                  // --- SECTION: 
+
+
+                  // Ville --- SECTION: 
+
+
+                  _buildLabel('City *'),
+                  _buildInputField(
+                    child: TextFormField(
+                      controller: ctrl.cityController,
+                      decoration: AppTheme.getInputDecoration(
+                        hint: 'Ex: Paris',
+                      ),
                       style: accessibilityService.getAccessibleTextStyle(),
                     ),
                   ),
@@ -522,6 +520,19 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
                     ],
                   ),
 
+                  const SizedBox(height: 16),
+
+                  // Texte obligatoire
+                  Text(
+                    '*Mandatory field',
+                    style: accessibilityService.getAccessibleTextStyle(
+                      fontSize: AppTheme.fontSizeSmall,
+                      color: accessibilityService.secondaryTextColor,
+                    ).copyWith(
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+
                   const SizedBox(height: 20),
 
                   // Info légale entreprise
@@ -690,6 +701,15 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
       AppTheme.showStandardSnackBar(
         title: "⚠️ Invalid Postal Code",
         message: "Postal code must contain 5 digits",
+        isError: true,
+      );
+      return false;
+    }
+
+    if (ctrl.cityController.text.trim().isEmpty) {
+      AppTheme.showStandardSnackBar(
+        title: "⚠️ Required Field",
+        message: "City is required",
         isError: true,
       );
       return false;

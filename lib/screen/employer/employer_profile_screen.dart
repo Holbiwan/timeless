@@ -175,6 +175,21 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
         ),
         actions: [
           IconButton(
+            icon: const Icon(Icons.refresh, color: Colors.white),
+            onPressed: () {
+              _loadCompanyData();
+              Get.snackbar(
+                '🔄 Refreshing',
+                'Updating profile data...',
+                backgroundColor: ColorRes.brightYellow,
+                colorText: Colors.black,
+                duration: const Duration(seconds: 1),
+                snackPosition: SnackPosition.TOP,
+              );
+            },
+            tooltip: 'Refresh Profile',
+          ),
+          IconButton(
             icon: const Icon(Icons.settings, color: Colors.white),
             onPressed: () => Get.to(() => const EmployerSettingsScreen()),
             tooltip: 'Settings',

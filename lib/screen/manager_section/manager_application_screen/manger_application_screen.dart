@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:timeless/common/widgets/back_button.dart';
 import 'package:timeless/common/widgets/common_loader.dart';
+import 'package:timeless/common/widgets/date_sort_filter.dart';
 import 'package:timeless/screen/create_vacancies/create_vacancies_screen.dart';
 import 'package:timeless/screen/manager_section/manager_application_screen/manager_application_screen_controller.dart';
 import 'package:timeless/services/preferences_service.dart';
@@ -41,27 +42,59 @@ class ManagerApplicationScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     logo(),
-                    InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (con) => const CreateVacanciesScreenM(),
+                    Row(
+                      children: [
+                        // Refresh Button
+                        InkWell(
+                          onTap: () {
+                            controller.refreshData();
+                            Get.snackbar(
+                              '🔄 Refreshing',
+                              'Updating job posts data...',
+                              backgroundColor: ColorRes.brightYellow,
+                              colorText: Colors.black,
+                              duration: const Duration(seconds: 1),
+                              snackPosition: SnackPosition.TOP,
+                            );
+                          },
+                          child: Container(
+                            height: 40,
+                            width: 40,
+                            margin: const EdgeInsets.only(right: 8),
+                            decoration: BoxDecoration(
+                              color: ColorRes.brightYellow,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Icon(
+                              Icons.refresh,
+                              color: Colors.black,
+                            ),
                           ),
-                        );
-                      },
-                      child: Container(
-                        height: 40,
-                        width: 40,
-                        decoration: BoxDecoration(
-                          color: ColorRes.logoColor,
-                          borderRadius: BorderRadius.circular(12),
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Image.asset(AssetRes.add1),
+                        // Add Job Button
+                        InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (con) => const CreateVacanciesScreenM(),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            height: 40,
+                            width: 40,
+                            decoration: BoxDecoration(
+                              color: ColorRes.logoColor,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Image.asset(AssetRes.add1),
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
                   ],
                 ),
@@ -107,7 +140,19 @@ class ManagerApplicationScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(
-            height: 20,
+            height: 12,
+          ),
+          // Date Sort Filter
+          Obx(() => DateSortFilter(
+            selectedOption: controller.selectedDateSort.value,
+            onOptionChanged: (option) => controller.updateDateSort(option),
+            backgroundColor: Colors.grey[100],
+            textColor: Colors.black,
+            selectedColor: ColorRes.brightYellow,
+            fontSize: 14,
+          )),
+          const SizedBox(
+            height: 12,
           ),
           Container(
             padding: const EdgeInsets.only(left: 20, right: 20),
@@ -209,6 +254,17 @@ class ManagerApplicationScreen extends StatelessWidget {
                             .contains(
                                 controller.searchController.text.toLowerCase());
                       }).toList();
+
+                      // Apply date sorting to job posts
+                      controller.documentData = DateSortHelper.sortDocuments<DocumentSnapshot>(
+                        controller.documentData,
+                        controller.selectedDateSort.value,
+                        'timestamp',
+                        getTimestamp: (doc) {
+                          final data = doc.data() as Map<String, dynamic>?;
+                          return data?['timestamp'] ?? data?['createdAt'] ?? data?['dateCreated'];
+                        },
+                      );
 
                       return snapshot.hasData
                           ? SizedBox(

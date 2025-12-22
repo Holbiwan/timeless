@@ -54,7 +54,7 @@ class _SimpleProfileScreenState extends State<SimpleProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0A0A0A),
+      backgroundColor: Colors.orange,
       appBar: AppBar(
         backgroundColor: const Color(0xFF000647),
         title: Text(
@@ -130,7 +130,7 @@ class _SimpleProfileScreenState extends State<SimpleProfileScreen> {
                   Text(
                     'Company Information',
                     style: GoogleFonts.poppins(
-                      color: Colors.white,
+                      color: const Color.fromARGB(255, 0, 6, 71),
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
@@ -149,7 +149,7 @@ class _SimpleProfileScreenState extends State<SimpleProfileScreen> {
                   Text(
                     'Legal Information',
                     style: GoogleFonts.poppins(
-                      color: Colors.white,
+                      color: const Color.fromARGB(255, 0, 6, 71),
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
@@ -167,7 +167,7 @@ class _SimpleProfileScreenState extends State<SimpleProfileScreen> {
                   Text(
                     'Account Actions',
                     style: GoogleFonts.poppins(
-                      color: Colors.white,
+                      color: const Color.fromARGB(255, 0, 6, 71),
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),

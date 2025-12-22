@@ -80,13 +80,16 @@ Widget universalBackButton({
 Widget logo() {
   return Container(
     alignment: Alignment.center,
-    height: 40,
-    width: 40,
+    height: 60,
+    width: 60,
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(13),
     ),
     child: const Image(
       image: AssetImage(AssetRes.logo),
+      height: 60,
+      width: 60,
+      fit: BoxFit.contain,
     ),
   );
 }

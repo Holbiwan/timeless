@@ -27,7 +27,7 @@ class ManagerApplicationDetailScreen extends StatelessWidget {
                 children: [
                   logo(),
                   Container(
-                    width: Get.width - 110,
+                    width: Get.width - 160,
                     alignment: Alignment.center,
                     child: Text(
                       Strings.applications,
@@ -35,6 +35,34 @@ class ManagerApplicationDetailScreen extends StatelessWidget {
                           color: ColorRes.black,
                           fontSize: 20,
                           fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                  // Refresh Button
+                  InkWell(
+                    onTap: () {
+                      // Refresh the current screen
+                      Get.snackbar(
+                        '🔄 Refreshing',
+                        'Updating application details...',
+                        backgroundColor: ColorRes.brightYellow,
+                        colorText: Colors.black,
+                        duration: const Duration(seconds: 1),
+                        snackPosition: SnackPosition.TOP,
+                      );
+                      // Force rebuild by updating args
+                      Get.forceAppUpdate();
+                    },
+                    child: Container(
+                      height: 40,
+                      width: 40,
+                      decoration: BoxDecoration(
+                        color: ColorRes.brightYellow,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Icon(
+                        Icons.refresh,
+                        color: Colors.black,
+                      ),
                     ),
                   ),
                 ],

@@ -6,6 +6,7 @@ import 'package:timeless/screen/dashboard/home/widgets/all_jobs.dart';
 import 'package:timeless/screen/job_recommendation_screen/job_recommendation_controller.dart';
 import 'package:timeless/services/unified_translation_service.dart';
 import 'package:timeless/services/accessibility_service.dart';
+import 'package:timeless/common/widgets/date_sort_filter.dart';
 
 class JobRecommendationScreen extends StatelessWidget {
   const JobRecommendationScreen({super.key});
@@ -100,10 +101,12 @@ class JobRecommendationScreen extends StatelessWidget {
                 // Filtres en ligne
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      // Filtres avec badges
-                      _buildFilterChip(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: Row(
+                      children: [
+                        // Filtres avec badges
+                        _buildFilterChip(
                         'Category', 
                         controller.selectedCategory.value,
                         () => _showCategoryFilter(context, controller),
@@ -131,10 +134,11 @@ class JobRecommendationScreen extends StatelessWidget {
                         controller,
                       ),
                       const SizedBox(width: 8),
+                      // Date Sort Filter
                       _buildFilterChip(
-                        'Experience', 
-                        controller.selectedExperienceLevel.value,
-                        () => _showExperienceFilter(context, controller),
+                        'Sort', 
+                        controller.selectedDateSort.value.label,
+                        () => _showDateSortFilter(context, controller),
                         controller,
                       ),
                       if (controller.hasActiveFilters()) ...[
@@ -142,10 +146,11 @@ class JobRecommendationScreen extends StatelessWidget {
                         IconButton(
                           onPressed: () => controller.clearAllFilters(),
                           icon: const Icon(Icons.clear_all, color: Colors.red),
-                          tooltip: 'Reset Filters',
+                          tooltip: 'Reset All Filters',
                         ),
                       ],
-                    ],
+                      ],
+                    ),
                   ),
                 ),
                 
@@ -207,9 +212,18 @@ class JobRecommendationScreen extends StatelessWidget {
           // Liste des emplois
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance.collection("allPost").snapshots(),
+              stream: FirebaseFirestore.instance
+                  .collection("allPost")
+                  .where('isFromVerifiedEmployer', isEqualTo: true)
+                  .snapshots(),
               builder: (context, snapshot) {
-                return allJobs(FirebaseFirestore.instance.collection("allPost").snapshots(), seeAll: true);
+                return allJobs(
+                  FirebaseFirestore.instance
+                      .collection("allPost")
+                      .where('isFromVerifiedEmployer', isEqualTo: true)
+                      .snapshots(), 
+                  seeAll: true
+                );
               },
             ),
           ),
@@ -427,12 +441,14 @@ class JobRecommendationScreen extends StatelessWidget {
     );
   }
 
-  // Dialogue de filtre expérience
-  void _showExperienceFilter(BuildContext context, JobRecommendationController controller) {
+
+  // Dialogue de filtre de tri par date
+  void _showDateSortFilter(BuildContext context, JobRecommendationController controller) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Select an experience level'),
+        backgroundColor: Colors.white,
+        title: const Text('Sort by'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -441,27 +457,36 @@ class JobRecommendationScreen extends StatelessWidget {
         ],
         content: SizedBox(
           width: double.minPositive,
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: controller.experienceLevels.length,
-            itemBuilder: (context, index) {
-              final experienceLevel = controller.experienceLevels[index];
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: DateSortOption.values.map((option) {
               return ListTile(
-                title: Text(experienceLevel),
-                leading: Radio<String>(
-                  value: experienceLevel,
-                  groupValue: controller.selectedExperienceLevel.value,
+                title: Text(
+                  option.label,
+                  style: TextStyle(
+                    fontWeight: option == controller.selectedDateSort.value
+                        ? FontWeight.w600
+                        : FontWeight.w400,
+                    color: option == controller.selectedDateSort.value 
+                        ? const Color(0xFF000647) 
+                        : Colors.black87,
+                  ),
+                ),
+                leading: Radio<DateSortOption>(
+                  value: option,
+                  groupValue: controller.selectedDateSort.value,
+                  activeColor: const Color(0xFF000647),
                   onChanged: (value) {
-                    controller.updateExperienceLevel(value!);
+                    controller.updateDateSort(value!);
                     Navigator.pop(context);
                   },
                 ),
                 onTap: () {
-                  controller.updateExperienceLevel(experienceLevel);
+                  controller.updateDateSort(option);
                   Navigator.pop(context);
                 },
               );
-            },
+            }).toList(),
           ),
         ),
       ),

@@ -38,4 +38,30 @@ class ManagerHomeScreenController extends GetxController
     update(['userdata']);
     update(['userDataSeeAll']);
   }
+
+  // Refresh all dashboard data
+  Future<void> refreshData() async {
+    try {
+      if (kDebugMode) {
+        print('🔄 Refreshing Manager Home dashboard...');
+      }
+
+      // Refresh company name and user data
+      await getCompanyName();
+      await getUserData();
+
+      // Update all relevant UI sections
+      update(['userdata']);
+      update(['userDataSeeAll']);
+      update(['dashboard']);
+
+      if (kDebugMode) {
+        print('✅ Manager Home dashboard refreshed successfully');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('❌ Error refreshing Manager Home dashboard: $e');
+      }
+    }
+  }
 }

@@ -13,12 +13,12 @@ import 'package:timeless/services/unified_translation_service.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-
 class FirstScreen extends StatelessWidget {
   FirstScreen({super.key});
 
   final FirstScreenController controller = Get.put(FirstScreenController());
-  final UnifiedTranslationService translationService = UnifiedTranslationService.instance;
+  final UnifiedTranslationService translationService =
+      UnifiedTranslationService.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -49,26 +49,32 @@ class FirstScreen extends StatelessWidget {
             child: Column(
               children: [
                 const SizedBox(height: 80), // Espace pour les boutons fixes
-                
-                
 
-                
-                SizedBox(height: Get.height * 0.04),
-                SizedBox(
-                  width: Get.width * 0.95,
-                  height: Get.height * 0.32,
-                  child: Image.asset(
-                    'assets/images/logo.png',
-                    fit: BoxFit.contain,
+                SizedBox(height: Get.height * 0.03),
+                Container(
+                  width: Get.width * 0.9,
+                  height: Get.height * 0.35,
+                  alignment: Alignment.center,
+                  child: RepaintBoundary(
+                    child: Image.asset(
+                      'assets/images/logo.png',
+                      width: Get.width * 0.85,
+                      height: Get.height * 0.3,
+                      fit: BoxFit.contain,
+                      filterQuality: FilterQuality.high,
+                      gaplessPlayback: false,
+                      isAntiAlias: false,
+                    ),
                   ),
                 ),
+
                 SizedBox(height: Get.height * 0.02),
 
                 // "L'app pratique pour la recherche d'emploi" text
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Text(
-                    "The practical app for job searching",
+                    "",
                     textAlign: TextAlign.center,
                     style: GoogleFonts.poppins(
                       fontWeight: FontWeight.w500,
@@ -77,7 +83,8 @@ class FirstScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(height: Get.height * 0.03),
+
+                SizedBox(height: Get.height * 0.01),
 
                 InkWell(
                   onTap: () {
@@ -101,13 +108,13 @@ class FirstScreen extends StatelessWidget {
                       color: Colors.white,
                     ),
                     child: Text(
-                          "Sign in as candidate",
-                          style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14,
-                            color: Colors.black,
-                          ),
-                        ),
+                      "Sign in as candidate",
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                        color: Colors.black,
+                      ),
+                    ),
                   ),
                 ),
 
@@ -134,13 +141,13 @@ class FirstScreen extends StatelessWidget {
                           color: const Color(0xFF000647), width: 2.0),
                     ),
                     child: Text(
-                          "Create candidate account",
-                          style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14,
-                            color: Colors.black,
-                          ),
-                        ),
+                      "Create candidate account",
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                        color: Colors.black,
+                      ),
+                    ),
                   ),
                 ),
                 SizedBox(height: Get.height * 0.025),
@@ -244,7 +251,8 @@ class FirstScreen extends StatelessWidget {
                       children: [
                         Flexible(
                           child: Obx(() => Text(
-                                translationService.getText('create_account_as_pro'),
+                                translationService
+                                    .getText('create_account_as_pro'),
                                 style: GoogleFonts.poppins(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500,
@@ -375,4 +383,3 @@ class FirstScreen extends StatelessWidget {
     );
   }
 }
-

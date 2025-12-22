@@ -25,20 +25,20 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0A0A0A),
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF000647),
+        backgroundColor: Colors.white,
         title: Text(
           'Employer Dashboard',
           style: GoogleFonts.poppins(
-            color: Colors.white,
-            fontSize: 20,
+            color: const Color.fromARGB(255, 0, 6, 71),
+            fontSize: 16,
             fontWeight: FontWeight.w600,
           ),
         ),
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back, color: Color.fromARGB(255, 0, 6, 71)),
           onPressed: () {
             if (Navigator.canPop(context)) {
               Navigator.pop(context);
@@ -51,11 +51,11 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
         elevation: 0,
         actions: [
           IconButton(
-            icon: const Icon(Icons.person, color: Colors.white),
+            icon: const Icon(Icons.person, color: Color.fromARGB(255, 0, 6, 71)),
             onPressed: () => Get.to(() => const SimpleProfileScreen()),
           ),
           IconButton(
-            icon: const Icon(Icons.logout, color: Colors.white),
+            icon: const Icon(Icons.logout, color: Color.fromARGB(255, 0, 6, 71)),
             onPressed: _logout,
           ),
         ],
@@ -69,12 +69,16 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
             _buildWelcomeHeader(),
             const SizedBox(height: 24),
 
+            // Quick Actions
+            _buildQuickActions(),
+            const SizedBox(height: 24),
+
             // Quick Stats
             _buildQuickStats(),
             const SizedBox(height: 24),
 
-            // Quick Actions
-            _buildQuickActions(),
+            // Offer Interview Button
+            _buildOfferInterviewButton(),
             const SizedBox(height: 24),
 
             // Recent Job Posts
@@ -199,7 +203,7 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
             ),
             child: Column(
               children: [
-                Icon(icon, color: color, size: 32),
+                Icon(icon, color: color, size: 28),
                 const SizedBox(height: 8),
                 Text(
                   count.toString(),
@@ -295,6 +299,29 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildOfferInterviewButton() {
+    return Center(
+      child: SizedBox(
+        width: 200,
+        child: _buildActionButton(
+          title: 'Job Interview Offered',
+          icon: Icons.calendar_today,
+          color: const Color(0xFF000647),
+          onTap: () {
+            Get.snackbar(
+              'Job Interview Offered',
+              'This feature is coming soon!',
+              backgroundColor: const Color(0xFF000647),
+              colorText: Colors.white,
+              snackPosition: SnackPosition.BOTTOM,
+              margin: const EdgeInsets.all(16),
+            );
+          },
         ),
       ),
     );

@@ -6,6 +6,7 @@ import 'package:timeless/screen/dashboard/home/salons_emploi_screen.dart';
 import 'package:timeless/screen/dashboard/home/webinaires_screen.dart';
 import 'package:timeless/screen/dashboard/home/widgets/appbar.dart';
 import 'package:timeless/screen/job_detail_screen/job_detail_upload_cv_screen/upload_cv_controller.dart';
+import 'package:timeless/services/candidate_dashboard_service.dart';
 import 'package:timeless/utils/app_res.dart';
 import 'package:timeless/utils/color_res.dart';
 
@@ -33,35 +34,65 @@ class HomeScreen extends StatelessWidget {
                 children: [
                   // --- SECTION: 
 
-                  // My Applications button ---
+                  // My Applications button with real-time counter ---
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 18.0),
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        Get.toNamed(AppRes.applicationsUser);
+                    child: StreamBuilder<int>(
+                      stream: CandidateDashboardService.getCandidateApplicationsCount(),
+                      builder: (context, snapshot) {
+                        final count = snapshot.data ?? 0;
+                        
+                        return ElevatedButton.icon(
+                          onPressed: () {
+                            Get.toNamed(AppRes.applicationsUser);
+                          },
+                          icon: const Icon(
+                            Icons.assignment_outlined,
+                            color: Colors.white,
+                            size: 18,
+                          ),
+                          label: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                "My Applications Sent",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              if (count > 0) ...[
+                                const SizedBox(width: 8),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Text(
+                                    '$count',
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w700,
+                                      color: const Color(0xFF000647),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF000647),
+                            foregroundColor: Colors.white,
+                            minimumSize: const Size(double.infinity, 40),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            elevation: 5,
+                          ),
+                        );
                       },
-                      icon: const Icon(
-                        Icons.assignment_outlined,
-                        color: Colors.white,
-                        size: 18,
-                      ),
-                      label: Text(
-                        "My Applications Sent",
-                        style: GoogleFonts.poppins(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF000647),
-                        foregroundColor: Colors.white,
-                        minimumSize: const Size(double.infinity, 40), // Reduced from 45
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        elevation: 5,
-                      ),
                     ),
                   ),
 

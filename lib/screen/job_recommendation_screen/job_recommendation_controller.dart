@@ -2,37 +2,36 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:timeless/common/widgets/date_sort_filter.dart';
 
 class JobRecommendationController extends GetxController
     implements GetxService {
   TextEditingController searchController = TextEditingController();
-  
+
   // Documents Firestore
   List<QueryDocumentSnapshot> documents = [];
-  
+
   // Recherche
   RxString searchText = ''.obs;
-  
+
   // Filtres observables
   RxString selectedCategory = 'All'.obs;
   RxString selectedJobType = 'All'.obs;
   RxString selectedLocation = 'All'.obs;
   RxString selectedSalaryRange = 'All'.obs;
   RxString selectedExperienceLevel = 'All'.obs;
-  
+
+  // Date sorting
+  Rx<DateSortOption> selectedDateSort = DateSortOption.newest.obs;
+
   // Options de filtres
-  final List<String> categories = [
-    'All',
-    'Data',
-    'UX/UI', 
-    'Security'
-  ];
+  final List<String> categories = ['All', 'Data', 'UX/UI', 'Security'];
 
   final List<String> jobTypes = [
     'All',
     'CDI',
     'CDD',
-    'Stage',
+    'Internship',
     'Freelance',
     'Intérim'
   ];
@@ -40,7 +39,7 @@ class JobRecommendationController extends GetxController
   final List<String> locations = [
     'All',
     'Paris',
-    'Lyon', 
+    'Lyon',
     'Marseille',
     'Toulouse',
     'Nice',
@@ -62,7 +61,7 @@ class JobRecommendationController extends GetxController
   final List<String> experienceLevels = [
     'All',
     'Entry-level',
-    'Intermediate', 
+    'Intermediate',
     'Experienced',
     'Expert'
   ];
@@ -77,17 +76,12 @@ class JobRecommendationController extends GetxController
   }
 
   RxInt selectedJobs2 = 0.obs;
-  
-  final List<String> jobs2 = [
-    'All Jobs',
-    'UX/UI', 
-    'Data',
-    'Security'
-  ];
+
+  final List<String> jobs2 = ['All Jobs', 'UX/UI', 'Data', 'Security'];
 
   onTapJobs2(int index) {
     selectedJobs2.value = index;
-    
+
     // Synchroniser avec le filtre de catégorie des chips
     switch (index) {
       case 0:
@@ -103,7 +97,7 @@ class JobRecommendationController extends GetxController
         selectedCategory.value = 'Security';
         break;
     }
-    
+
     update();
     update(['search']);
   }
@@ -117,7 +111,7 @@ class JobRecommendationController extends GetxController
   // Mettre à jour les filtres
   void updateCategory(String category) {
     selectedCategory.value = category;
-    
+
     // Synchroniser avec les boutons de catégorie du haut
     switch (category) {
       case 'All':
@@ -133,7 +127,7 @@ class JobRecommendationController extends GetxController
         selectedJobs2.value = 3;
         break;
     }
-    
+
     update();
     update(['search']);
     if (kDebugMode) print('Selected category: $category');
@@ -163,6 +157,14 @@ class JobRecommendationController extends GetxController
     if (kDebugMode) print('Selected experience level: $experienceLevel');
   }
 
+  // Update date sorting
+  void updateDateSort(DateSortOption sortOption) {
+    selectedDateSort.value = sortOption;
+    update(['search']);
+    DateSortHelper.showSortingFeedback(sortOption);
+    if (kDebugMode) print('Selected date sort: ${sortOption.label}');
+  }
+
   // Réinitialiser tous les filtres
   void clearAllFilters() {
     selectedCategory.value = 'All';
@@ -170,6 +172,7 @@ class JobRecommendationController extends GetxController
     selectedLocation.value = 'All';
     selectedSalaryRange.value = 'All';
     selectedExperienceLevel.value = 'All';
+    selectedDateSort.value = DateSortOption.newest;
     searchText.value = '';
     searchController.clear();
     update(['search']);
@@ -189,11 +192,12 @@ class JobRecommendationController extends GetxController
         final company = (data['CompanyName'] ?? '').toString().toLowerCase();
         final category = (data['category'] ?? '').toString().toLowerCase();
         final keywords = data['keywords'] as List<dynamic>? ?? [];
-        
-        return position.contains(query) || 
-               company.contains(query) ||
-               category.contains(query) ||
-               keywords.any((keyword) => keyword.toString().toLowerCase().contains(query));
+
+        return position.contains(query) ||
+            company.contains(query) ||
+            category.contains(query) ||
+            keywords.any(
+                (keyword) => keyword.toString().toLowerCase().contains(query));
       }).toList();
     }
 
@@ -204,7 +208,9 @@ class JobRecommendationController extends GetxController
         final docCategory = data['category']?.toString() ?? '';
         // Correspondance entre UX/UI et UX pour les données Firestore
         if (selectedCategory.value == 'UX/UI') {
-          return docCategory == 'UX' || docCategory == 'UI' || docCategory == 'UX/UI';
+          return docCategory == 'UX' ||
+              docCategory == 'UI' ||
+              docCategory == 'UX/UI';
         }
         return docCategory == selectedCategory.value;
       }).toList();
@@ -224,18 +230,21 @@ class JobRecommendationController extends GetxController
         final data = doc.data() as Map<String, dynamic>;
         final docLocation = data['location']?.toString() ?? '';
         // Vérifier si la ville sélectionnée est incluse dans la localisation
-        return docLocation.toLowerCase().contains(selectedLocation.value.toLowerCase());
+        return docLocation
+            .toLowerCase()
+            .contains(selectedLocation.value.toLowerCase());
       }).toList();
     }
 
     // Filtre par salaire
-    if (selectedSalaryRange.value != 'All' && selectedSalaryRange.value.isNotEmpty) {
+    if (selectedSalaryRange.value != 'All' &&
+        selectedSalaryRange.value.isNotEmpty) {
       filteredDocs = filteredDocs.where((doc) {
         final data = doc.data() as Map<String, dynamic>;
         final salary = data['salary']?.toString() ?? '';
-        
+
         if (salary.isEmpty || salary == '0') return false;
-        
+
         // Extraire le salaire minimum de la chaîne (ex: "60000-75000" -> 60000)
         int? minSalary;
         if (salary.contains('-')) {
@@ -243,28 +252,46 @@ class JobRecommendationController extends GetxController
         } else {
           minSalary = int.tryParse(salary);
         }
-        
+
         if (minSalary == null) return false;
-        
+
         // Filtrer selon la tranche sélectionnée
         switch (selectedSalaryRange.value) {
-          case '< 35K': return minSalary < 35000;
-          case '35K-50K': return minSalary >= 35000 && minSalary < 50000;
-          case '50K-70K': return minSalary >= 50000 && minSalary < 70000;
-          case '70K-90K': return minSalary >= 70000 && minSalary < 90000;
-          case '90K+': return minSalary >= 90000;
-          default: return true;
+          case '< 35K':
+            return minSalary < 35000;
+          case '35K-50K':
+            return minSalary >= 35000 && minSalary < 50000;
+          case '50K-70K':
+            return minSalary >= 50000 && minSalary < 70000;
+          case '70K-90K':
+            return minSalary >= 70000 && minSalary < 90000;
+          case '90K+':
+            return minSalary >= 90000;
+          default:
+            return true;
         }
       }).toList();
     }
 
     // Filtre par niveau d'expérience
-    if (selectedExperienceLevel.value != 'All' && selectedExperienceLevel.value.isNotEmpty) {
+    if (selectedExperienceLevel.value != 'All' &&
+        selectedExperienceLevel.value.isNotEmpty) {
       filteredDocs = filteredDocs.where((doc) {
         final data = doc.data() as Map<String, dynamic>;
         return data['experienceLevel'] == selectedExperienceLevel.value;
       }).toList();
     }
+
+    // Apply date sorting
+    filteredDocs = DateSortHelper.sortDocuments<QueryDocumentSnapshot>(
+      filteredDocs,
+      selectedDateSort.value,
+      'createdAt',
+      getTimestamp: (doc) {
+        final data = doc.data() as Map<String, dynamic>;
+        return data['createdAt'] ?? data['timestamp'] ?? data['dateCreated'];
+      },
+    );
 
     return filteredDocs;
   }
@@ -277,10 +304,11 @@ class JobRecommendationController extends GetxController
   // Vérifier si des filtres sont actifs
   bool hasActiveFilters() {
     return selectedCategory.value != 'All' ||
-           selectedJobType.value != 'All' ||
-           selectedLocation.value != 'All' ||
-           selectedSalaryRange.value != 'All' ||
-           selectedExperienceLevel.value != 'All' ||
-           searchText.value.isNotEmpty;
+        selectedJobType.value != 'All' ||
+        selectedLocation.value != 'All' ||
+        selectedSalaryRange.value != 'All' ||
+        selectedExperienceLevel.value != 'All' ||
+        searchText.value.isNotEmpty ||
+        selectedDateSort.value != DateSortOption.newest;
   }
 }
