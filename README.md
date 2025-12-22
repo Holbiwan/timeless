@@ -1,5 +1,5 @@
 <h1 align="center">Timeless</h1>
-<p align="center"><em>Because careers don’t expire</em></p>
+<p align="center"><em>Because careers don’t expire...</em></p>
 
 
 Timeless is a mobile app developed with Flutter that allows candidates to view and apply for job offers directly from their phone, anytime, anywhere. Its name reflects the idea of a timeless flow of job offers: ads that are accessible at any time, without constraints. 
