@@ -198,8 +198,9 @@ class ReceivedApplicationsScreen extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
+    ),
+  );
+}
 
   // Show delete confirmation dialog
   void _showDeleteConfirmation(BuildContext context, Map<String, dynamic> application, String documentId) {
