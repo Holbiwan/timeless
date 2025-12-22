@@ -135,6 +135,18 @@ node_modules/
 # Flutter DevTools configuration
 devtools_options.yaml
 
+# Firebase options generated file
+Firebase/
+lib/firebase/firebase_options.dart
+
+lib/api/
+
+
+
+
+
+
+
 # Exam and test files
 EXAM_PREPARATION.md
 tests/test_compilation.dart
@@ -145,3 +157,9 @@ DATE_SORT_FILTER_DOC.md
 .flutter-plugins-dependencies
 .flutter-plugins
 .flutter-versions
+
+# Generated documentation
+doc/api/
+
+# FVM
+.fvm/
