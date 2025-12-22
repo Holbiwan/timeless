@@ -1,0 +1,172 @@
+# =====================================================================
+# IDE & EDITORS
+# =====================================================================
+.idea/
+.vscode/
+*.iml
+*.swp
+
+# =====================================================================
+# OPERATING SYSTEM FILES
+# =====================================================================
+.DS_Store
+Thumbs.db
+
+# =====================================================================
+# FLUTTER / DART
+# =====================================================================
+.dart_tool/
+.packages
+.pub/
+.pub-cache/
+build/
+.metadata
+
+.flutter-plugins
+.flutter-plugins-dependencies
+.flutter-versions
+
+# Lockfile (remove only if exam allows flexible deps)
+**/pubspec.lock
+
+# Flutter DevTools
+devtools_options.yaml
+
+# =====================================================================
+# BUILD TOOLS & GENERATED FILES
+# =====================================================================
+
+# Android
+android/.gradle/
+android/app/build/
+android/local.properties
+**/GeneratedPluginRegistrant.java
+
+# iOS
+ios/Pods/
+ios/Flutter/ephemeral/
+ios/Runner.xcworkspace/
+ios/Runner.xcodeproj/project.xcworkspace/
+ios/Runner.xcodeproj/xcuserdata/
+**/GeneratedPluginRegistrant.*
+
+# =====================================================================
+# FIREBASE & SECRETS (NEVER COMMIT)
+# =====================================================================
+
+# Env files
+*.env
+*.env.*
+!*.env.example
+!*.env.ci
+
+firebase/.env.*
+firebase/.env.firestore-send-email
+
+# Firebase credentials
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
+firebase/service-account-key.json
+firebase/adminsdk-*.json
+firebase/private-key.json
+
+# Firebase generated options
+lib/firebase/firebase_options.dart
+Firebase/
+
+# =====================================================================
+# API KEYS & CONFIG FILES
+# =====================================================================
+lib/config/api_config.dart
+lib/config/secrets.dart
+
+config/secrets.yaml
+config/secrets.json
+config/api_keys.yaml
+config/local_settings.yaml
+
+# =====================================================================
+# CERTIFICATES & AUTH
+# =====================================================================
+*.jks
+*.keystore
+*.pem
+*.key
+*.p12
+*.pfx
+
+auth/
+credentials/
+
+# =====================================================================
+# DATABASE & CLOUD
+# =====================================================================
+database.env
+cloud_sql_proxy
+*.sqlite3-key
+
+# =====================================================================
+# PLATFORMS (if not targeted)
+# =====================================================================
+windows/
+linux/
+macos/
+web/
+platforms/
+
+# =====================================================================
+# LOGS & TEMP FILES
+# =====================================================================
+*.log
+logs/
+coverage/
+firebase-debug.log
+
+*.bak
+*.old
+settings.local.json
+.settings.local.json
+
+# =====================================================================
+# BUILD OUTPUTS (NEVER PUSH)
+# =====================================================================
+*.apk
+*.aab
+*.ipa
+*.zip
+
+# =====================================================================
+# NODE / BACKEND
+# =====================================================================
+node_modules/
+
+# =====================================================================
+# DOCUMENTATION & PRIVATE FILES
+# =====================================================================
+docs/
+doc/api/
+
+# Custom / private folders
+.Sabrina
+.sabrina/
+.sabrina_cache/
+
+# =====================================================================
+# EXAM / TEMP FILES
+# =====================================================================
+EXAM_PREPARATION.md
+tests/test_compilation.dart
+test_compile.dart
+test_email_manual.dart
+REFRESH_BUTTONS_DOC.md
+DATE_SORT_FILTER_DOC.md
+
+# =====================================================================
+# VERSION MANAGERS
+# =====================================================================
+.fvm/
+
+# =====================================================================
+# GIT INTERNAL
+# =====================================================================
+.mailmap
