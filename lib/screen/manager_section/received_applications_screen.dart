@@ -169,38 +169,40 @@ class ReceivedApplicationsScreen extends StatelessWidget {
   Widget _buildEmptyState() {
     return Center(
       child: Container(
-        color: const Color(0xFF8B4513), // Set background color here
+        color: const Color(0xFF8B4513),
+        width: double.infinity,
+        height: double.infinity,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-            Icons.inbox_outlined,
-            size: 80,
-            color: Colors.grey[400],
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'No Applications Yet',
-            style: GoogleFonts.poppins(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: Colors.grey[600],
+            const Icon(
+              Icons.inbox_outlined,
+              size: 80,
+              color: Colors.white,
             ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Applications will appear here when candidates apply to your job posts.',
-            textAlign: TextAlign.center,
-            style: GoogleFonts.poppins(
-              fontSize: 14,
-              color: Colors.grey[500],
+            const SizedBox(height: 16),
+            Text(
+              'No Applications Yet',
+              style: GoogleFonts.poppins(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
+              ),
             ),
-          ),
-        ],
+            const SizedBox(height: 8),
+            Text(
+              'Applications will appear here when candidates apply to your job posts.',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.poppins(
+                fontSize: 14,
+                color: Colors.white70,
+              ),
+            ),
+          ],
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 
   // Show delete confirmation dialog
   void _showDeleteConfirmation(BuildContext context, Map<String, dynamic> application, String documentId) {
