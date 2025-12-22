@@ -13,7 +13,7 @@ class NotificationScreenU extends StatelessWidget {
     final notificationService = Get.put(NotificationService());
     
     return Scaffold(
-      backgroundColor: ColorRes.backgroundColor,
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
           children: [
@@ -146,11 +146,11 @@ class _NotificationTile extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
       decoration: BoxDecoration(
-        color: isRead ? Colors.grey[800] : Colors.black87,
+        color: Colors.white, // All tiles are white now
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: isRead ? Colors.grey.withOpacity(0.3) : ColorRes.brightYellow.withOpacity(0.5),
-          width: isRead ? 1 : 2,
+          color: ColorRes.darkBlue, // Dark blue border as requested
+          width: isRead ? 1 : 2, // Keep width logic
         ),
         boxShadow: [
           BoxShadow(
