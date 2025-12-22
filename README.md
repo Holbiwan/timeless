@@ -16,7 +16,7 @@ Timeless makes job hunting easier, faster, and always available, because opportu
 <p align="center"><small><em>See landing page by scanning the QR code or </em></small></p>
 <p align="center">
   <a href="https://holbiwan.github.io/timeless-landing/">
-    <img alt="Landing Page" src="https://img.shields.io/badge/Landing%20Page-Visit%20Now-02569B?style=for-the-badge&logo=web&logoColor=white">
+    <img alt="Landing Page" src="https://img.shields.io/badge/Visit%20Now-02569B?style=for-the-badge&logo=web&logoColor=white">
   </a>
 </p>
 
