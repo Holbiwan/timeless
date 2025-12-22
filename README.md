@@ -13,7 +13,7 @@ Timeless focuses on speed, clarity, and a smooth user experience. It offers an o
 Timeless makes job searching easier, faster, and always available — because opportunities shouldn't be limited by time.
 
 <p align="center">
-  <img src="https://zupimages.net/up/25/48/c0qc.png" alt="Timeless logo" width="280">
+  <img src="https://zupimages.net/up/25/52/eltw.png" alt="Timeless logo" width="280">
   &nbsp;&nbsp;&nbsp;
   <img src="https://zupimages.net/up/25/39/b9yj.png" alt="Timeless QR code" width="270">
 </p>
