@@ -72,9 +72,7 @@ class JobRecommendationScreen extends StatelessWidget {
                     color: accessibilityService.backgroundColor,
                     borderRadius: BorderRadius.circular(AppTheme.radiusRegular),
                     boxShadow: AppTheme.shadowRegular,
-                    border: accessibilityService.isHighContrastMode.value 
-                        ? Border.all(color: accessibilityService.borderColor, width: 2)
-                        : null,
+                    border: Border.all(color: accessibilityService.borderColor, width: 1),
                   ),
                   child: TextField(
                     onChanged: (value) => controller.updateSearchText(value),

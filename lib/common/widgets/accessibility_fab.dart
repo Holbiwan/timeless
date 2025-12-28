@@ -33,15 +33,11 @@ class AccessibilityFAB extends StatelessWidget {
                 offset: const Offset(0, 4),
               ),
             ],
-            border: accessibilityService.isHighContrastMode.value
-                ? Border.all(color: Colors.white, width: 3)
-                : null,
+            border: null,
           ),
           child: Icon(
             Icons.accessibility,
-            color: accessibilityService.isHighContrastMode.value 
-                ? Colors.black 
-                : Colors.white,
+            color: Colors.white,
             size: 28,
           ),
         ),

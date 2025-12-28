@@ -364,7 +364,7 @@ class HomeScreenModern extends StatelessWidget {
           color: accessibilityService.cardBackgroundColor,
           border: Border.all(
             color: accessibilityService.borderColor,
-            width: accessibilityService.isHighContrastMode.value ? 2 : 1,
+            width: 1,
           ),
         ),
         child: Column(

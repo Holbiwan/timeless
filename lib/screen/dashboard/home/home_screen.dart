@@ -7,6 +7,7 @@ import 'package:timeless/screen/dashboard/home/webinaires_screen.dart';
 import 'package:timeless/screen/dashboard/home/widgets/appbar.dart';
 import 'package:timeless/screen/job_detail_screen/job_detail_upload_cv_screen/upload_cv_controller.dart';
 import 'package:timeless/services/candidate_dashboard_service.dart';
+import 'package:timeless/services/accessibility_service.dart';
 import 'package:timeless/utils/app_res.dart';
 import 'package:timeless/utils/color_res.dart';
 
@@ -19,11 +20,12 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     jobDetailsUploadCvController.init();
+    final accessibilityService = AccessibilityService.instance;
 
-    return Container(
+    return Obx(() => Container(
       height: Get.height,
       width: Get.width,
-      color: ColorRes.backgroundColor,
+      color: accessibilityService.backgroundColor,
       child: Column(
         children: [
           const SizedBox(height: 60),
@@ -230,7 +232,7 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
-    );
+    ));
   }
 
   // Widget pour les boutons d'events

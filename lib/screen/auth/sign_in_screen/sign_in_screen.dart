@@ -13,6 +13,7 @@ import 'package:timeless/screen/auth/sign_in_screen/sign_in_controller.dart';
 import 'package:timeless/screen/auth/sign_up/sign_up_screen.dart';
 
 import 'package:timeless/services/preferences_service.dart';
+import 'package:timeless/services/accessibility_service.dart';
 import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/pref_keys.dart';

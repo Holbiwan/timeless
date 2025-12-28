@@ -6,6 +6,7 @@ import 'package:timeless/screen/dashboard/widget.dart';
 import 'package:timeless/screen/new_home_page/new_home_page_screen.dart';
 
 import 'package:timeless/services/preferences_service.dart';
+import 'package:timeless/services/accessibility_service.dart';
 import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/utils/color_res.dart';
@@ -18,14 +19,15 @@ class DashBoardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final String token = PreferencesService.getString(PrefKeys.userId);
+    final accessibilityService = AccessibilityService.instance;
 
-    return WillPopScope(
+    return Obx(() => WillPopScope(
       onWillPop: () async {
         alertU(context);
         return true;
       },
       child: Scaffold(
-        backgroundColor: ColorRes.backgroundColor,
+        backgroundColor: accessibilityService.backgroundColor,
         resizeToAvoidBottomInset: false,
         body: GetBuilder<DashBoardController>(
           id: "bottom_bar",
@@ -66,6 +68,6 @@ class DashBoardScreen extends StatelessWidget {
           },
         ),
       ),
-    );
+    ));
   }
 }

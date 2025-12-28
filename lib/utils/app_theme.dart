@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
+import 'package:timeless/services/accessibility_service.dart';
 
 class AppTheme {
   // Primary colors
@@ -579,24 +580,46 @@ class AppTheme {
     bool isSuccess = false,
     bool isError = false,
   }) {
-    Get.snackbar(
-      title,
-      message,
-      backgroundColor: white,
-      colorText: black,
-      borderColor: buttonBorderColor,
-      borderWidth: 2.0,
-      borderRadius: radiusRegular,
-      margin: const EdgeInsets.all(spacingRegular),
-      duration: const Duration(seconds: 3),
-      icon: Icon(
-        isError ? Icons.error_outline : 
-        isSuccess ? Icons.check_circle_outline : 
-        Icons.info_outline,
-        color: isError ? error : 
-               isSuccess ? success : 
-               black,
-      ),
-    );
+    final accessibilityService = AccessibilityService.instance;
+    
+    // Trigger haptic feedback for accessibility
+    accessibilityService.triggerHapticFeedback();
+    
+    // Only show visual snackbar if visual feedback is enabled
+    if (accessibilityService.isVisualFeedbackEnabled.value) {
+      Get.snackbar(
+        title,
+        message,
+        backgroundColor: accessibilityService.cardBackgroundColor,
+        colorText: accessibilityService.textColor,
+        borderColor: accessibilityService.borderColor,
+        borderWidth: 2.0,
+        borderRadius: radiusRegular,
+        margin: EdgeInsets.all(spacingRegular * accessibilityService.currentFontSize.value),
+        duration: Duration(seconds: accessibilityService.isVoiceOverEnabled.value ? 5 : 3),
+        titleText: Text(
+          title,
+          style: accessibilityService.getAccessibleTextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        messageText: Text(
+          message,
+          style: accessibilityService.getAccessibleTextStyle(
+            fontSize: 14,
+          ),
+        ),
+        icon: Icon(
+          isError ? Icons.error_outline : 
+          isSuccess ? Icons.check_circle_outline : 
+          Icons.info_outline,
+          color: isError ? accessibilityService.errorColor : 
+                 isSuccess ? accessibilityService.successColor : 
+                 accessibilityService.primaryColor,
+          size: 24 * accessibilityService.currentFontSize.value,
+        ),
+      );
+    }
   }
 }

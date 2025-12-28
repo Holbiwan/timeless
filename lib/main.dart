@@ -11,7 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-import 'utils/firebase_options.dart';
+import 'package:timeless/utils/firebase_options.dart';
 
 // Candidate screens
 import 'package:timeless/screen/splashScreen/splash_screen.dart';
@@ -23,7 +23,6 @@ import 'package:timeless/screen/dashboard/applications/applications_screen.dart'
 
 // Global services
 import 'package:timeless/services/unified_translation_service.dart';
-import 'package:timeless/services/theme_service.dart';
 import 'package:timeless/services/accessibility_service.dart';
 import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/screen/manager_section/Notification/notification_services.dart';
@@ -42,8 +41,6 @@ import 'package:timeless/screen/employer/employer_dashboard_screen.dart';
 import 'package:timeless/utils/app_res.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/utils/color_res.dart';
-import 'package:timeless/utils/app_dimensions.dart';
-import 'package:timeless/utils/app_style.dart';
 
 // App entry point
 Future<void> main() async {
@@ -88,7 +85,6 @@ Future<void> main() async {
 
   // Register global services with GetX
   Get.put(UnifiedTranslationService()); // Centralized translation service
-  Get.put(ThemeService()); // App theme management
   Get.put(AccessibilityService()); // Accessibility options
 
   // Start the app with localization support
@@ -112,7 +108,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
+    final accessibilityService = Get.find<AccessibilityService>();
+    
+    return Obx(() => GetMaterialApp(
       title: 'Timeless',
       debugShowCheckedModeBanner: false,
 
@@ -121,67 +119,8 @@ class MyApp extends StatelessWidget {
       supportedLocales: context.supportedLocales,
       locale: context.locale,
 
-      // Global app theme
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: ColorRes.primaryBlue,
-          primary: ColorRes.primaryBlue,
-          secondary: ColorRes.primaryOrange,
-          surface: ColorRes.white,
-          background: ColorRes.backgroundColor,
-          onPrimary: ColorRes.white,
-          onSecondary: ColorRes.white,
-          onSurface: ColorRes.textPrimary,
-          onBackground: ColorRes.textPrimary,
-        ),
-        scaffoldBackgroundColor: ColorRes.backgroundColor,
-        appBarTheme: AppBarTheme(
-          backgroundColor: ColorRes.white,
-          foregroundColor: ColorRes.textPrimary,
-          elevation: 0,
-          centerTitle: true,
-          titleTextStyle: AppTextStyles.h4,
-        ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: ColorRes.primaryBlue,
-            foregroundColor: ColorRes.white,
-            elevation: 2,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppDimensions.buttonRadius),
-            ),
-            textStyle: AppTextStyles.buttonText,
-          ),
-        ),
-        inputDecorationTheme: InputDecorationTheme(
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(AppDimensions.inputRadius),
-            borderSide: BorderSide(color: ColorRes.borderColor),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(AppDimensions.inputRadius),
-            borderSide: BorderSide(color: ColorRes.primaryBlue, width: 2),
-          ),
-          contentPadding: AppDimensions.inputPaddingInsets,
-          filled: true,
-          fillColor: ColorRes.white,
-        ),
-        cardTheme: CardThemeData(
-          color: ColorRes.cardColor,
-          elevation: AppDimensions.cardElevation,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppDimensions.cardRadius),
-          ),
-        ),
-        progressIndicatorTheme: ProgressIndicatorThemeData(
-          color: ColorRes.primaryBlue,
-        ),
-        // Disable focus/hover visual noise
-        focusColor: Colors.transparent,
-        hoverColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-        splashColor: ColorRes.primaryBlue.withOpacity(0.1),
-      ),
+      // Global accessibility-aware theme
+      theme: accessibilityService.globalTheme,
 
       // Initial screen displayed at launch
       home: const SplashScreen(),
@@ -237,6 +176,6 @@ class MyApp extends StatelessWidget {
         name: '/404',
         page: () => candidate_auth.FirstScreen(),
       ),
-    );
+    ));
   }
 }

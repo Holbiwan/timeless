@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:timeless/services/accessibility_service.dart';
 import 'package:timeless/services/unified_translation_service.dart';
+import 'package:timeless/screen/accessibility/accessibility_test_screen.dart';
 
 class AccessibilityPanel extends StatelessWidget {
   const AccessibilityPanel({super.key});
@@ -16,91 +17,49 @@ class AccessibilityPanel extends StatelessWidget {
       backgroundColor: accessibilityService.backgroundColor,
       appBar: AppBar(
         title: Obx(() => Text(
-          translationService.getText('accessibility_settings'),
+          'Accessibility Settings',
           style: GoogleFonts.poppins(
-            color: accessibilityService.textColor,
+            color: Colors.white,
             fontSize: 18 * accessibilityService.currentFontSize.value,
+            fontWeight: FontWeight.w600,
           ),
         )),
-        backgroundColor: accessibilityService.backgroundColor,
-        foregroundColor: accessibilityService.textColor,
-        elevation: 0,
+        backgroundColor: accessibilityService.primaryColor,
+        foregroundColor: Colors.white,
+        elevation: 2,
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
 
-      body: Obx(() => SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+      body: Obx(() => SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
 
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: accessibilityService.cardBackgroundColor,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: Colors.black,
-                  width: accessibilityService.isHighContrastMode.value ? 3 : 2,
-                ),
-                boxShadow: accessibilityService.isHighContrastMode.value ? [] : [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Column(
-                children: [
-                  Icon(
-                    Icons.accessibility,
-                    size: 48,
-                    color: Colors.black,
-                  ),
-                  const SizedBox(height: 8),
-                  Obx(() => Text(
-                    translationService.getText('accessibility_features'),
-                    style: accessibilityService.getAccessibleTextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.center,
-                  )),
-                  const SizedBox(height: 4),
-                  Obx(() => Text(
-                    translationService.getText('accessibility_description'),
-                    style: accessibilityService.getAccessibleTextStyle(
-                      fontSize: 14,
-                      color: accessibilityService.secondaryTextColor,
-                    ),
-                    textAlign: TextAlign.center,
-                  )),
-                ],
+            Center(
+              child: Icon(
+                Icons.accessibility,
+                size: 24,
+                color: accessibilityService.primaryColor,
               ),
             ),
             
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             
             _buildSection(
-              translationService.getText('visual_accessibility'),
+              'Visual Accessibility',
               [
                 _buildToggleItem(
-                  translationService.getText('high_contrast_mode'),
-                  translationService.getText('high_contrast_description'),
-                  Icons.contrast,
-                  accessibilityService.isHighContrastMode.value,
-                  accessibilityService.toggleHighContrast,
-                ),
-                _buildToggleItem(
-                  translationService.getText('dark_mode'),
-                  translationService.getText('dark_mode_description'),
+                  'Dark Mode',
+                  'Dark theme to reduce eye strain',
                   Icons.dark_mode,
                   accessibilityService.isDarkMode.value,
                   accessibilityService.toggleDarkMode,
                 ),
                 _buildToggleItem(
-                  translationService.getText('large_text'),
-                  translationService.getText('large_text_description'),
+                  'Large Text',
+                  'Larger text size for better readability',
                   Icons.text_fields,
                   accessibilityService.isLargeTextMode.value,
                   accessibilityService.toggleLargeText,
@@ -109,28 +68,28 @@ class AccessibilityPanel extends StatelessWidget {
               ],
             ),
             
-            const SizedBox(height: 20),
+            const SizedBox(height: 12),
             
             _buildSection(
-              translationService.getText('hearing_accessibility'),
+              'Audio Accessibility',
               [
                 _buildToggleItem(
-                  translationService.getText('vibration_feedback'),
-                  translationService.getText('vibration_feedback_description'),
+                  'Vibration Feedback',
+                  'Haptic feedback for actions and notifications',
                   Icons.vibration,
                   accessibilityService.isVibrationEnabled.value,
                   accessibilityService.toggleVibration,
                 ),
                 _buildToggleItem(
-                  translationService.getText('visual_feedback'),
-                  translationService.getText('visual_feedback_description'),
+                  'Visual Feedback',
+                  'Visual notifications and confirmations',
                   Icons.visibility,
                   accessibilityService.isVisualFeedbackEnabled.value,
                   accessibilityService.toggleVisualFeedback,
                 ),
                 _buildToggleItem(
-                  translationService.getText('voice_descriptions'),
-                  translationService.getText('voice_descriptions_description'),
+                  'Voice Descriptions',
+                  'Enhanced screen reader support',
                   Icons.record_voice_over,
                   accessibilityService.isVoiceOverEnabled.value,
                   accessibilityService.toggleVoiceOver,
@@ -138,32 +97,64 @@ class AccessibilityPanel extends StatelessWidget {
               ],
             ),
             
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             
-            _buildTestSection(),
-            
-            const SizedBox(height: 24),
-            
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  _showResetDialog(context);
-                },
-                icon: const Icon(Icons.refresh),
-                label: Obx(() => Text(
-                  translationService.getText('reset_to_default'),
-                  style: GoogleFonts.poppins(
-                    fontSize: 16 * accessibilityService.currentFontSize.value,
-                    fontWeight: FontWeight.w600,
+            // Boutons d'action
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      Get.to(() => const AccessibilityTestScreen());
+                    },
+                    icon: const Icon(Icons.science, size: 16),
+                    label: Text(
+                      'Test Changes',
+                      style: GoogleFonts.poppins(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: accessibilityService.successColor,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                    ),
                   ),
-                )),
-                style: accessibilityService.getAccessibleButtonStyle(
-                  backgroundColor: const Color.fromARGB(255, 255, 255, 255),
                 ),
-              ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      _showResetDialog(context);
+                    },
+                    icon: const Icon(Icons.refresh, size: 16),
+                    label: Text(
+                      'Reset to Default',
+                      style: GoogleFonts.poppins(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF000647),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
+            
+            const SizedBox(height: 80),
+            ],
+          ),
         ),
       )),
     );
@@ -180,9 +171,10 @@ class AccessibilityPanel extends StatelessWidget {
           style: accessibilityService.getAccessibleTextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
+            color: accessibilityService.primaryColor,
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 8),
         ...children,
       ],
     );
@@ -201,23 +193,20 @@ class AccessibilityPanel extends StatelessWidget {
       semanticLabel: '$title. $description. ${value ? 'Enabled' : 'Disabled'}',
       onTap: onChanged,
       child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(16),
+        margin: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: value 
-              ? accessibilityService.primaryColor.withOpacity(
-                  accessibilityService.isHighContrastMode.value ? 0.3 : 0.1)
+              ? accessibilityService.primaryColor.withOpacity(0.1)
               : accessibilityService.cardBackgroundColor,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: value 
                 ? accessibilityService.primaryColor
                 : accessibilityService.borderColor,
-            width: value
-                ? (accessibilityService.isHighContrastMode.value ? 3 : 2)
-                : 1,
+            width: value ? 2 : 1,
           ),
-          boxShadow: accessibilityService.isHighContrastMode.value ? [] : [
+          boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.05),
               blurRadius: 4,
@@ -269,9 +258,8 @@ class AccessibilityPanel extends StatelessWidget {
 
   Widget _buildFontSizeControls() {
     final accessibilityService = AccessibilityService.instance;
-    final translationService = UnifiedTranslationService.instance;
     
-    return Container(
+    return Obx(() => Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -279,9 +267,9 @@ class AccessibilityPanel extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: accessibilityService.borderColor,
-          width: accessibilityService.isHighContrastMode.value ? 2 : 1,
+          width: 1,
         ),
-        boxShadow: accessibilityService.isHighContrastMode.value ? [] : [
+        boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
             blurRadius: 4,
@@ -292,22 +280,22 @@ class AccessibilityPanel extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Obx(() => Text(
-            translationService.getText('font_size_control'),
+          Text(
+            'Font Size Control',
             style: accessibilityService.getAccessibleTextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
             ),
-          )),
+          ),
           const SizedBox(height: 8),
-          Obx(() => Text(
-            translationService.getText('font_size_description'),
+          Text(
+            'Adjust text size throughout the app',
             style: accessibilityService.getAccessibleTextStyle(
               fontSize: 12,
               color: accessibilityService.secondaryTextColor,
             ),
-          )),
-          const SizedBox(height: 12),
+          ),
+          const SizedBox(height: 8),
           Row(
             children: [
               IconButton(
@@ -319,13 +307,13 @@ class AccessibilityPanel extends StatelessWidget {
                 tooltip: 'Decrease font size',
               ),
               Expanded(
-                child: Obx(() => Text(
+                child: Text(
                   'Sample Text (${(accessibilityService.currentFontSize.value * 100).round()}%)',
                   style: accessibilityService.getAccessibleTextStyle(
                     fontSize: 16,
                   ),
                   textAlign: TextAlign.center,
-                )),
+                ),
               ),
               IconButton(
                 onPressed: accessibilityService.increaseFontSize,
@@ -339,68 +327,9 @@ class AccessibilityPanel extends StatelessWidget {
           ),
         ],
       ),
-    );
+    ));
   }
 
-  Widget _buildTestSection() {
-    final accessibilityService = AccessibilityService.instance;
-    final translationService = UnifiedTranslationService.instance;
-    
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: accessibilityService.primaryColor.withOpacity(
-          accessibilityService.isHighContrastMode.value ? 0.2 : 0.05),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: accessibilityService.primaryColor.withOpacity(
-            accessibilityService.isHighContrastMode.value ? 1.0 : 0.3),
-          width: accessibilityService.isHighContrastMode.value ? 2 : 1,
-        ),
-        boxShadow: accessibilityService.isHighContrastMode.value ? [] : [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Obx(() => Text(
-            translationService.getText('test_settings'),
-            style: accessibilityService.getAccessibleTextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          )),
-          const SizedBox(height: 12),
-          Obx(() => Text(
-            translationService.getText('test_settings_description'),
-            style: accessibilityService.getAccessibleTextStyle(fontSize: 14),
-          )),
-          const SizedBox(height: 12),
-          ElevatedButton(
-            onPressed: () {
-              accessibilityService.triggerHapticFeedback();
-              accessibilityService.showAccessibilityFeedback('Test button pressed!');
-            },
-            style: accessibilityService.getAccessibleButtonStyle(
-              backgroundColor: const Color(0xFF000647),
-            ),
-            child: Obx(() => Text(
-              translationService.getText('test_button'),
-              style: GoogleFonts.poppins(
-                fontSize: 14 * accessibilityService.currentFontSize.value,
-                color: Colors.white,
-              ),
-            )),
-          ),
-        ],
-      ),
-    );
-  }
 
   void _showResetDialog(BuildContext context) {
     final accessibilityService = AccessibilityService.instance;
@@ -408,46 +337,50 @@ class AccessibilityPanel extends StatelessWidget {
     
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (context) => Obx(() => AlertDialog(
         backgroundColor: accessibilityService.cardBackgroundColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
           side: BorderSide(
             color: accessibilityService.borderColor,
-            width: accessibilityService.isHighContrastMode.value ? 2 : 1,
+            width: 1,
           ),
         ),
-        title: Obx(() => Text(
-          translationService.getText('reset_dialog_title'),
+        title: Text(
+          'Reset Settings',
           style: accessibilityService.getAccessibleTextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
-        )),
-        content: Obx(() => Text(
-          translationService.getText('reset_dialog_message'),
+        ),
+        content: Text(
+          'Reset all accessibility settings to default values?',
           style: accessibilityService.getAccessibleTextStyle(fontSize: 14),
-        )),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Obx(() => Text(
-              translationService.getText('cancel'),
+            child: Text(
+              'Cancel',
               style: TextStyle(color: accessibilityService.primaryColor),
-            )),
+            ),
           ),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               Navigator.pop(context);
+              await accessibilityService.resetToDefault();
               accessibilityService.showAccessibilityFeedback(
                 'Settings reset to default',
               );
             },
             style: accessibilityService.getAccessibleButtonStyle(),
-            child: Obx(() => Text(translationService.getText('reset'))),
+            child: const Text(
+              'Reset',
+              style: TextStyle(color: Colors.white),
+            ),
           ),
         ],
-      ),
+      )),
     );
   }
 }

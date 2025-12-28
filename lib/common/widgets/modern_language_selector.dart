@@ -53,7 +53,7 @@ class ModernLanguageSelector extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: accessibilityService.borderColor,
-          width: accessibilityService.isHighContrastMode.value ? 2 : 1,
+          width: 1,
         ),
         boxShadow: [
           BoxShadow(
@@ -161,7 +161,7 @@ class ModernLanguageSelector extends StatelessWidget {
                 ),
                 border: Border.all(
                   color: accessibilityService.borderColor,
-                  width: accessibilityService.isHighContrastMode.value ? 2 : 1,
+                  width: 1,
                 ),
               ),
               child: Column(
@@ -345,7 +345,7 @@ class ModernLanguageSelector extends StatelessWidget {
                 ? accessibilityService.primaryColor
                 : accessibilityService.borderColor.withOpacity(0.3),
             width: isSelected
-                ? (accessibilityService.isHighContrastMode.value ? 3 : 2)
+                ? 2
                 : 1,
           ),
         ),

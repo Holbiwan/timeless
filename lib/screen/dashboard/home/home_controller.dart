@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:timeless/screen/job_recommendation_screen/job_recommendation_controller.dart';
 import 'package:timeless/services/preferences_service.dart';
+import 'package:timeless/services/accessibility_service.dart';
 import 'package:timeless/utils/pref_keys.dart';
 
 JobRecommendationController jcon = Get.put(JobRecommendationController());
@@ -40,6 +41,8 @@ class HomeController extends GetxController implements GetxService {
   }
 
   onTapSave(index, field, docId) {
+    AccessibilityService.instance.triggerHapticFeedback();
+    
     if (jobTypesSaved[index] == true) {
       //   jobTypesSaved[index] = false;
 

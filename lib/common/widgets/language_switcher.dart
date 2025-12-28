@@ -44,7 +44,7 @@ class LanguageSwitcher extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppTheme.radiusSmall),
         border: Border.all(
           color: accessibilityService.borderColor,
-          width: accessibilityService.isHighContrastMode.value ? 2 : 1,
+          width: 1,
         ),
       ),
       child: Row(
@@ -126,7 +126,7 @@ class LanguageSwitcher extends StatelessWidget {
             borderRadius: BorderRadius.circular(AppTheme.radiusRegular),
             side: BorderSide(
               color: accessibilityService.borderColor,
-              width: accessibilityService.isHighContrastMode.value ? 2 : 1,
+              width: 1,
             ),
           ),
           title: Row(
@@ -235,7 +235,7 @@ class LanguageSwitcher extends StatelessWidget {
                 ? accessibilityService.primaryColor
                 : accessibilityService.borderColor,
             width: isSelected 
-                ? (accessibilityService.isHighContrastMode.value ? 3 : 2) 
+                ? 2 
                 : 1,
           ),
         ),

@@ -539,9 +539,7 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: accessibilityService.isHighContrastMode.value 
-                          ? AppTheme.white 
-                          : ColorRes.lightGrey.withOpacity(0.3),
+                      color: accessibilityService.cardBackgroundColor,
                       borderRadius: BorderRadius.circular(AppTheme.radiusRegular),
                       border: Border.all(
                         color: accessibilityService.primaryColor.withOpacity(0.2),
