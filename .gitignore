@@ -151,11 +151,8 @@ NETLIFY_DEPLOY_GUIDE.md
 .Sabrina
 .sabrina/
 .sabrina_cache/
-
-# Claude Code generated files
-CLAUDE.md
-.claude/
-claude_*
+.private/
+.private_files/
 
 # =====================================================================
 # DEBUG & TEMPORARY FILES
