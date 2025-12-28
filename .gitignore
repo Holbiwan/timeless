@@ -145,14 +145,20 @@ node_modules/
 # =====================================================================
 docs/
 doc/api/
+NETLIFY_DEPLOY_GUIDE.md
 
 # Custom / private folders
 .Sabrina
 .sabrina/
 .sabrina_cache/
 
+# Claude Code generated files
+CLAUDE.md
+.claude/
+claude_*
+
 # =====================================================================
-# EXAM / TEMP FILES
+# DEBUG & TEMPORARY FILES
 # =====================================================================
 EXAM_PREPARATION.md
 tests/test_compilation.dart
@@ -160,6 +166,46 @@ test_compile.dart
 test_email_manual.dart
 REFRESH_BUTTONS_DOC.md
 DATE_SORT_FILTER_DOC.md
+
+# Debug utility files
+**/debug_*.dart
+**/test_*.dart
+**/temp_*.dart
+**/manual_*.dart
+**/run_*.dart
+**/fix_*.dart
+
+# Debug directories  
+**/debug/
+**/temp/
+**/tmp/
+
+# Email confirmation site (not core app)
+email_confirmation_site/
+web_redirect/
+
+# Debug/test apps at root level
+test_*.dart
+run_*.dart
+debug_*.dart
+temp_*.dart
+manual_*.dart
+fix_*.dart
+run_employer_sync.dart
+run_vitoranda_fix.dart
+test_vitoranda_email.dart
+vitoranda_toranda debug files
+**/vitoranda_*.dart
+**/email_debug_*.dart
+**/signup_debug_*.dart
+**/simple_*.dart
+
+# Admin/debug screens not in production
+lib/screen/admin/
+lib/utils/admin_*.dart
+
+# Scripts directory (development utilities)
+scripts/
 
 # =====================================================================
 # VERSION MANAGERS
@@ -170,3 +216,10 @@ DATE_SORT_FILTER_DOC.md
 # GIT INTERNAL
 # =====================================================================
 .mailmap
+
+
+ =====================================================================
+# DOCS
+# =====================================================================
+CLEANUP_GUIDE.md
+NETLIFY_DEPLOY_GUIDE.md
