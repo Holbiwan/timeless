@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:timeless/screen/auth/sign_in_screen/sign_in_screen.dart';
 import 'package:timeless/utils/app_style.dart';
@@ -67,12 +68,58 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
     final double h = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      backgroundColor: ColorRes.backgroundColor,
-      body: Obx(
-        () => Column(
-          children: [
-            const SizedBox(height: 40),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              const Color(0xFF1E40AF), // Bleu vif
+              const Color(0xFF3B82F6), // Bleu moyen
+              const Color(0xFFF97316), // Orange vif
+              const Color(0xFF1E3A8A), // Bleu foncé
+            ],
+            stops: const [0.0, 0.3, 0.7, 1.0],
+          ),
+        ),
+        child: Obx(
+          () => Column(
+            children: [
+              const SizedBox(height: 40),
 
+            // TIMELESS Title avec le même style que FirstPage
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: ShaderMask(
+                shaderCallback: (bounds) => LinearGradient(
+                  colors: [
+                    const Color(0xFFFF8C00),
+                    Colors.white,
+                    const Color(0xFFFF8C00),
+                  ],
+                ).createShader(bounds),
+                child: Text(
+                  "TIMELESS",
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.inter(
+                    fontSize: 28,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 3.0,
+                    color: Colors.white,
+                    shadows: [
+                      Shadow(
+                        color: const Color(0xFFFF8C00).withOpacity(0.5),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            
+            const SizedBox(height: 20),
+            
             // Welcome (gauche) + Skip (droite)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -83,9 +130,17 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
                     child: Text(
                       "Welcome",
                       style: appTextStyle(
-                        color: ColorRes.royalBlue,
+                        color: Colors.white,
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
+                      ).copyWith(
+                        shadows: [
+                          Shadow(
+                            color: Colors.black.withOpacity(0.3),
+                            blurRadius: 2,
+                            offset: const Offset(0, 1),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -103,21 +158,36 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
-                              ColorRes.royalBlue,
-                              ColorRes.royalBlue,
+                              const Color(0xFFF97316), // Orange vif
+                              const Color(0xFFEA580C), // Orange foncé
                             ],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                           ),
                           borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: ColorRes.royalBlue),
+                          border: Border.all(color: Colors.white.withOpacity(0.3)),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.orange.withOpacity(0.4),
+                              blurRadius: 8,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
                         ),
                         child: Text(
                           "Skip",
                           style: appTextStyle(
-                            color: Colors.black,
+                            color: Colors.white,
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
+                          ).copyWith(
+                            shadows: [
+                              Shadow(
+                                color: Colors.black.withOpacity(0.3),
+                                blurRadius: 2,
+                                offset: const Offset(0, 1),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -166,17 +236,30 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.3),
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.black.withOpacity(0.4),
+                    Colors.black.withOpacity(0.2),
+                  ],
+                ),
                 borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: Colors.white.withOpacity(0.3)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
               child: SmoothPageIndicator(
                 controller: _pageController,
                 count: 3,
                 effect: SlideEffect(
-                  activeDotColor: Colors.white,
-                  dotColor: Colors.white.withOpacity(0.5),
-                  dotWidth: 10,
-                  dotHeight: 10,
+                  activeDotColor: const Color(0xFFF97316), // Orange vif
+                  dotColor: Colors.white.withOpacity(0.7),
+                  dotWidth: 12,
+                  dotHeight: 12,
                 ),
               ),
             ),
@@ -200,22 +283,38 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
                     borderRadius: BorderRadius.circular(10),
                     gradient: const LinearGradient(
                       colors: [
-                        ColorRes.royalBlue,
-                        ColorRes.royalBlue,
+                        Color(0xFFF97316), // Orange vif
+                        Color(0xFFEA580C), // Orange foncé
                       ],
                     ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.orange.withOpacity(0.4),
+                        blurRadius: 12,
+                        offset: const Offset(0, 6),
+                      ),
+                    ],
                   ),
                   child: Text(
                     "Get Started",
                     style: appTextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: Colors.black,
+                      color: Colors.white,
+                    ).copyWith(
+                      shadows: [
+                        Shadow(
+                          color: Colors.black.withOpacity(0.3),
+                          blurRadius: 2,
+                          offset: const Offset(0, 1),
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -289,11 +388,11 @@ class _IntroPage extends StatelessWidget {
                           left: 20,
                           right: 20,
                           child: Text(
-                            'Bridging the Gap With Timeless Talent',
+                            'Because careers don\'t expire',
                             textAlign: TextAlign.center,
                             style: appTextStyle(
                               color: Colors.white,
-                              fontSize: 18,
+                              fontSize: 22,
                               fontWeight: FontWeight.bold,
                             ).copyWith(
                               shadows: [

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:timeless/screen/auth/sign_in_screen/sign_in_screen.dart';
 import 'package:timeless/screen/auth/sign_up/sign_up_screen.dart';
 import 'package:timeless/screen/auth/employer_signin/employer_signin_choice_screen.dart';
@@ -96,9 +98,9 @@ class FirstScreen extends StatelessWidget {
                       child: Text(
                         "TIMELESS",
                         style: GoogleFonts.inter(
-                          fontSize: 26,
+                          fontSize: 28,
                           fontWeight: FontWeight.w700,
-                          letterSpacing: 2.5,
+                          letterSpacing: 3.0,
                           color: Colors.white,
                           shadows: [
                             Shadow(
@@ -112,7 +114,7 @@ class FirstScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      "Your career journey starts here",
+                      "Because opportunities don't wait",
                       style: GoogleFonts.inter(
                         fontSize: 14,
                         fontWeight: FontWeight.w400,
@@ -128,16 +130,16 @@ class FirstScreen extends StatelessWidget {
               SizedBox(height: Get.height * 0.005),
 
               Container(
-                width: Get.width * 0.95,
-                height: Get.height * 0.30,
+                width: Get.width * 0.75,
+                height: Get.height * 0.22,
                 alignment: Alignment.center,
                 child: RepaintBoundary(
                   child: Opacity(
                     opacity: 0.95,
                     child: Image.asset(
                       'assets/images/logo.png',
-                      width: Get.width * 0.85,
-                      height: Get.height * 0.28,
+                      width: Get.width * 0.75,
+                      height: Get.height * 0.20,
                       fit: BoxFit.contain,
                       filterQuality: FilterQuality.high,
                       gaplessPlayback: false,
@@ -163,12 +165,13 @@ class FirstScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(15),
                   child: Container(
                     height: 44,
-                    width: Get.width * 0.70,
+                    width: Get.width * 0.75,
                     margin: const EdgeInsets.symmetric(horizontal: 20),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
-                      border: Border.all(color: const Color(0xFF000647), width: 2.0),
+                      border: Border.all(
+                          color: const Color(0xFF000647), width: 2.0),
                       color: Colors.white,
                       boxShadow: [
                         BoxShadow(
@@ -218,13 +221,14 @@ class FirstScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(15),
                   child: Container(
                     height: 44,
-                    width: Get.width * 0.70,
+                    width: Get.width * 0.75,
                     margin: const EdgeInsets.symmetric(horizontal: 20),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
                       color: Colors.white,
-                      border: Border.all(color: const Color(0xFF000647), width: 2.0),
+                      border: Border.all(
+                          color: const Color(0xFF000647), width: 2.0),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.white.withOpacity(0.2),
@@ -273,13 +277,14 @@ class FirstScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(15),
                   child: Container(
                     height: 44,
-                    width: Get.width * 0.70,
+                    width: Get.width * 0.75,
                     margin: const EdgeInsets.symmetric(horizontal: 20),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
                       color: Colors.white,
-                      border: Border.all(color: const Color(0xFF000647), width: 2.0),
+                      border: Border.all(
+                          color: const Color(0xFF000647), width: 2.0),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.white.withOpacity(0.2),
@@ -356,13 +361,14 @@ class FirstScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(15),
                   child: Container(
                     height: 44,
-                    width: Get.width * 0.70,
+                    width: Get.width * 0.75,
                     margin: const EdgeInsets.symmetric(horizontal: 20),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
                       color: Colors.white,
-                      border: Border.all(color: const Color(0xFF000647), width: 2.0),
+                      border: Border.all(
+                          color: const Color(0xFF000647), width: 2.0),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.white.withOpacity(0.2),
@@ -425,8 +431,104 @@ class FirstScreen extends StatelessWidget {
               ),
 
               SizedBox(height: Get.height * 0.03),
+
+              // Section des réseaux sociaux
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  children: [
+                    Text(
+                      "Connect with us",
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        letterSpacing: 0.6,
+                        color: Colors.white.withOpacity(0.9),
+                      ),
+                    ),
+                    const SizedBox(height: 15),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _buildSocialIcon(
+                          'https://linkedin.com/in/sabrina-papeau',
+                          FontAwesomeIcons.linkedin,
+                          const Color(0xFF0077B5), // LinkedIn blue
+                        ),
+                        const SizedBox(width: 20),
+                        _buildSocialIcon(
+                          'https://x.com/Holbiwan_Place',
+                          FontAwesomeIcons.xTwitter,
+                          Colors.white, // X/Twitter white
+                        ),
+                        const SizedBox(width: 20),
+                        _buildSocialIcon(
+                          'https://www.instagram.com/timelessflowapp/',
+                          FontAwesomeIcons.instagram,
+                          const Color(0xFFE1306C), // Instagram pink
+                        ),
+                        const SizedBox(width: 20),
+                        _buildSocialIcon(
+                          'https://facebook.com/TimelessFlowApp',
+                          FontAwesomeIcons.facebook,
+                          const Color(0xFF1877F2), // Facebook blue
+                        ),
+                        const SizedBox(width: 20),
+                        _buildSocialIcon(
+                          'https://www.youtube.com/@BriaDev_Paris',
+                          FontAwesomeIcons.youtube,
+                          const Color(0xFFFF0000), // YouTube red
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: Get.height * 0.02),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSocialIcon(String url, IconData icon, Color color) {
+    return InkWell(
+      onTap: () async {
+        try {
+          final uri = Uri.parse(url);
+          if (await canLaunchUrl(uri)) {
+            await launchUrl(uri, mode: LaunchMode.externalApplication);
+          }
+        } catch (e) {
+          if (kDebugMode) {
+            print('Erreur lors de l\'ouverture du lien: $e');
+          }
+        }
+      },
+      borderRadius: BorderRadius.circular(25),
+      child: Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.1),
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: color.withOpacity(0.3),
+            width: 1.5,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: color.withOpacity(0.2),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Icon(
+          icon,
+          color: color,
+          size: 20,
         ),
       ),
     );

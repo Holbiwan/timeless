@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart' show kDebugMode;
+import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:timeless/screen/auth/email_verification/email_verification_screen.dart';
+import 'package:timeless/screen/dashboard/dashboard_screen.dart';
 import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/utils/app_theme.dart';
@@ -427,6 +428,147 @@ class SignUpController extends GetxController {
       if (kDebugMode) {
         print('⚠️ Error clearing profile data: $e');
       }
+    }
+  }
+
+  // GitHub Sign-Up
+  Future<void> signUpWithGitHub() async {
+    if (loading.value) return;
+    loading.value = true;
+    
+    try {
+      // On Android, GitHub has issues with Custom Tabs
+      if (!kIsWeb) {
+        AppTheme.showStandardSnackBar(
+          title: "GitHub Sign-Up",
+          message: "GitHub is not supported on Android for this version.\n"
+              "Please use Email/Password registration.",
+        );
+        return;
+      }
+
+      final provider = GithubAuthProvider()
+        ..addScope('read:user')
+        ..addScope('user:email')
+        ..setCustomParameters({'allow_signup': 'true'});  // Allow signup
+
+      UserCredential cred = await _auth.signInWithPopup(provider);
+
+      final user = cred.user;
+      if (user == null) {
+        AppTheme.showStandardSnackBar(
+            title: "GitHub",
+            message: "Sign-up cancelled");
+        return;
+      }
+
+      // Get email if hidden by GitHub
+      String email = user.email ?? '';
+      if (email.isEmpty) {
+        for (final p in user.providerData) {
+          if ((p.email ?? '').isNotEmpty) {
+            email = p.email!;
+            break;
+          }
+        }
+        if (email.isEmpty && cred.additionalUserInfo?.profile is Map) {
+          final map = cred.additionalUserInfo!.profile! as Map;
+          final maybe = map['email'];
+          if (maybe is String && maybe.isNotEmpty) email = maybe;
+        }
+        if (email.isEmpty) email = '\${user.uid}@users.noreply.github.com';
+      }
+
+      // Clear any existing profile data first
+      await _clearAllProfileData();
+
+      // Extract name from GitHub profile
+      String firstName = '';
+      String lastName = '';
+      final fullName = user.displayName ?? '';
+      
+      if (fullName.isNotEmpty) {
+        final nameParts = fullName.split(' ');
+        firstName = nameParts.first;
+        if (nameParts.length > 1) {
+          lastName = nameParts.sublist(1).join(' ');
+        }
+      }
+
+      // Create user profile data
+      final profile = <String, dynamic>{
+        "uid": user.uid,
+        "Email": email,
+        "fullName": fullName,
+        "firstName": firstName,
+        "lastName": lastName,
+        "Phone": "",
+        "City": "",
+        "State": "",
+        "Country": "",
+        "Occupation": "",
+        "provider": "github",
+        "imageUrl": user.photoURL ?? "",
+        "photoURL": user.photoURL ?? "",
+        "emailVerified": user.emailVerified,
+        "accountStatus": user.emailVerified ? "active" : "pending_verification",
+        "deviceTokenU": PreferencesService.getString(PrefKeys.deviceToken),
+        "createdAt": FieldValue.serverTimestamp(),
+      };
+
+      await _db
+          .collection("Auth")
+          .doc("User")
+          .collection("register")
+          .doc(user.uid)
+          .set(profile);
+
+      // Save user preferences
+      await PreferencesService.setValue(PrefKeys.rol, "User");
+      await PreferencesService.setValue(PrefKeys.userId, user.uid);
+      await PreferencesService.setValue(PrefKeys.email, email);
+      await PreferencesService.setValue(PrefKeys.fullName, fullName);
+
+      // Send welcome email
+      await _sendWelcomeEmailWithVerification(email, fullName);
+
+      AppTheme.showStandardSnackBar(
+        title: "✅ Account Created Successfully!",
+        message: "Welcome to Timeless! Your GitHub account has been linked successfully.",
+        isSuccess: true,
+      );
+
+      // Navigate to email verification if needed, otherwise dashboard
+      if (user.emailVerified) {
+        // Navigate to dashboard directly
+        Get.offAll(() => DashBoardScreen());
+      } else {
+        Get.offAll(() => EmailVerificationScreen(
+              email: email,
+              userFullName: fullName,
+            ));
+      }
+
+      // Clear form fields
+      firstNameCtrl.clear();
+      lastNameCtrl.clear();
+      emailCtrl.clear();
+      passwordCtrl.clear();
+      
+    } on FirebaseAuthException catch (e) {
+      if (kDebugMode) print("GitHub Sign-up error: \${e.code} \${e.message}");
+      AppTheme.showStandardSnackBar(
+          title: "GitHub Sign-up",
+          message: e.message ?? 'Firebase error: \${e.code}',
+          isError: true);
+    } catch (e) {
+      if (kDebugMode) print("GitHub Sign-up error: \$e");
+      AppTheme.showStandardSnackBar(
+          title: "GitHub Sign-up",
+          message: "Unexpected error: \$e",
+          isError: true);
+    } finally {
+      loading.value = false;
     }
   }
 

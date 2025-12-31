@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show PlatformException;
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:timeless/common/widgets/back_button.dart'; // Keep original backButton for now if needed, but I'll use a custom one.
 import 'package:timeless/common/widgets/common_loader.dart';
@@ -371,15 +372,28 @@ class _SigninScreenUState extends State<SigninScreenU> {
 
                           const SizedBox(height: 12), // Reduced from Get.height * 0.025
 
-                          UnifiedButton(
-                            text: 'Continue with GitHub',
-                            onPressed: isLoading ? null : controller.signInWithGitHub,
-                            type: UnifiedButtonType.black, // Set to black
-                            isLoading: isLoading,
-                            icon: const Icon(
-                              Icons.code,
-                              size: 16,
-                              color: Colors.white, // Changed icon color to white for dark bg
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: Colors.white.withOpacity(0.2)),
+                            ),
+                            child: UnifiedButton(
+                              text: 'Continue with GitHub',
+                              onPressed: isLoading ? null : controller.signInWithGitHub,
+                              type: UnifiedButtonType.black,
+                              isLoading: isLoading,
+                              icon: Container(
+                                padding: const EdgeInsets.all(2),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                child: const FaIcon(
+                                  FontAwesomeIcons.github,
+                                  size: 16,
+                                  color: Colors.white,
+                                ),
+                              ),
                             ),
                           ),
 

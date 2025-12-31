@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:timeless/common/widgets/common_loader.dart';
 import 'package:timeless/common/widgets/modern_loader.dart';
@@ -328,6 +329,57 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             },
                             type: UnifiedButtonType.black,
                             isLoading: isLoading,
+                          ),
+
+                          const SizedBox(height: 20),
+
+                          // Or continue with divider
+                          Row(
+                            children: [
+                              Expanded(child: Divider(color: Colors.grey.shade200)),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                                child: Text(
+                                  "Or continue with",
+                                  style: GoogleFonts.inter(
+                                    fontSize: 14,
+                                    color: Colors.grey[500],
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                              Expanded(child: Divider(color: Colors.grey.shade200)),
+                            ],
+                          ),
+
+                          const SizedBox(height: 20),
+
+                          // GitHub Sign-up button
+                          GetBuilder<SignUpController>(
+                            builder: (_) => Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(color: Colors.white.withOpacity(0.2)),
+                              ),
+                              child: UnifiedButton(
+                                text: 'Sign up with GitHub',
+                                onPressed: isLoading ? null : ctrl.signUpWithGitHub,
+                                type: UnifiedButtonType.black,
+                                isLoading: isLoading,
+                                icon: Container(
+                                  padding: const EdgeInsets.all(2),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                  child: const FaIcon(
+                                    FontAwesomeIcons.github,
+                                    size: 16,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
 
                           const SizedBox(height: 30),
