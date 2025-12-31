@@ -108,7 +108,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         backgroundColor: const Color(0xFF000647),
         title: Text(
           'Notification Settings',
-          style: GoogleFonts.poppins(
+          style: GoogleFonts.inter(
             color: Colors.white,
             fontSize: 18,
             fontWeight: FontWeight.w600,
@@ -121,7 +121,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             onPressed: _isLoading ? null : _saveNotificationSettings,
             child: Text(
               'Save',
-              style: GoogleFonts.poppins(
+              style: GoogleFonts.inter(
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
               ),
@@ -148,7 +148,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   Expanded(
                     child: Text(
                       'Manage your notification preferences to stay updated about your job postings and applications.',
-                      style: GoogleFonts.poppins(
+                      style: GoogleFonts.inter(
                         color: Colors.blue,
                         fontSize: 13,
                       ),
@@ -162,7 +162,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             
             Text(
               'Communication Preferences',
-              style: GoogleFonts.poppins(
+              style: GoogleFonts.inter(
                 color: Colors.white,
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
@@ -200,7 +200,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             
             Text(
               'Job-Related Alerts',
-              style: GoogleFonts.poppins(
+              style: GoogleFonts.inter(
                 color: Colors.white,
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
@@ -226,7 +226,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             
             Text(
               'Marketing',
-              style: GoogleFonts.poppins(
+              style: GoogleFonts.inter(
                 color: Colors.white,
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
@@ -273,7 +273,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                       )
                     : Text(
                         'Save Settings',
-                        style: GoogleFonts.poppins(
+                        style: GoogleFonts.inter(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                         ),
@@ -314,7 +314,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       ),
       title: Text(
         title,
-        style: GoogleFonts.poppins(
+        style: GoogleFonts.inter(
           fontSize: 14,
           fontWeight: FontWeight.w600,
           color: Colors.black87,
@@ -322,7 +322,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       ),
       subtitle: Text(
         subtitle,
-        style: GoogleFonts.poppins(
+        style: GoogleFonts.inter(
           fontSize: 12,
           color: Colors.grey[600],
         ),

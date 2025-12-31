@@ -103,7 +103,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         backgroundColor: const Color(0xFF000647),
         title: Text(
           'Edit Profile',
-          style: GoogleFonts.poppins(
+          style: GoogleFonts.inter(
             color: Colors.white,
             fontSize: 18,
             fontWeight: FontWeight.w600,
@@ -116,7 +116,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             onPressed: _isLoading ? null : _updateProfile,
             child: Text(
               'Save',
-              style: GoogleFonts.poppins(
+              style: GoogleFonts.inter(
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
               ),
@@ -133,7 +133,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             children: [
               Text(
                 'Company Information',
-                style: GoogleFonts.poppins(
+                style: GoogleFonts.inter(
                   color: Colors.white,
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
@@ -211,7 +211,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         )
                       : Text(
                           'Update Profile',
-                          style: GoogleFonts.poppins(
+                          style: GoogleFonts.inter(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                           ),
@@ -236,10 +236,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       controller: controller,
       validator: validator,
       maxLines: maxLines,
-      style: GoogleFonts.poppins(color: Colors.white),
+      style: GoogleFonts.inter(color: Colors.white),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: GoogleFonts.poppins(color: Colors.white70),
+        labelStyle: GoogleFonts.inter(color: Colors.white70),
         prefixIcon: Icon(icon, color: Colors.white70),
         filled: true,
         fillColor: Colors.white.withOpacity(0.05),

@@ -79,7 +79,7 @@ class JobDetailScreen extends StatelessWidget {
                                 children: [
                                   Text(
                                     job.title,
-                                    style: GoogleFonts.poppins(
+                                    style: GoogleFonts.inter(
                                       fontSize: 20,
                                       fontWeight: FontWeight.w700,
                                       color: ColorRes.black,
@@ -87,7 +87,7 @@ class JobDetailScreen extends StatelessWidget {
                                   ),
                                   Text(
                                     job.companyName,
-                                    style: GoogleFonts.poppins(
+                                    style: GoogleFonts.inter(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w600,
                                       color: ColorRes.darkGold,
@@ -128,7 +128,7 @@ class JobDetailScreen extends StatelessWidget {
                               const SizedBox(width: 8),
                               Text(
                                 job.salaryDisplay,
-                                style: GoogleFonts.poppins(
+                                style: GoogleFonts.inter(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
                                   color: ColorRes.darkGold,
@@ -158,7 +158,7 @@ class JobDetailScreen extends StatelessWidget {
                         if (job.skills.isNotEmpty) ...[
                           Text(
                             'Compétences requises',
-                            style: GoogleFonts.poppins(
+                            style: GoogleFonts.inter(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
                               color: ColorRes.black,
@@ -177,7 +177,7 @@ class JobDetailScreen extends StatelessWidget {
                               ),
                               child: Text(
                                 skill,
-                                style: GoogleFonts.poppins(
+                                style: GoogleFonts.inter(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w500,
                                   color: ColorRes.darkGold,
@@ -192,7 +192,7 @@ class JobDetailScreen extends StatelessWidget {
                         if (job.requirements.isNotEmpty) ...[
                           Text(
                             'Exigences',
-                            style: GoogleFonts.poppins(
+                            style: GoogleFonts.inter(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
                               color: ColorRes.black,
@@ -217,7 +217,7 @@ class JobDetailScreen extends StatelessWidget {
                                 Expanded(
                                   child: Text(
                                     requirement,
-                                    style: GoogleFonts.poppins(
+                                    style: GoogleFonts.inter(
                                       fontSize: 14,
                                       color: ColorRes.textSecondary,
                                       height: 1.5,
@@ -252,14 +252,14 @@ class JobDetailScreen extends StatelessWidget {
                                 children: [
                                   Text(
                                     'Publié le:',
-                                    style: GoogleFonts.poppins(
+                                    style: GoogleFonts.inter(
                                       fontSize: 14,
                                       color: ColorRes.textSecondary,
                                     ),
                                   ),
                                   Text(
                                     _formatDate(job.createdAt),
-                                    style: GoogleFonts.poppins(
+                                    style: GoogleFonts.inter(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w500,
                                       color: ColorRes.black,
@@ -274,14 +274,14 @@ class JobDetailScreen extends StatelessWidget {
                                   children: [
                                     Text(
                                       'Date limite:',
-                                      style: GoogleFonts.poppins(
+                                      style: GoogleFonts.inter(
                                         fontSize: 14,
                                         color: ColorRes.textSecondary,
                                       ),
                                     ),
                                     Text(
                                       _formatDate(job.deadline!),
-                                      style: GoogleFonts.poppins(
+                                      style: GoogleFonts.inter(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w500,
                                         color: _isDeadlineClose(job.deadline!) 
@@ -298,14 +298,14 @@ class JobDetailScreen extends StatelessWidget {
                                 children: [
                                   Text(
                                     'Candidatures:',
-                                    style: GoogleFonts.poppins(
+                                    style: GoogleFonts.inter(
                                       fontSize: 14,
                                       color: ColorRes.textSecondary,
                                     ),
                                   ),
                                   Text(
                                     '${job.applicationsCount} candidatures',
-                                    style: GoogleFonts.poppins(
+                                    style: GoogleFonts.inter(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w500,
                                       color: ColorRes.darkGold,
@@ -361,7 +361,7 @@ class JobDetailScreen extends StatelessWidget {
                         controller.hasAlreadyApplied.value
                             ? 'Candidature déjà envoyée'
                             : 'Postuler maintenant',
-                        style: GoogleFonts.poppins(
+                        style: GoogleFonts.inter(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                           color: Colors.white,
@@ -390,7 +390,7 @@ class JobDetailScreen extends StatelessWidget {
           const SizedBox(width: 6),
           Text(
             text,
-            style: GoogleFonts.poppins(
+            style: GoogleFonts.inter(
               fontSize: 12,
               fontWeight: FontWeight.w500,
               color: ColorRes.black,
@@ -407,7 +407,7 @@ class JobDetailScreen extends StatelessWidget {
       children: [
         Text(
           title,
-          style: GoogleFonts.poppins(
+          style: GoogleFonts.inter(
             fontSize: 18,
             fontWeight: FontWeight.w600,
             color: ColorRes.black,
@@ -416,7 +416,7 @@ class JobDetailScreen extends StatelessWidget {
         const SizedBox(height: 12),
         Text(
           content,
-          style: GoogleFonts.poppins(
+          style: GoogleFonts.inter(
             fontSize: 14,
             color: ColorRes.textSecondary,
             height: 1.6,

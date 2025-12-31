@@ -117,7 +117,7 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
                     Obx(() => Text(
                       _translationService.getText('welcome_user')
                           .replaceAll('{name}', controller.firstName.value),
-                      style: GoogleFonts.poppins(
+                      style: GoogleFonts.inter(
                         fontSize: 24,
                         fontWeight: FontWeight.w600,
                         color: ColorRes.textPrimary,
@@ -126,7 +126,7 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
                     const SizedBox(height: 8),
                     Obx(() => Text(
                       _translationService.getText('complete_profile_description'),
-                      style: GoogleFonts.poppins(
+                      style: GoogleFonts.inter(
                         fontSize: 14,
                         fontWeight: FontWeight.w400,
                         color: ColorRes.textSecondary,
@@ -182,7 +182,7 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
                     // Niveau d'expérience
                     Text(
                       'Niveau d\'expérience',
-                      style: GoogleFonts.poppins(
+                      style: GoogleFonts.inter(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
                         color: ColorRes.textPrimary,
@@ -222,7 +222,7 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
                               value: value,
                               child: Text(
                                 controller.getExperienceLabel(value),
-                                style: GoogleFonts.poppins(
+                                style: GoogleFonts.inter(
                                   fontSize: 14,
                                   color: ColorRes.textPrimary,
                                 ),
@@ -277,7 +277,7 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
                             ),
                             child: Text(
                               'Ignorer pour le moment',
-                              style: GoogleFonts.poppins(
+                              style: GoogleFonts.inter(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
                                 color: Colors.black,
@@ -304,7 +304,7 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
                             ),
                             child: Text(
                               'Terminer',
-                              style: GoogleFonts.poppins(
+                              style: GoogleFonts.inter(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
                                 color: Colors.black,
@@ -332,7 +332,7 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
   Widget _buildSectionTitle(String title) {
     return Text(
       title,
-      style: GoogleFonts.poppins(
+      style: GoogleFonts.inter(
         fontSize: 18,
         fontWeight: FontWeight.w600,
         color: ColorRes.textPrimary,
@@ -355,7 +355,7 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
           children: [
             Text(
               label,
-              style: GoogleFonts.poppins(
+              style: GoogleFonts.inter(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
                 color: ColorRes.textPrimary,
@@ -395,7 +395,7 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
               hintText: hintText ?? label,
               filled: true,
               fillColor: Colors.transparent,
-              hintStyle: GoogleFonts.poppins(
+              hintStyle: GoogleFonts.inter(
                 fontSize: 14,
                 fontWeight: FontWeight.w400,
                 color: ColorRes.textSecondary.withOpacity(0.7),
@@ -462,14 +462,14 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
         ),
         title: Text(
           'Déconnexion',
-          style: GoogleFonts.poppins(
+          style: GoogleFonts.inter(
             fontWeight: FontWeight.w600,
             color: Colors.black,
           ),
         ),
         content: Text(
           'Êtes-vous sûr de vouloir vous déconnecter ?',
-          style: GoogleFonts.poppins(
+          style: GoogleFonts.inter(
             color: Colors.black,
           ),
         ),
@@ -486,7 +486,7 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
             ),
             child: Text(
               'Annuler',
-              style: GoogleFonts.poppins(color: Colors.black),
+              style: GoogleFonts.inter(color: Colors.black),
             ),
           ),
           TextButton(
@@ -501,7 +501,7 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
             ),
             child: Text(
               'Se déconnecter',
-              style: GoogleFonts.poppins(color: Colors.red),
+              style: GoogleFonts.inter(color: Colors.red),
             ),
           ),
         ],

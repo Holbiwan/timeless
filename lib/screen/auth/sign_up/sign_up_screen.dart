@@ -3,14 +3,22 @@ import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'package:timeless/common/widgets/common_loader.dart';
+import 'package:timeless/common/widgets/modern_loader.dart';
+import 'package:timeless/common/widgets/unified_form_field.dart';
+import 'package:timeless/common/widgets/unified_button.dart';
 import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/app_theme.dart';
+import 'package:timeless/utils/string.dart';
 import 'package:timeless/services/unified_translation_service.dart';
 import 'package:timeless/services/accessibility_service.dart';
 
 import 'package:timeless/screen/auth/sign_up/sign_up_controller.dart';
+import 'package:timeless/screen/auth/sign_in_screen/sign_in_screen.dart';
+import 'package:timeless/screen/legal/terms_of_service_screen.dart';
+import 'package:timeless/screen/legal/privacy_policy_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -24,372 +32,379 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final UnifiedTranslationService translationService = Get.find<UnifiedTranslationService>();
   final AccessibilityService accessibilityService = Get.find<AccessibilityService>();
 
+  bool isLoading = false;
+  bool acceptTerms = false;
+
+  // Brand colors
+  final Color _primaryBlue = const Color(0xFF000647);
+  final Color _accentOrange = const Color(0xFFE67E22);
+
   @override
   Widget build(BuildContext context) {
-    return Obx(() => Scaffold(
-      backgroundColor: accessibilityService.backgroundColor,
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        foregroundColor: accessibilityService.textColor,
-        leading: Container(
-          margin: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: const Color(0xFF000647), width: 1.0),
-          ),
-          child: IconButton(
-            onPressed: () => Navigator.pop(context),
-            icon: const Icon(Icons.arrow_back, color: Colors.black),
-          ),
-        ),
-      ),
-      body: SafeArea(
-        child: Obx(() {
-          final isLoading = ctrl.loading.value;
+    final size = MediaQuery.of(context).size;
 
-          return Stack(
-            children: [
-              SingleChildScrollView(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Logo avec accessibilité - agrandi et statique
-                    accessibilityService.buildAccessibleWidget(
-                      semanticLabel: 'Timeless app logo',
-                      child: Center(
-                        child: Container(
-                          height: 240,
-                          width: Get.width * 0.9,
-                          alignment: Alignment.center,
-                          child: RepaintBoundary(
-                            child: Image.asset(
-                              'assets/images/logo.png',
-                              width: Get.width * 0.85,
-                              height: 220,
-                              fit: BoxFit.contain,
-                              filterQuality: FilterQuality.high,
-                              gaplessPlayback: false,
-                              isAntiAlias: false,
+    return Scaffold(
+      backgroundColor: _primaryBlue,
+      body: Stack(
+        children: [
+          // --- 1. Background Design ---
+          Container(
+            height: size.height,
+            width: size.width,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.black,
+                  _primaryBlue,
+                ],
+              ),
+            ),
+          ),
+
+          // Decorative Blue Circle (Bottom Left)
+          Positioned(
+            bottom: -50,
+            left: -50,
+            child: Container(
+              width: 200,
+              height: 200,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.blueAccent.withOpacity(0.1),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.blueAccent.withOpacity(0.1),
+                    blurRadius: 50,
+                    spreadRadius: 5,
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          // --- 2. Content ---
+          SafeArea(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  // Top Section (Logo & Title)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Back Button
+                        InkWell(
+                          onTap: () => Get.back(),
+                          borderRadius: BorderRadius.circular(12),
+                          child: Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: Colors.white.withOpacity(0.2)),
                             ),
+                            child: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 20),
                           ),
                         ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-
-                    Center(
-                      child: Text(
-                        translationService.getText('create_account'),
-                        style: accessibilityService.getAccessibleTextStyle(
-                          fontSize: AppTheme.fontSizeXLarge,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    // First name field
-                    _buildLabel(translationService.getText('first_name')),
-                    GetBuilder<SignUpController>(
-                      id: "showFirst",
-                      builder: (_) => _buildInputField(
-                        child: TextFormField(
-                          controller: ctrl.firstNameCtrl,
-                          onChanged: ctrl.onChanged,
-                          decoration: AppTheme.getInputDecoration(
-                            hint: translationService.getText('first_name'),
-                          ),
-                          style: accessibilityService.getAccessibleTextStyle(),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-
-                    // Last name field
-                    _buildLabel(translationService.getText('last_name')),
-                    GetBuilder<SignUpController>(
-                      id: "showLast",
-                      builder: (_) => _buildInputField(
-                        child: TextFormField(
-                          controller: ctrl.lastNameCtrl,
-                          onChanged: ctrl.onChanged,
-                          decoration: AppTheme.getInputDecoration(
-                            hint: translationService.getText('last_name'),
-                          ),
-                          style: accessibilityService.getAccessibleTextStyle(),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-
-                    // Email field
-                    _buildLabel('${translationService.getText('email')} *'),
-                    GetBuilder<SignUpController>(
-                      id: "showEmail",
-                      builder: (_) => Column(
-                        children: [
-                          _buildInputField(
-                            child: TextFormField(
-                              controller: ctrl.emailCtrl,
-                              onChanged: (_) => ctrl.emailValidation(),
-                              keyboardType: TextInputType.emailAddress,
-                              decoration: AppTheme.getInputDecoration(
-                                hint: translationService.getText('email'),
-                                suffixIcon: IconButton(
-                                  tooltip: 'Copy email',
-                                  onPressed: () async {
-                                    accessibilityService.triggerHapticFeedback();
-                                    await Clipboard.setData(
-                                      ClipboardData(text: ctrl.emailCtrl.text),
-                                    );
-                                    Get.snackbar(
-                                      'Copied', 
-                                      'Email copied to clipboard',
-                                      snackPosition: SnackPosition.BOTTOM,
-                                      backgroundColor: accessibilityService.primaryColor,
-                                      colorText: AppTheme.white,
-                                    );
-                                  },
-                                  icon: Icon(
-                                    Icons.copy,
-                                    color: accessibilityService.secondaryTextColor,
+                        const SizedBox(height: 30),
+                        
+                        // Header Text & Logo
+                        Row(
+                          children: [
+                            Container(
+                              height: 120,
+                              width: 120,
+                              child: const Image(image: AssetImage(AssetRes.logo)),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    Strings.createAccount,
+                                    style: GoogleFonts.inter(
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.white,
+                                    ),
                                   ),
-                                ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    "Join thousands of talented professionals",
+                                    style: GoogleFonts.inter(
+                                      fontSize: 14,
+                                      color: Colors.white.withOpacity(0.7),
+                                    ),
+                                  ),
+                                ],
                               ),
-                              style: accessibilityService.getAccessibleTextStyle(),
                             ),
-                          ),
-                          if (ctrl.emailError.isNotEmpty)
-                            AppTheme.errorMessage(ctrl.emailError),
-                        ],
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  
+                  const SizedBox(height: 20),
+
+                  // Bottom Section (White Card Form)
+                  Container(
+                    width: size.width,
+                    constraints: BoxConstraints(minHeight: size.height * 0.6),
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(30),
+                        topRight: Radius.circular(30),
                       ),
                     ),
-
-                    const SizedBox(height: 12),
-
-                    // Password field
-                    _buildLabel('${translationService.getText('password')} *'),
-                    GetBuilder<SignUpController>(
-                      id: "showPassword",
-                      builder: (_) => Column(
+                    child: Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _buildInputField(
-                            child: TextFormField(
+                          const SizedBox(height: 10),
+
+                          
+                          // First Name field
+                          _buildLabel(translationService.getText('first_name')),
+                          const SizedBox(height: 8),
+                          UnifiedFormField(
+                            controller: ctrl.firstNameCtrl,
+                            hintText: 'Enter your first name',
+                            labelText: translationService.getText('first_name'),
+                            isRequired: true,
+                            onChanged: ctrl.onChanged,
+                            prefixIcon: Icons.person_outline,
+                          ),
+
+                          const SizedBox(height: 20),
+
+                          // Last Name field
+                          _buildLabel(translationService.getText('last_name')),
+                          const SizedBox(height: 8),
+                          UnifiedFormField(
+                            controller: ctrl.lastNameCtrl,
+                            hintText: 'Enter your last name',
+                            labelText: translationService.getText('last_name'),
+                            isRequired: true,
+                            onChanged: ctrl.onChanged,
+                            prefixIcon: Icons.person_outline,
+                          ),
+
+                          const SizedBox(height: 20),
+
+                          // Email field
+                          _buildLabel(translationService.getText('email')),
+                          const SizedBox(height: 8),
+                          UnifiedFormField(
+                            controller: ctrl.emailCtrl,
+                            hintText: 'Enter your email address',
+                            labelText: translationService.getText('email'),
+                            isRequired: true,
+                            keyboardType: TextInputType.emailAddress,
+                            onChanged: (_) => ctrl.emailValidation(),
+                            errorText: ctrl.emailError.isNotEmpty ? ctrl.emailError : null,
+                            prefixIcon: Icons.email_outlined,
+                          ),
+
+                          const SizedBox(height: 20),
+
+                          // Password field
+                          _buildLabel(translationService.getText('password')),
+                          const SizedBox(height: 8),
+                          GetBuilder<SignUpController>(
+                            id: "showPassword",
+                            builder: (_) => UnifiedFormField(
                               controller: ctrl.passwordCtrl,
+                              hintText: 'Minimum 8 characters',
+                              labelText: translationService.getText('password'),
+                              isRequired: true,
                               obscureText: ctrl.showPassword,
                               onChanged: (_) => ctrl.passwordValidation(),
-                              decoration: AppTheme.getInputDecoration(
-                                hint: translationService.getText('password_hint'),
-                                suffixIcon: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    IconButton(
-                                      tooltip: 'Copy password',
-                                      onPressed: () async {
-                                        accessibilityService.triggerHapticFeedback();
-                                        await Clipboard.setData(
-                                          ClipboardData(
-                                              text: ctrl.passwordCtrl.text),
-                                        );
-                                        Get.snackbar('Copied',
-                                            'Password copied to clipboard',
-                                            snackPosition:
-                                                SnackPosition.BOTTOM,
-                                            backgroundColor: accessibilityService.primaryColor,
-                                            colorText: AppTheme.white);
-                                      },
-                                      icon: Icon(
-                                        Icons.copy,
-                                        color: accessibilityService.secondaryTextColor,
-                                      ),
-                                    ),
-                                    IconButton(
-                                      tooltip: ctrl.showPassword ? 'Show' : 'Hide',
-                                      onPressed: isLoading
-                                          ? null
-                                          : () {
-                                              accessibilityService.triggerHapticFeedback();
-                                              ctrl.togglePassword();
-                                            },
-                                      icon: Icon(
-                                        ctrl.showPassword
-                                            ? Icons.visibility_off
-                                            : Icons.visibility,
-                                        color: accessibilityService.secondaryTextColor,
-                                      ),
-                                    ),
-                                  ],
+                              errorText: ctrl.pwdError.isNotEmpty ? ctrl.pwdError : null,
+                              suffixIcon: IconButton(
+                                onPressed: ctrl.togglePassword,
+                                icon: Icon(
+                                  ctrl.showPassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                                  color: Colors.grey[500],
                                 ),
                               ),
-                              style: accessibilityService.getAccessibleTextStyle(),
+                              prefixIcon: Icons.lock_outline,
                             ),
                           ),
-                          if (ctrl.pwdError.isNotEmpty)
-                            AppTheme.errorMessage(ctrl.pwdError),
-                        ],
-                      ),
-                    ),
 
-                    const SizedBox(height: 16),
+                          const SizedBox(height: 16),
 
-                    // Go button
-                    GetBuilder<SignUpController>(
-                      id: "colorChange",
-                      builder: (_) => accessibilityService.buildAccessibleWidget(
-                        semanticLabel: 'Go',
-                        onTap: isLoading ? null : () {
-                          accessibilityService.triggerHapticFeedback();
-                          ctrl.onSignUpTap();
-                        },
-                        child: SizedBox(
-                          width: 80,
-                          child: Container(
-                            height: 40,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: const Color(0xFF000647), width: 1.0),
-                            ),
-                          child: ElevatedButton(
-                            onPressed: isLoading ? null : ctrl.onSignUpTap,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.transparent,
-                              foregroundColor: Colors.black,
-                              shadowColor: Colors.transparent,
-                              elevation: 0,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                            child: isLoading
-                                ? const SizedBox(
-                                    width: 20,
-                                    height: 20,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF000647)),
-                                    ),
-                                  )
-                                : const Text(
-                                    'Go',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.black,
+                          // Terms and conditions
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                acceptTerms = !acceptTerms;
+                              });
+                            },
+                            child: Row(
+                              children: [
+                                SizedBox(
+                                  height: 24,
+                                  width: 24,
+                                  child: Checkbox(
+                                    value: acceptTerms,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        acceptTerms = value ?? false;
+                                      });
+                                    },
+                                    activeColor: _primaryBlue,
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                                    side: BorderSide(color: Colors.grey.shade400, width: 1.5),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text.rich(
+                                    TextSpan(
+                                      text: 'I accept the ',
+                                      style: GoogleFonts.inter(
+                                        fontSize: 13,
+                                        color: Colors.grey[700],
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                      children: [
+                                        TextSpan(
+                                          text: 'Terms of Service',
+                                          style: GoogleFonts.inter(
+                                            fontSize: 13,
+                                            color: _accentOrange,
+                                            fontWeight: FontWeight.w600,
+                                            decoration: TextDecoration.underline,
+                                          ),
+                                          recognizer: TapGestureRecognizer()
+                                            ..onTap = () {
+                                              Get.to(() => const TermsOfServiceScreen());
+                                            },
+                                        ),
+                                        const TextSpan(text: ' and '),
+                                        TextSpan(
+                                          text: 'Privacy Policy',
+                                          style: GoogleFonts.inter(
+                                            fontSize: 13,
+                                            color: _accentOrange,
+                                            fontWeight: FontWeight.w600,
+                                            decoration: TextDecoration.underline,
+                                          ),
+                                          recognizer: TapGestureRecognizer()
+                                            ..onTap = () {
+                                              Get.to(() => const PrivacyPolicyScreen());
+                                            },
+                                        ),
+                                      ],
                                     ),
                                   ),
-                          ),
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 12),
-
-                    // Terms and conditions
-                    RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                        style: accessibilityService.getAccessibleTextStyle(
-                          fontSize: AppTheme.fontSizeSmall,
-                          color: accessibilityService.secondaryTextColor,
-                        ),
-                        children: [
-                          TextSpan(text: '${translationService.getText('terms_agreement')} '),
-                          TextSpan(
-                            text: translationService.getText('terms_of_service'),
-                            style: accessibilityService.getAccessibleTextStyle(
-                              fontSize: AppTheme.fontSizeSmall,
-                              color: accessibilityService.primaryColor,
-                              fontWeight: FontWeight.w600,
-                            ).copyWith(
-                              decoration: TextDecoration.underline,
+                                ),
+                              ],
                             ),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () async {
-                                accessibilityService.triggerHapticFeedback();
-                                final uri = Uri.parse('https://www.timeless-app.com/terms');
-                                if (await canLaunchUrl(uri)) {
-                                  await launchUrl(uri, mode: LaunchMode.externalApplication);
-                                } else {
-                                  Get.snackbar(
-                                    translationService.getText('error'),
-                                    'Could not open Terms of Service',
-                                    backgroundColor: accessibilityService.errorColor,
-                                    colorText: AppTheme.white,
-                                  );
-                                }
-                              },
                           ),
-                          const TextSpan(text: ' and '),
-                          TextSpan(
-                            text: 'Privacy Policy',
-                            style: accessibilityService.getAccessibleTextStyle(
-                              fontSize: AppTheme.fontSizeSmall,
-                              color: accessibilityService.primaryColor,
-                              fontWeight: FontWeight.w600,
-                            ).copyWith(
-                              decoration: TextDecoration.underline,
-                            ),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () async {
-                                accessibilityService.triggerHapticFeedback();
-                                final uri = Uri.parse('https://www.privacypolicygenerator.info/live.php?token=VQQZx8YfJz2gQh7y3jKb9Rm6XsEr4vNJ');
-                                if (await canLaunchUrl(uri)) {
-                                  await launchUrl(uri, mode: LaunchMode.externalApplication);
-                                } else {
-                                  Get.snackbar(
-                                    translationService.getText('error'),
-                                    'Could not open Privacy Policy',
-                                    backgroundColor: accessibilityService.errorColor,
-                                    colorText: AppTheme.white,
-                                  );
-                                }
-                              },
+
+                          const SizedBox(height: 30),
+
+                          // Sign up button
+                          UnifiedButton(
+                            text: Strings.signUp,
+                            onPressed: isLoading ? null : () {
+                              if (acceptTerms) {
+                                ctrl.onSignUpTap();
+                              } else {
+                                AppTheme.showStandardSnackBar(
+                                  title: "⚠️ Terms Required",
+                                  message: "Please accept the terms of service",
+                                  isError: true,
+                                );
+                              }
+                            },
+                            type: UnifiedButtonType.black,
+                            isLoading: isLoading,
                           ),
+
+                          const SizedBox(height: 30),
+
+                          // Sign in link
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                Strings.alreadyHaveAccount,
+                                style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 14,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                              const SizedBox(width: 4),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (_) => const SigninScreenU()),
+                                  ).then((_) {
+                                    ctrl.emailCtrl.clear();
+                                    ctrl.passwordCtrl.clear();
+                                    ctrl.firstNameCtrl.clear();
+                                    ctrl.lastNameCtrl.clear();
+                                  });
+                                },
+                                child: Text(
+                                  Strings.signIn,
+                                  style: GoogleFonts.inter(
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 14,
+                                    color: _accentOrange,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(height: 20),
                         ],
                       ),
                     ),
-
-                    const SizedBox(height: 8),
-                  ],
-                ),
+                  ),
+                ],
               ),
+            ),
+          ),
 
-              // Loader
-              isLoading ? const CommonLoader() : const SizedBox(),
-            ],
-          );
-        }),
+          // Full Screen Loader
+          isLoading
+              ? Container(
+                  height: size.height,
+                  width: size.width,
+                  color: Colors.black.withOpacity(0.5),
+                  child: const Center(child: CommonLoader()),
+                )
+              : const SizedBox(),
+        ],
       ),
-    ));
+    );
   }
 
-  // ---------- SECTION: UI HELPERS ----------
-  Widget _buildLabel(String text) => Padding(
-        padding: const EdgeInsets.only(left: 4, bottom: 6),
-        child: Text(
-          text,
-          style: accessibilityService.getAccessibleTextStyle(
-            fontSize: AppTheme.fontSizeRegular,
-            fontWeight: FontWeight.w500,
-            color: accessibilityService.secondaryTextColor,
-          ),
+  // Helper widget to build labels for form fields
+  Widget _buildLabel(String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: Text(
+        text,
+        style: GoogleFonts.inter(
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+          color: _primaryBlue,
         ),
-      );
-
-  Widget _buildInputField({required Widget child}) => Container(
-        decoration: AppTheme.containerDecoration.copyWith(
-          color: Colors.white,
-          border: Border.all(
-            color: const Color(0xFF000647),
-            width: 1.0,
-          ),
-        ),
-        child: child,
-      );
+      ),
+    );
+  }
 }

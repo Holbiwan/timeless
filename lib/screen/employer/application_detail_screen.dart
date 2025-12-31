@@ -119,7 +119,7 @@ class ApplicationDetailScreen extends StatelessWidget {
                   backgroundColor: ColorRes.darkGold,
                   child: Text(
                     application.candidateName.split(' ').map((e) => e[0]).take(2).join().toUpperCase(),
-                    style: GoogleFonts.poppins(
+                    style: GoogleFonts.inter(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
@@ -133,7 +133,7 @@ class ApplicationDetailScreen extends StatelessWidget {
                     children: [
                       Text(
                         application.candidateName,
-                        style: GoogleFonts.poppins(
+                        style: GoogleFonts.inter(
                           fontSize: 20,
                           fontWeight: FontWeight.w600,
                           color: ColorRes.black,
@@ -142,7 +142,7 @@ class ApplicationDetailScreen extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         'Candidate',
-                        style: GoogleFonts.poppins(
+                        style: GoogleFonts.inter(
                           fontSize: 14,
                           color: ColorRes.textSecondary,
                         ),
@@ -185,7 +185,7 @@ class ApplicationDetailScreen extends StatelessWidget {
                   const SizedBox(width: 8),
                   Text(
                     _getStatusLabel(application.status),
-                    style: GoogleFonts.poppins(
+                    style: GoogleFonts.inter(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
                       color: _getStatusColor(application.status),
@@ -218,14 +218,14 @@ class ApplicationDetailScreen extends StatelessWidget {
             children: [
               Text(
                 label,
-                style: GoogleFonts.poppins(
+                style: GoogleFonts.inter(
                   fontSize: 12,
                   color: ColorRes.textSecondary,
                 ),
               ),
               Text(
                 value,
-                style: GoogleFonts.poppins(
+                style: GoogleFonts.inter(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
                   color: ColorRes.black,
@@ -253,7 +253,7 @@ class ApplicationDetailScreen extends StatelessWidget {
                 const SizedBox(width: 8),
                 Text(
                   'Applied Position',
-                  style: GoogleFonts.poppins(
+                  style: GoogleFonts.inter(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: ColorRes.black,
@@ -264,7 +264,7 @@ class ApplicationDetailScreen extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               job.title,
-              style: GoogleFonts.poppins(
+              style: GoogleFonts.inter(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
                 color: ColorRes.black,
@@ -273,7 +273,7 @@ class ApplicationDetailScreen extends StatelessWidget {
             const SizedBox(height: 4),
             Text(
               job.companyName,
-              style: GoogleFonts.poppins(
+              style: GoogleFonts.inter(
                 fontSize: 14,
                 color: ColorRes.darkGold,
                 fontWeight: FontWeight.w500,
@@ -307,7 +307,7 @@ class ApplicationDetailScreen extends StatelessWidget {
           const SizedBox(width: 4),
           Text(
             text,
-            style: GoogleFonts.poppins(
+            style: GoogleFonts.inter(
               fontSize: 12,
               color: ColorRes.textSecondary,
             ),
@@ -332,7 +332,7 @@ class ApplicationDetailScreen extends StatelessWidget {
                 const SizedBox(width: 8),
                 Text(
                   'Application Details',
-                  style: GoogleFonts.poppins(
+                  style: GoogleFonts.inter(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: ColorRes.black,
@@ -371,7 +371,7 @@ class ApplicationDetailScreen extends StatelessWidget {
           width: 120,
           child: Text(
             label,
-            style: GoogleFonts.poppins(
+            style: GoogleFonts.inter(
               fontSize: 12,
               color: ColorRes.textSecondary,
             ),
@@ -380,7 +380,7 @@ class ApplicationDetailScreen extends StatelessWidget {
         Expanded(
           child: Text(
             value,
-            style: GoogleFonts.poppins(
+            style: GoogleFonts.inter(
               fontSize: 12,
               fontWeight: FontWeight.w500,
               color: ColorRes.black,
@@ -406,7 +406,7 @@ class ApplicationDetailScreen extends StatelessWidget {
                 const SizedBox(width: 8),
                 Text(
                   'Curriculum Vitae',
-                  style: GoogleFonts.poppins(
+                  style: GoogleFonts.inter(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: ColorRes.black,
@@ -433,7 +433,7 @@ class ApplicationDetailScreen extends StatelessWidget {
                       children: [
                         Text(
                           'CV of ${application.candidateName}',
-                          style: GoogleFonts.poppins(
+                          style: GoogleFonts.inter(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
                             color: ColorRes.black,
@@ -441,7 +441,7 @@ class ApplicationDetailScreen extends StatelessWidget {
                         ),
                         Text(
                           'PDF file available',
-                          style: GoogleFonts.poppins(
+                          style: GoogleFonts.inter(
                             fontSize: 12,
                             color: ColorRes.textSecondary,
                           ),
@@ -454,7 +454,7 @@ class ApplicationDetailScreen extends StatelessWidget {
                     icon: Icon(Icons.download, size: 16),
                     label: Text(
                       'Download',
-                      style: GoogleFonts.poppins(fontSize: 12),
+                      style: GoogleFonts.inter(fontSize: 12),
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: ColorRes.successColor,
@@ -486,7 +486,7 @@ class ApplicationDetailScreen extends StatelessWidget {
                 const SizedBox(width: 8),
                 Text(
                   'Cover Letter',
-                  style: GoogleFonts.poppins(
+                  style: GoogleFonts.inter(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: ColorRes.black,
@@ -504,7 +504,7 @@ class ApplicationDetailScreen extends StatelessWidget {
               ),
               child: Text(
                 application.coverLetter!,
-                style: GoogleFonts.poppins(
+                style: GoogleFonts.inter(
                   fontSize: 14,
                   color: ColorRes.black,
                   height: 1.5,
@@ -528,7 +528,7 @@ class ApplicationDetailScreen extends StatelessWidget {
           children: [
             Text(
               'Application Actions',
-              style: GoogleFonts.poppins(
+              style: GoogleFonts.inter(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
                 color: ColorRes.black,
@@ -623,7 +623,7 @@ class ApplicationDetailScreen extends StatelessWidget {
       icon: Icon(icon, size: 16),
       label: Text(
         label,
-        style: GoogleFonts.poppins(fontSize: 12),
+        style: GoogleFonts.inter(fontSize: 12),
       ),
       style: ElevatedButton.styleFrom(
         backgroundColor: color,
@@ -641,11 +641,11 @@ class ApplicationDetailScreen extends StatelessWidget {
       AlertDialog(
         title: Text(
           'Reject Application',
-          style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+          style: GoogleFonts.inter(fontWeight: FontWeight.w600),
         ),
         content: Text(
           'Are you sure you want to reject this application? This action is final.',
-          style: GoogleFonts.poppins(fontSize: 14),
+          style: GoogleFonts.inter(fontSize: 14),
         ),
         actions: [
           TextButton(

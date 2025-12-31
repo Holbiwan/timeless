@@ -6,6 +6,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/services/employer_service.dart';
+import 'package:timeless/services/preferences_service.dart';
+import 'package:timeless/utils/pref_keys.dart';
 
 class PostJobScreen extends StatefulWidget {
   const PostJobScreen({super.key});
@@ -276,20 +278,33 @@ class _PostJobScreenState extends State<PostJobScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Post a job'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios),
-          onPressed: Get.back,
-        ),
-      ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: Form(
             key: _formKey,
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Row(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back_ios),
+                      onPressed: Get.back,
+                    ),
+                    Expanded(
+                      child: Text(
+                        'Post a job',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: const Color.fromARGB(255, 0, 6, 71),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
                 TextFormField(
                   controller: _titleCtrl,
                   decoration: _dec('Job title', hint: 'Ex: Flutter Developer'),
@@ -350,12 +365,19 @@ class _PostJobScreenState extends State<PostJobScreen> {
                   ],
                 ),
                 const SizedBox(height: 12),
-                SwitchListTile.adaptive(
-                  title: const Text('Remote friendly'),
-                  value: _remote,
-                  onChanged: (v) => setState(() => _remote = v),
-                  activeColor: ColorRes.containerColor,
-                  contentPadding: EdgeInsets.zero,
+                Container(
+                  height: 48,
+                  child: SwitchListTile.adaptive(
+                    title: const Text(
+                      'Remote friendly',
+                      style: TextStyle(fontSize: 14),
+                    ),
+                    value: _remote,
+                    onChanged: (v) => setState(() => _remote = v),
+                    activeColor: const Color.fromARGB(255, 0, 6, 71),
+                    contentPadding: EdgeInsets.zero,
+                    dense: true,
+                  ),
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
@@ -389,7 +411,7 @@ class _PostJobScreenState extends State<PostJobScreen> {
                       disabledBackgroundColor: Colors.grey,
                     ),
                     label: Text(
-                      _isLoading ? 'Publication...' : 'Publier l\'annonce',
+                      _isLoading ? 'Posting Job...' : 'Post Job', // Direct literal strings
                       style: const TextStyle(
                           color: Colors.white, fontWeight: FontWeight.bold),
                     ),

@@ -78,7 +78,7 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
                 Center(
                   child: Text(
                     'SIRET Connection',
-                    style: GoogleFonts.poppins(
+                    style: GoogleFonts.inter(
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
                       color: Colors.black,
@@ -91,7 +91,7 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
                 Center(
                   child: Text(
                     'Enter your SIRET number to access your employer space',
-                    style: GoogleFonts.poppins(
+                    style: GoogleFonts.inter(
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
                       color: ColorRes.textSecondary,
@@ -104,7 +104,7 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
                 // Champ SIRET
                 Text(
                   'SIRET Code *',
-                  style: GoogleFonts.poppins(
+                  style: GoogleFonts.inter(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
                     color: Colors.black,
@@ -124,7 +124,7 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
                     maxLength: 14,
                     decoration: InputDecoration(
                       hintText: 'Ex: 12345678901234',
-                      hintStyle: GoogleFonts.poppins(
+                      hintStyle: GoogleFonts.inter(
                         color: Colors.grey[400],
                         fontSize: 11,
                       ),
@@ -143,7 +143,7 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
                       ),
                     ),
                     buildCounter: (context, {required currentLength, required isFocused, maxLength}) => null,
-                    style: GoogleFonts.poppins(
+                    style: GoogleFonts.inter(
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
                     ),
@@ -170,7 +170,7 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
                       Expanded(
                         child: Text(
                           'SIRET is a unique 14-digit identifier assigned to each business establishment in France.',
-                          style: GoogleFonts.poppins(
+                          style: GoogleFonts.inter(
                             fontSize: 10,
                             color: const Color.fromRGBO(2, 2, 2, 1),
                           ),
@@ -197,7 +197,7 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
                     ),
                     child: Text(
                       'Sign In',
-                      style: GoogleFonts.poppins(
+                      style: GoogleFonts.inter(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
@@ -212,7 +212,7 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
                     onPressed: () => Navigator.pop(context),
                     child: Text(
                       'Use another connection method',
-                      style: GoogleFonts.poppins(
+                      style: GoogleFonts.inter(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
                         color: const Color(0xFF000647),
@@ -328,7 +328,7 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
           ),
           title: Text(
             'Password Required',
-            style: GoogleFonts.poppins(
+            style: GoogleFonts.inter(
               fontWeight: FontWeight.w600,
               fontSize: 18,
             ),
@@ -339,7 +339,7 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
             children: [
               Text(
                 'Account found for: $email',
-                style: GoogleFonts.poppins(
+                style: GoogleFonts.inter(
                   fontSize: 14,
                   color: Colors.grey[600],
                 ),
@@ -347,7 +347,7 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
               const SizedBox(height: 15),
               Text(
                 'Password:',
-                style: GoogleFonts.poppins(
+                style: GoogleFonts.inter(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
                 ),
@@ -386,7 +386,7 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
               },
               child: Text(
                 'Cancel',
-                style: GoogleFonts.poppins(
+                style: GoogleFonts.inter(
                   color: Colors.grey[600],
                 ),
               ),
@@ -482,7 +482,7 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
                     )
                   : Text(
                       'Sign In',
-                      style: GoogleFonts.poppins(
+                      style: GoogleFonts.inter(
                         fontWeight: FontWeight.w600,
                       ),
                     ),

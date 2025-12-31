@@ -106,7 +106,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         backgroundColor: const Color(0xFF000647),
         title: Text(
           'Change Password',
-          style: GoogleFonts.poppins(
+          style: GoogleFonts.inter(
             color: Colors.white,
             fontSize: 18,
             fontWeight: FontWeight.w600,
@@ -136,7 +136,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     Expanded(
                       child: Text(
                         'For security, you need to enter your current password to change it.',
-                        style: GoogleFonts.poppins(
+                        style: GoogleFonts.inter(
                           color: Colors.blue,
                           fontSize: 13,
                         ),
@@ -150,7 +150,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               
               Text(
                 'Current Password',
-                style: GoogleFonts.poppins(
+                style: GoogleFonts.inter(
                   color: Colors.white,
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
@@ -179,7 +179,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               
               Text(
                 'New Password',
-                style: GoogleFonts.poppins(
+                style: GoogleFonts.inter(
                   color: Colors.white,
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
@@ -211,7 +211,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               
               Text(
                 'Confirm New Password',
-                style: GoogleFonts.poppins(
+                style: GoogleFonts.inter(
                   color: Colors.white,
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
@@ -264,7 +264,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         )
                       : Text(
                           'Change Password',
-                          style: GoogleFonts.poppins(
+                          style: GoogleFonts.inter(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                           ),
@@ -289,10 +289,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
       controller: controller,
       obscureText: obscureText,
       validator: validator,
-      style: GoogleFonts.poppins(color: Colors.white),
+      style: GoogleFonts.inter(color: Colors.white),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: GoogleFonts.poppins(color: Colors.white70),
+        labelStyle: GoogleFonts.inter(color: Colors.white70),
         prefixIcon: const Icon(Icons.lock, color: Colors.white70),
         suffixIcon: IconButton(
           icon: Icon(

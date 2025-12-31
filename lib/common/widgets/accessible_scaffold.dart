@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:timeless/services/accessibility_service.dart';
 
-/// Widget Scaffold qui s'adapte automatiquement aux paramètres d'accessibilité
+// Widget Scaffold qui s'adapte automatiquement aux paramètres d'accessibilité
 class AccessibleScaffold extends StatelessWidget {
   final Widget body;
   final PreferredSizeWidget? appBar;
@@ -30,19 +30,20 @@ class AccessibleScaffold extends StatelessWidget {
     final accessibilityService = AccessibilityService.instance;
 
     return Obx(() => Scaffold(
-      backgroundColor: backgroundColor ?? accessibilityService.backgroundColor,
-      appBar: appBar,
-      body: body,
-      floatingActionButton: floatingActionButton,
-      bottomNavigationBar: bottomNavigationBar,
-      drawer: drawer,
-      endDrawer: endDrawer,
-      resizeToAvoidBottomInset: resizeToAvoidBottomInset,
-    ));
+          backgroundColor:
+              backgroundColor ?? accessibilityService.backgroundColor,
+          appBar: appBar,
+          body: body,
+          floatingActionButton: floatingActionButton,
+          bottomNavigationBar: bottomNavigationBar,
+          drawer: drawer,
+          endDrawer: endDrawer,
+          resizeToAvoidBottomInset: resizeToAvoidBottomInset,
+        ));
   }
 }
 
-/// Widget Text qui s'adapte automatiquement aux paramètres d'accessibilité
+// Widget Text qui s'adapte automatiquement aux paramètres d'accessibilité
 class AccessibleText extends StatelessWidget {
   final String text;
   final double? fontSize;
@@ -70,23 +71,23 @@ class AccessibleText extends StatelessWidget {
     final accessibilityService = AccessibilityService.instance;
 
     return Obx(() => Semantics(
-      label: semanticsLabel ?? accessibilityService.getSemanticLabel(text),
-      child: Text(
-        text,
-        style: accessibilityService.getAccessibleTextStyle(
-          fontSize: fontSize,
-          fontWeight: fontWeight,
-          color: color,
-        ),
-        textAlign: textAlign,
-        maxLines: maxLines,
-        overflow: overflow,
-      ),
-    ));
+          label: semanticsLabel ?? accessibilityService.getSemanticLabel(text),
+          child: Text(
+            text,
+            style: accessibilityService.getAccessibleTextStyle(
+              fontSize: fontSize,
+              fontWeight: fontWeight,
+              color: color,
+            ),
+            textAlign: textAlign,
+            maxLines: maxLines,
+            overflow: overflow,
+          ),
+        ));
   }
 }
 
-/// Widget Button qui s'adapte automatiquement aux paramètres d'accessibilité
+// Widget Button qui s'adapte automatiquement aux paramètres d'accessibilité
 class AccessibleButton extends StatelessWidget {
   final String text;
   final VoidCallback? onPressed;
@@ -108,35 +109,39 @@ class AccessibleButton extends StatelessWidget {
     final accessibilityService = AccessibilityService.instance;
 
     return Obx(() => Semantics(
-      label: semanticsLabel ?? accessibilityService.getSemanticLabel(text),
-      button: true,
-      child: icon != null
-        ? ElevatedButton.icon(
-            onPressed: onPressed != null ? () {
-              accessibilityService.triggerHapticFeedback();
-              onPressed!();
-            } : null,
-            icon: Icon(icon),
-            label: Text(text),
-            style: accessibilityService.getAccessibleButtonStyle(
-              backgroundColor: backgroundColor,
-            ),
-          )
-        : ElevatedButton(
-            onPressed: onPressed != null ? () {
-              accessibilityService.triggerHapticFeedback();
-              onPressed!();
-            } : null,
-            style: accessibilityService.getAccessibleButtonStyle(
-              backgroundColor: backgroundColor,
-            ),
-            child: Text(text),
-          ),
-    ));
+          label: semanticsLabel ?? accessibilityService.getSemanticLabel(text),
+          button: true,
+          child: icon != null
+              ? ElevatedButton.icon(
+                  onPressed: onPressed != null
+                      ? () {
+                          accessibilityService.triggerHapticFeedback();
+                          onPressed!();
+                        }
+                      : null,
+                  icon: Icon(icon),
+                  label: Text(text),
+                  style: accessibilityService.getAccessibleButtonStyle(
+                    backgroundColor: backgroundColor,
+                  ),
+                )
+              : ElevatedButton(
+                  onPressed: onPressed != null
+                      ? () {
+                          accessibilityService.triggerHapticFeedback();
+                          onPressed!();
+                        }
+                      : null,
+                  style: accessibilityService.getAccessibleButtonStyle(
+                    backgroundColor: backgroundColor,
+                  ),
+                  child: Text(text),
+                ),
+        ));
   }
 }
 
-/// Widget Container qui s'adapte automatiquement aux paramètres d'accessibilité
+// Widget Container qui s'adapte automatiquement aux paramètres d'accessibilité
 class AccessibleContainer extends StatelessWidget {
   final Widget child;
   final EdgeInsetsGeometry? padding;

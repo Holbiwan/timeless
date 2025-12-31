@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:timeless/common/widgets/common_loader.dart';
+import 'package:timeless/common/widgets/modern_job_icon.dart';
 import 'package:timeless/screen/dashboard/home/home_controller.dart';
 import 'package:timeless/screen/job_recommendation_screen/job_recommendation_controller.dart';
 import 'package:timeless/services/unified_translation_service.dart';
+import 'package:timeless/services/indeed_jobs_service.dart';
 import 'package:timeless/utils/app_res.dart';
 import 'package:timeless/utils/app_style.dart';
 
@@ -13,25 +15,27 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
   final HomeController controller = Get.put(HomeController());
   final UnifiedTranslationService translationService = Get.find<UnifiedTranslationService>();
 
-  return GetBuilder<JobRecommendationController>(
-    id: "search",
-    // ✅ s'assure qu'une instance existe:
-    init: JobRecommendationController(),
-    builder: (jrController) {
-      return StreamBuilder(
-        stream: stream,
-        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+  return FutureBuilder<List<Map<String, dynamic>>>(
+    future: _getCombinedJobs(stream),
+    builder: (context, snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return const CommonLoader();
+      }
+      
+      if (snapshot.hasError) {
+        return Center(child: Text('Erreur: ${snapshot.error}'));
+      }
+      
+      final combinedJobs = snapshot.data ?? [];
+      
+      return GetBuilder<JobRecommendationController>(
+        id: "search",
+        init: JobRecommendationController(),
+        builder: (jrController) {
           try {
-            // ✅ check avant d'accéder à .docs
-            if (snapshot.hasData && snapshot.data != null) {
-              jrController.documents = snapshot.data.docs;
-            } else {
-              return const CommonLoader();
-            }
-
-            // Utiliser les filtres du controller
-            final filteredDocs = jrController.getFilteredDocuments();
-            final total = filteredDocs.length;
+            // Directement utiliser les jobs combinés
+            final filteredJobs = _filterJobs(combinedJobs, jrController);
+            final total = filteredJobs.length;
             
             controller.jobTypesSaved =
                 List.generate(total, (index) => false).obs;
@@ -79,15 +83,15 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
                 final revIndex = total - 1 - index;
                 if (kDebugMode) {
                   print([revIndex]);
-                  print(filteredDocs[revIndex].id);
+                  print('Job ${revIndex}');
                 }
 
-                final doc = filteredDocs[revIndex];
-                final docData = doc.data() as Map<String, dynamic>;
+                final docData = filteredJobs[revIndex];
                 final position = docData["Position"] ?? translationService.getText("not_specified");
                 final company = docData["CompanyName"] ?? translationService.getText("company_name_default");
                 final location = docData["location"] ?? translationService.getText("not_specified");
                 final salary = docData["salary"] ?? "0";
+                final category = docData["category"] ?? "";
 
                 // Filtrer les données de démo indésirables et employeurs non vérifiés
                 if (company.contains('DemoToday') || 
@@ -99,17 +103,22 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
                 }
 
                 return Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
-                  padding: const EdgeInsets.all(20),
+                  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.all(18),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(15),
-                    border: Border.all(color: const Color(0xFF000647), width: 1.0),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: const Color(0xFF000647).withOpacity(0.1), width: 1.5),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.grey.withOpacity(0.1),
-                        blurRadius: 10,
-                        offset: const Offset(0, 5),
+                        color: const Color(0xFF000647).withOpacity(0.08),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.04),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
                       ),
                     ],
                   ),
@@ -118,13 +127,12 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
                     children: [
                       Row(
                         children: [
-                          Image.network(
-                            'https://zupimages.net/up/25/51/vaft.png',
-                            width: 48, // Increased size further
-                            height: 48, // Increased size further
-                            fit: BoxFit.cover,
+                          ModernJobIcon(
+                            jobTitle: position,
+                            category: category,
+                            size: 48,
                           ),
-                          const SizedBox(width: 12),
+                          const SizedBox(width: 16),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -133,84 +141,164 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
                                   position,
                                   style: appTextStyle(
                                     fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.black,
+                                    fontWeight: FontWeight.w700,
+                                    color: const Color(0xFF000647),
                                   ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
+                                const SizedBox(height: 4),
                                 Text(
                                   company,
                                   style: appTextStyle(
-                                    fontSize: 14,
+                                    fontSize: 13,
                                     color: Colors.grey[600],
+                                    fontWeight: FontWeight.w500,
                                   ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ],
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 15),
-                      Text(
-                        docData['description'] ?? translationService.getText("description_not_available"),
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
-                        style: appTextStyle(
-                          fontSize: 12,
-                          color: Colors.grey[700],
+                      const SizedBox(height: 14),
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade50,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Colors.grey.shade200),
+                        ),
+                        child: Text(
+                          docData['description'] ?? _generateDefaultDescription(position, company),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: appTextStyle(
+                            fontSize: 12,
+                            color: Colors.grey[700],
+                            height: 1.5,
+                          ),
                         ),
                       ),
-                      const SizedBox(height: 15),
+                      const SizedBox(height: 16),
                       Row(
                         children: [
-                          if (salary != "0" && salary.isNotEmpty)
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: Colors.grey.withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(6),
-                              ),
-                              child: Text(
-                                "$salary€",
-                                style: appTextStyle(
-                                  fontSize: 10,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w500,
+                          Expanded(
+                            child: Wrap(
+                              spacing: 8,
+                              runSpacing: 8,
+                              children: [
+                                if (salary != "0" && salary.isNotEmpty)
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          const Color(0xFFE67E22).withOpacity(0.1),
+                                          const Color(0xFFE67E22).withOpacity(0.05),
+                                        ],
+                                      ),
+                                      borderRadius: BorderRadius.circular(6),
+                                      border: Border.all(color: const Color(0xFFE67E22).withOpacity(0.3)),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          Icons.euro,
+                                          size: 11,
+                                          color: const Color(0xFFE67E22),
+                                        ),
+                                        const SizedBox(width: 3),
+                                        Text(
+                                          "$salary€",
+                                          style: appTextStyle(
+                                            fontSize: 10,
+                                            color: const Color(0xFFE67E22),
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        const Color(0xFF000647).withOpacity(0.1),
+                                        const Color(0xFF000647).withOpacity(0.05),
+                                      ],
+                                    ),
+                                    borderRadius: BorderRadius.circular(6),
+                                    border: Border.all(color: const Color(0xFF000647).withOpacity(0.3)),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        Icons.location_on,
+                                        size: 11,
+                                        color: const Color(0xFF000647),
+                                      ),
+                                      const SizedBox(width: 3),
+                                      Flexible(
+                                        child: Text(
+                                          location,
+                                          style: appTextStyle(
+                                            fontSize: 10,
+                                            color: const Color(0xFF000647),
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ),
-                          if (salary != "0" && salary.isNotEmpty) const SizedBox(width: 8),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: Colors.blue.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: Text(
-                              location,
-                              style: appTextStyle(
-                                fontSize: 10,
-                                color: Colors.blue[700],
-                                fontWeight: FontWeight.w500,
-                              ),
+                              ],
                             ),
                           ),
-                          const Spacer(),
+                          const SizedBox(width: 8),
                           InkWell(
-                            onTap: () => _showApplicationDialog(context, docData, doc),
+                            onTap: () => _showApplicationDialog(context, docData, null),
+                            borderRadius: BorderRadius.circular(8),
                             child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                               decoration: BoxDecoration(
-                                color: Colors.white,
-                                border: Border.all(color: const Color(0xFF000647), width: 2.0),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Text(
-                                translationService.getText('apply'),
-                                style: appTextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.black,
+                                gradient: const LinearGradient(
+                                  colors: [Colors.black, Colors.black87],
                                 ),
+                                borderRadius: BorderRadius.circular(8),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.2),
+                                    blurRadius: 4,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.send,
+                                    size: 12,
+                                    color: Colors.white,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    translationService.getText('apply'),
+                                    style: appTextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                      letterSpacing: 0.3,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
@@ -233,7 +321,7 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
   );
 }
 
-void _showApplicationDialog(BuildContext context, Map<String, dynamic> jobData, QueryDocumentSnapshot doc) {
+void _showApplicationDialog(BuildContext context, Map<String, dynamic> jobData, QueryDocumentSnapshot? doc) {
   final UnifiedTranslationService translationService = Get.find<UnifiedTranslationService>();
   print('🎯 POPUP APPELÉ - Job: ${jobData["Position"]}');
   showDialog(
@@ -273,59 +361,67 @@ void _showApplicationDialog(BuildContext context, Map<String, dynamic> jobData, 
                 color: Colors.grey[700],
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 24),
             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Expanded(
+                // Bouton Cancel plus compact
+                Container(
+                  width: 100,
+                  height: 40,
                   child: OutlinedButton(
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: const Color(0xFF000647),
-                      side: const BorderSide(color: Color(0xFF000647)),
+                      foregroundColor: Colors.grey[600],
+                      side: BorderSide(color: Colors.grey.shade300, width: 1),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      padding: EdgeInsets.symmetric(
-                        vertical: MediaQuery.of(context).size.height > 600 ? 16 : 12,
-                      ),
+                      padding: EdgeInsets.zero,
+                      elevation: 0,
                     ),
                     child: Text(
                       translationService.getText('cancel'),
                       style: appTextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: MediaQuery.of(context).size.width > 600 ? 15 : 14,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 13,
+                        color: Colors.grey[600],
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(width: 10),
-                Expanded(
+                const SizedBox(width: 16),
+                // Bouton Apply plus élégant
+                Container(
+                  width: 120,
+                  height: 40,
                   child: ElevatedButton(
                     onPressed: () {
                       Navigator.of(context).pop();
                       // Rediriger vers l'écran de candidature
                       Get.toNamed(AppRes.jobApplicationScreen, arguments: {
                         'job': jobData,
-                        'docId': doc.id,
+                        'docId': doc?.id ?? jobData['docId'] ?? 'unknown',
                       });
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF000647),
                       foregroundColor: Colors.white,
+                      elevation: 2,
+                      shadowColor: const Color(0xFF000647).withOpacity(0.3),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      padding: EdgeInsets.symmetric(
-                        vertical: MediaQuery.of(context).size.height > 600 ? 16 : 12,
-                      ),
+                      padding: EdgeInsets.zero,
                     ),
                     child: Text(
                       translationService.getText('apply'),
                       style: appTextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: MediaQuery.of(context).size.width > 600 ? 15 : 14,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 13,
+                        letterSpacing: 0.5,
                         color: Colors.white,
                       ),
                     ),
@@ -338,4 +434,164 @@ void _showApplicationDialog(BuildContext context, Map<String, dynamic> jobData, 
       );
     },
   );
+}
+
+String _generateDefaultDescription(String position, String company) {
+  final UnifiedTranslationService translationService = Get.find<UnifiedTranslationService>();
+  
+  final descriptions = [
+    translationService.getText("job_desc_1"),
+    translationService.getText("job_desc_2"), 
+    translationService.getText("job_desc_3"),
+    translationService.getText("job_desc_4"),
+    translationService.getText("job_desc_5"),
+    translationService.getText("job_desc_6"),
+    translationService.getText("job_desc_7"),
+    translationService.getText("job_desc_8"),
+  ];
+  
+  final hash = (position + company).hashCode.abs();
+  return descriptions[hash % descriptions.length];
+}
+
+// Fonction pour combiner les offres Firebase et Google Jobs
+Future<List<Map<String, dynamic>>> _getCombinedJobs(Stream stream) async {
+  final List<Map<String, dynamic>> allJobs = [];
+  
+  try {
+    // 1. Récupérer les offres de votre base Firebase (existantes)
+    final snapshots = await stream.first;
+    if (snapshots != null && snapshots.docs != null) {
+      for (var doc in snapshots.docs) {
+        final data = doc.data() as Map<String, dynamic>;
+        if (data['isFromVerifiedEmployer'] == true) {
+          allJobs.add({
+            ...data,
+            'source': 'firebase',
+            'docId': doc.id,
+          });
+        }
+      }
+    }
+    
+    // 2. Récupérer les vraies offres via Indeed/JSearch API
+    final realJobs = await IndeedJobsService.searchJobs(
+      query: 'développeur digital marketing tech',
+      location: 'France',
+      maxResults: 10,
+    );
+    
+    // 3. Combiner les deux sources
+    for (var realJob in realJobs) {
+      allJobs.add({
+        ...realJob,
+        'source': 'real_api',
+      });
+    }
+    
+    // 4. Mélanger et limiter les résultats
+    allJobs.shuffle();
+    
+    print('📋 Total jobs récupérées: ${allJobs.length} (Firebase: ${allJobs.where((j) => j['source'] == 'firebase').length}, API Réelles: ${allJobs.where((j) => j['source'] == 'real_api').length})');
+    
+  } catch (e) {
+    print('❌ Erreur lors de la récupération des jobs: $e');
+    // En cas d'erreur, retourner au moins les jobs Firebase si disponibles
+  }
+  
+  return allJobs;
+}
+
+// Fonction pour filtrer les jobs selon les critères du controller
+List<Map<String, dynamic>> _filterJobs(List<Map<String, dynamic>> jobs, dynamic controller) {
+  List<Map<String, dynamic>> filteredJobs = List.from(jobs);
+  
+  // Filtre de recherche textuelle (nom société, lieu, salaire, poste, description)
+  if (controller.searchText.value.isNotEmpty) {
+    final searchQuery = controller.searchText.value.toLowerCase();
+    filteredJobs = filteredJobs.where((job) {
+      final position = (job['Position'] ?? '').toString().toLowerCase();
+      final company = (job['CompanyName'] ?? '').toString().toLowerCase();
+      final location = (job['location'] ?? '').toString().toLowerCase();
+      final salary = (job['salary'] ?? '').toString().toLowerCase();
+      final description = (job['description'] ?? '').toString().toLowerCase();
+      final category = (job['category'] ?? '').toString().toLowerCase();
+      
+      return position.contains(searchQuery) ||
+             company.contains(searchQuery) ||
+             location.contains(searchQuery) ||
+             salary.contains(searchQuery) ||
+             description.contains(searchQuery) ||
+             category.contains(searchQuery);
+    }).toList();
+  }
+  
+  // Filtre par catégorie
+  if (controller.selectedCategory.value != 'All') {
+    filteredJobs = filteredJobs.where((job) {
+      final jobCategory = job['category'] ?? '';
+      return jobCategory == controller.selectedCategory.value;
+    }).toList();
+  }
+  
+  // Filtre par type d'emploi
+  if (controller.selectedJobType.value != 'All') {
+    filteredJobs = filteredJobs.where((job) {
+      final jobType = job['jobType'] ?? job['type'] ?? '';
+      return jobType == controller.selectedJobType.value;
+    }).toList();
+  }
+  
+  // Filtre par localisation
+  if (controller.selectedLocation.value != 'All') {
+    filteredJobs = filteredJobs.where((job) {
+      final jobLocation = (job['location'] ?? '').toString().toLowerCase();
+      final selectedLoc = controller.selectedLocation.value.toLowerCase();
+      return jobLocation.contains(selectedLoc);
+    }).toList();
+  }
+  
+  // Filtre par fourchette salariale
+  if (controller.selectedSalaryRange.value != 'All') {
+    filteredJobs = filteredJobs.where((job) {
+      final salaryStr = (job['salary'] ?? '0').toString();
+      final salary = int.tryParse(salaryStr.replaceAll(RegExp(r'[^\d]'), '')) ?? 0;
+      
+      switch (controller.selectedSalaryRange.value) {
+        case '< 35K':
+          return salary < 35000;
+        case '35K-50K':
+          return salary >= 35000 && salary <= 50000;
+        case '50K-70K':
+          return salary > 50000 && salary <= 70000;
+        case '70K-90K':
+          return salary > 70000 && salary <= 90000;
+        case '90K+':
+          return salary > 90000;
+        default:
+          return true;
+      }
+    }).toList();
+  }
+  
+  // Tri par date selon le filtre de date
+  try {
+    filteredJobs.sort((a, b) {
+      final aDate = DateTime.tryParse(a['postingDate'] ?? '') ?? DateTime.now();
+      final bDate = DateTime.tryParse(b['postingDate'] ?? '') ?? DateTime.now();
+      
+      switch (controller.selectedDateSort.value.name) {
+        case 'newest':
+          return bDate.compareTo(aDate); // Plus récent en premier
+        case 'oldest':
+          return aDate.compareTo(bDate); // Plus ancien en premier
+        default:
+          return bDate.compareTo(aDate);
+      }
+    });
+  } catch (e) {
+    print('Erreur lors du tri par date: $e');
+  }
+  
+  return filteredJobs;
 }

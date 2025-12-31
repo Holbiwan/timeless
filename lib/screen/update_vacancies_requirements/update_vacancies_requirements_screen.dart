@@ -949,7 +949,7 @@ class UpdateVacanciesRequirementsScreen extends StatelessWidget {
                                                                                   ),
                                                                                   Text(
                                                                                     "Remove",
-                                                                                    style: GoogleFonts.poppins(fontSize: 12, color: ColorRes.black),
+                                                                                    style: GoogleFonts.inter(fontSize: 12, color: ColorRes.black),
                                                                                   )
                                                                                 ],
                                                                               ),

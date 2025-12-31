@@ -7,6 +7,8 @@ import 'package:timeless/screen/job_recommendation_screen/job_recommendation_con
 import 'package:timeless/services/unified_translation_service.dart';
 import 'package:timeless/services/accessibility_service.dart';
 import 'package:timeless/common/widgets/date_sort_filter.dart';
+import 'package:timeless/common/widgets/modern_filter_dialog.dart';
+import 'package:timeless/common/widgets/modern_sort_dialog.dart';
 
 class JobRecommendationScreen extends StatelessWidget {
   const JobRecommendationScreen({super.key});
@@ -22,9 +24,9 @@ class JobRecommendationScreen extends StatelessWidget {
       appBar: AppBar(
         toolbarHeight: 50,
         title: Text(
-          translationService.getText('job recommendation'),
+          'Job Offers',
           style: accessibilityService.getAccessibleTextStyle(
-            fontSize: 16,
+            fontSize: 24,
             fontWeight: FontWeight.w500,
             color: const Color(0xFF000647),
           ),
@@ -151,58 +153,6 @@ class JobRecommendationScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                
-
-                
-                // Filtres de catégories
-                SizedBox(
-                  height: 35,
-                  child: GetBuilder<JobRecommendationController>(
-                    builder: (jrController) {
-                      return SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: List.generate(jrController.jobs2.length, (index) {
-                            return Padding(
-                              padding: EdgeInsets.only(
-                                left: index == 0 ? 16 : 0,
-                                right: 6,
-                              ),
-                              child: Obx(() => GestureDetector(
-                                onTap: () => jrController.onTapJobs2(index),
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 6,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: jrController.selectedJobs2.value == index
-                                        ? AppTheme.white
-                                        : Colors.transparent,
-                                    borderRadius: BorderRadius.circular(18),
-                                    border: Border.all(
-                                      color: AppTheme.white.withOpacity(0.5),
-                                    ),
-                                  ),
-                                  child: Text(
-                                    jrController.jobs2[index],
-                                    style: TextStyle(
-                                      color: jrController.selectedJobs2.value == index
-                                          ? Colors.black
-                                          : AppTheme.white,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 11,
-                                    ),
-                                  ),
-                                ),
-                              )),
-                            );
-                          }),
-                        ),
-                      );
-                    },
-                  ),
-                ),
               ],
             ),
           ),
@@ -279,39 +229,12 @@ class JobRecommendationScreen extends StatelessWidget {
   void _showCategoryFilter(BuildContext context, JobRecommendationController controller) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Select a category'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
-          ),
-        ],
-        content: SizedBox(
-          width: double.minPositive,
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: controller.categories.length,
-            itemBuilder: (context, index) {
-              final category = controller.categories[index];
-              return ListTile(
-                title: Text(category),
-                leading: Radio<String>(
-                  value: category,
-                  groupValue: controller.selectedCategory.value,
-                  onChanged: (value) {
-                    controller.updateCategory(value!);
-                    Navigator.pop(context);
-                  },
-                ),
-                onTap: () {
-                  controller.updateCategory(category);
-                  Navigator.pop(context);
-                },
-              );
-            },
-          ),
-        ),
+      barrierDismissible: true,
+      builder: (context) => ModernFilterDialog(
+        title: 'Category',
+        options: controller.categories,
+        selectedValue: controller.selectedCategory.value,
+        onChanged: (value) => controller.updateCategory(value),
       ),
     );
   }
@@ -320,39 +243,12 @@ class JobRecommendationScreen extends StatelessWidget {
   void _showJobTypeFilter(BuildContext context, JobRecommendationController controller) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Select a job type'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
-          ),
-        ],
-        content: SizedBox(
-          width: double.minPositive,
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: controller.jobTypes.length,
-            itemBuilder: (context, index) {
-              final jobType = controller.jobTypes[index];
-              return ListTile(
-                title: Text(jobType),
-                leading: Radio<String>(
-                  value: jobType,
-                  groupValue: controller.selectedJobType.value,
-                  onChanged: (value) {
-                    controller.updateJobType(value!);
-                    Navigator.pop(context);
-                  },
-                ),
-                onTap: () {
-                  controller.updateJobType(jobType);
-                  Navigator.pop(context);
-                },
-              );
-            },
-          ),
-        ),
+      barrierDismissible: true,
+      builder: (context) => ModernFilterDialog(
+        title: 'Job Type',
+        options: controller.jobTypes,
+        selectedValue: controller.selectedJobType.value,
+        onChanged: (value) => controller.updateJobType(value),
       ),
     );
   }
@@ -361,39 +257,12 @@ class JobRecommendationScreen extends StatelessWidget {
   void _showLocationFilter(BuildContext context, JobRecommendationController controller) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Select a location'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
-          ),
-        ],
-        content: SizedBox(
-          width: double.minPositive,
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: controller.locations.length,
-            itemBuilder: (context, index) {
-              final location = controller.locations[index];
-              return ListTile(
-                title: Text(location),
-                leading: Radio<String>(
-                  value: location,
-                  groupValue: controller.selectedLocation.value,
-                  onChanged: (value) {
-                    controller.updateLocation(value!);
-                    Navigator.pop(context);
-                  },
-                ),
-                onTap: () {
-                  controller.updateLocation(location);
-                  Navigator.pop(context);
-                },
-              );
-            },
-          ),
-        ),
+      barrierDismissible: true,
+      builder: (context) => ModernFilterDialog(
+        title: 'Location',
+        options: controller.locations,
+        selectedValue: controller.selectedLocation.value,
+        onChanged: (value) => controller.updateLocation(value),
       ),
     );
   }
@@ -402,39 +271,12 @@ class JobRecommendationScreen extends StatelessWidget {
   void _showSalaryFilter(BuildContext context, JobRecommendationController controller) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Select a salary range'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
-          ),
-        ],
-        content: SizedBox(
-          width: double.minPositive,
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: controller.salaryRanges.length,
-            itemBuilder: (context, index) {
-              final salaryRange = controller.salaryRanges[index];
-              return ListTile(
-                title: Text(salaryRange),
-                leading: Radio<String>(
-                  value: salaryRange,
-                  groupValue: controller.selectedSalaryRange.value,
-                  onChanged: (value) {
-                    controller.updateSalaryRange(value!);
-                    Navigator.pop(context);
-                  },
-                ),
-                onTap: () {
-                  controller.updateSalaryRange(salaryRange);
-                  Navigator.pop(context);
-                },
-              );
-            },
-          ),
-        ),
+      barrierDismissible: true,
+      builder: (context) => ModernFilterDialog(
+        title: 'Salary Range',
+        options: controller.salaryRanges,
+        selectedValue: controller.selectedSalaryRange.value,
+        onChanged: (value) => controller.updateSalaryRange(value),
       ),
     );
   }
@@ -444,49 +286,12 @@ class JobRecommendationScreen extends StatelessWidget {
   void _showDateSortFilter(BuildContext context, JobRecommendationController controller) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: Colors.white,
-        title: const Text('Sort by'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
-          ),
-        ],
-        content: SizedBox(
-          width: double.minPositive,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: DateSortOption.values.map((option) {
-              return ListTile(
-                title: Text(
-                  option.label,
-                  style: TextStyle(
-                    fontWeight: option == controller.selectedDateSort.value
-                        ? FontWeight.w600
-                        : FontWeight.w400,
-                    color: option == controller.selectedDateSort.value 
-                        ? const Color(0xFF000647) 
-                        : Colors.black87,
-                  ),
-                ),
-                leading: Radio<DateSortOption>(
-                  value: option,
-                  groupValue: controller.selectedDateSort.value,
-                  activeColor: const Color(0xFF000647),
-                  onChanged: (value) {
-                    controller.updateDateSort(value!);
-                    Navigator.pop(context);
-                  },
-                ),
-                onTap: () {
-                  controller.updateDateSort(option);
-                  Navigator.pop(context);
-                },
-              );
-            }).toList(),
-          ),
-        ),
+      barrierDismissible: true,
+      builder: (context) => ModernSortDialog(
+        title: 'Sort by',
+        options: DateSortOption.values,
+        selectedValue: controller.selectedDateSort.value,
+        onChanged: (value) => controller.updateDateSort(value),
       ),
     );
   }

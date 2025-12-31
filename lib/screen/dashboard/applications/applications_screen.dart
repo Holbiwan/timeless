@@ -13,6 +13,7 @@ import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/utils/string.dart';
+import 'package:timeless/services/unified_translation_service.dart';
 import 'uiux_designer_screen.dart';
 import 'accepted_screen.dart';
 
@@ -20,6 +21,7 @@ class ApplicationsScreen extends StatelessWidget {
   ApplicationsScreen({super.key});
 
   final applicationController = Get.put(ApplicationsController());
+  final translationService = Get.find<UnifiedTranslationService>();
 
   // Helper function for secure access to Firestore fields
   String getFieldSafely(DocumentSnapshot doc, String field,
@@ -55,12 +57,25 @@ class ApplicationsScreen extends StatelessWidget {
                   Expanded(
                     child: Container(
                       alignment: Alignment.center,
-                      child: Text(
-                        Strings.applications,
-                        style: appTextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
-                            color: const Color(0xFF1565C0)),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            Strings.applications,
+                            style: appTextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                                color: const Color.fromARGB(255, 0, 6, 71)),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            translationService.getText('cv_sent'),
+                            style: appTextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w400,
+                                color: const Color.fromARGB(255, 0, 6, 71).withOpacity(0.7)),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -79,7 +94,7 @@ class ApplicationsScreen extends StatelessWidget {
                     },
                     icon: const Icon(
                       Icons.refresh,
-                      color: Color(0xFF1565C0),
+                      color: Color.fromARGB(255, 0, 6, 71),
                       size: 24,
                     ),
                   ),
@@ -132,13 +147,13 @@ class ApplicationsScreen extends StatelessWidget {
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                               border: Border.all(
-                                  color: const Color(0xFF1565C0), width: 2),
+                                  color: const Color.fromARGB(255, 0, 6, 71), width: 2),
                               borderRadius: const BorderRadius.all(
                                 Radius.circular(10),
                               ),
                               color: applicationController.selectedJobs.value ==
                                       index
-                                  ? const Color(0xFF1565C0)
+                                  ? const Color.fromARGB(255, 0, 6, 71)
                                   : Colors.white),
                           child: Text(
                             applicationController.jobs[index],
@@ -147,7 +162,7 @@ class ApplicationsScreen extends StatelessWidget {
                                     applicationController.selectedJobs.value ==
                                             index
                                         ? Colors.white
-                                        : const Color(0xFF1565C0),
+                                        : const Color.fromARGB(255, 0, 6, 71),
                                 fontSize: 11,
                                 fontWeight: FontWeight.w600),
                             textAlign: TextAlign.center,

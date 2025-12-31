@@ -44,7 +44,7 @@ class _SplashScreenState extends State<SplashScreen>
       'isLogo': true
     },
     {
-      'title': 'A new app for',
+      'title': 'New app for',
       'subtitle': 'jobs seekers',
       'description': 'Apply to multiple offers',
       'isImage': true,
@@ -230,7 +230,7 @@ class _SplashScreenState extends State<SplashScreen>
                           children: [
                             Text(
                               'Skip',
-                              style: GoogleFonts.poppins(
+                              style: GoogleFonts.inter(
                                 color: Colors.black,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
@@ -392,7 +392,7 @@ class _SplashScreenState extends State<SplashScreen>
           Text(
             slideData['title']!,
             textAlign: TextAlign.center,
-            style: GoogleFonts.poppins(
+            style: GoogleFonts.inter(
               fontSize: 22,
               fontWeight: FontWeight.w600,
               color: Colors.white,
@@ -406,7 +406,7 @@ class _SplashScreenState extends State<SplashScreen>
           Text(
             slideData['subtitle']!,
             textAlign: TextAlign.center,
-            style: GoogleFonts.poppins(
+            style: GoogleFonts.inter(
               fontSize: 32,
               fontWeight: FontWeight.w800,
               color: Colors.orange,
@@ -429,7 +429,7 @@ class _SplashScreenState extends State<SplashScreen>
             child: Text(
               slideData['description']!,
               textAlign: TextAlign.center,
-              style: GoogleFonts.poppins(
+              style: GoogleFonts.inter(
                 fontSize: 10,
                 fontWeight: FontWeight.w500,
                 color: Colors.white.withOpacity(0.7),

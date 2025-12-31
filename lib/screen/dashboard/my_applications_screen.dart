@@ -57,7 +57,7 @@ class _MyApplicationsScreenState extends State<MyApplicationsScreen> {
         backgroundColor: const Color(0xFF000647),
         title: Text(
           'Mes Candidatures',
-          style: GoogleFonts.poppins(
+          style: GoogleFonts.inter(
             color: Colors.white,
             fontSize: 18,
             fontWeight: FontWeight.w600,
@@ -104,7 +104,7 @@ class _MyApplicationsScreenState extends State<MyApplicationsScreen> {
             const SizedBox(height: 24),
             Text(
               'Aucune candidature',
-              style: GoogleFonts.poppins(
+              style: GoogleFonts.inter(
                 color: Colors.white,
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
@@ -114,7 +114,7 @@ class _MyApplicationsScreenState extends State<MyApplicationsScreen> {
             Text(
               'Vous n\'avez pas encore postulé à des offres d\'emploi.',
               textAlign: TextAlign.center,
-              style: GoogleFonts.poppins(
+              style: GoogleFonts.inter(
                 color: Colors.white.withOpacity(0.7),
                 fontSize: 14,
               ),
@@ -125,7 +125,7 @@ class _MyApplicationsScreenState extends State<MyApplicationsScreen> {
               icon: const Icon(Icons.search, color: Colors.white),
               label: Text(
                 'Rechercher des emplois',
-                style: GoogleFonts.poppins(color: Colors.white),
+                style: GoogleFonts.inter(color: Colors.white),
               ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF000647),
@@ -189,7 +189,7 @@ class _MyApplicationsScreenState extends State<MyApplicationsScreen> {
         children: [
           Text(
             'Statistiques',
-            style: GoogleFonts.poppins(
+            style: GoogleFonts.inter(
               color: Colors.white,
               fontSize: 16,
               fontWeight: FontWeight.w600,
@@ -231,7 +231,7 @@ class _MyApplicationsScreenState extends State<MyApplicationsScreen> {
         const SizedBox(height: 4),
         Text(
           value,
-          style: GoogleFonts.poppins(
+          style: GoogleFonts.inter(
             color: Colors.white,
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -239,7 +239,7 @@ class _MyApplicationsScreenState extends State<MyApplicationsScreen> {
         ),
         Text(
           label,
-          style: GoogleFonts.poppins(
+          style: GoogleFonts.inter(
             color: Colors.white.withOpacity(0.8),
             fontSize: 12,
           ),
@@ -284,7 +284,7 @@ class _MyApplicationsScreenState extends State<MyApplicationsScreen> {
                       children: [
                         Text(
                           jobTitle,
-                          style: GoogleFonts.poppins(
+                          style: GoogleFonts.inter(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                             color: Colors.black87,
@@ -292,7 +292,7 @@ class _MyApplicationsScreenState extends State<MyApplicationsScreen> {
                         ),
                         Text(
                           companyName,
-                          style: GoogleFonts.poppins(
+                          style: GoogleFonts.inter(
                             fontSize: 14,
                             color: Colors.grey[600],
                           ),
@@ -310,7 +310,7 @@ class _MyApplicationsScreenState extends State<MyApplicationsScreen> {
                     ),
                     child: Text(
                       _getStatusText(application.status),
-                      style: GoogleFonts.poppins(
+                      style: GoogleFonts.inter(
                         fontSize: 11,
                         color: _getStatusColor(application.status),
                         fontWeight: FontWeight.w500,
@@ -326,7 +326,7 @@ class _MyApplicationsScreenState extends State<MyApplicationsScreen> {
                   const SizedBox(width: 4),
                   Text(
                     'Postulé le ${_formatDate(application.appliedAt)}',
-                    style: GoogleFonts.poppins(
+                    style: GoogleFonts.inter(
                       fontSize: 12,
                       color: Colors.grey[600],
                     ),
@@ -340,7 +340,7 @@ class _MyApplicationsScreenState extends State<MyApplicationsScreen> {
                   'Message: ${application.coverLetter}',
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.poppins(
+                  style: GoogleFonts.inter(
                     fontSize: 12,
                     color: Colors.grey[700],
                     fontStyle: FontStyle.italic,

@@ -2,108 +2,194 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:timeless/services/accessibility_service.dart';
 
 class WebinairesScreen extends StatelessWidget {
   const WebinairesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF000647),
-        title: Text(
-          'Webinaires',
-          style: GoogleFonts.poppins(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: Colors.white,
-          ),
-        ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Get.back(),
-        ),
-        elevation: 0,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Upcoming webinars',
-              style: GoogleFonts.poppins(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: const Color(0xFF000647),
+    final accessibilityService = AccessibilityService.instance;
+    
+    return Obx(() => Scaffold(
+      backgroundColor: accessibilityService.backgroundColor,
+      body: CustomScrollView(
+        slivers: [
+          // Modern App Bar
+          SliverAppBar(
+            expandedHeight: 200,
+            floating: false,
+            pinned: true,
+            backgroundColor: const Color(0xFF000647),
+            flexibleSpace: FlexibleSpaceBar(
+              background: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      const Color(0xFF000647),
+                      const Color(0xFF000647).withOpacity(0.8),
+                      const Color(0xFFE67E22).withOpacity(0.1),
+                    ],
+                    stops: const [0.0, 0.7, 1.0],
+                  ),
+                ),
+                child: Stack(
+                  children: [
+                    Positioned(
+                      top: 60,
+                      right: 20,
+                      child: Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFE67E22).withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(50),
+                        ),
+                        child: const Icon(
+                          Icons.play_circle_fill,
+                          color: Color(0xFFE67E22),
+                          size: 40,
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 30,
+                      left: 20,
+                      right: 80,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Webinars',
+                            style: GoogleFonts.inter(
+                              fontSize: 28,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Join online sessions to boost your career skills and knowledge',
+                            style: GoogleFonts.inter(
+                              fontSize: 14,
+                              color: Colors.white.withOpacity(0.9),
+                              height: 1.4,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-            const SizedBox(height: 8),
-            Text(
-              'Participate in employment and training webinars',
-              style: GoogleFonts.poppins(
-                fontSize: 14,
-                color: Colors.grey[600],
-              ),
-            ),
-            const SizedBox(height: 16), // Reduced from 24
-            
-            // Information footer
-            Container(
-              padding: const EdgeInsets.all(16),
+            leading: Container(
+              margin: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Colors.grey[100],
+                color: Colors.white.withOpacity(0.2),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey[300]!),
               ),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.video_call,
-                        color: Colors.grey[600],
-                        size: 20,
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(
-                          'Click on a webinar to register or access the replay.',
-                          style: GoogleFonts.poppins(
-                            fontSize: 12,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.notifications_active,
-                        color: Colors.orange,
-                        size: 20,
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(
-                          'Webinars marked “Live” are upcoming.',
-                          style: GoogleFonts.poppins(
-                            fontSize: 12,
-                            color: Colors.grey[600],
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+              child: IconButton(
+                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () => Get.back(),
               ),
             ),
-
-            const SizedBox(height: 16), // Reduced from 32
+          ),
+          
+          // Content
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Information Card
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          const Color(0xFFE67E22).withOpacity(0.1),
+                          const Color(0xFFE67E22).withOpacity(0.05),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: const Color(0xFFE67E22).withOpacity(0.2)),
+                    ),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFE67E22),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: const Icon(
+                                Icons.video_call,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Text(
+                                'Click on a webinar to register or access the replay',
+                                style: GoogleFonts.inter(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: const Color(0xFF000647),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.red.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: Colors.red.withOpacity(0.2)),
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(6),
+                                decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: const Icon(
+                                  Icons.live_tv,
+                                  color: Colors.white,
+                                  size: 16,
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Text(
+                                  'Webinars marked "LIVE" are upcoming events',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.red.shade700,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  
+                  const SizedBox(height: 24),
             
             // Webinar Emploi & Credit Management
             _buildWebinarCard(
@@ -131,11 +217,14 @@ class WebinairesScreen extends StatelessWidget {
               isLive: false,
             ),
             
-
-          ],
-        ),
+                  const SizedBox(height: 32),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
-    );
+    ));
   }
 
   Widget _buildWebinarCard({
@@ -148,163 +237,261 @@ class WebinairesScreen extends StatelessWidget {
     required Color color,
     required bool isLive,
   }) {
-    return GestureDetector(
-      onTap: () => _launchUrl(url),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: color.withOpacity(0.3)),
-          boxShadow: [
-            BoxShadow(
-              color: color.withOpacity(0.1),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: color.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Icon(
-                    icon,
-                    color: color,
-                    size: 24,
-                  ),
+    return Container(
+      margin: const EdgeInsets.only(bottom: 20),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => _launchUrl(url),
+          borderRadius: BorderRadius.circular(20),
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Colors.white,
+                  Colors.grey.shade50,
+                ],
+              ),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: color.withOpacity(0.2), width: 1.5),
+              boxShadow: [
+                BoxShadow(
+                  color: color.withOpacity(0.1),
+                  blurRadius: 20,
+                  offset: const Offset(0, 10),
+                  spreadRadius: 0,
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (isLive)
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          margin: const EdgeInsets.only(bottom: 4),
-                          decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.circular(12),
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Header with icon and live badge
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            color,
+                            color.withOpacity(0.8),
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: color.withOpacity(0.3),
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
                           ),
-                          child: Text(
-                            'EN DIRECT',
-                            style: GoogleFonts.poppins(
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                        ],
+                      ),
+                      child: Icon(
+                        icon,
+                        color: Colors.white,
+                        size: 28,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (isLive)
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                              margin: const EdgeInsets.only(bottom: 8),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [Colors.red, Colors.red.shade700],
+                                ),
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.red.withOpacity(0.3),
+                                    blurRadius: 6,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    width: 8,
+                                    height: 8,
+                                    decoration: const BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    'LIVE',
+                                    style: GoogleFonts.inter(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.white,
+                                      letterSpacing: 0.5,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          Text(
+                            title,
+                            style: GoogleFonts.inter(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w700,
+                              color: const Color(0xFF000647),
+                              height: 1.3,
                             ),
                           ),
-                        ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                
+                const SizedBox(height: 20),
+                
+                // Details section
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade100,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.grey.shade200),
+                  ),
+                  child: Column(
+                    children: [
+                      // Date
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFE67E22),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: const Icon(
+                              Icons.schedule,
+                              color: Colors.white,
+                              size: 16,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              date,
+                              style: GoogleFonts.inter(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: const Color(0xFF000647),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      // Organizer
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: color.withOpacity(0.8),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: const Icon(
+                              Icons.business,
+                              color: Colors.white,
+                              size: 16,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              'By $organizer',
+                              style: GoogleFonts.inter(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: const Color(0xFF000647),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                
+                const SizedBox(height: 16),
+                
+                // Description
+                Text(
+                  description,
+                  style: GoogleFonts.inter(
+                    fontSize: 14,
+                    color: Colors.grey[700],
+                    height: 1.5,
+                  ),
+                ),
+                
+                const SizedBox(height: 20),
+                
+                // Action button
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                      colors: [
+                        color.withOpacity(0.1),
+                        color.withOpacity(0.05),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: color.withOpacity(0.3), width: 1.5),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        isLive ? Icons.how_to_reg : Icons.play_circle_fill,
+                        color: color,
+                        size: 20,
+                      ),
+                      const SizedBox(width: 10),
                       Text(
-                        title,
-                        style: GoogleFonts.poppins(
-                          fontSize: 16,
+                        isLive ? 'Register Now' : 'View Details',
+                        style: GoogleFonts.inter(
+                          fontSize: 15,
                           fontWeight: FontWeight.w600,
-                          color: const Color(0xFF1A1A1A),
+                          color: color,
                         ),
                       ),
                     ],
                   ),
                 ),
-                Icon(
-                  Icons.arrow_forward_ios,
-                  color: Colors.grey[400],
-                  size: 16,
-                ),
               ],
             ),
-            const SizedBox(height: 16),
-            
-            // Date
-            Row(
-              children: [
-                Icon(
-                  Icons.schedule,
-                  color: color,
-                  size: 16,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  date,
-                  style: GoogleFonts.poppins(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: color,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            
-            // Organizer
-            Row(
-              children: [
-                Icon(
-                  Icons.business,
-                  color: Colors.grey[600],
-                  size: 16,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  'Par $organizer',
-                  style: GoogleFonts.poppins(
-                    fontSize: 14,
-                    color: Colors.grey[600],
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            
-            // Description
-            Text(
-              description,
-              style: GoogleFonts.poppins(
-                fontSize: 13,
-                color: Colors.grey[700],
-                height: 1.4,
-              ),
-            ),
-            const SizedBox(height: 16),
-            
-            // Action button
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    isLive ? Icons.how_to_reg : Icons.play_circle_fill,
-                    color: color,
-                    size: 16,
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    isLive ? 'Register' : 'See details',
-                    style: GoogleFonts.poppins(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: color,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

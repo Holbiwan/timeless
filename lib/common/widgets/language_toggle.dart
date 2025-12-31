@@ -27,7 +27,7 @@ class LanguageToggle extends StatelessWidget {
         },
         borderRadius: BorderRadius.circular(20),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
           decoration: BoxDecoration(
             color: const Color(0xFF000647),
             borderRadius: BorderRadius.circular(20),
@@ -42,16 +42,16 @@ class LanguageToggle extends StatelessWidget {
               const SizedBox(width: 6),
               Text(
                 isEnglish ? 'EN' : 'FR',
-                style: GoogleFonts.poppins(
-                  fontSize: 11,
+                style: GoogleFonts.inter(
+                  fontSize: 14,
                   fontWeight: FontWeight.w600,
                   color: Colors.white,
                 ),
               ),
-              const SizedBox(width: 4),
+              const SizedBox(width: 6),
               const Icon(
                 Icons.swap_horiz,
-                size: 14,
+                size: 18,
                 color: Colors.white,
               ),
             ],

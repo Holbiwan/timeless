@@ -3,13 +3,14 @@ import 'package:get/get.dart';
 import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/services/unified_translation_service.dart';
 import 'package:timeless/services/accessibility_service.dart';
+import 'package:timeless/services/auth_service.dart';
 import 'package:timeless/utils/app_theme.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/screen/settings/settings_screen.dart';
 import 'package:timeless/screen/accessibility/accessibility_panel.dart';
 import 'package:timeless/screen/profile/profile_controller.dart';
 
-Widget homeAppBar() {
+Widget homeAppBar({VoidCallback? onRefresh}) {
   final UnifiedTranslationService translationService = Get.find<UnifiedTranslationService>();
   final AccessibilityService accessibilityService = Get.find<AccessibilityService>();
   final ProfileController profileController = Get.put(ProfileController());
@@ -30,12 +31,12 @@ Widget homeAppBar() {
             width: 38,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: Colors.grey[100],
+              color: const Color(0xFF000647),
               borderRadius: BorderRadius.circular(AppTheme.radiusRegular),
             ),
             child: const Icon(
               Icons.arrow_back,
-              color: Colors.black87,
+              color: Colors.white,
               size: 18,
             ),
           ),
@@ -49,8 +50,8 @@ Widget homeAppBar() {
             children: [
               // Photo du candidat (taille agrandie)
               Obx(() => Container(
-                width: 100,
-                height: 100,
+                width: 120,
+                height: 120,
                 margin: const EdgeInsets.only(bottom: 8),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
@@ -65,7 +66,7 @@ Widget homeAppBar() {
                   ],
                 ),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(50),
+                  borderRadius: BorderRadius.circular(60),
                   child: profileController.profileImageUrl.value.isNotEmpty
                     ? Image.network(
                         profileController.profileImageUrl.value,
@@ -74,7 +75,7 @@ Widget homeAppBar() {
                           color: Colors.grey[100],
                           child: const Icon(
                             Icons.person,
-                            size: 50,
+                            size: 60,
                             color: Colors.grey,
                           ),
                         ),
@@ -83,35 +84,51 @@ Widget homeAppBar() {
                         color: Colors.grey[100],
                         child: const Icon(
                           Icons.person,
-                          size: 50,
+                          size: 60,
                           color: Colors.grey,
                         ),
                       ),
                 ),
               )),
-              // Texte de bienvenue
-              RichText(
-                textAlign: TextAlign.center,
-                text: TextSpan(
-                  text: '${translationService.getText('welcome')} ',
-                  style: accessibilityService.getAccessibleTextStyle(
-                    fontSize: AppTheme.fontSizeMedium,
-                    color: const Color(0xFF000647),
-                    fontWeight: FontWeight.w400,
-                  ),
-                  children: [
-                    TextSpan(
-                      text: PreferencesService.getString(PrefKeys.fullName).isNotEmpty 
-                          ? PreferencesService.getString(PrefKeys.fullName)
-                          : 'User',
+              
+              // Texte de bienvenue avec données en temps réel
+              StreamBuilder(
+                stream: AuthService.instance.getCurrentUserDataStream(),
+                builder: (context, snapshot) {
+                  String displayName = 'User';
+                  
+                  if (snapshot.hasData && snapshot.data != null) {
+                    displayName = snapshot.data!.fullName;
+                  } else {
+                    // Fallback to preferences only if Firebase data is not available
+                    final cachedName = PreferencesService.getString(PrefKeys.fullName);
+                    if (cachedName.isNotEmpty) {
+                      displayName = cachedName;
+                    }
+                  }
+                  
+                  return RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      text: '${translationService.getText('welcome')} ',
                       style: accessibilityService.getAccessibleTextStyle(
                         fontSize: AppTheme.fontSizeMedium,
-                        color: Colors.black87,
-                        fontWeight: FontWeight.w600,
+                        color: const Color(0xFF000647),
+                        fontWeight: FontWeight.w400,
                       ),
+                      children: [
+                        TextSpan(
+                          text: displayName,
+                          style: accessibilityService.getAccessibleTextStyle(
+                            fontSize: AppTheme.fontSizeMedium,
+                            color: Colors.black87,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  );
+                },
               ),
             ],
           ),
@@ -120,6 +137,7 @@ Widget homeAppBar() {
         // Actions modernes
         Row(
           children: [
+            // User Menu Button
             accessibilityService.buildAccessibleWidget(
               semanticLabel: 'User menu',
               onTap: () {
@@ -131,12 +149,12 @@ Widget homeAppBar() {
                 width: 38,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: Colors.grey[100],
+                  color: const Color(0xFF000647),
                   borderRadius: BorderRadius.circular(AppTheme.radiusRegular),
                 ),
                 child: const Icon(
                   Icons.person,
-                  color: Colors.black87,
+                  color: Colors.white,
                   size: 18,
                 ),
               ),
@@ -220,4 +238,3 @@ Widget _buildMenuItem(IconData icon, String title, VoidCallback onTap) {
     ),
   );
 }
-

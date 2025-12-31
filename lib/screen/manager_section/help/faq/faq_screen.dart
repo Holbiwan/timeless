@@ -13,7 +13,7 @@ class FaqScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           'FAQ',
-          style: GoogleFonts.poppins(
+          style: GoogleFonts.inter(
             fontWeight: FontWeight.w600,
             fontSize: 18,
           ),
@@ -61,7 +61,7 @@ class FaqScreen extends StatelessWidget {
       child: ExpansionTile(
         title: Text(
           question,
-          style: GoogleFonts.poppins(
+          style: GoogleFonts.inter(
             fontSize: 16,
             fontWeight: FontWeight.w600,
             color: ColorRes.black,
@@ -72,7 +72,7 @@ class FaqScreen extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             child: Text(
               answer,
-              style: GoogleFonts.poppins(
+              style: GoogleFonts.inter(
                 fontSize: 14,
                 height: 1.5,
                 color: Colors.grey[700],

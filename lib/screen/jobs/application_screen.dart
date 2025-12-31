@@ -44,7 +44,7 @@ class ApplicationScreen extends StatelessWidget {
                         children: [
                           Text(
                             'Candidature pour:',
-                            style: GoogleFonts.poppins(
+                            style: GoogleFonts.inter(
                               fontSize: 12,
                               color: ColorRes.textSecondary,
                             ),
@@ -52,7 +52,7 @@ class ApplicationScreen extends StatelessWidget {
                           const SizedBox(height: 4),
                           Text(
                             job.title,
-                            style: GoogleFonts.poppins(
+                            style: GoogleFonts.inter(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
                               color: ColorRes.black,
@@ -60,7 +60,7 @@ class ApplicationScreen extends StatelessWidget {
                           ),
                           Text(
                             job.companyName,
-                            style: GoogleFonts.poppins(
+                            style: GoogleFonts.inter(
                               fontSize: 14,
                               color: ColorRes.darkGold,
                               fontWeight: FontWeight.w500,
@@ -75,7 +75,7 @@ class ApplicationScreen extends StatelessWidget {
                     // Informations personnelles
                     Text(
                       'Informations personnelles',
-                      style: GoogleFonts.poppins(
+                      style: GoogleFonts.inter(
                         fontSize: 11,
                         fontWeight: FontWeight.w500,
                         color: ColorRes.black,
@@ -146,7 +146,7 @@ class ApplicationScreen extends StatelessWidget {
                     // Upload CV
                     Text(
                       'Curriculum Vitae',
-                      style: GoogleFonts.poppins(
+                      style: GoogleFonts.inter(
                         fontSize: 11,
                         fontWeight: FontWeight.w500,
                         color: ColorRes.black,
@@ -163,7 +163,7 @@ class ApplicationScreen extends StatelessWidget {
                     // Lettre de motivation
                     Text(
                       'Lettre de motivation',
-                      style: GoogleFonts.poppins(
+                      style: GoogleFonts.inter(
                         fontSize: 11,
                         fontWeight: FontWeight.w500,
                         color: ColorRes.black,
@@ -172,7 +172,7 @@ class ApplicationScreen extends StatelessWidget {
                     const SizedBox(height: 8),
                     Text(
                       'Optionnel - Expliquez votre motivation pour ce poste',
-                      style: GoogleFonts.poppins(
+                      style: GoogleFonts.inter(
                         fontSize: 12,
                         color: ColorRes.textTertiary,
                       ),
@@ -215,7 +215,7 @@ class ApplicationScreen extends StatelessWidget {
                               const SizedBox(width: 8),
                               Text(
                                 'Informations importantes',
-                                style: GoogleFonts.poppins(
+                                style: GoogleFonts.inter(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,
                                   color: ColorRes.black,
@@ -229,7 +229,7 @@ class ApplicationScreen extends StatelessWidget {
                             '• Vous recevrez un email de confirmation\n'
                             '• Le recruteur peut vous contacter sous 48h\n'
                             '• Vos informations restent confidentielles',
-                            style: GoogleFonts.poppins(
+                            style: GoogleFonts.inter(
                               fontSize: 12,
                               color: ColorRes.textSecondary,
                               height: 1.5,
@@ -276,7 +276,7 @@ class ApplicationScreen extends StatelessWidget {
                       Expanded(
                         child: Obx(() => Text(
                           controller.applicationSummary,
-                          style: GoogleFonts.poppins(
+                          style: GoogleFonts.inter(
                             fontSize: 12,
                             color: ColorRes.darkGold,
                             fontWeight: FontWeight.w500,
@@ -347,7 +347,7 @@ class ApplicationScreen extends StatelessWidget {
       children: [
         Text(
           label,
-          style: GoogleFonts.poppins(
+          style: GoogleFonts.inter(
             fontSize: 14,
             fontWeight: FontWeight.w600,
             color: ColorRes.black,
@@ -396,7 +396,7 @@ class ApplicationScreen extends StatelessWidget {
             const SizedBox(height: 12),
             Text(
               'Cliquez pour sélectionner votre CV',
-              style: GoogleFonts.poppins(
+              style: GoogleFonts.inter(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
                 color: ColorRes.darkGold,
@@ -405,7 +405,7 @@ class ApplicationScreen extends StatelessWidget {
             const SizedBox(height: 4),
             Text(
               'PDF uniquement, maximum 5 MB',
-              style: GoogleFonts.poppins(
+              style: GoogleFonts.inter(
                 fontSize: 12,
                 color: ColorRes.textTertiary,
               ),
@@ -434,7 +434,7 @@ class ApplicationScreen extends StatelessWidget {
               children: [
                 Text(
                   file.path.split('/').last,
-                  style: GoogleFonts.poppins(
+                  style: GoogleFonts.inter(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: ColorRes.black,
@@ -442,7 +442,7 @@ class ApplicationScreen extends StatelessWidget {
                 ),
                 Text(
                   '${(file.lengthSync() / 1024 / 1024).toStringAsFixed(1)} MB',
-                  style: GoogleFonts.poppins(
+                  style: GoogleFonts.inter(
                     fontSize: 12,
                     color: ColorRes.textTertiary,
                   ),

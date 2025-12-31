@@ -25,7 +25,7 @@ class _SimpleApplicationsScreenState extends State<SimpleApplicationsScreen> {
         backgroundColor: Colors.white,
         title: Text(
           'Applications Management',
-          style: GoogleFonts.poppins(
+          style: GoogleFonts.inter(
             color: const Color.fromARGB(255, 0, 6, 71),
             fontSize: 18,
             fontWeight: FontWeight.w600,
@@ -56,7 +56,7 @@ class _SimpleApplicationsScreenState extends State<SimpleApplicationsScreen> {
                 children: [
                   Text(
                     'Manage Applications',
-                    style: GoogleFonts.poppins(
+                    style: GoogleFonts.inter(
                       color: Colors.white,
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -65,7 +65,7 @@ class _SimpleApplicationsScreenState extends State<SimpleApplicationsScreen> {
                   const SizedBox(height: 8),
                   Text(
                     'View and manage all applications received for your job postings',
-                    style: GoogleFonts.poppins(
+                    style: GoogleFonts.inter(
                       color: Colors.white.withOpacity(0.8),
                       fontSize: 13,
                       height: 1.3,
@@ -109,7 +109,7 @@ class _SimpleApplicationsScreenState extends State<SimpleApplicationsScreen> {
                             const SizedBox(height: 16),
                             Text(
                               'Unable to load applications',
-                              style: GoogleFonts.poppins(
+                              style: GoogleFonts.inter(
                                 color: Colors.black87,
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
@@ -118,7 +118,7 @@ class _SimpleApplicationsScreenState extends State<SimpleApplicationsScreen> {
                             const SizedBox(height: 8),
                             Text(
                               'This might be because no applications have been submitted yet, or there\'s a database connection issue.',
-                              style: GoogleFonts.poppins(
+                              style: GoogleFonts.inter(
                                 color: Colors.grey[600],
                                 fontSize: 13,
                               ),
@@ -136,7 +136,7 @@ class _SimpleApplicationsScreenState extends State<SimpleApplicationsScreen> {
                               icon: const Icon(Icons.refresh, size: 18),
                               label: Text(
                                 'Try Again',
-                                style: GoogleFonts.poppins(fontSize: 14),
+                                style: GoogleFonts.inter(fontSize: 14),
                               ),
                             ),
                           ],
@@ -167,7 +167,7 @@ class _SimpleApplicationsScreenState extends State<SimpleApplicationsScreen> {
                                 const SizedBox(height: 16),
                                 Text(
                                   'No Applications Yet',
-                                  style: GoogleFonts.poppins(
+                                  style: GoogleFonts.inter(
                                     fontSize: 18,
                                     fontWeight: FontWeight.w600,
                                     color: Colors.white,
@@ -176,7 +176,7 @@ class _SimpleApplicationsScreenState extends State<SimpleApplicationsScreen> {
                                 const SizedBox(height: 8),
                                 Text(
                                   'Applications will appear here once candidates apply to your job postings',
-                                  style: GoogleFonts.poppins(
+                                  style: GoogleFonts.inter(
                                     fontSize: 14,
                                     color: Colors.white.withOpacity(0.9),
                                   ),
@@ -304,7 +304,7 @@ class _SimpleApplicationsScreenState extends State<SimpleApplicationsScreen> {
                   children: [
                     Text(
                       candidateName,
-                      style: GoogleFonts.poppins(
+                      style: GoogleFonts.inter(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                         color: Colors.black87,
@@ -312,7 +312,7 @@ class _SimpleApplicationsScreenState extends State<SimpleApplicationsScreen> {
                     ),
                     Text(
                       jobTitle,
-                      style: GoogleFonts.poppins(
+                      style: GoogleFonts.inter(
                         fontSize: 13,
                         color: Colors.grey[600],
                         fontWeight: FontWeight.w500,
@@ -323,7 +323,7 @@ class _SimpleApplicationsScreenState extends State<SimpleApplicationsScreen> {
                     if (candidateEmail.isNotEmpty)
                       Text(
                         candidateEmail,
-                        style: GoogleFonts.poppins(
+                        style: GoogleFonts.inter(
                           fontSize: 12,
                           color: Colors.grey[500],
                         ),
@@ -339,7 +339,7 @@ class _SimpleApplicationsScreenState extends State<SimpleApplicationsScreen> {
                 ),
                 child: Text(
                   status.toUpperCase(),
-                  style: GoogleFonts.poppins(
+                  style: GoogleFonts.inter(
                     fontSize: 10,
                     color: Colors.white,
                     fontWeight: FontWeight.w500,
@@ -366,7 +366,7 @@ class _SimpleApplicationsScreenState extends State<SimpleApplicationsScreen> {
                     icon: const Icon(Icons.check, size: 16),
                     label: Text(
                       'Selected',
-                      style: GoogleFonts.poppins(fontSize: 12),
+                      style: GoogleFonts.inter(fontSize: 12),
                     ),
                   ),
                 ),
@@ -382,7 +382,7 @@ class _SimpleApplicationsScreenState extends State<SimpleApplicationsScreen> {
                     icon: const Icon(Icons.close, size: 16),
                     label: Text(
                       'Refused',
-                      style: GoogleFonts.poppins(fontSize: 12),
+                      style: GoogleFonts.inter(fontSize: 12),
                     ),
                   ),
                 ),
@@ -399,7 +399,7 @@ class _SimpleApplicationsScreenState extends State<SimpleApplicationsScreen> {
                     icon: const Icon(Icons.visibility, size: 16),
                     label: Text(
                       'View Details',
-                      style: GoogleFonts.poppins(fontSize: 12),
+                      style: GoogleFonts.inter(fontSize: 12),
                     ),
                   ),
                 ),
@@ -543,7 +543,7 @@ class _SimpleApplicationsScreenState extends State<SimpleApplicationsScreen> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         title: Text(
           'Application Details',
-          style: GoogleFonts.poppins(
+          style: GoogleFonts.inter(
             fontWeight: FontWeight.w600,
             color: const Color(0xFF000647),
           ),
@@ -562,7 +562,7 @@ class _SimpleApplicationsScreenState extends State<SimpleApplicationsScreen> {
               const SizedBox(height: 10),
               Text(
                 'Cover Letter:',
-                style: GoogleFonts.poppins(
+                style: GoogleFonts.inter(
                   fontWeight: FontWeight.w600,
                   fontSize: 14,
                   color: const Color(0xFF000647),
@@ -579,7 +579,7 @@ class _SimpleApplicationsScreenState extends State<SimpleApplicationsScreen> {
                 ),
                 child: Text(
                   coverLetter,
-                  style: GoogleFonts.poppins(fontSize: 13),
+                  style: GoogleFonts.inter(fontSize: 13),
                 ),
               ),
             ],
@@ -590,7 +590,7 @@ class _SimpleApplicationsScreenState extends State<SimpleApplicationsScreen> {
             onPressed: () => Get.back(),
             child: Text(
               'Close',
-              style: GoogleFonts.poppins(color: const Color(0xFF000647)),
+              style: GoogleFonts.inter(color: const Color(0xFF000647)),
             ),
           ),
           if (status.toLowerCase() == 'pending') ...[
@@ -600,7 +600,7 @@ class _SimpleApplicationsScreenState extends State<SimpleApplicationsScreen> {
                 _updateApplicationStatus(application, 'selected');
               },
               style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF000647)),
-              child: Text('Selected', style: GoogleFonts.poppins()),
+              child: Text('Selected', style: GoogleFonts.inter()),
             ),
             ElevatedButton(
               onPressed: () {
@@ -608,7 +608,7 @@ class _SimpleApplicationsScreenState extends State<SimpleApplicationsScreen> {
                 _updateApplicationStatus(application, 'refused');
               },
               style: ElevatedButton.styleFrom(backgroundColor: Colors.grey[600]),
-              child: Text('Refused', style: GoogleFonts.poppins()),
+              child: Text('Refused', style: GoogleFonts.inter()),
             ),
           ],
         ],
@@ -626,7 +626,7 @@ class _SimpleApplicationsScreenState extends State<SimpleApplicationsScreen> {
             width: 100,
             child: Text(
               '$label:',
-              style: GoogleFonts.poppins(
+              style: GoogleFonts.inter(
                 fontWeight: FontWeight.w600,
                 fontSize: 13,
                 color: const Color(0xFF000647),
@@ -636,7 +636,7 @@ class _SimpleApplicationsScreenState extends State<SimpleApplicationsScreen> {
           Expanded(
             child: Text(
               value,
-              style: GoogleFonts.poppins(fontSize: 13),
+              style: GoogleFonts.inter(fontSize: 13),
             ),
           ),
         ],

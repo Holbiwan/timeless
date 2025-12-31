@@ -67,7 +67,7 @@ class _EmployerEmailVerificationScreenState extends State<EmployerEmailVerificat
                     const SizedBox(height: 16),
                     Text(
                       'Verify Your PRO Email',
-                      style: GoogleFonts.poppins(
+                      style: GoogleFonts.inter(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
@@ -75,7 +75,7 @@ class _EmployerEmailVerificationScreenState extends State<EmployerEmailVerificat
                     ),
                     Text(
                       'Complete your PRO account setup',
-                      style: GoogleFonts.poppins(
+                      style: GoogleFonts.inter(
                         fontSize: 14,
                         color: Colors.white.withOpacity(0.9),
                       ),
@@ -98,7 +98,7 @@ class _EmployerEmailVerificationScreenState extends State<EmployerEmailVerificat
                   children: [
                     Text(
                       'Welcome ${widget.companyName}!',
-                      style: GoogleFonts.poppins(
+                      style: GoogleFonts.inter(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: const Color(0xFF000647),
@@ -108,7 +108,7 @@ class _EmployerEmailVerificationScreenState extends State<EmployerEmailVerificat
                     const SizedBox(height: 12),
                     Text(
                       'Your PRO account has been created successfully. We\'ve sent a verification email to:',
-                      style: GoogleFonts.poppins(
+                      style: GoogleFonts.inter(
                         fontSize: 14,
                         color: Colors.black87,
                       ),
@@ -123,7 +123,7 @@ class _EmployerEmailVerificationScreenState extends State<EmployerEmailVerificat
                       ),
                       child: Text(
                         widget.email,
-                        style: GoogleFonts.poppins(
+                        style: GoogleFonts.inter(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: const Color(0xFF000647),
@@ -152,7 +152,7 @@ class _EmployerEmailVerificationScreenState extends State<EmployerEmailVerificat
                         const SizedBox(width: 8),
                         Text(
                           'Next Steps',
-                          style: GoogleFonts.poppins(
+                          style: GoogleFonts.inter(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                             color: Colors.blue[700],
@@ -163,7 +163,7 @@ class _EmployerEmailVerificationScreenState extends State<EmployerEmailVerificat
                     const SizedBox(height: 12),
                     Text(
                       '1. Check your email inbox\n2. Click the verification link\n3. Return here to access your PRO dashboard',
-                      style: GoogleFonts.poppins(
+                      style: GoogleFonts.inter(
                         fontSize: 14,
                         color: Colors.blue[800],
                         height: 1.5,
@@ -200,7 +200,7 @@ class _EmployerEmailVerificationScreenState extends State<EmployerEmailVerificat
                             )
                           : Text(
                               'I\'ve Verified My Email',
-                              style: GoogleFonts.poppins(
+                              style: GoogleFonts.inter(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
                                 color: Colors.white,
@@ -234,7 +234,7 @@ class _EmployerEmailVerificationScreenState extends State<EmployerEmailVerificat
                             )
                           : Text(
                               'Resend Verification Email',
-                              style: GoogleFonts.poppins(
+                              style: GoogleFonts.inter(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -259,7 +259,7 @@ class _EmployerEmailVerificationScreenState extends State<EmployerEmailVerificat
                         ),
                         child: Text(
                           'DEBUG: Force Test Email',
-                          style: GoogleFonts.poppins(
+                          style: GoogleFonts.inter(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                             color: Colors.white,
@@ -275,7 +275,7 @@ class _EmployerEmailVerificationScreenState extends State<EmployerEmailVerificat
                     onPressed: () => Get.offAll(() => FirstScreen()),
                     child: Text(
                       'Back to Home',
-                      style: GoogleFonts.poppins(
+                      style: GoogleFonts.inter(
                         fontSize: 14,
                         color: Colors.grey[600],
                       ),

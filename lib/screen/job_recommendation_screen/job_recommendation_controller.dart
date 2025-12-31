@@ -24,8 +24,17 @@ class JobRecommendationController extends GetxController
   // Date sorting
   Rx<DateSortOption> selectedDateSort = DateSortOption.newest.obs;
 
-  // Options de filtres
-  final List<String> categories = ['All', 'Data', 'UX/UI', 'Security'];
+  // Options de filtres (Digital/Informatique uniquement)
+  final List<String> categories = [
+    'All', 
+    'Development', 
+    'UX/UI', 
+    'Data', 
+    'Security', 
+    'DevOps', 
+    'Digital Marketing', 
+    'QA/Testing'
+  ];
 
   final List<String> jobTypes = [
     'All',
@@ -75,32 +84,6 @@ class JobRecommendationController extends GetxController
     }
   }
 
-  RxInt selectedJobs2 = 0.obs;
-
-  final List<String> jobs2 = ['All Jobs', 'UX/UI', 'Data', 'Security'];
-
-  onTapJobs2(int index) {
-    selectedJobs2.value = index;
-
-    // Synchroniser avec le filtre de catégorie des chips
-    switch (index) {
-      case 0:
-        selectedCategory.value = 'All';
-        break;
-      case 1:
-        selectedCategory.value = 'UX/UI';
-        break;
-      case 2:
-        selectedCategory.value = 'Data';
-        break;
-      case 3:
-        selectedCategory.value = 'Security';
-        break;
-    }
-
-    update();
-    update(['search']);
-  }
 
   // Mettre à jour le texte de recherche
   void updateSearchText(String text) {
@@ -111,23 +94,6 @@ class JobRecommendationController extends GetxController
   // Mettre à jour les filtres
   void updateCategory(String category) {
     selectedCategory.value = category;
-
-    // Synchroniser avec les boutons de catégorie du haut
-    switch (category) {
-      case 'All':
-        selectedJobs2.value = 0;
-        break;
-      case 'UX/UI':
-        selectedJobs2.value = 1;
-        break;
-      case 'Data':
-        selectedJobs2.value = 2;
-        break;
-      case 'Security':
-        selectedJobs2.value = 3;
-        break;
-    }
-
     update();
     update(['search']);
     if (kDebugMode) print('Selected category: $category');

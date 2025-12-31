@@ -210,7 +210,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
               // Title
               Text(
                 "Verify Your Email",
-                style: GoogleFonts.poppins(
+                style: GoogleFonts.inter(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
                   color: ColorRes.textPrimary,
@@ -223,7 +223,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
               // Subtitle
               Text(
                 "We've sent a verification link to:",
-                style: GoogleFonts.poppins(
+                style: GoogleFonts.inter(
                   fontSize: 16,
                   color: ColorRes.textSecondary,
                 ),
@@ -242,7 +242,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                 ),
                 child: Text(
                   widget.email,
-                  style: GoogleFonts.poppins(
+                  style: GoogleFonts.inter(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: ColorRes.primaryAccent,
@@ -270,7 +270,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                     const SizedBox(height: 8),
                     Text(
                       "Please check your email and click the verification link to activate your account. The verification will be detected automatically.",
-                      style: GoogleFonts.poppins(
+                      style: GoogleFonts.inter(
                         fontSize: 14,
                         color: Colors.white,
                       ),
@@ -298,7 +298,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                     _canResendEmail 
                         ? "Resend Verification Email"
                         : "Resend in ${_resendTimer}s",
-                    style: GoogleFonts.poppins(
+                    style: GoogleFonts.inter(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                       color: _canResendEmail ? ColorRes.primaryAccent : Colors.grey,
@@ -327,7 +327,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                     Expanded(
                       child: Text(
                         "Checking verification status automatically...",
-                        style: GoogleFonts.poppins(
+                        style: GoogleFonts.inter(
                           fontSize: 12,
                           color: Colors.green.shade700,
                         ),
@@ -346,7 +346,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                 },
                 child: Text(
                   "Back to Sign In",
-                  style: GoogleFonts.poppins(
+                  style: GoogleFonts.inter(
                     fontSize: 14,
                     color: ColorRes.textSecondary,
                     decoration: TextDecoration.underline,

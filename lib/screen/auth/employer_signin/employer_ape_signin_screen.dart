@@ -81,7 +81,7 @@ class _EmployerApeSignInScreenState extends State<EmployerApeSignInScreen> {
                 Center(
                   child: Text(
                     'Secure Connection',
-                    style: GoogleFonts.poppins(
+                    style: GoogleFonts.inter(
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
                       color: Colors.black,
@@ -94,7 +94,7 @@ class _EmployerApeSignInScreenState extends State<EmployerApeSignInScreen> {
                 Center(
                   child: Text(
                     'APE Code + Email + Password',
-                    style: GoogleFonts.poppins(
+                    style: GoogleFonts.inter(
                       fontSize: 14,
                       fontWeight: FontWeight.w400,
                       color: ColorRes.textSecondary,
@@ -107,7 +107,7 @@ class _EmployerApeSignInScreenState extends State<EmployerApeSignInScreen> {
                 // Champ Code APE
                 Text(
                   'Code APE *',
-                  style: GoogleFonts.poppins(
+                  style: GoogleFonts.inter(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
                     color: Colors.black,
@@ -125,7 +125,7 @@ class _EmployerApeSignInScreenState extends State<EmployerApeSignInScreen> {
                     controller: apeController,
                     decoration: InputDecoration(
                       hintText: 'Ex: 6201Z',
-                      hintStyle: GoogleFonts.poppins(
+                      hintStyle: GoogleFonts.inter(
                         color: Colors.grey[400],
                         fontSize: 11,
                       ),
@@ -143,7 +143,7 @@ class _EmployerApeSignInScreenState extends State<EmployerApeSignInScreen> {
                         ),
                       ),
                     ),
-                    style: GoogleFonts.poppins(
+                    style: GoogleFonts.inter(
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
                     ),
@@ -154,7 +154,7 @@ class _EmployerApeSignInScreenState extends State<EmployerApeSignInScreen> {
                 // Champ Email
                 Text(
                   'Email professionnel *',
-                  style: GoogleFonts.poppins(
+                  style: GoogleFonts.inter(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
                     color: Colors.black,
@@ -173,7 +173,7 @@ class _EmployerApeSignInScreenState extends State<EmployerApeSignInScreen> {
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
                       hintText: 'contact@votre-entreprise.com',
-                      hintStyle: GoogleFonts.poppins(
+                      hintStyle: GoogleFonts.inter(
                         color: Colors.grey[400],
                         fontSize: 11,
                       ),
@@ -191,7 +191,7 @@ class _EmployerApeSignInScreenState extends State<EmployerApeSignInScreen> {
                         ),
                       ),
                     ),
-                    style: GoogleFonts.poppins(
+                    style: GoogleFonts.inter(
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
                     ),
@@ -202,7 +202,7 @@ class _EmployerApeSignInScreenState extends State<EmployerApeSignInScreen> {
                 // Champ Mot de passe
                 Text(
                   'Mot de passe *',
-                  style: GoogleFonts.poppins(
+                  style: GoogleFonts.inter(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
                     color: Colors.black,
@@ -221,7 +221,7 @@ class _EmployerApeSignInScreenState extends State<EmployerApeSignInScreen> {
                     obscureText: isPasswordHidden,
                     decoration: InputDecoration(
                       hintText: 'Votre mot de passe',
-                      hintStyle: GoogleFonts.poppins(
+                      hintStyle: GoogleFonts.inter(
                         color: Colors.grey[400],
                         fontSize: 11,
                       ),
@@ -244,7 +244,7 @@ class _EmployerApeSignInScreenState extends State<EmployerApeSignInScreen> {
                         ],
                       ),
                     ),
-                    style: GoogleFonts.poppins(
+                    style: GoogleFonts.inter(
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
                     ),
@@ -271,7 +271,7 @@ class _EmployerApeSignInScreenState extends State<EmployerApeSignInScreen> {
                       Expanded(
                         child: Text(
                           'We verify that your APE code and email address match a registered employer account.',
-                          style: GoogleFonts.poppins(
+                          style: GoogleFonts.inter(
                             fontSize: 11,
                             color: Colors.blue[800],
                           ),
@@ -298,7 +298,7 @@ class _EmployerApeSignInScreenState extends State<EmployerApeSignInScreen> {
                     ),
                     child: Text(
                       'Sign in',
-                      style: GoogleFonts.poppins(
+                      style: GoogleFonts.inter(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
@@ -313,7 +313,7 @@ class _EmployerApeSignInScreenState extends State<EmployerApeSignInScreen> {
                     onPressed: () => Navigator.pop(context),
                     child: Text(
                       'Use another sign-in method',
-                      style: GoogleFonts.poppins(
+                      style: GoogleFonts.inter(
                         fontSize: 11,
                         fontWeight: FontWeight.w500,
                         color: const Color(0xFF000647),

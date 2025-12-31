@@ -28,7 +28,7 @@ Widget tipsForYouSection() {
             //         fontWeight: FontWeight.w500,
             //         color: ColorRes.containerColor))
 
-            // Text("See all",style: GoogleFonts.poppins(fontSize: ),)
+            // Text("See all",style: GoogleFonts.inter(fontSize: ),)
           ],
         ),
       ),
@@ -67,7 +67,7 @@ Widget tipsForYouSection() {
                   children: [
                     Text(
                       Strings.howToFindAPerfectJob,
-                      style: GoogleFonts.poppins(
+                      style: GoogleFonts.inter(
                           fontWeight: FontWeight.w500,
                           fontSize: 15,
                           color: Colors.white),

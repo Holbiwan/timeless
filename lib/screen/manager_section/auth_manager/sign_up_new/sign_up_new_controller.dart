@@ -9,7 +9,6 @@ import 'package:timeless/utils/app_res.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/services/employer_validation_service.dart';
 import 'package:timeless/services/email_service.dart';
-import 'package:timeless/utils/email_debug_helper.dart';
 
 class SignUpControllerM extends GetxController {
   final TextEditingController firstnameController = TextEditingController();
@@ -506,7 +505,9 @@ class SignUpControllerM extends GetxController {
         
         // Vérifier le statut après l'envoi
         await Future.delayed(Duration(seconds: 2));
-        await EmailDebugHelper.fullEmailCheck();
+        if (kDebugMode) {
+          print('✅ Email de test envoyé avec succès');
+        }
       } else {
         await _error('Test Email Failed', 'Échec de l\'envoi de l\'email de test à: $email\n\nVérifiez la configuration Firebase.');
       }

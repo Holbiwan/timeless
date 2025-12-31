@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:timeless/screen/dashboard/dashboard_screen.dart';
 import 'package:timeless/screen/auth/email_verification/email_verification_screen.dart';
 import 'package:timeless/services/preferences_service.dart';
+import 'package:timeless/services/auth_service.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/utils/app_theme.dart';
 
@@ -117,7 +118,11 @@ class SignInScreenController extends GetxController {
         .set(data, SetOptions(merge: true));
   }
 
-  void _gotoDashboard() => Get.offAll(() => DashBoardScreen());
+  void _gotoDashboard() {
+    print('🚀 Navigating to DashBoardScreen...');
+    Get.offAll(() => DashBoardScreen());
+    print('✅ Navigation to DashBoardScreen completed');
+  }
 
   // // --- SECTION: 
 
@@ -132,111 +137,45 @@ class SignInScreenController extends GetxController {
   }) async {
     if (loading.value) return;
     loading.value = true;
+    
     try {
-
-      final credential = await auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-
-      final user = credential.user;
-      if (user != null) {
-        // Check if email is verified
-        if (!user.emailVerified) {
-          AppTheme.showStandardSnackBar(
-            title: "Email Not Verified",
-            message: "Please verify your email address before signing in. Check your inbox for the verification link.",
-            isError: true,
-          );
-          
-          // Navigate to email verification screen
-          Get.to(() => EmailVerificationScreen(
-            email: email,
-            userFullName: user.displayName ?? "",
-          ));
-          return;
-        }
-
-        _persistUserPrefs(user, email: email);
-
-        // Load user profile data from Firestore
-        final snap = await fireStore
-            .collection("Auth")
-            .doc("User")
-            .collection("register")
-            .doc(user.uid)
-            .get();
-
-        final m = snap.data() ?? {};
-        // Load user profile data
-        if (m["fullName"] != null && (m["fullName"] as String).isNotEmpty) {
-          PreferencesService.setValue(PrefKeys.fullName, (m["fullName"] ?? "") as String);
-        }
-        if (m["Phone"] != null && (m["Phone"] as String).isNotEmpty) {
-          PreferencesService.setValue(PrefKeys.phoneNumber, (m["Phone"] ?? "") as String);
-        }
-        if (m["City"] != null && (m["City"] as String).isNotEmpty) {
-          PreferencesService.setValue(PrefKeys.city, (m["City"] ?? "") as String);
-        }
-        if (m["State"] != null && (m["State"] as String).isNotEmpty) {
-          PreferencesService.setValue(PrefKeys.state, (m["State"] ?? "") as String);
-        }
-        if (m["Country"] != null && (m["Country"] as String).isNotEmpty) {
-          PreferencesService.setValue(PrefKeys.country, (m["Country"] ?? "") as String);
-        }
-        if (m["Occupation"] != null && (m["Occupation"] as String).isNotEmpty) {
-          PreferencesService.setValue(PrefKeys.occupation, (m["Occupation"] ?? "") as String);
-        }
-
-        // Update user's account status to active if verified
-        if (user.emailVerified) {
-          try {
-            await fireStore
-                .collection("Auth")
-                .doc("User")
-                .collection("register")
-                .doc(user.uid)
-                .update({
-              "emailVerified": true,
-              "accountStatus": "active",
-              "lastLoginAt": FieldValue.serverTimestamp(),
-            });
-          } catch (e) {
-            if (kDebugMode) print("Error updating login status: $e");
-          }
-        }
-
+      print('📧 Starting email authentication for: $email');
+      // Use AuthService for consistent authentication
+      final success = await AuthService.instance.signInWithEmail(email, password);
+      print('📧 Email authentication result: $success');
+      
+      if (success) {
+        print('🎯 Email sign-in successful, navigating to dashboard');
+        // Save remember me preferences if selected
         if (rememberMe) {
           await PreferencesService.setValue(PrefKeys.emailRememberUser, email);
           await PreferencesService.setValue(PrefKeys.passwordRememberUser, password);
         } else {
-          PreferencesService.remove(PrefKeys.emailRememberUser);
-          PreferencesService.remove(PrefKeys.passwordRememberUser);
+          await PreferencesService.setValue(PrefKeys.emailRememberUser, "");
+          await PreferencesService.setValue(PrefKeys.passwordRememberUser, "");
         }
-
+        
+        // Clear form and navigate to dashboard
         emailController.clear();
         passwordController.clear();
-
-        // Show welcome back message
-        AppTheme.showStandardSnackBar(
-          title: "Welcome Back!",
-          message: "Successfully signed in to your account.",
-          isSuccess: true,
-        );
-
+        print('🏠 Calling _gotoDashboard()');
         _gotoDashboard();
+        
+      } else {
+        // Authentication failed
+        AppTheme.showStandardSnackBar(
+          title: "Error",
+          message: "Invalid email or password",
+          isError: true,
+        );
       }
-    } on FirebaseAuthException catch (e) {
-      AppTheme.showStandardSnackBar(
-          title: "Error",
-          message: e.message ?? e.code,
-          isError: true);
     } catch (e) {
-      if (kDebugMode) print(e);
+      if (kDebugMode) print("Sign in error: $e");
       AppTheme.showStandardSnackBar(
-          title: "Error",
-          message: "Sign-in failed",
-          isError: true);
+        title: "Error",
+        message: "An error occurred during sign in",
+        isError: true,
+      );
     } finally {
       loading.value = false;
     }
@@ -337,51 +276,28 @@ class SignInScreenController extends GetxController {
   Future<void> signWithGoogle() async {
     if (loading.value) return;
     loading.value = true;
+    
     try {
-      UserCredential cred;
-      final provider = GoogleAuthProvider()
-        ..addScope('email')
-        ..addScope('profile')
-        ..setCustomParameters({'prompt': 'select_account'});
-
-      if (kIsWeb) {
-        cred = await auth.signInWithPopup(provider);
+      // Use AuthService for consistent Google Sign-in
+      final success = await AuthService.instance.signInWithGoogle();
+      
+      if (success) {
+        print('🎯 Google sign-in successful, navigating to dashboard');
+        // Navigate to dashboard directly after successful authentication
+        _gotoDashboard();
       } else {
-        cred = await auth.signInWithProvider(provider);
-      }
-
-      final user = cred.user;
-      if (user == null) {
         AppTheme.showStandardSnackBar(
-            title: "Google",
-            message: "Sign-in cancelled");
-        return;
-      }
-
-      await _mergeUserDoc(uid: user.uid, data: {
-        "Email": user.email ?? "",
-        "fullName": user.displayName ?? "",
-        "photoURL": user.photoURL ?? "",
-        "provider": "google",
-        "createdAt": FieldValue.serverTimestamp(),
-        "uid": user.uid,
-      });
-
-      _persistUserPrefs(user,
-          email: user.email ?? "", fullName: user.displayName ?? "");
-      _gotoDashboard();
-    } on FirebaseAuthException catch (e) {
-      if (kDebugMode) print("GoogleAuth error: ${e.code} ${e.message}");
-      AppTheme.showStandardSnackBar(
           title: "Google",
-          message: e.message ?? 'Firebase error: ${e.code}',
-          isError: true);
+          message: "Sign-in cancelled",
+        );
+      }
     } catch (e) {
       if (kDebugMode) print("GoogleAuth error: $e");
       AppTheme.showStandardSnackBar(
-          title: "Google",
-          message: "Unexpected error: $e",
-          isError: true);
+        title: "Google", 
+        message: "Erreur lors de la connexion Google",
+        isError: true,
+      );
     } finally {
       loading.value = false;
     }

@@ -43,10 +43,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(logger);
 
 // MongoDB Connection
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
+mongoose.connect(process.env.MONGODB_URI)
 .then(() => console.log('✅ Connected to MongoDB Atlas'))
 .catch((err) => console.error('❌ MongoDB connection error:', err));
 
@@ -60,11 +57,16 @@ app.get('/health', (req, res) => {
   });
 });
 
+const translationRoutes = require('./routes/translationRoutes');
+const jobTalentRoutes = require('./routes/jobTalentRoutes'); // Added
+
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/jobs', jobRoutes);
 app.use('/api/applications', applicationRoutes);
+app.use('/api/translate', translationRoutes);
+app.use('/api/talent-jobs', jobTalentRoutes); // Added
 
 // Swagger Documentation
 if (process.env.NODE_ENV !== 'production') {

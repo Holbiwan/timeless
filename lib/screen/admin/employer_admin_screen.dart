@@ -139,7 +139,7 @@ class _EmployerAdminScreenState extends State<EmployerAdminScreen> {
       appBar: AppBar(
         title: Text(
           'Employer Administration',
-          style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+          style: GoogleFonts.inter(fontWeight: FontWeight.w600),
         ),
         backgroundColor: const Color(0xFF000647),
         foregroundColor: Colors.white,
@@ -158,7 +158,7 @@ class _EmployerAdminScreenState extends State<EmployerAdminScreen> {
                   children: [
                     Text(
                       'Current Status',
-                      style: GoogleFonts.poppins(
+                      style: GoogleFonts.inter(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
                       ),
@@ -189,7 +189,7 @@ class _EmployerAdminScreenState extends State<EmployerAdminScreen> {
             // Actions
             Text(
               'Actions',
-              style: GoogleFonts.poppins(
+              style: GoogleFonts.inter(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
               ),
@@ -215,7 +215,7 @@ class _EmployerAdminScreenState extends State<EmployerAdminScreen> {
                     : const Icon(Icons.business),
                   label: Text(
                     'Run Employer Migration',
-                    style: GoogleFonts.poppins(),
+                    style: GoogleFonts.inter(),
                   ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF000647),
@@ -238,7 +238,7 @@ class _EmployerAdminScreenState extends State<EmployerAdminScreen> {
                   icon: const Icon(Icons.cleaning_services),
                   label: Text(
                     'Cleanup Demo Data',
-                    style: GoogleFonts.poppins(),
+                    style: GoogleFonts.inter(),
                   ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.orange,
@@ -261,7 +261,7 @@ class _EmployerAdminScreenState extends State<EmployerAdminScreen> {
                   icon: const Icon(Icons.refresh),
                   label: Text(
                     'Refresh Status',
-                    style: GoogleFonts.poppins(),
+                    style: GoogleFonts.inter(),
                   ),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: const Color(0xFF000647),
@@ -289,7 +289,7 @@ class _EmployerAdminScreenState extends State<EmployerAdminScreen> {
                   Expanded(
                     child: Text(
                       'These actions affect the production database. Use with caution!',
-                      style: GoogleFonts.poppins(
+                      style: GoogleFonts.inter(
                         fontSize: 12,
                         color: Colors.amber.shade700,
                       ),
@@ -312,11 +312,11 @@ class _EmployerAdminScreenState extends State<EmployerAdminScreen> {
         children: [
           Text(
             label,
-            style: GoogleFonts.poppins(fontSize: 14),
+            style: GoogleFonts.inter(fontSize: 14),
           ),
           Text(
             value,
-            style: GoogleFonts.poppins(
+            style: GoogleFonts.inter(
               fontSize: 14,
               fontWeight: FontWeight.w600,
             ),
@@ -331,18 +331,18 @@ class _EmployerAdminScreenState extends State<EmployerAdminScreen> {
       AlertDialog(
         title: Text(
           title,
-          style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+          style: GoogleFonts.inter(fontWeight: FontWeight.w600),
         ),
         content: Text(
           message,
-          style: GoogleFonts.poppins(),
+          style: GoogleFonts.inter(),
         ),
         actions: [
           TextButton(
             onPressed: () => Get.back(result: false),
             child: Text(
               'Cancel',
-              style: GoogleFonts.poppins(color: Colors.grey[600]),
+              style: GoogleFonts.inter(color: Colors.grey[600]),
             ),
           ),
           ElevatedButton(
@@ -353,7 +353,7 @@ class _EmployerAdminScreenState extends State<EmployerAdminScreen> {
             ),
             child: Text(
               'Confirm',
-              style: GoogleFonts.poppins(),
+              style: GoogleFonts.inter(),
             ),
           ),
         ],

@@ -117,7 +117,7 @@ class MyApplicationsScreen extends StatelessWidget {
                         controller.applications.isEmpty 
                             ? 'Aucune candidature'
                             : 'Aucune candidature trouvée',
-                        style: GoogleFonts.poppins(
+                        style: GoogleFonts.inter(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
                           color: ColorRes.textSecondary,
@@ -128,7 +128,7 @@ class MyApplicationsScreen extends StatelessWidget {
                         controller.applications.isEmpty
                             ? 'Commencez à postuler aux offres qui vous intéressent'
                             : 'Essayez de modifier vos filtres',
-                        style: GoogleFonts.poppins(
+                        style: GoogleFonts.inter(
                           fontSize: 14,
                           color: ColorRes.textTertiary,
                         ),
@@ -186,7 +186,7 @@ class MyApplicationsScreen extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             value,
-            style: GoogleFonts.poppins(
+            style: GoogleFonts.inter(
               fontSize: 18,
               fontWeight: FontWeight.w700,
               color: color,
@@ -194,7 +194,7 @@ class MyApplicationsScreen extends StatelessWidget {
           ),
           Text(
             title,
-            style: GoogleFonts.poppins(
+            style: GoogleFonts.inter(
               fontSize: 10,
               color: ColorRes.textSecondary,
             ),
@@ -215,7 +215,7 @@ class MyApplicationsScreen extends StatelessWidget {
           children: [
             Text(
               'Filtrer par statut',
-              style: GoogleFonts.poppins(
+              style: GoogleFonts.inter(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
               ),
@@ -330,7 +330,7 @@ class ApplicationCard extends StatelessWidget {
                       children: [
                         Text(
                           'Candidature envoyée', // TODO: Get job title
-                          style: GoogleFonts.poppins(
+                          style: GoogleFonts.inter(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                             color: ColorRes.black,
@@ -340,7 +340,7 @@ class ApplicationCard extends StatelessWidget {
                         ),
                         Text(
                           'Entreprise', // TODO: Get company name from job
-                          style: GoogleFonts.poppins(
+                          style: GoogleFonts.inter(
                             fontSize: 14,
                             color: ColorRes.darkGold,
                             fontWeight: FontWeight.w500,
@@ -358,7 +358,7 @@ class ApplicationCard extends StatelessWidget {
                     ),
                     child: Text(
                       application.statusDisplay,
-                      style: GoogleFonts.poppins(
+                      style: GoogleFonts.inter(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
                         color: _getStatusColor(),
@@ -377,7 +377,7 @@ class ApplicationCard extends StatelessWidget {
                   const SizedBox(width: 4),
                   Text(
                     'Envoyée le ${_formatDate(application.appliedAt)}',
-                    style: GoogleFonts.poppins(
+                    style: GoogleFonts.inter(
                       fontSize: 12,
                       color: ColorRes.textTertiary,
                     ),
@@ -388,7 +388,7 @@ class ApplicationCard extends StatelessWidget {
                     const SizedBox(width: 4),
                     Text(
                       'Vue le ${_formatDate(application.reviewedAt!)}',
-                      style: GoogleFonts.poppins(
+                      style: GoogleFonts.inter(
                         fontSize: 12,
                         color: ColorRes.textTertiary,
                       ),
@@ -405,7 +405,7 @@ class ApplicationCard extends StatelessWidget {
                     const SizedBox(width: 4),
                     Text(
                       'Avec lettre de motivation',
-                      style: GoogleFonts.poppins(
+                      style: GoogleFonts.inter(
                         fontSize: 12,
                         color: ColorRes.darkGold,
                         fontWeight: FontWeight.w500,
@@ -490,7 +490,7 @@ class ApplicationDetailSheet extends StatelessWidget {
               children: [
                 Text(
                   'Détail de la candidature',
-                  style: GoogleFonts.poppins(
+                  style: GoogleFonts.inter(
                     fontSize: 20,
                     fontWeight: FontWeight.w600,
                     color: ColorRes.black,
@@ -505,7 +505,7 @@ class ApplicationDetailSheet extends StatelessWidget {
                   ),
                   child: Text(
                     application.statusDisplay,
-                    style: GoogleFonts.poppins(
+                    style: GoogleFonts.inter(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
                       color: _getStatusColor(),
@@ -569,7 +569,7 @@ class ApplicationDetailSheet extends StatelessWidget {
         children: [
           Text(
             title,
-            style: GoogleFonts.poppins(
+            style: GoogleFonts.inter(
               fontSize: 14,
               fontWeight: FontWeight.w600,
               color: ColorRes.black,
@@ -578,7 +578,7 @@ class ApplicationDetailSheet extends StatelessWidget {
           const SizedBox(height: 6),
           Text(
             content,
-            style: GoogleFonts.poppins(
+            style: GoogleFonts.inter(
               fontSize: 14,
               color: ColorRes.textSecondary,
               height: 1.5,

@@ -17,7 +17,7 @@ class AppTextStyles {
     double? height,
     TextDecoration? decoration,
   }) {
-    return GoogleFonts.poppins(
+    return GoogleFonts.inter(
       fontWeight: fontWeight ?? FontWeight.w400,
       color: color ?? ColorRes.textPrimary,
       fontSize: fontSize ?? AppDimensions.fontSizeMD,
@@ -156,7 +156,7 @@ TextStyle appTextStyle({
   double? height,
   TextDecoration? textDecoration,
 }) {
-  return GoogleFonts.poppins(
+  return GoogleFonts.inter(
     decoration: textDecoration ?? TextDecoration.none,
     color: color ?? ColorRes.textPrimary,
     fontWeight: fontWeight ?? FontWeight.w400,

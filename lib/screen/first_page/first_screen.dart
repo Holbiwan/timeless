@@ -1,17 +1,15 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:timeless/screen/auth/sign_in_screen/sign_in_screen.dart';
 import 'package:timeless/screen/auth/sign_up/sign_up_screen.dart';
 import 'package:timeless/screen/auth/employer_signin/employer_signin_choice_screen.dart';
 import 'package:timeless/screen/auth/employer_signin/employer_signin_screen.dart';
 import 'package:timeless/screen/first_page/first_controller.dart';
-import 'package:timeless/screen/accessibility/accessibility_panel.dart';
 import 'package:timeless/services/unified_translation_service.dart';
-import 'package:timeless/utils/color_res.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:timeless/widgets/simple_language_switch.dart';
 
 class FirstScreen extends StatelessWidget {
   FirstScreen({super.key});
@@ -28,99 +26,187 @@ class FirstScreen extends StatelessWidget {
     }
 
     return Scaffold(
-      backgroundColor: ColorRes.backgroundColor,
-      body: Stack(
-        children: [
-          Container(
-            width: Get.width,
-            height: Get.height,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  ColorRes.backgroundColor,
-                  ColorRes.surfaceColor,
-                ],
-              ),
-            ),
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        elevation: 0,
+        automaticallyImplyLeading: false,
+      ),
+      body: Container(
+        width: Get.width,
+        height: Get.height,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.black,
+              Colors.black.withOpacity(0.9),
+              const Color(0xFF000647).withOpacity(0.3),
+              Colors.black,
+            ],
+            stops: const [0.0, 0.3, 0.7, 1.0],
           ),
-          SingleChildScrollView(
-            child: Column(
-              children: [
-                const SizedBox(height: 80), // Espace pour les boutons fixes
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              // Language selector at top left
+              Container(
+                width: Get.width,
+                alignment: Alignment.centerLeft,
+                padding: const EdgeInsets.only(left: 16, top: 1),
+                child: SimpleLanguageSwitch(),
+              ),
 
-                SizedBox(height: Get.height * 0.03),
-                Container(
-                  width: Get.width * 0.9,
-                  height: Get.height * 0.35,
-                  alignment: Alignment.center,
-                  child: RepaintBoundary(
+              const SizedBox(height: 20), // Espace pour les boutons fixes
+
+              // Welcome message with gradient effect
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  children: [
+                    ShaderMask(
+                      shaderCallback: (bounds) => LinearGradient(
+                        colors: [
+                          Colors.white,
+                          const Color(0xFFFF8C00).withOpacity(0.8),
+                          Colors.white,
+                        ],
+                      ).createShader(bounds),
+                      child: Text(
+                        "Welcome to",
+                        style: GoogleFonts.inter(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w300,
+                          letterSpacing: 1.5,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    ShaderMask(
+                      shaderCallback: (bounds) => LinearGradient(
+                        colors: [
+                          const Color(0xFFFF8C00),
+                          Colors.white,
+                          const Color(0xFFFF8C00),
+                        ],
+                      ).createShader(bounds),
+                      child: Text(
+                        "TIMELESS",
+                        style: GoogleFonts.inter(
+                          fontSize: 26,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 2.5,
+                          color: Colors.white,
+                          shadows: [
+                            Shadow(
+                              color: const Color(0xFFFF8C00).withOpacity(0.5),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      "Your career journey starts here",
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        letterSpacing: 0.8,
+                        color: Colors.white.withOpacity(0.8),
+                        height: 1.3,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              SizedBox(height: Get.height * 0.005),
+
+              Container(
+                width: Get.width * 0.95,
+                height: Get.height * 0.30,
+                alignment: Alignment.center,
+                child: RepaintBoundary(
+                  child: Opacity(
+                    opacity: 0.95,
                     child: Image.asset(
                       'assets/images/logo.png',
                       width: Get.width * 0.85,
-                      height: Get.height * 0.3,
+                      height: Get.height * 0.28,
                       fit: BoxFit.contain,
                       filterQuality: FilterQuality.high,
                       gaplessPlayback: false,
-                      isAntiAlias: false,
+                      isAntiAlias: true,
                     ),
                   ),
                 ),
+              ),
 
-                SizedBox(height: Get.height * 0.02),
+              SizedBox(height: Get.height * 0.01),
 
-                // "L'app pratique pour la recherche d'emploi" text
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Text(
-                    "",
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 14,
-                      color: ColorRes.textSecondary,
-                    ),
-                  ),
-                ),
-
-                SizedBox(height: Get.height * 0.01),
-
-                InkWell(
+              Material(
+                color: Colors.transparent,
+                child: InkWell(
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        //  SignInScreen dans fichier importé.
                         builder: (con) => const SigninScreenU(),
                       ),
                     );
                   },
+                  borderRadius: BorderRadius.circular(15),
                   child: Container(
-                    height: 42,
-                    width: Get.width * 0.75,
+                    height: 44,
+                    width: Get.width * 0.70,
                     margin: const EdgeInsets.symmetric(horizontal: 20),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
-                      border: Border.all(
-                          color: const Color(0xFF000647), width: 2.0),
+                      border: Border.all(color: const Color(0xFF000647), width: 2.0),
                       color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.white.withOpacity(0.2),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
                     ),
-                    child: Text(
-                      "Sign in as candidate",
-                      style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 14,
-                        color: Colors.black,
-                      ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.person_outline,
+                          color: const Color(0xFF000647),
+                          size: 18,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          context.tr("candidateconnexion"),
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 13,
+                            letterSpacing: 0.5,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
+              ),
 
-                SizedBox(height: Get.height * 0.025),
+              SizedBox(height: Get.height * 0.01),
 
-                InkWell(
+              Material(
+                color: Colors.transparent,
+                child: InkWell(
                   onTap: () {
                     Navigator.push(
                       context,
@@ -129,31 +215,53 @@ class FirstScreen extends StatelessWidget {
                       ),
                     );
                   },
+                  borderRadius: BorderRadius.circular(15),
                   child: Container(
-                    height: 42,
-                    width: Get.width * 0.75,
+                    height: 44,
+                    width: Get.width * 0.70,
                     margin: const EdgeInsets.symmetric(horizontal: 20),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
                       color: Colors.white,
-                      border: Border.all(
-                          color: const Color(0xFF000647), width: 2.0),
+                      border: Border.all(color: const Color(0xFF000647), width: 2.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.white.withOpacity(0.2),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
                     ),
-                    child: Text(
-                      "Create candidate account",
-                      style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 14,
-                        color: Colors.black,
-                      ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.person_add_outlined,
+                          color: const Color(0xFF000647),
+                          size: 18,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          context.tr("create_candidate_account"),
+                          style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 13,
+                            letterSpacing: 0.5,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-                SizedBox(height: Get.height * 0.025),
+              ),
+              SizedBox(height: Get.height * 0.01),
 
-                // 💼 BOUTON SIGN IN AS PRO - AU DESSUS DU BOUTON CREATE PRO ACCOUNT
-                InkWell(
+              // 💼 BOUTON SIGN IN AS PRO
+              Material(
+                color: Colors.transparent,
+                child: InkWell(
                   onTap: () {
                     Navigator.push(
                       context,
@@ -162,53 +270,68 @@ class FirstScreen extends StatelessWidget {
                       ),
                     );
                   },
+                  borderRadius: BorderRadius.circular(15),
                   child: Container(
-                    height: 42,
-                    width: Get.width * 0.75,
+                    height: 44,
+                    width: Get.width * 0.70,
                     margin: const EdgeInsets.symmetric(horizontal: 20),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
-                      color: const Color(0xFF000647),
+                      color: Colors.white,
+                      border: Border.all(color: const Color(0xFF000647), width: 2.0),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFF000647).withOpacity(0.4),
+                          color: Colors.white.withOpacity(0.2),
                           blurRadius: 8,
                           offset: const Offset(0, 4),
                         ),
                       ],
-                      border: Border.all(
-                          color: const Color(0xFF000647), width: 2.0),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,
                       children: [
+                        Icon(
+                          Icons.business_center_outlined,
+                          color: const Color(0xFF000647),
+                          size: 18,
+                        ),
+                        const SizedBox(width: 8),
                         Flexible(
-                          child: Obx(() => Text(
-                                translationService.getText('Sign in as'),
-                                style: GoogleFonts.poppins(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.white,
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                              )),
+                          child: Text(
+                            context.tr("employerconnexion"),
+                            style: GoogleFonts.inter(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                              letterSpacing: 0.5,
+                              color: Colors.black,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
                         const SizedBox(width: 8),
                         Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 6, vertical: 2),
                           decoration: BoxDecoration(
-                            color: Colors.orange,
+                            color: const Color(0xFF000647),
                             borderRadius: BorderRadius.circular(10),
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(0xFF000647).withOpacity(0.3),
+                                blurRadius: 4,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
                           ),
                           child: Text(
                             'PRO',
-                            style: GoogleFonts.poppins(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w800,
-                              color: Colors.black,
+                            style: GoogleFonts.inter(
+                              fontSize: 8,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 1.0,
+                              color: Colors.white,
                             ),
                           ),
                         ),
@@ -216,9 +339,12 @@ class FirstScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(height: Get.height * 0.025),
+              ),
+              SizedBox(height: Get.height * 0.01),
 
-                InkWell(
+              Material(
+                color: Colors.transparent,
+                child: InkWell(
                   onTap: () {
                     Navigator.push(
                       context,
@@ -227,54 +353,68 @@ class FirstScreen extends StatelessWidget {
                       ),
                     );
                   },
+                  borderRadius: BorderRadius.circular(15),
                   child: Container(
-                    height: 42,
-                    width: Get.width * 0.75,
+                    height: 44,
+                    width: Get.width * 0.70,
                     margin: const EdgeInsets.symmetric(horizontal: 20),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
-                      color: const Color(0xFF000647),
+                      color: Colors.white,
+                      border: Border.all(color: const Color(0xFF000647), width: 2.0),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFF000647).withOpacity(0.4),
+                          color: Colors.white.withOpacity(0.2),
                           blurRadius: 8,
                           offset: const Offset(0, 4),
                         ),
                       ],
-                      border: Border.all(
-                          color: const Color(0xFF000647), width: 2.0),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,
                       children: [
+                        Icon(
+                          Icons.add_business_outlined,
+                          color: const Color(0xFF000647),
+                          size: 18,
+                        ),
+                        const SizedBox(width: 8),
                         Flexible(
-                          child: Obx(() => Text(
-                                translationService
-                                    .getText('create_account_as_pro'),
-                                style: GoogleFonts.poppins(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.white,
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                              )),
+                          child: Text(
+                            context.tr('create_employer_account'),
+                            style: GoogleFonts.inter(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                              letterSpacing: 0.5,
+                              color: Colors.black,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
                         const SizedBox(width: 8),
                         Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 6, vertical: 2),
                           decoration: BoxDecoration(
-                            color: Colors.orange,
+                            color: const Color(0xFF000647),
                             borderRadius: BorderRadius.circular(10),
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(0xFF000647).withOpacity(0.3),
+                                blurRadius: 4,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
                           ),
                           child: Text(
                             'PRO',
-                            style: GoogleFonts.poppins(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w800,
-                              color: Colors.black,
+                            style: GoogleFonts.inter(
+                              fontSize: 8,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 1.0,
+                              color: Colors.white,
                             ),
                           ),
                         ),
@@ -282,103 +422,12 @@ class FirstScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-
-                SizedBox(height: Get.height * 0.035),
-
-                // CGU
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
-                  child: Obx(() => RichText(
-                        textAlign: TextAlign.center,
-                        text: TextSpan(
-                          children: <TextSpan>[
-                            TextSpan(
-                              text:
-                                  '${translationService.getText('terms_agreement')} ',
-                              style: GoogleFonts.poppins(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w400,
-                                color: ColorRes.textSecondary,
-                              ),
-                            ),
-                            TextSpan(
-                              text: translationService
-                                  .getText('terms_of_service'),
-                              style: GoogleFonts.poppins(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w600,
-                                color: ColorRes.infoColor,
-                                decoration: TextDecoration.underline,
-                              ),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () async {
-                                  final uri = Uri.parse(
-                                    'https://www.timeless-app.com/terms',
-                                  );
-                                  if (!await launchUrl(uri,
-                                      mode: LaunchMode.externalApplication)) {
-                                    // ignore: only_throw_errors
-                                    throw 'Could not launch $uri';
-                                  }
-                                },
-                            ),
-                          ],
-                        ),
-                      )),
-                ),
-                SizedBox(height: Get.height * 0.08),
-              ],
-            ),
-          ),
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              padding: const EdgeInsets.only(
-                  top: 40, left: 18, right: 18, bottom: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Row(
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          // Navigator vers AccessibilityPanel
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const AccessibilityPanel(),
-                            ),
-                          );
-                        },
-                        borderRadius: BorderRadius.circular(20),
-                        child: Container(
-                          height: 40,
-                          width: 40,
-                          decoration: BoxDecoration(
-                            color: ColorRes.white,
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(
-                              color: const Color(0xFF000647),
-                              width: 2.0,
-                            ),
-                          ),
-                          child: const Icon(
-                            Icons.accessibility,
-                            color: Colors.black,
-                            size: 20,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
               ),
-            ),
+
+              SizedBox(height: Get.height * 0.03),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

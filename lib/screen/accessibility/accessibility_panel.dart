@@ -18,7 +18,7 @@ class AccessibilityPanel extends StatelessWidget {
       appBar: AppBar(
         title: Obx(() => Text(
           'Accessibility Settings',
-          style: GoogleFonts.poppins(
+          style: GoogleFonts.inter(
             color: Colors.white,
             fontSize: 18 * accessibilityService.currentFontSize.value,
             fontWeight: FontWeight.w600,
@@ -110,7 +110,7 @@ class AccessibilityPanel extends StatelessWidget {
                     icon: const Icon(Icons.science, size: 16),
                     label: Text(
                       'Test Changes',
-                      style: GoogleFonts.poppins(
+                      style: GoogleFonts.inter(
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
                       ),
@@ -134,7 +134,7 @@ class AccessibilityPanel extends StatelessWidget {
                     icon: const Icon(Icons.refresh, size: 16),
                     label: Text(
                       'Reset to Default',
-                      style: GoogleFonts.poppins(
+                      style: GoogleFonts.inter(
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
                       ),

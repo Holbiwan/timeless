@@ -54,12 +54,12 @@ class _SimpleProfileScreenState extends State<SimpleProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.orange,
+      backgroundColor: const Color(0xFFE67E22),
       appBar: AppBar(
-        backgroundColor: const Color(0xFF000647),
+        backgroundColor: const Color(0xFFE67E22),
         title: Text(
           'Profile Settings',
-          style: GoogleFonts.poppins(
+          style: GoogleFonts.inter(
             color: Colors.white,
             fontSize: 18,
             fontWeight: FontWeight.w600,
@@ -107,7 +107,7 @@ class _SimpleProfileScreenState extends State<SimpleProfileScreen> {
                         const SizedBox(height: 16),
                         Text(
                           employerData?['companyName'] ?? 'Your Company',
-                          style: GoogleFonts.poppins(
+                          style: GoogleFonts.inter(
                             color: Colors.white,
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -116,7 +116,7 @@ class _SimpleProfileScreenState extends State<SimpleProfileScreen> {
                         ),
                         Text(
                           employerData?['email'] ?? 'No email',
-                          style: GoogleFonts.poppins(
+                          style: GoogleFonts.inter(
                             color: Colors.white.withOpacity(0.8),
                             fontSize: 14,
                           ),
@@ -129,7 +129,7 @@ class _SimpleProfileScreenState extends State<SimpleProfileScreen> {
                   
                   Text(
                     'Company Information',
-                    style: GoogleFonts.poppins(
+                    style: GoogleFonts.inter(
                       color: const Color.fromARGB(255, 0, 6, 71),
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
@@ -148,7 +148,7 @@ class _SimpleProfileScreenState extends State<SimpleProfileScreen> {
                   
                   Text(
                     'Legal Information',
-                    style: GoogleFonts.poppins(
+                    style: GoogleFonts.inter(
                       color: const Color.fromARGB(255, 0, 6, 71),
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
@@ -166,7 +166,7 @@ class _SimpleProfileScreenState extends State<SimpleProfileScreen> {
                   
                   Text(
                     'Account Actions',
-                    style: GoogleFonts.poppins(
+                    style: GoogleFonts.inter(
                       color: const Color.fromARGB(255, 0, 6, 71),
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
@@ -257,7 +257,7 @@ class _SimpleProfileScreenState extends State<SimpleProfileScreen> {
             width: 100,
             child: Text(
               label,
-              style: GoogleFonts.poppins(
+              style: GoogleFonts.inter(
                 fontSize: 13,
                 color: Colors.grey[600],
                 fontWeight: FontWeight.w500,
@@ -267,7 +267,7 @@ class _SimpleProfileScreenState extends State<SimpleProfileScreen> {
           Expanded(
             child: Text(
               value,
-              style: GoogleFonts.poppins(
+              style: GoogleFonts.inter(
                 fontSize: 13,
                 color: Colors.black87,
                 fontWeight: FontWeight.w500,
@@ -293,7 +293,7 @@ class _SimpleProfileScreenState extends State<SimpleProfileScreen> {
       ),
       title: Text(
         title,
-        style: GoogleFonts.poppins(
+        style: GoogleFonts.inter(
           fontSize: 14,
           fontWeight: FontWeight.w600,
           color: isDestructive ? Colors.red : Colors.black87,
@@ -301,7 +301,7 @@ class _SimpleProfileScreenState extends State<SimpleProfileScreen> {
       ),
       subtitle: Text(
         subtitle,
-        style: GoogleFonts.poppins(
+        style: GoogleFonts.inter(
           fontSize: 12,
           color: Colors.grey[600],
         ),
@@ -323,18 +323,18 @@ class _SimpleProfileScreenState extends State<SimpleProfileScreen> {
         ),
         title: Text(
           'Logout',
-          style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+          style: GoogleFonts.inter(fontWeight: FontWeight.w600),
         ),
         content: Text(
           'Are you sure you want to logout?',
-          style: GoogleFonts.poppins(),
+          style: GoogleFonts.inter(),
         ),
         actions: [
           TextButton(
             onPressed: Get.back,
             child: Text(
               'Cancel',
-              style: GoogleFonts.poppins(color: Colors.grey),
+              style: GoogleFonts.inter(color: Colors.grey),
             ),
           ),
           TextButton(
@@ -358,7 +358,7 @@ class _SimpleProfileScreenState extends State<SimpleProfileScreen> {
             },
             child: Text(
               'Logout',
-              style: GoogleFonts.poppins(color: Colors.red),
+              style: GoogleFonts.inter(color: Colors.red),
             ),
           ),
         ],

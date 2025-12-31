@@ -9,7 +9,6 @@ import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/services/accessibility_service.dart';
 import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/pref_keys.dart';
-import 'package:timeless/utils/color_res.dart';
 
 class DashBoardScreen extends StatelessWidget {
   DashBoardScreen({super.key});

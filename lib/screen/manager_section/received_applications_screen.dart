@@ -8,7 +8,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/pref_keys.dart';
-import 'package:timeless/utils/application_test_helper.dart';
 import 'package:timeless/services/email_service.dart';
 
 class ReceivedApplicationsScreen extends StatelessWidget {
@@ -33,7 +32,7 @@ class ReceivedApplicationsScreen extends StatelessWidget {
               children: [
                 Text(
                   'Received Applications',
-                  style: GoogleFonts.poppins(
+                  style: GoogleFonts.inter(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
                     color: Colors.black,
@@ -41,7 +40,7 @@ class ReceivedApplicationsScreen extends StatelessWidget {
                 ),
                 Text(
                   '$count application${count != 1 ? 's' : ''}',
-                  style: GoogleFonts.poppins(
+                  style: GoogleFonts.inter(
                     fontSize: 12,
                     color: Colors.black.withOpacity(0.7),
                   ),
@@ -54,71 +53,17 @@ class ReceivedApplicationsScreen extends StatelessWidget {
         foregroundColor: Colors.black,
         elevation: 0,
         actions: [
-          if (kDebugMode) // Bouton de test visible en debug uniquement
-            PopupMenuButton<String>(
-              onSelected: (value) async {
-                switch (value) {
-                  case 'create_test':
-                    await ApplicationTestHelper.createTestApplication(
-                      companyName: companyName,
-                    );
-                    break;
-                  case 'create_multiple':
-                    await ApplicationTestHelper.createMultipleTestApplications(
-                      companyName: companyName,
-                      count: 3,
-                    );
-                    break;
-                  case 'cleanup':
-                    await ApplicationTestHelper.cleanupTestApplications(
-                      companyName: companyName,
-                    );
-                    break;
+          if (kDebugMode) // Bouton de debug visible en debug uniquement
+            IconButton(
+              icon: const Icon(Icons.refresh, color: Colors.orange),
+              tooltip: 'Refresh Applications',
+              onPressed: () {
+                if (kDebugMode) {
+                  print('🔄 Refreshing applications list');
                 }
+                // Trigger rebuild
+                (context as Element).markNeedsBuild();
               },
-              icon: const Icon(Icons.bug_report, color: Colors.orange),
-              tooltip: 'Test Functions (Debug Only)',
-              itemBuilder: (context) => [
-                PopupMenuItem(
-                  value: 'create_test',
-                  child: Row(
-                    children: [
-                      const Icon(Icons.add_circle, size: 16, color: Colors.green),
-                      const SizedBox(width: 8),
-                      Text(
-                        'Create Test Application',
-                        style: GoogleFonts.poppins(fontSize: 12),
-                      ),
-                    ],
-                  ),
-                ),
-                PopupMenuItem(
-                  value: 'create_multiple',
-                  child: Row(
-                    children: [
-                      const Icon(Icons.playlist_add, size: 16, color: Colors.blue),
-                      const SizedBox(width: 8),
-                      Text(
-                        'Create Multiple Tests',
-                        style: GoogleFonts.poppins(fontSize: 12),
-                      ),
-                    ],
-                  ),
-                ),
-                PopupMenuItem(
-                  value: 'cleanup',
-                  child: Row(
-                    children: [
-                      const Icon(Icons.cleaning_services, size: 16, color: Colors.red),
-                      const SizedBox(width: 8),
-                      Text(
-                        'Cleanup Test Data',
-                        style: GoogleFonts.poppins(fontSize: 12),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
             ),
           IconButton(
             onPressed: () {
@@ -185,7 +130,7 @@ class ReceivedApplicationsScreen extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               'No Applications Yet',
-              style: GoogleFonts.poppins(
+              style: GoogleFonts.inter(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
                 color: Colors.white,
@@ -195,7 +140,7 @@ class ReceivedApplicationsScreen extends StatelessWidget {
             Text(
               'Applications will appear here when candidates apply to your job posts.',
               textAlign: TextAlign.center,
-              style: GoogleFonts.poppins(
+              style: GoogleFonts.inter(
                 fontSize: 14,
                 color: Colors.white70,
               ),
@@ -214,7 +159,7 @@ class ReceivedApplicationsScreen extends StatelessWidget {
         return AlertDialog(
           title: Text(
             'Delete Application',
-            style: GoogleFonts.poppins(
+            style: GoogleFonts.inter(
               fontWeight: FontWeight.w600,
               color: Colors.red[600],
             ),
@@ -225,7 +170,7 @@ class ReceivedApplicationsScreen extends StatelessWidget {
             children: [
               Text(
                 'Are you sure you want to delete this application?',
-                style: GoogleFonts.poppins(fontSize: 14),
+                style: GoogleFonts.inter(fontSize: 14),
               ),
               const SizedBox(height: 12),
               Container(
@@ -239,18 +184,18 @@ class ReceivedApplicationsScreen extends StatelessWidget {
                   children: [
                     Text(
                       'Candidate: ${application['userName'] ?? 'Unknown'}',
-                      style: GoogleFonts.poppins(
+                      style: GoogleFonts.inter(
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                     Text(
                       'Position: ${application['jobTitle'] ?? 'Unknown'}',
-                      style: GoogleFonts.poppins(fontSize: 12),
+                      style: GoogleFonts.inter(fontSize: 12),
                     ),
                     Text(
                       'Email: ${application['email'] ?? 'No email'}',
-                      style: GoogleFonts.poppins(fontSize: 12),
+                      style: GoogleFonts.inter(fontSize: 12),
                     ),
                   ],
                 ),
@@ -258,7 +203,7 @@ class ReceivedApplicationsScreen extends StatelessWidget {
               const SizedBox(height: 12),
               Text(
                 'This action cannot be undone.',
-                style: GoogleFonts.poppins(
+                style: GoogleFonts.inter(
                   fontSize: 12,
                   color: Colors.red[600],
                   fontStyle: FontStyle.italic,
@@ -271,7 +216,7 @@ class ReceivedApplicationsScreen extends StatelessWidget {
               onPressed: () => Navigator.of(context).pop(),
               child: Text(
                 'Cancel',
-                style: GoogleFonts.poppins(color: Colors.grey[600]),
+                style: GoogleFonts.inter(color: Colors.grey[600]),
               ),
             ),
             ElevatedButton(
@@ -285,7 +230,7 @@ class ReceivedApplicationsScreen extends StatelessWidget {
               ),
               child: Text(
                 'Delete',
-                style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                style: GoogleFonts.inter(fontWeight: FontWeight.w600),
               ),
             ),
           ],
@@ -349,7 +294,7 @@ class ReceivedApplicationsScreen extends StatelessWidget {
               const SizedBox(width: 20),
               Text(
                 'Deleting application...',
-                style: GoogleFonts.poppins(fontSize: 14),
+                style: GoogleFonts.inter(fontSize: 14),
               ),
             ],
           ),
@@ -402,7 +347,7 @@ class ReceivedApplicationsScreen extends StatelessWidget {
                     children: [
                       Text(
                         application['userName'] ?? 'Unknown Candidate',
-                        style: GoogleFonts.poppins(
+                        style: GoogleFonts.inter(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                           color: ColorRes.textPrimary,
@@ -410,7 +355,7 @@ class ReceivedApplicationsScreen extends StatelessWidget {
                       ),
                       Text(
                         application['email'] ?? 'No email',
-                        style: GoogleFonts.poppins(
+                        style: GoogleFonts.inter(
                           fontSize: 12,
                           color: ColorRes.textSecondary,
                         ),
@@ -430,7 +375,7 @@ class ReceivedApplicationsScreen extends StatelessWidget {
                         ),
                         child: Text(
                           'TEST',
-                          style: GoogleFonts.poppins(
+                          style: GoogleFonts.inter(
                             fontSize: 8,
                             fontWeight: FontWeight.w600,
                             color: Colors.orange[700],
@@ -445,7 +390,7 @@ class ReceivedApplicationsScreen extends StatelessWidget {
                       ),
                       child: Text(
                         'NEW',
-                        style: GoogleFonts.poppins(
+                        style: GoogleFonts.inter(
                           fontSize: 10,
                           fontWeight: FontWeight.w600,
                           color: ColorRes.successColor,
@@ -462,7 +407,7 @@ class ReceivedApplicationsScreen extends StatelessWidget {
             // Job position applied for
             Text(
               'Applied for: ${application['jobTitle'] ?? 'Unknown Position'}',
-              style: GoogleFonts.poppins(
+              style: GoogleFonts.inter(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
                 color: ColorRes.darkBlue,
@@ -474,7 +419,7 @@ class ReceivedApplicationsScreen extends StatelessWidget {
             // Application date
             Text(
               'Applied: ${_formatDate(application['appliedAt'])}',
-              style: GoogleFonts.poppins(
+              style: GoogleFonts.inter(
                 fontSize: 12,
                 color: ColorRes.textSecondary,
               ),
@@ -499,7 +444,7 @@ class ReceivedApplicationsScreen extends StatelessWidget {
                     icon: const Icon(Icons.visibility, size: 16),
                     label: Text(
                       'View Profile',
-                      style: GoogleFonts.poppins(fontSize: 12),
+                      style: GoogleFonts.inter(fontSize: 12),
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: ColorRes.brightYellow,
@@ -516,7 +461,7 @@ class ReceivedApplicationsScreen extends StatelessWidget {
                     icon: const Icon(Icons.calendar_month, size: 16),
                     label: Text(
                       'Interview',
-                      style: GoogleFonts.poppins(fontSize: 12),
+                      style: GoogleFonts.inter(fontSize: 12),
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromARGB(255, 0, 6, 71),
@@ -547,7 +492,7 @@ class ReceivedApplicationsScreen extends StatelessWidget {
                 icon: const Icon(Icons.chat, size: 16),
                 label: Text(
                   'Contact Candidate',
-                  style: GoogleFonts.poppins(fontSize: 12),
+                  style: GoogleFonts.inter(fontSize: 12),
                 ),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: ColorRes.darkBlue,
@@ -567,7 +512,7 @@ class ReceivedApplicationsScreen extends StatelessWidget {
                 icon: const Icon(Icons.delete_outline, size: 16),
                 label: Text(
                   'Erase Application',
-                  style: GoogleFonts.poppins(
+                  style: GoogleFonts.inter(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
                   ),
@@ -605,7 +550,7 @@ class ReceivedApplicationsScreen extends StatelessWidget {
             return AlertDialog(
               title: Text(
                 'Schedule Interview',
-                style: GoogleFonts.poppins(
+                style: GoogleFonts.inter(
                   fontWeight: FontWeight.w600,
                   color: const Color.fromARGB(255, 0, 6, 71),
                 ),
@@ -617,19 +562,19 @@ class ReceivedApplicationsScreen extends StatelessWidget {
                   children: [
                     Text(
                       'Candidate: ${application['userName'] ?? 'Unknown'}',
-                      style: GoogleFonts.poppins(
+                      style: GoogleFonts.inter(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                     Text(
                       'Position: ${application['jobTitle'] ?? 'Unknown'}',
-                      style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey[600]),
+                      style: GoogleFonts.inter(fontSize: 12, color: Colors.grey[600]),
                     ),
                     const SizedBox(height: 20),
                     
                     // Date Picker
-                    Text('Interview Date:', style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w500)),
+                    Text('Interview Date:', style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w500)),
                     const SizedBox(height: 8),
                     InkWell(
                       onTap: () async {
@@ -663,7 +608,7 @@ class ReceivedApplicationsScreen extends StatelessWidget {
                     const SizedBox(height: 16),
                     
                     // Time Picker
-                    Text('Interview Time:', style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w500)),
+                    Text('Interview Time:', style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w500)),
                     const SizedBox(height: 8),
                     InkWell(
                       onTap: () async {
@@ -695,7 +640,7 @@ class ReceivedApplicationsScreen extends StatelessWidget {
                     const SizedBox(height: 16),
                     
                     // Location field
-                    Text('Location:', style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w500)),
+                    Text('Location:', style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w500)),
                     const SizedBox(height: 8),
                     TextField(
                       controller: locationController,
@@ -710,7 +655,7 @@ class ReceivedApplicationsScreen extends StatelessWidget {
                     const SizedBox(height: 16),
                     
                     // Message field
-                    Text('Additional Message:', style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w500)),
+                    Text('Additional Message:', style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w500)),
                     const SizedBox(height: 8),
                     TextField(
                       controller: messageController,
@@ -729,7 +674,7 @@ class ReceivedApplicationsScreen extends StatelessWidget {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: Text('Cancel', style: GoogleFonts.poppins()),
+                  child: Text('Cancel', style: GoogleFonts.inter()),
                 ),
                 ElevatedButton(
                   onPressed: () => _sendInterviewInvitation(
@@ -745,7 +690,7 @@ class ReceivedApplicationsScreen extends StatelessWidget {
                     backgroundColor: const Color.fromARGB(255, 0, 6, 71),
                     foregroundColor: Colors.white,
                   ),
-                  child: Text('Send Invitation', style: GoogleFonts.poppins()),
+                  child: Text('Send Invitation', style: GoogleFonts.inter()),
                 ),
               ],
             );

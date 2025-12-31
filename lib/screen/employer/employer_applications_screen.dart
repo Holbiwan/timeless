@@ -87,7 +87,7 @@ class EmployerApplicationsScreen extends StatelessWidget {
               const SizedBox(width: 8),
               Text(
                 'Dashboard',
-                style: GoogleFonts.poppins(
+                style: GoogleFonts.inter(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
                   color: Colors.black,
@@ -159,7 +159,7 @@ class EmployerApplicationsScreen extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           value,
-          style: GoogleFonts.poppins(
+          style: GoogleFonts.inter(
             fontSize: 16,
             fontWeight: FontWeight.w700,
             color: Colors.black,
@@ -167,7 +167,7 @@ class EmployerApplicationsScreen extends StatelessWidget {
         ),
         Text(
           label,
-          style: GoogleFonts.poppins(
+          style: GoogleFonts.inter(
             fontSize: 10,
             color: Colors.black.withOpacity(0.7),
           ),
@@ -201,7 +201,7 @@ class EmployerApplicationsScreen extends StatelessWidget {
                 const SizedBox(width: 8),
                 Text(
                   'Filtres actifs',
-                  style: GoogleFonts.poppins(
+                  style: GoogleFonts.inter(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
                     color: Colors.white,
@@ -242,7 +242,7 @@ class EmployerApplicationsScreen extends StatelessWidget {
     return Chip(
       label: Text(
         label,
-        style: GoogleFonts.poppins(
+        style: GoogleFonts.inter(
           fontSize: 11,
           color: Colors.white,
           fontWeight: FontWeight.w500,
@@ -294,7 +294,7 @@ class EmployerApplicationsScreen extends StatelessWidget {
                       children: [
                         Text(
                           application.candidateName,
-                          style: GoogleFonts.poppins(
+                          style: GoogleFonts.inter(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                             color: Colors.black,
@@ -302,7 +302,7 @@ class EmployerApplicationsScreen extends StatelessWidget {
                         ),
                         Text(
                           application.candidateEmail,
-                          style: GoogleFonts.poppins(
+                          style: GoogleFonts.inter(
                             fontSize: 12,
                             color: ColorRes.textSecondary,
                           ),
@@ -321,7 +321,7 @@ class EmployerApplicationsScreen extends StatelessWidget {
                     ),
                     child: Text(
                       controller.getStatusLabel(application.status),
-                      style: GoogleFonts.poppins(
+                      style: GoogleFonts.inter(
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
                         color: controller.getStatusColor(application.status),
@@ -348,7 +348,7 @@ class EmployerApplicationsScreen extends StatelessWidget {
                       Expanded(
                         child: Text(
                           job.title,
-                          style: GoogleFonts.poppins(
+                          style: GoogleFonts.inter(
                             fontSize: 13,
                             fontWeight: FontWeight.w500,
                             color: Colors.black,
@@ -368,7 +368,7 @@ class EmployerApplicationsScreen extends StatelessWidget {
                   const SizedBox(width: 4),
                   Text(
                     'Candidature du ${DateFormat('dd/MM/yyyy à HH:mm').format(application.appliedAt)}',
-                    style: GoogleFonts.poppins(
+                    style: GoogleFonts.inter(
                       fontSize: 11,
                       color: ColorRes.textTertiary,
                     ),
@@ -424,7 +424,7 @@ class EmployerApplicationsScreen extends StatelessWidget {
             const SizedBox(width: 4),
             Text(
               label,
-              style: GoogleFonts.poppins(
+              style: GoogleFonts.inter(
                 fontSize: 10,
                 fontWeight: FontWeight.w600,
                 color: color,
@@ -449,7 +449,7 @@ class EmployerApplicationsScreen extends StatelessWidget {
           const SizedBox(height: 16),
           Text(
             'Aucune candidature',
-            style: GoogleFonts.poppins(
+            style: GoogleFonts.inter(
               fontSize: 18,
               fontWeight: FontWeight.w600,
               color: ColorRes.textSecondary,
@@ -458,7 +458,7 @@ class EmployerApplicationsScreen extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             'Received applications will appear here',
-            style: GoogleFonts.poppins(
+            style: GoogleFonts.inter(
               fontSize: 14,
               color: ColorRes.textTertiary,
             ),
@@ -490,7 +490,7 @@ class EmployerApplicationsScreen extends StatelessWidget {
                 const SizedBox(width: 8),
                 Text(
                   'Filtres et tri',
-                  style: GoogleFonts.poppins(
+                  style: GoogleFonts.inter(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
                     color: Colors.black,
@@ -509,7 +509,7 @@ class EmployerApplicationsScreen extends StatelessWidget {
             // Job filter
             Text(
               'Filtrer par offre d\'emploi',
-              style: GoogleFonts.poppins(
+              style: GoogleFonts.inter(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
                 color: Colors.black,
@@ -532,7 +532,7 @@ class EmployerApplicationsScreen extends StatelessWidget {
             // Status filter
             Text(
               'Filtrer par statut',
-              style: GoogleFonts.poppins(
+              style: GoogleFonts.inter(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
                 color: Colors.black,
@@ -552,7 +552,7 @@ class EmployerApplicationsScreen extends StatelessWidget {
             // Sort options
             Text(
               'Trier par',
-              style: GoogleFonts.poppins(
+              style: GoogleFonts.inter(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
                 color: Colors.black,
@@ -581,7 +581,7 @@ class EmployerApplicationsScreen extends StatelessWidget {
     return FilterChip(
       label: Text(
         title,
-        style: GoogleFonts.poppins(
+        style: GoogleFonts.inter(
           fontSize: 12,
           color: isSelected ? Colors.white : Colors.black,
           fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
@@ -601,7 +601,7 @@ class EmployerApplicationsScreen extends StatelessWidget {
     return FilterChip(
       label: Text(
         controller.getStatusLabel(status),
-        style: GoogleFonts.poppins(
+        style: GoogleFonts.inter(
           fontSize: 12,
           color: isSelected ? Colors.white : controller.getStatusColor(status),
           fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
@@ -627,7 +627,7 @@ class EmployerApplicationsScreen extends StatelessWidget {
     return ListTile(
       title: Text(
         label,
-        style: GoogleFonts.poppins(
+        style: GoogleFonts.inter(
           fontSize: 14,
           color: isSelected ? Colors.white : Colors.black,
           fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,

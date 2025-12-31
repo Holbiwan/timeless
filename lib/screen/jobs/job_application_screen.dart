@@ -111,7 +111,7 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
               const SizedBox(height: 16),
               Text(
                 'Application Submitted Successfully!',
-                style: GoogleFonts.poppins(
+                style: GoogleFonts.inter(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
                   color: Colors.black,
@@ -121,7 +121,7 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
               const SizedBox(height: 12),
               Text(
                 'Your application for ${widget.job['Position'] ?? 'this position'} at ${widget.job['CompanyName'] ?? 'this company'} has been submitted successfully.',
-                style: GoogleFonts.poppins(
+                style: GoogleFonts.inter(
                   fontSize: 14,
                   color: Colors.grey[700],
                 ),
@@ -146,7 +146,7 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
                     Expanded(
                       child: Text(
                         'A confirmation email has been sent to ${_emailController.text}',
-                        style: GoogleFonts.poppins(
+                        style: GoogleFonts.inter(
                           fontSize: 12,
                           color: Colors.blue[800],
                           fontWeight: FontWeight.w500,
@@ -173,7 +173,7 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
                   ),
                   child: Text(
                     'Perfect!',
-                    style: GoogleFonts.poppins(
+                    style: GoogleFonts.inter(
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
                     ),
@@ -248,7 +248,7 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
       appBar: AppBar(
         title: Text(
           '${translationService.getText('apply')} - ${widget.job['Position'] ?? translationService.getText('position_default')}',
-          style: GoogleFonts.poppins(
+          style: GoogleFonts.inter(
             fontWeight: FontWeight.w600,
             color: Colors.black,
           ),
@@ -303,7 +303,7 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
                                 widget.job['Position'] ??
                                     translationService
                                         .getText('position_not_specified'),
-                                style: GoogleFonts.poppins(
+                                style: GoogleFonts.inter(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w600,
                                   color: Colors.black,
@@ -313,7 +313,7 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
                                 widget.job['CompanyName'] ??
                                     translationService
                                         .getText('company_not_specified'),
-                                style: GoogleFonts.poppins(
+                                style: GoogleFonts.inter(
                                   fontSize: 14,
                                   color: Colors.grey[600],
                                 ),
@@ -337,7 +337,7 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
                             widget.job['location'] ??
                                 translationService
                                     .getText('location_not_specified'),
-                            style: GoogleFonts.poppins(
+                            style: GoogleFonts.inter(
                               fontSize: 10,
                               color: Colors.blue[700],
                               fontWeight: FontWeight.w500,
@@ -358,7 +358,7 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
                                 ? "${widget.job['salary']}€"
                                 : translationService
                                     .getText('salary_not_specified'),
-                            style: GoogleFonts.poppins(
+                            style: GoogleFonts.inter(
                               fontSize: 10,
                               color: Colors.green[700],
                               fontWeight: FontWeight.w500,
@@ -376,7 +376,7 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
               // Formulaire de candidature
               Text(
                 translationService.getText('personal_information_title'),
-                style: GoogleFonts.poppins(
+                style: GoogleFonts.inter(
                   fontSize: 11,
                   fontWeight: FontWeight.w500,
                   color: Colors.black,
@@ -464,7 +464,7 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
               // CV Upload Section
               Text(
                 translationService.getText('curriculum_vitae_title'),
-                style: GoogleFonts.poppins(
+                style: GoogleFonts.inter(
                   fontSize: 11,
                   fontWeight: FontWeight.w500,
                   color: Colors.black,
@@ -508,7 +508,7 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
                                   ? '${translationService.getText('cv_selected_message')}: $_cvFileName'
                                   : translationService
                                       .getText('select_your_cv_label'),
-                              style: GoogleFonts.poppins(
+                              style: GoogleFonts.inter(
                                 fontSize: 12,
                                 color: _selectedCV != null
                                     ? const Color(0xFF000647)
@@ -522,7 +522,7 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
                               Text(
                                 translationService
                                     .getText('accepted_formats_label'),
-                                style: GoogleFonts.poppins(
+                                style: GoogleFonts.inter(
                                   fontSize: 10,
                                   color: Colors.grey[500],
                                 ),
@@ -539,7 +539,7 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
               // Commentaire/Lettre de motivation
               Text(
                 translationService.getText('cover_letter_title'),
-                style: GoogleFonts.poppins(
+                style: GoogleFonts.inter(
                   fontSize: 11,
                   fontWeight: FontWeight.w500,
                   color: Colors.black,
@@ -592,7 +592,7 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
                         )
                       : Text(
                           translationService.getText('send_my_application'),
-                          style: GoogleFonts.poppins(
+                          style: GoogleFonts.inter(
                             fontSize: 14, // Reduced font size
                             fontWeight: FontWeight.w700,
                             color: Colors.white,

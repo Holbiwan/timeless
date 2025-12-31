@@ -25,6 +25,7 @@ import 'package:timeless/screen/dashboard/applications/applications_screen.dart'
 import 'package:timeless/services/unified_translation_service.dart';
 import 'package:timeless/services/accessibility_service.dart';
 import 'package:timeless/services/preferences_service.dart';
+import 'package:timeless/services/auth_service.dart';
 import 'package:timeless/screen/manager_section/Notification/notification_services.dart';
 
 // Recruiter screens
@@ -86,6 +87,7 @@ Future<void> main() async {
   // Register global services with GetX
   Get.put(UnifiedTranslationService()); // Centralized translation service
   Get.put(AccessibilityService()); // Accessibility options
+  Get.put(AuthService()); // Authentication service
 
   // Start the app with localization support
   runApp(
@@ -118,6 +120,7 @@ class MyApp extends StatelessWidget {
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,
+      fallbackLocale: const Locale('en'),
 
       // Global accessibility-aware theme
       theme: accessibilityService.globalTheme,

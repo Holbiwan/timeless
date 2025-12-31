@@ -15,11 +15,22 @@ Widget searchArea() {
       children: [
         Expanded(
           child: Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               color: ColorRes.white2,
-              borderRadius: BorderRadius.all(
+              border: Border.all(
+                color: const Color.fromARGB(255, 0, 6, 71).withOpacity(0.3),
+                width: 1.5,
+              ),
+              borderRadius: const BorderRadius.all(
                 Radius.circular(8),
               ),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color.fromARGB(255, 0, 6, 71).withOpacity(0.1),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
             child: TextField(
               controller: controller.searchNewController,
@@ -29,12 +40,13 @@ Widget searchArea() {
               },
               decoration: InputDecoration(
                 border: InputBorder.none,
-                suffixIcon: const Icon(Icons.search, color: ColorRes.grey),
+                suffixIcon: Icon(Icons.search, 
+                  color: const Color.fromARGB(255, 0, 6, 71).withOpacity(0.7)),
                 hintText: "Search",
                 hintStyle: appTextStyle(
                     fontSize: 14,
-                    color: ColorRes.grey,
-                    fontWeight: FontWeight.w500),
+                    color: ColorRes.grey.withOpacity(0.8),
+                    fontWeight: FontWeight.w400),
                 contentPadding: const EdgeInsets.only(left: 20, top: 13),
               ),
             ),

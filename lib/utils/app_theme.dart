@@ -60,50 +60,50 @@ class AppTheme {
   static const double fontSizeHero = 32.0;
   
   // Styles de texte principaux
-  static TextStyle get headingHero => GoogleFonts.poppins(
+  static TextStyle get headingHero => GoogleFonts.inter(
     fontSize: fontSizeHero,
     fontWeight: FontWeight.bold,
     color: darkGrey,
     letterSpacing: -0.5,
   );
   
-  static TextStyle get headingTitle => GoogleFonts.poppins(
+  static TextStyle get headingTitle => GoogleFonts.inter(
     fontSize: fontSizeTitle,
     fontWeight: FontWeight.w600,
     color: darkGrey,
   );
   
-  static TextStyle get headingLarge => GoogleFonts.poppins(
+  static TextStyle get headingLarge => GoogleFonts.inter(
     fontSize: fontSizeXLarge,
     fontWeight: FontWeight.w600,
     color: darkGrey,
   );
   
-  static TextStyle get bodyLarge => GoogleFonts.poppins(
+  static TextStyle get bodyLarge => GoogleFonts.inter(
     fontSize: fontSizeLarge,
     fontWeight: FontWeight.normal,
     color: darkGrey,
   );
   
-  static TextStyle get bodyRegular => GoogleFonts.poppins(
+  static TextStyle get bodyRegular => GoogleFonts.inter(
     fontSize: fontSizeRegular,
     fontWeight: FontWeight.normal,
     color: darkGrey,
   );
   
-  static TextStyle get bodySmall => GoogleFonts.poppins(
+  static TextStyle get bodySmall => GoogleFonts.inter(
     fontSize: fontSizeSmall,
     fontWeight: FontWeight.normal,
     color: mediumGrey,
   );
   
-  static TextStyle get buttonText => GoogleFonts.poppins(
+  static TextStyle get buttonText => GoogleFonts.inter(
     fontSize: fontSizeMedium,
     fontWeight: FontWeight.w600,
     color: black,
   );
   
-  static TextStyle get captionText => GoogleFonts.poppins(
+  static TextStyle get captionText => GoogleFonts.inter(
     fontSize: fontSizeXSmall,
     fontWeight: FontWeight.normal,
     color: mediumGrey,
@@ -217,7 +217,7 @@ class AppTheme {
   }) {
     return InputDecoration(
       hintText: hint,
-      hintStyle: GoogleFonts.poppins(
+      hintStyle: GoogleFonts.inter(
         fontSize: fontSizeRegular,
         color: mediumGrey,
         fontWeight: FontWeight.w400,
@@ -266,7 +266,7 @@ class AppTheme {
       seedColor: primaryOrange,
       brightness: Brightness.light,
     ),
-    fontFamily: GoogleFonts.poppins().fontFamily,
+    fontFamily: GoogleFonts.inter().fontFamily,
     scaffoldBackgroundColor: backgroundGrey,
     appBarTheme: AppBarTheme(
       backgroundColor: Colors.transparent,
@@ -299,7 +299,7 @@ class AppTheme {
           horizontal: spacingLarge,
           vertical: spacingRegular,
         ),
-        textStyle: GoogleFonts.poppins(
+        textStyle: GoogleFonts.inter(
           fontSize: fontSizeMedium,
           fontWeight: FontWeight.w600,
         ),
@@ -344,12 +344,12 @@ class AppTheme {
         borderRadius: BorderRadius.circular(radiusLarge),
         side: BorderSide(color: buttonBorderColor, width: 2.0),
       ),
-      titleTextStyle: GoogleFonts.poppins(
+      titleTextStyle: GoogleFonts.inter(
         fontSize: fontSizeLarge,
         fontWeight: FontWeight.w600,
         color: black,
       ),
-      contentTextStyle: GoogleFonts.poppins(
+      contentTextStyle: GoogleFonts.inter(
         fontSize: fontSizeRegular,
         color: darkGrey,
       ),
@@ -534,7 +534,7 @@ class AppTheme {
           ),
           title: Text(
             title,
-            style: GoogleFonts.poppins(
+            style: GoogleFonts.inter(
               fontSize: fontSizeLarge,
               fontWeight: FontWeight.w600,
               color: black,
@@ -542,7 +542,7 @@ class AppTheme {
           ),
           content: Text(
             content,
-            style: GoogleFonts.poppins(
+            style: GoogleFonts.inter(
               fontSize: fontSizeRegular,
               color: darkGrey,
             ),
