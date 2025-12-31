@@ -221,3 +221,21 @@ scripts/
 # =====================================================================
 CLEANUP_GUIDE.md
 NETLIFY_DEPLOY_GUIDE.md
+GOOGLE_INTEGRATION.md
+
+# Removed debug utilities
+application_test_helper.dart
+email_debug_helper.dart
+fix_vitoranda_account.dart
+send_vitoranda_email.dart
+vitoranda_email_fix.dart
+vitoranda_email_widget.dart
+
+# Service account credentials
+service-account.json
+**/service-account*.json
+
+# Demo directories removed
+lib/screen/demo/
+lib/services/demo_data_service.dart
+README_CLEAN.md
