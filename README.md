@@ -1,5 +1,5 @@
 <h1 align="center">Timeless</h1>
-<p align="center"><em>Because careers don’t expire...</em></p>
+<p align="center"><em>Because opportunities don’t wait...</em></p>
 
 
 Timeless is a mobile app developed with Flutter that allows candidates to view and apply for job offers directly from their phone, anytime, anywhere. Its name reflects the idea of a timeless flow of job offers: ads that are accessible at any time, without constraints. 
@@ -8,9 +8,9 @@ Timeless makes job hunting easier, faster, and always available, because opportu
 
 
 <p align="center">
-  <img src="https://zupimages.net/up/25/52/eltw.png" alt="Timeless logo" width="270">
+  <img src="https://i.postimg.cc/tgfXWsFY/logo.png" alt="Timeless logo" width="270">
   &nbsp;&nbsp;&nbsp;
-  <img src="https://zupimages.net/up/25/52/65sv.png" alt="Timeless QR code" width="250">
+  <img src="https://zupimages.net/up/25/52/65sv.png" alt="Timeless QR code" width="200">
 </p>
 
 <p align="center"><small><em>See landing page by scanning the QR code or </em></small></p>
