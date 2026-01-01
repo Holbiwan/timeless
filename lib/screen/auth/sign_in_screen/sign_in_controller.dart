@@ -315,22 +315,23 @@ class SignInScreenController extends GetxController {
     if (loading.value) return;
     loading.value = true;
     try {
-      // On Android, GitHub has issues with Custom Tabs
-      if (!kIsWeb) {
-        AppTheme.showStandardSnackBar(
-          title: "GitHub Sign-In",
-          message: "GitHub is not supported on Android for this version.\n"
-          "Please use Google Sign-In or Email/Password.",
-        );
-        return;
-      }
-
       final provider = GithubAuthProvider()
         ..addScope('read:user')
         ..addScope('user:email')
-        ..setCustomParameters({'allow_signup': 'false'});
+        ..addScope('public_repo')  // Access to public repositories (optional)
+        ..setCustomParameters({
+          'allow_signup': 'true',  // Allow new accounts and existing ones
+        });
 
-      UserCredential cred = await auth.signInWithPopup(provider);
+      UserCredential cred;
+      
+      if (kIsWeb) {
+        // Web version uses popup
+        cred = await auth.signInWithPopup(provider);
+      } else {
+        // Mobile version uses redirect
+        cred = await auth.signInWithProvider(provider);
+      }
 
       final user = cred.user;
       if (user == null) {
@@ -370,15 +371,23 @@ class SignInScreenController extends GetxController {
       _gotoDashboard();
     } on FirebaseAuthException catch (e) {
       if (kDebugMode) print("GitHubAuth error: ${e.code} ${e.message}");
+      String message = e.message ?? 'Firebase error: ${e.code}';
+      if (e.code == 'cancelled-popup-request') {
+        message = 'Sign-in was cancelled';
+      } else if (e.code == 'popup-blocked') {
+        message = 'Popup was blocked by browser. Please allow popups and try again.';
+      } else if (e.code == 'popup-closed-by-user') {
+        message = 'Sign-in was cancelled by user';
+      }
       AppTheme.showStandardSnackBar(
-          title: "GitHub",
-          message: e.message ?? 'Firebase error: ${e.code}',
+          title: "GitHub Sign-In",
+          message: message,
           isError: true);
     } catch (e) {
       if (kDebugMode) print("GitHubAuth error: $e");
       AppTheme.showStandardSnackBar(
-          title: "GitHub",
-          message: "Unexpected error: $e",
+          title: "GitHub Sign-In",
+          message: "Unexpected error occurred. Please try again.",
           isError: true);
     } finally {
       loading.value = false;

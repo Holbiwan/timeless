@@ -157,7 +157,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                             child: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 20),
                           ),
                         ),
-                        const SizedBox(height: 30),
+                        const SizedBox(height: 12),
                         
                         // Header Text & Logo
                         Row(
@@ -181,7 +181,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                                       color: Colors.white,
                                     ),
                                   ),
-                                  const SizedBox(height: 4),
+                                  const SizedBox(height: 3),
                                   Text(
                                     "Your career journey starts here",
                                     style: GoogleFonts.inter(
@@ -198,7 +198,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                     ),
                   ),
                   
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 14),
 
                   // Bottom Section (White Card Form)
                   Container(
@@ -216,11 +216,9 @@ class _SigninScreenUState extends State<SigninScreenU> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const SizedBox(height: 10), // Adjust spacing
+                          const SizedBox(height: 7), // Adjust spacing
                           
                           // Email field
-                          _buildLabel(Strings.email),
-                          const SizedBox(height: 8),
                           GetBuilder<SignInScreenController>(
                             id: "showEmail",
                             builder: (_) => UnifiedFormField(
@@ -236,11 +234,9 @@ class _SigninScreenUState extends State<SigninScreenU> {
                             ),
                           ),
 
-                          const SizedBox(height: 20), // Reduced from Get.height * 0.02
+                          const SizedBox(height: 4), // Reduced from Get.height * 0.02
 
                           // Password field
-                          _buildLabel(Strings.password),
-                          const SizedBox(height: 8),
                           GetBuilder<SignInScreenController>(
                             id: "showPassword",
                             builder: (_) => UnifiedFormField(
@@ -263,7 +259,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                             ),
                           ),
 
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 7),
 
                           // Remember me
                           GetBuilder<SignInScreenController>(
@@ -294,7 +290,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                             ),
                           ),
 
-                          const SizedBox(height: 30), // Reduced from Get.height * 0.028
+                          const SizedBox(height: 8), // Reduced from Get.height * 0.028
 
                           // Sign in button
                           UnifiedButton(
@@ -304,7 +300,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                             isLoading: isLoading,
                           ),
 
-                          const SizedBox(height: 20), // Reduced from Get.height * 0.02
+                          const SizedBox(height: 4), // Reduced from Get.height * 0.02
 
                           // Forgot password
                           Center(
@@ -324,7 +320,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                             ),
                           ),
 
-                          const SizedBox(height: 30), // Reduced from Get.height * 0.03
+                          const SizedBox(height: 8), // Reduced from Get.height * 0.03
 
                           // Or continue
                           Row(
@@ -345,7 +341,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                             ],
                           ),
 
-                          const SizedBox(height: 30), // Reduced from Get.height * 0.028
+                          const SizedBox(height: 8), // Reduced from Get.height * 0.028
 
                           // Social buttons
                           UnifiedButton(
@@ -360,7 +356,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                             ),
                           ),
                           
-                          const SizedBox(height: 12),
+                          const SizedBox(height: 4),
                           
                           UnifiedButton(
                             text: 'Use another Google account', // Changed text for clarity
@@ -370,7 +366,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                             icon: Icon(Icons.swap_horiz, size: 16, color: _primaryBlue),
                           ),
 
-                          const SizedBox(height: 12), // Reduced from Get.height * 0.025
+                          const SizedBox(height: 4), // Reduced from Get.height * 0.025
 
                           Container(
                             decoration: BoxDecoration(
@@ -397,7 +393,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                             ),
                           ),
 
-                          const SizedBox(height: 30),
+                          const SizedBox(height: 8),
 
                           // Sign up link
                           Row(
@@ -434,7 +430,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                             ],
                           ),
 
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 4),
                         ],
                       ),
                     ),
@@ -458,18 +454,4 @@ class _SigninScreenUState extends State<SigninScreenU> {
     );
   }
 
-  // Helper widget to build labels for form fields
-  Widget _buildLabel(String text) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0),
-      child: Text(
-        text,
-        style: GoogleFonts.inter(
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-          color: _primaryBlue, // Label color for light background
-        ),
-      ),
-    );
-  }
 }

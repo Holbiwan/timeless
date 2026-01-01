@@ -437,22 +437,20 @@ class SignUpController extends GetxController {
     loading.value = true;
     
     try {
-      // On Android, GitHub has issues with Custom Tabs
-      if (!kIsWeb) {
-        AppTheme.showStandardSnackBar(
-          title: "GitHub Sign-Up",
-          message: "GitHub is not supported on Android for this version.\n"
-              "Please use Email/Password registration.",
-        );
-        return;
-      }
-
       final provider = GithubAuthProvider()
         ..addScope('read:user')
         ..addScope('user:email')
         ..setCustomParameters({'allow_signup': 'true'});  // Allow signup
 
-      UserCredential cred = await _auth.signInWithPopup(provider);
+      UserCredential cred;
+      
+      if (kIsWeb) {
+        // Web version uses popup
+        cred = await _auth.signInWithPopup(provider);
+      } else {
+        // Mobile version uses provider
+        cred = await _auth.signInWithProvider(provider);
+      }
 
       final user = cred.user;
       if (user == null) {

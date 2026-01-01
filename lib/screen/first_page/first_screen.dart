@@ -130,16 +130,16 @@ class FirstScreen extends StatelessWidget {
               SizedBox(height: Get.height * 0.005),
 
               Container(
-                width: Get.width * 0.75,
-                height: Get.height * 0.22,
+                width: Get.width * 0.85,
+                height: Get.height * 0.25,
                 alignment: Alignment.center,
                 child: RepaintBoundary(
                   child: Opacity(
                     opacity: 0.95,
                     child: Image.asset(
                       'assets/images/logo.png',
-                      width: Get.width * 0.75,
-                      height: Get.height * 0.20,
+                      width: Get.width * 0.85,
+                      height: Get.height * 0.23,
                       fit: BoxFit.contain,
                       filterQuality: FilterQuality.high,
                       gaplessPlayback: false,
@@ -440,13 +440,13 @@ class FirstScreen extends StatelessWidget {
                     Text(
                       "Connect with us",
                       style: GoogleFonts.inter(
-                        fontSize: 14,
+                        fontSize: 12,
                         fontWeight: FontWeight.w500,
-                        letterSpacing: 0.6,
+                        letterSpacing: 0.5,
                         color: Colors.white.withOpacity(0.9),
                       ),
                     ),
-                    const SizedBox(height: 15),
+                    const SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -455,25 +455,25 @@ class FirstScreen extends StatelessWidget {
                           FontAwesomeIcons.linkedin,
                           const Color(0xFF0077B5), // LinkedIn blue
                         ),
-                        const SizedBox(width: 20),
+                        const SizedBox(width: 15),
                         _buildSocialIcon(
                           'https://x.com/Holbiwan_Place',
                           FontAwesomeIcons.xTwitter,
                           Colors.white, // X/Twitter white
                         ),
-                        const SizedBox(width: 20),
+                        const SizedBox(width: 15),
                         _buildSocialIcon(
                           'https://www.instagram.com/timelessflowapp/',
                           FontAwesomeIcons.instagram,
                           const Color(0xFFE1306C), // Instagram pink
                         ),
-                        const SizedBox(width: 20),
+                        const SizedBox(width: 15),
                         _buildSocialIcon(
                           'https://facebook.com/TimelessFlowApp',
                           FontAwesomeIcons.facebook,
                           const Color(0xFF1877F2), // Facebook blue
                         ),
-                        const SizedBox(width: 20),
+                        const SizedBox(width: 15),
                         _buildSocialIcon(
                           'https://www.youtube.com/@BriaDev_Paris',
                           FontAwesomeIcons.youtube,
@@ -484,7 +484,7 @@ class FirstScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(height: Get.height * 0.02),
+              SizedBox(height: Get.height * 0.01),
             ],
           ),
         ),
@@ -508,8 +508,8 @@ class FirstScreen extends StatelessWidget {
       },
       borderRadius: BorderRadius.circular(25),
       child: Container(
-        width: 40,
-        height: 40,
+        width: 32,
+        height: 32,
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.1),
           shape: BoxShape.circle,
@@ -528,7 +528,7 @@ class FirstScreen extends StatelessWidget {
         child: Icon(
           icon,
           color: color,
-          size: 20,
+          size: 16,
         ),
       ),
     );
