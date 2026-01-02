@@ -65,19 +65,33 @@ class FirstPageScreenM extends StatelessWidget {
                 ),
               ),
               SizedBox(height: Get.height * 0.03),
-              InkWell(
+              GestureDetector(
                 onTap: () {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (con) => SignUpScreenM()));
                 },
                 child: Container(
                   height: 55,
-                  width: MediaQuery.of(context).size.width,
+                  width: MediaQuery.of(context).size.width * 0.6,
                   margin: const EdgeInsets.symmetric(horizontal: 20),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
-                      color: ColorRes.containerColor),
+                      gradient: LinearGradient(
+                        colors: [
+                          ColorRes.containerColor,
+                          const Color(0xFFFFD700).withOpacity(0.8),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFFFFD700).withOpacity(0.3),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ]),
                   child: Text(
                     Strings.createAccount,
                     style: appTextStyle(
@@ -97,20 +111,35 @@ class FirstPageScreenM extends StatelessWidget {
                 ),
               ),
               SizedBox(height: Get.height * 0.0344),
-              InkWell(
+              GestureDetector(
                 onTap: () {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (con) => const SignInScreenM()));
                 },
                 child: Container(
                   height: 55,
-                  width: 327,
+                  width: 200,
                   // width: MediaQuery.of(context).size.width,
                   margin: const EdgeInsets.symmetric(horizontal: 20),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
                     border: Border.all(color: ColorRes.containerColor),
+                    gradient: LinearGradient(
+                      colors: [
+                        const Color(0xFFFFFDF5),
+                        const Color(0xFFFFD700).withOpacity(0.3),
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFFFFD700).withOpacity(0.25),
+                        blurRadius: 6,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
                   child: Text(Strings.signIn,
                       style: appTextStyle(

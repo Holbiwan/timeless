@@ -151,19 +151,16 @@ class FirstScreen extends StatelessWidget {
 
               SizedBox(height: Get.height * 0.01),
 
-              Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (con) => const SigninScreenU(),
-                      ),
-                    );
-                  },
-                  borderRadius: BorderRadius.circular(15),
-                  child: Container(
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (con) => const SigninScreenU(),
+                    ),
+                  );
+                },
+                child: Container(
                     height: 44,
                     width: Get.width * 0.75,
                     margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -203,23 +200,19 @@ class FirstScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-              ),
 
               SizedBox(height: Get.height * 0.01),
 
-              Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (con) => const SignUpScreen(),
-                      ),
-                    );
-                  },
-                  borderRadius: BorderRadius.circular(15),
-                  child: Container(
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (con) => const SignUpScreen(),
+                    ),
+                  );
+                },
+                child: Container(
                     height: 44,
                     width: Get.width * 0.75,
                     margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -259,23 +252,19 @@ class FirstScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-              ),
               SizedBox(height: Get.height * 0.01),
 
               // 💼 BOUTON SIGN IN AS PRO
-              Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (con) => const EmployerSignInChoiceScreen(),
-                      ),
-                    );
-                  },
-                  borderRadius: BorderRadius.circular(15),
-                  child: Container(
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (con) => const EmployerSignInChoiceScreen(),
+                    ),
+                  );
+                },
+                child: Container(
                     height: 44,
                     width: Get.width * 0.75,
                     margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -344,22 +333,18 @@ class FirstScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-              ),
               SizedBox(height: Get.height * 0.01),
 
-              Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const EmployerSignInScreen(),
-                      ),
-                    );
-                  },
-                  borderRadius: BorderRadius.circular(15),
-                  child: Container(
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const EmployerSignInScreen(),
+                    ),
+                  );
+                },
+                child: Container(
                     height: 44,
                     width: Get.width * 0.75,
                     margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -428,7 +413,6 @@ class FirstScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-              ),
 
               SizedBox(height: Get.height * 0.03),
 
