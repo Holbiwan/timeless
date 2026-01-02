@@ -49,8 +49,7 @@ class JobDetailController extends GetxController {
   // Load bookmark status from preferences
   void loadBookmarkStatus() {
     try {
-      // TODO: Implement bookmark persistence
-      // For now, default to false
+      // Note: Bookmark persistence not yet implemented
       isBookmarked.value = false;
     } catch (e) {
       print('Error loading bookmark status: $e');
@@ -62,8 +61,7 @@ class JobDetailController extends GetxController {
     try {
       isBookmarked.value = !isBookmarked.value;
       
-      // TODO: Persist bookmark status
-      // Could store in SharedPreferences or Firebase
+      // Note: Persistence will be added in future version
       
       Get.snackbar(
         isBookmarked.value ? 'Favori ajouté' : 'Favori supprimé',

@@ -380,17 +380,13 @@ class _MyApplicationsScreenState extends State<MyApplicationsScreen> {
       case ApplicationStatus.viewed:
         return Colors.blue;
       case ApplicationStatus.shortlisted:
-        // TODO: Handle this case.
-        throw UnimplementedError();
+        return Colors.orange;
       case ApplicationStatus.interview:
-        // TODO: Handle this case.
-        throw UnimplementedError();
+        return Colors.purple;
       case ApplicationStatus.hired:
-        // TODO: Handle this case.
-        throw UnimplementedError();
+        return Colors.green;
       case ApplicationStatus.withdrawn:
-        // TODO: Handle this case.
-        throw UnimplementedError();
+        return Colors.grey;
     }
   }
 
@@ -405,17 +401,13 @@ class _MyApplicationsScreenState extends State<MyApplicationsScreen> {
       case ApplicationStatus.viewed:
         return 'Visualisée';
       case ApplicationStatus.shortlisted:
-        // TODO: Handle this case.
-        throw UnimplementedError();
+        return 'Présélectionnée';
       case ApplicationStatus.interview:
-        // TODO: Handle this case.
-        throw UnimplementedError();
+        return 'Entretien';
       case ApplicationStatus.hired:
-        // TODO: Handle this case.
-        throw UnimplementedError();
+        return 'Embauché';
       case ApplicationStatus.withdrawn:
-        // TODO: Handle this case.
-        throw UnimplementedError();
+        return 'Retirée';
     }
   }
 

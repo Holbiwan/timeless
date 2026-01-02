@@ -1,6 +1,4 @@
-// Main entry point of the Timeless app
-// This file initializes Firebase, localization, global services,
-// and defines the main application widget using GetX.
+// App entry point - sets up Firebase, localization, and core services
 
 // ignore_for_file: deprecated_member_use
 
