@@ -45,7 +45,9 @@ class _SigninScreenUState extends State<SigninScreenU> {
   void initState() {
     super.initState();
     controller.loading.value = false;
-    controller.getRememberEmailDataUser();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.getRememberEmailDataUser();
+    });
   }
 
   Future<void> _onSwitchGoogleAccount() async {

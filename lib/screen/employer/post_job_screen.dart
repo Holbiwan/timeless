@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/services/employer_service.dart';
+import 'package:timeless/services/job_email_service.dart';
 import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/pref_keys.dart';
 
@@ -29,6 +30,8 @@ class _PostJobScreenState extends State<PostJobScreen> {
   String? _jobType = 'Full-time';
   bool _remote = true;
   Map<String, dynamic>? _employerData;
+  bool _isLoadingEmployerData = true;
+  String? _employerError;
 
   @override
   void initState() {
@@ -49,31 +52,45 @@ class _PostJobScreenState extends State<PostJobScreen> {
   Future<void> _loadEmployerData() async {
     try {
       final user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
-        // Check if employer can access dashboard
-        final canAccess = await EmployerService.canAccessEmployerDashboard();
-        if (!canAccess) {
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('❌ Your employer account is not active or verified'),
-                backgroundColor: Colors.red,
-              ),
-            );
-          }
-          return;
-        }
-
-        // Load employer data
-        final data = await EmployerService.getCurrentEmployerData();
-        if (data != null && mounted) {
+      if (user == null) {
+        if (mounted) {
           setState(() {
-            _employerData = data;
+            _isLoadingEmployerData = false;
+            _employerError = 'User not authenticated';
           });
         }
+        return;
+      }
+
+      // Check if employer can access dashboard
+      final canAccess = await EmployerService.canAccessEmployerDashboard();
+      if (!canAccess) {
+        if (mounted) {
+          setState(() {
+            _isLoadingEmployerData = false;
+            _employerError = 'Your employer account is not active or verified. Please contact support.';
+          });
+        }
+        return;
+      }
+
+      // Load employer data
+      final data = await EmployerService.getCurrentEmployerData();
+      if (mounted) {
+        setState(() {
+          _employerData = data;
+          _isLoadingEmployerData = false;
+          _employerError = data == null ? 'Failed to load employer data' : null;
+        });
       }
     } catch (e) {
       debugPrint('Error loading employer data: $e');
+      if (mounted) {
+        setState(() {
+          _isLoadingEmployerData = false;
+          _employerError = 'Error loading employer data: ${e.toString()}';
+        });
+      }
     }
   }
 
@@ -148,6 +165,20 @@ class _PostJobScreenState extends State<PostJobScreen> {
       
       // Additional validation through service
       await EmployerService.validateAndMarkJob(docRef.id, user.uid);
+
+      // Send job posting confirmation email
+      try {
+        await JobEmailService.sendJobPostedConfirmation(
+          jobTitle: _titleCtrl.text.trim(),
+          companyName: _employerData!['companyName'],
+          location: _locationCtrl.text.trim(),
+          jobType: _jobType!,
+          salary: '${_salaryMinCtrl.text}-${_salaryMaxCtrl.text}€',
+          jobId: docRef.id,
+        );
+      } catch (e) {
+        debugPrint('❌ Job posting email failed: $e');
+      }
 
       debugPrint(
           '✅ JOB PUBLISHED TO FIREBASE: ${_titleCtrl.text} by ${_employerData!['companyName']}');
@@ -260,10 +291,14 @@ class _PostJobScreenState extends State<PostJobScreen> {
       'Temporary'
     ];
 
-    // Afficher un loader si les données employeur se chargent
-    if (_employerData == null) {
+    // Show loading state
+    if (_isLoadingEmployerData) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Create Job Posting')),
+        appBar: AppBar(
+          title: const Text('Create Job Posting'),
+          backgroundColor: const Color(0xFF000647),
+          foregroundColor: Colors.white,
+        ),
         body: const Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -272,6 +307,67 @@ class _PostJobScreenState extends State<PostJobScreen> {
               SizedBox(height: 16),
               Text('Loading your employer information...'),
             ],
+          ),
+        ),
+      );
+    }
+
+    // Show error state
+    if (_employerError != null) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Create Job Posting'),
+          backgroundColor: const Color(0xFF000647),
+          foregroundColor: Colors.white,
+        ),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.error_outline,
+                  color: Colors.red[700],
+                  size: 64,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Access Denied',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.red[700],
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  _employerError!,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 14, color: Colors.grey),
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _isLoadingEmployerData = true;
+                      _employerError = null;
+                    });
+                    _loadEmployerData();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF000647),
+                    foregroundColor: Colors.white,
+                  ),
+                  child: const Text('Retry'),
+                ),
+                const SizedBox(height: 12),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('Go Back'),
+                ),
+              ],
+            ),
           ),
         ),
       );

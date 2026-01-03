@@ -258,288 +258,139 @@ class ApplicationsScreen extends StatelessWidget {
                                                 children: [
                                                   shouldShow
                                                       ? Container(
-                                                        height: 160,
-                                                        width: Get.width,
-                                                        margin: const EdgeInsets
-                                                            .symmetric(
-                                                            horizontal: 18,
-                                                            vertical: 4),
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(15),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          borderRadius:
-                                                              const BorderRadius
-                                                                  .all(
-                                                            Radius.circular(15),
-                                                          ),
-                                                          border: Border.all(
-                                                            color: Colors.grey
-                                                                .withOpacity(
-                                                                    0.3),
-                                                          ),
-                                                          color: applicationController
-                                                                      .selectedJobs
-                                                                      .value ==
-                                                                  3
-                                                              ? Colors
-                                                                  .red.shade800
-                                                              : const Color.fromARGB(255, 0, 6, 71),
-                                                          boxShadow: [
-                                                            BoxShadow(
-                                                              color: Colors
-                                                                  .black
-                                                                  .withOpacity(
-                                                                      0.3),
-                                                              spreadRadius: 2,
-                                                              blurRadius: 8,
-                                                              offset:
-                                                                  const Offset(
-                                                                      0, 3),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        child: Column(
-                                                          children: [
-                                                            Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .only(
-                                                                      bottom:
-                                                                          8),
-                                                              child: Row(
-                                                                children: [
-                                                                  Expanded(
-                                                                    child:
-                                                                        Column(
-                                                                      mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .center,
-                                                                      crossAxisAlignment:
-                                                                          CrossAxisAlignment
-                                                                              .start,
-                                                                      children: [
-                                                                        Text(
-                                                                          snapshot2
-                                                                              .data!
-                                                                              .docs[index2]['position'],
-                                                                          style:
-                                                                              appTextStyle(
-                                                                            color:
-                                                                                Colors.white,
-                                                                            fontSize:
-                                                                                16,
-                                                                            fontWeight:
-                                                                                FontWeight.w600,
-                                                                          ),
-                                                                        ),
-                                                                        Text(
-                                                                          snapshot
-                                                                              .data!
-                                                                              .docs[index]['companyName'],
-                                                                          style:
-                                                                              appTextStyle(
-                                                                            color:
-                                                                                ColorRes.appleGreen,
-                                                                            fontSize:
-                                                                                14,
-                                                                            fontWeight:
-                                                                                FontWeight.w500,
-                                                                          ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ),
-                                                                  IconButton(
-                                                                    onPressed:
-                                                                        () async {
-                                                                      // Confirmation dialog
-                                                                      bool?
-                                                                          confirm =
-                                                                          await showDialog<
-                                                                              bool>(
-                                                                        context:
-                                                                            context,
-                                                                        builder:
-                                                                            (context) =>
-                                                                                AlertDialog(
-                                                                          title:
-                                                                              const Text('Delete Application'),
-                                                                          content:
-                                                                              const Text('Are you sure you want to delete this application?'),
-                                                                          actions: [
-                                                                            TextButton(
-                                                                              onPressed: () => Navigator.of(context).pop(false),
-                                                                              child: const Text('Cancel'),
-                                                                            ),
-                                                                            TextButton(
-                                                                              onPressed: () => Navigator.of(context).pop(true),
-                                                                              child: const Text('Delete'),
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                      );
-
-                                                                      if (confirm ==
-                                                                          true) {
-                                                                        try {
-                                                                          // Delete from userDetails subcollection
-                                                                          await FirebaseFirestore
-                                                                              .instance
-                                                                              .collection('Applicants')
-                                                                              .doc(snapshot.data!.docs[index].id)
-                                                                              .collection('userDetails')
-                                                                              .doc(snapshot2.data!.docs[index2].id)
-                                                                              .delete();
-
-                                                                          Get.snackbar(
-                                                                            'Deleted',
-                                                                            'Application deleted successfully',
-                                                                            backgroundColor: const Color.fromARGB(
-                                                                                255,
-                                                                                0,
-                                                                                6,
-                                                                                71),
-                                                                            colorText:
-                                                                                Colors.white,
-                                                                          );
-                                                                        } catch (e) {
-                                                                          Get.snackbar(
-                                                                            'Error',
-                                                                            'Unable to delete application',
-                                                                            backgroundColor:
-                                                                                Colors.red,
-                                                                            colorText:
-                                                                                Colors.white,
-                                                                          );
-                                                                        }
-                                                                      }
-                                                                    },
-                                                                    icon:
-                                                                        const Icon(
-                                                                      Icons
-                                                                          .delete_outline,
-                                                                      color: Colors
-                                                                          .white,
-                                                                      size: 20,
-                                                                    ),
-                                                                  ),
-                                                                ],
+                                                          margin: const EdgeInsets.symmetric(
+                                                              horizontal: 18, vertical: 8),
+                                                          decoration: BoxDecoration(
+                                                            color: Colors.white,
+                                                            borderRadius: BorderRadius.circular(16),
+                                                            boxShadow: [
+                                                              BoxShadow(
+                                                                color: Colors.black.withOpacity(0.05),
+                                                                offset: const Offset(0, 4),
+                                                                blurRadius: 12,
+                                                                spreadRadius: 0,
                                                               ),
-                                                            ),
-                                                            const Divider(
-                                                              color:
-                                                                  Colors.grey,
-                                                              height: 8,
-                                                            ),
-                                                            InkWell(
+                                                            ],
+                                                          ),
+                                                          child: Material(
+                                                            color: Colors.transparent,
+                                                            child: InkWell(
+                                                              borderRadius: BorderRadius.circular(16),
                                                               onTap: () {
                                                                 if (currentStatus == 'Sent') {
-                                                                  Navigator.push(
-                                                                    context,
-                                                                    MaterialPageRoute(
-                                                                      builder: (con) => SentScreen(
-                                                                        position: snapshot2.data!.docs[index2]['position'],
-                                                                        companyName: snapshot.data!.docs[index]['companyName'],
-                                                                        message: snapshot2.data!.docs[index2]['message'],
-                                                                        salary: snapshot2.data!.docs[index2]['salary'],
-                                                                        location: snapshot2.data!.docs[index2]['location'],
-                                                                        type: snapshot2.data!.docs[index2]['type'],
-                                                                      ),
-                                                                    ),
-                                                                  );
+                                                                  Navigator.push(context, MaterialPageRoute(builder: (con) => SentScreen(position: snapshot2.data!.docs[index2]['position'], companyName: snapshot.data!.docs[index]['companyName'], message: snapshot2.data!.docs[index2]['message'], salary: snapshot2.data!.docs[index2]['salary'], location: snapshot2.data!.docs[index2]['location'], type: snapshot2.data!.docs[index2]['type'])));
                                                                 } else if (currentStatus == 'Rejected') {
-                                                                  Navigator.push(
-                                                                    context,
-                                                                    MaterialPageRoute(
-                                                                      builder: (con) => RejectedScreen(
-                                                                        position: snapshot2.data!.docs[index2]['position'],
-                                                                        companyName: snapshot.data!.docs[index]['companyName'],
-                                                                        message: snapshot2.data!.docs[index2]['message'],
-                                                                        salary: snapshot2.data!.docs[index2]['salary'],
-                                                                        location: snapshot2.data!.docs[index2]['location'],
-                                                                        type: snapshot2.data!.docs[index2]['type'],
-                                                                      ),
-                                                                    ),
-                                                                  );
+                                                                  Navigator.push(context, MaterialPageRoute(builder: (con) => RejectedScreen(position: snapshot2.data!.docs[index2]['position'], companyName: snapshot.data!.docs[index]['companyName'], message: snapshot2.data!.docs[index2]['message'], salary: snapshot2.data!.docs[index2]['salary'], location: snapshot2.data!.docs[index2]['location'], type: snapshot2.data!.docs[index2]['type'])));
                                                                 } else if (currentStatus == 'Schedule Interview') {
-                                                                  // Show interview details if available
                                                                   if (interviewSnapshot.hasData && interviewSnapshot.data!.docs.isNotEmpty) {
                                                                     final interviewDoc = interviewSnapshot.data!.docs.first;
                                                                     final interviewData = interviewDoc.data() as Map<String, dynamic>;
                                                                     _showInterviewDetails(context, interviewData);
                                                                   } else {
-                                                                    Navigator.push(
-                                                                      context,
-                                                                      MaterialPageRoute(
-                                                                        builder: (con) => SentScreen(
-                                                                          position: snapshot2.data!.docs[index2]['position'],
-                                                                          companyName: snapshot.data!.docs[index]['companyName'],
-                                                                          message: snapshot2.data!.docs[index2]['message'],
-                                                                          salary: snapshot2.data!.docs[index2]['salary'],
-                                                                          location: snapshot2.data!.docs[index2]['location'],
-                                                                          type: snapshot2.data!.docs[index2]['type'],
-                                                                        ),
-                                                                      ),
-                                                                    );
+                                                                    Navigator.push(context, MaterialPageRoute(builder: (con) => SentScreen(position: snapshot2.data!.docs[index2]['position'], companyName: snapshot.data!.docs[index]['companyName'], message: snapshot2.data!.docs[index2]['message'], salary: snapshot2.data!.docs[index2]['salary'], location: snapshot2.data!.docs[index2]['location'], type: snapshot2.data!.docs[index2]['type'])));
                                                                   }
                                                                 }
                                                               },
-                                                              child: Container(
-                                                                height: 28,
-                                                                width:
-                                                                    Get.width,
-                                                                decoration:
-                                                                    BoxDecoration(
-                                                                  color: applicationController
-                                                                              .selectedJobs
-                                                                              .value ==
-                                                                          3
-                                                                      ? const Color(
-                                                                          0xffFEEFEF)
-                                                                      : currentStatus == 'Schedule Interview'
-                                                                          ? const Color(0xffFFFBED)
-                                                                          : currentStatus == 'Sent'
-                                                                              ? const Color(0xffEEF2FA)
-                                                                              : const Color(0xffFFFBED),
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              99),
-                                                                ),
-                                                                child: Center(
-                                                                  child: Text(
-                                                                    applicationController.selectedJobs.value == 3
-                                                                        ? "Delete Application"
-                                                                        : currentStatus == 'Schedule Interview'
-                                                                            ? "Interview Scheduled"
-                                                                            : currentStatus == 'Sent'
-                                                                                ? "Application Sent"
-                                                                                : "Application Pending",
-                                                                    style:
-                                                                        appTextStyle(
-                                                                      fontSize:
-                                                                          12,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w500,
-                                                                      color: applicationController.selectedJobs.value == 3
-                                                                          ? const Color(0xffDA1414)
-                                                                          : currentStatus == 'Schedule Interview'
-                                                                              ? const Color(0xff28a745)
-                                                                              : currentStatus == 'Sent'
-                                                                                  ? const Color(0xff2E5AAC)
-                                                                                  : const Color(0xffF1C100),
+                                                              child: Padding(
+                                                                padding: const EdgeInsets.all(16),
+                                                                child: Column(
+                                                                  children: [
+                                                                    Row(
+                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                      children: [
+                                                                        // Icon Container
+                                                                        Container(
+                                                                          height: 48,
+                                                                          width: 48,
+                                                                          padding: const EdgeInsets.all(10),
+                                                                          decoration: BoxDecoration(
+                                                                            color: (currentStatus == 'Schedule Interview' ? const Color(0xff28a745) : currentStatus == 'Sent' ? const Color(0xff2E5AAC) : const Color(0xffF1C100)).withOpacity(0.1),
+                                                                            borderRadius: BorderRadius.circular(12),
+                                                                          ),
+                                                                          child: Icon(
+                                                                            Icons.work_outline,
+                                                                            color: currentStatus == 'Schedule Interview' ? const Color(0xff28a745) : currentStatus == 'Sent' ? const Color(0xff2E5AAC) : const Color(0xffF1C100),
+                                                                            size: 24,
+                                                                          ),
+                                                                        ),
+                                                                        const SizedBox(width: 16),
+                                                                        // Content
+                                                                        Expanded(
+                                                                          child: Column(
+                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                            children: [
+                                                                              Text(
+                                                                                snapshot2.data!.docs[index2]['position'],
+                                                                                style: appTextStyle(
+                                                                                  color: const Color.fromARGB(255, 0, 6, 71),
+                                                                                  fontSize: 16,
+                                                                                  fontWeight: FontWeight.w700,
+                                                                                ),
+                                                                              ),
+                                                                              const SizedBox(height: 4),
+                                                                              Text(
+                                                                                snapshot.data!.docs[index]['companyName'],
+                                                                                style: appTextStyle(
+                                                                                  color: Colors.grey[600],
+                                                                                  fontSize: 14,
+                                                                                  fontWeight: FontWeight.w500,
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                        // Delete Action or Status Chip
+                                                                        if (applicationController.selectedJobs.value == 3)
+                                                                          IconButton(
+                                                                            onPressed: () async {
+                                                                              bool? confirm = await showDialog<bool>(
+                                                                                context: context,
+                                                                                builder: (context) => AlertDialog(
+                                                                                  title: const Text('Delete Application'),
+                                                                                  content: const Text('Are you sure you want to delete this application?'),
+                                                                                  actions: [
+                                                                                    TextButton(onPressed: () => Navigator.of(context).pop(false), child: const Text('Cancel')),
+                                                                                    TextButton(onPressed: () => Navigator.of(context).pop(true), child: const Text('Delete')),
+                                                                                  ],
+                                                                                ),
+                                                                              );
+
+                                                                              if (confirm == true) {
+                                                                                try {
+                                                                                  await FirebaseFirestore.instance.collection('Applicants').doc(snapshot.data!.docs[index].id).collection('userDetails').doc(snapshot2.data!.docs[index2].id).delete();
+                                                                                  Get.snackbar('Deleted', 'Application deleted successfully', backgroundColor: const Color.fromARGB(255, 0, 6, 71), colorText: Colors.white);
+                                                                                } catch (e) {
+                                                                                  Get.snackbar('Error', 'Unable to delete application', backgroundColor: Colors.red, colorText: Colors.white);
+                                                                                }
+                                                                              }
+                                                                            },
+                                                                            icon: const Icon(Icons.delete_outline, color: Colors.red),
+                                                                          )
+                                                                        else
+                                                                          Container(
+                                                                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                                                            decoration: BoxDecoration(
+                                                                              color: (currentStatus == 'Schedule Interview' ? const Color(0xff28a745) : currentStatus == 'Sent' ? const Color(0xff2E5AAC) : const Color(0xffF1C100)).withOpacity(0.1),
+                                                                              borderRadius: BorderRadius.circular(20),
+                                                                            ),
+                                                                            child: Text(
+                                                                              currentStatus == 'Schedule Interview' ? "Interview Scheduled" : currentStatus == 'Sent' ? "Application Sent" : "Application Pending",
+                                                                              style: appTextStyle(
+                                                                                fontSize: 11,
+                                                                                fontWeight: FontWeight.w600,
+                                                                                color: currentStatus == 'Schedule Interview' ? const Color(0xff28a745) : currentStatus == 'Sent' ? const Color(0xff2E5AAC) : const Color(0xffF1C100),
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                      ],
                                                                     ),
-                                                                  ),
+                                                                  ],
                                                                 ),
                                                               ),
                                                             ),
-                                                          ],
-                                                        ),
-                                                      )
-                                                    : const SizedBox(),
+                                                          ),
+                                                        )
+                                                      : const SizedBox(),
                                                 ],
                                               );
                                             });

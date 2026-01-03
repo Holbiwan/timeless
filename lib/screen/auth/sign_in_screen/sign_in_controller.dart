@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:timeless/screen/dashboard/dashboard_screen.dart';
+import 'package:timeless/screen/dashboard/dashboard_controller.dart';
 import 'package:timeless/screen/auth/email_verification/email_verification_screen.dart';
 import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/services/auth_service.dart';
@@ -120,8 +121,22 @@ class SignInScreenController extends GetxController {
 
   void _gotoDashboard() {
     print('🚀 Navigating to DashBoardScreen...');
-    Get.offAll(() => DashBoardScreen());
-    print('✅ Navigation to DashBoardScreen completed');
+    
+    // Debug: Check if userId is saved
+    final userId = PreferencesService.getString(PrefKeys.userId);
+    print('🔍 UserId in preferences: $userId');
+    print('🔍 Current user: ${auth.currentUser?.uid}');
+    
+    // Force a small delay to ensure preferences are saved, then navigate
+    Future.delayed(const Duration(milliseconds: 200), () {
+      // Clear any existing DashBoardController to force refresh
+      if (Get.isRegistered<DashBoardController>()) {
+        Get.delete<DashBoardController>();
+      }
+      
+      Get.offAll(() => DashBoardScreen());
+      print('✅ Navigation to DashBoardScreen completed');
+    });
   }
 
   // // --- SECTION: 

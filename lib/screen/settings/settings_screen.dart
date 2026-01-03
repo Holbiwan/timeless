@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:timeless/screen/dashboard/dashboard_controller.dart';
 import 'package:timeless/screen/looking_for_screen/looking_for_screen.dart';
 import 'package:timeless/screen/profile/profile_controller.dart';
@@ -26,82 +27,169 @@ class SettingsScreenU extends StatelessWidget {
   Widget build(BuildContext context) {
     DashBoardController controller = Get.put(DashBoardController());
     return Scaffold(
-      backgroundColor: ColorRes.backgroundColor,
-      body: SingleChildScrollView(
+      backgroundColor: Colors.grey[50],
+      body: SafeArea(
         child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-            const SizedBox(height: 60),
-            Stack(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    if (Navigator.canPop(context)) {
-                      Navigator.pop(context);
-                    } else {
-                      Get.offAllNamed('/dashboard');
-                    }
-                  },
-                  child: Container(
-                    height: 40,
-                    width: 40,
-                    margin: const EdgeInsets.only(left: 14),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: const Color(0xFF000647), width: 2.0),
-                    ),
-                    child: const Align(
-                      alignment: Alignment.center,
-                      child: Icon(
+          children: [
+            // Header moderne
+            Container(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.06),
+                    blurRadius: 10,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      if (Navigator.canPop(context)) {
+                        Navigator.pop(context);
+                      } else {
+                        Get.offAllNamed('/dashboard');
+                      }
+                    },
+                    child: Container(
+                      height: 40,
+                      width: 40,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[100],
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Icon(
                         Icons.arrow_back,
-                        color: Colors.black,
+                        color: Color(0xFF1F2937),
+                        size: 20,
                       ),
                     ),
                   ),
-                ),
-                Align(
-                  alignment: Alignment.center,
-                  child: Center(
-                    child: Text(
-                      Strings.settings,
-                      style: appTextStyle(
-                          color: ColorRes.black,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w500),
+                  const SizedBox(width: 16),
+                  Text(
+                    "Settings",
+                    style: GoogleFonts.inter(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0xFF1F2937),
                     ),
                   ),
-                )
-              ],
+                ],
+              ),
             ),
-            const SizedBox(height: 20),
-            SettingsMenuItem(
-              icon: Icons.edit,
-              title: "Edit profile",
-              onTap: () => _showEditProfile(context),
+
+            // Content
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Account",
+                      style: GoogleFonts.inter(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: const Color(0xFF6B7280),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    
+                    // Profile settings card
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.04),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          _buildSettingsItem(
+                            icon: Icons.person_outline,
+                            title: "Edit profile",
+                            subtitle: "Update your personal information",
+                            color: const Color(0xFF0D47A1),
+                            onTap: () => _showEditProfile(context),
+                          ),
+                          _buildDivider(),
+                          _buildSettingsItem(
+                            icon: Icons.lock_outline,
+                            title: "Change password",
+                            subtitle: "Update your password",
+                            color: const Color(0xFF2196F3),
+                            onTap: () => _showChangePassword(context),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 32),
+
+                    Text(
+                      "Danger Zone",
+                      style: GoogleFonts.inter(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: const Color(0xFF6B7280),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Dangerous actions card
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: Colors.red[100]!, width: 1),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.04),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          _buildSettingsItem(
+                            icon: Icons.delete_outline,
+                            title: "Delete account",
+                            subtitle: "Permanently delete your account",
+                            color: Colors.red[600]!,
+                            onTap: () => _showDeleteAccount(context),
+                            isDangerous: true,
+                          ),
+                          _buildDivider(),
+                          _buildSettingsItem(
+                            icon: Icons.logout,
+                            title: "Sign out",
+                            subtitle: "Sign out of your account",
+                            color: const Color(0xFF0D47A1),
+                            onTap: () => _showLogoutConfirmation(context, controller),
+                            isDangerous: true,
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 40),
+                  ],
+                ),
+              ),
             ),
-            const SettingsDivider(),
-            SettingsMenuItem(
-              icon: Icons.lock_reset,
-              title: "Change password",
-              onTap: () => _showChangePassword(context),
-            ),
-            const SettingsDivider(),
-            SettingsMenuItem(
-              icon: Icons.delete_forever,
-              title: "Delete account",
-              onTap: () => _showDeleteAccount(context),
-            ),
-            const SizedBox(height: 20),
-            SettingsMenuItem(
-              icon: Icons.logout,
-              title: Strings.logout,
-              onTap: () => _showLogoutConfirmation(context, controller),
-            ),
-          ]),
+          ],
         ),
-      );
+      ),
+    );
   }
 
   settingModalBottomSheet(context) async {
@@ -224,10 +312,10 @@ class SettingsScreenU extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Colors.orange[100],
+                color: Colors.blue[100],
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: Icon(Icons.logout_rounded, color: Colors.orange[600], size: 24),
+              child: Icon(Icons.logout_rounded, color: const Color(0xFF0D47A1), size: 24),
             ),
             const SizedBox(width: 12),
             Text(
@@ -626,23 +714,6 @@ class SettingsScreenU extends StatelessWidget {
                     ),
                     const Divider(height: 1, indent: 20, endIndent: 20),
                     
-                    ListTile(
-                      leading: const Icon(Icons.photo_camera, color: Color(0xFF000647)),
-                      title: Text("Profile picture", style: appTextStyle(fontSize: 15, color: ColorRes.black)),
-                      subtitle: Obx(() => Text(
-                        controller.hasProfileImage() ? 'Picture set' : 'No picture',
-                        style: appTextStyle(fontSize: 13, color: Colors.grey[600]),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      )),
-                      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                      onTap: () {
-                        Get.back();
-                        _showEditProfilePictureDialog(context);
-                      },
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
-                    ),
-                    
                     SizedBox(height: MediaQuery.of(context).viewInsets.bottom + 20),
                   ],
                 ),
@@ -697,7 +768,7 @@ class SettingsScreenU extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  Icon(Icons.email_outlined, color: Colors.blue[600], size: 32),
+                  Icon(Icons.email_outlined, color: const Color(0xFF2196F3), size: 32),
                   const SizedBox(height: 12),
                   Text(
                     "Password Reset Email",
@@ -1218,78 +1289,6 @@ class SettingsScreenU extends StatelessWidget {
     );
   }
   
-  void _showEditProfilePictureDialog(BuildContext context) {
-    final controller = profileController;
-    
-    Get.bottomSheet(
-      Container(
-        padding: const EdgeInsets.all(20),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
-          ),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              children: [
-                Icon(Icons.photo_camera, color: const Color(0xFF000647), size: 24),
-                const SizedBox(width: 8),
-                Text(
-                  "Profile Picture",
-                  style: appTextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    color: ColorRes.black,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            
-            ListTile(
-              leading: const Icon(Icons.camera_alt, color: Color(0xFF000647)),
-              title: Text("Take a photo", style: appTextStyle(fontSize: 16, color: ColorRes.black)),
-              onTap: () async {
-                Get.back();
-                await controller.onTapImage();
-              },
-            ),
-            const Divider(),
-            ListTile(
-              leading: const Icon(Icons.photo_library, color: Color(0xFF000647)),
-              title: Text("Choose from gallery", style: appTextStyle(fontSize: 16, color: ColorRes.black)),
-              onTap: () async {
-                Get.back();
-                await controller.onTapGallery1();
-              },
-            ),
-            if (controller.hasProfileImage()) ...[
-              const Divider(),
-              ListTile(
-                leading: Icon(Icons.delete, color: Colors.red[600]),
-                title: Text("Remove photo", style: appTextStyle(fontSize: 16, color: Colors.red[600])),
-                onTap: () {
-                  Get.back();
-                  controller.profileImageUrl.value = '';
-                  controller.onTapSubmit();
-                  Get.snackbar(
-                    "Success",
-                    "Profile picture removed",
-                    backgroundColor: const Color(0xFF000647),
-                    colorText: Colors.white,
-                  );
-                },
-              ),
-            ],
-          ],
-        ),
-      ),
-    );
-  }
 
   void _sendPasswordResetEmail() async {
     final controller = profileController;
@@ -1659,5 +1658,59 @@ class SettingsScreenU extends StatelessWidget {
         duration: const Duration(seconds: 6),
       );
     }
+  }
+
+  // Widget moderne pour les éléments de settings
+  Widget _buildSettingsItem({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required Color color,
+    required VoidCallback onTap,
+    bool isDangerous = false,
+  }) {
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      leading: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Icon(icon, color: color, size: 20),
+      ),
+      title: Text(
+        title,
+        style: GoogleFonts.inter(
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+          color: isDangerous ? color : const Color(0xFF1F2937),
+        ),
+      ),
+      subtitle: Text(
+        subtitle,
+        style: GoogleFonts.inter(
+          fontSize: 14,
+          color: const Color(0xFF6B7280),
+        ),
+      ),
+      trailing: Icon(
+        Icons.arrow_forward_ios,
+        size: 16,
+        color: Colors.grey[400],
+      ),
+      onTap: onTap,
+    );
+  }
+
+  // Widget pour les dividers
+  Widget _buildDivider() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Divider(
+        height: 1,
+        color: Colors.grey[200],
+      ),
+    );
   }
 }

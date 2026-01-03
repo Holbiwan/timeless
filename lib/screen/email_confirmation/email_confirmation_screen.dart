@@ -146,7 +146,6 @@ class _EmailConfirmationScreenState extends State<EmailConfirmationScreen> {
                             <li>✅ Access your employer dashboard</li>
                             <li>✅ Receive and review applications</li>
                             <li>✅ Manage your company profile</li>
-                            <li>✅ Track application analytics</li>
                         </ul>
                         
                         <p>Ready to find your next great hire? Let's get started!</p>

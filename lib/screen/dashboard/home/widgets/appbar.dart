@@ -15,128 +15,77 @@ Widget homeAppBar({VoidCallback? onRefresh}) {
   final AccessibilityService accessibilityService = Get.find<AccessibilityService>();
   final ProfileController profileController = Get.put(ProfileController());
   
-  return Obx(() => Container(
-    padding: const EdgeInsets.all(AppTheme.spacingMedium),
-    margin: const EdgeInsets.symmetric(horizontal: AppTheme.spacingRegular),
-    child: Row(
-      children: [
-        accessibilityService.buildAccessibleWidget(
-          semanticLabel: 'Back to login',
-          onTap: () {
-            accessibilityService.triggerHapticFeedback();
-            Get.offAllNamed('/');
-          },
-          child: Container(
-            height: 38,
-            width: 38,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: const Color(0xFF000647),
-              borderRadius: BorderRadius.circular(AppTheme.radiusRegular),
-            ),
-            child: const Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-              size: 18,
-            ),
-          ),
+  return Obx(() {
+    // Force observation of observable variables
+    profileController.profileImageUrl.value; // Observe this value
+    
+    return Container(
+    margin: const EdgeInsets.fromLTRB(16, 4, 16, 6),
+    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+    decoration: BoxDecoration(
+      gradient: LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [
+          Colors.black,
+          Colors.black.withOpacity(0.9),
+          const Color(0xFF000647),
+        ],
+        stops: const [0.0, 0.6, 1.0],
+      ),
+      borderRadius: BorderRadius.circular(20),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.3),
+          blurRadius: 15,
+          offset: const Offset(0, 8),
         ),
-        
-        const SizedBox(width: 12),
-        
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+        BoxShadow(
+          color: const Color(0xFF000647).withOpacity(0.2),
+          blurRadius: 20,
+          offset: const Offset(0, 4),
+        ),
+      ],
+    ),
+    child: Column(
+      children: [
+        // Header row avec actions
+        Padding(
+          padding: const EdgeInsets.only(top: 8),
+          child: Row(
             children: [
-              // Photo du candidat (taille agrandie)
-              Obx(() => Container(
-                width: 120,
-                height: 120,
-                margin: const EdgeInsets.only(bottom: 8),
+              accessibilityService.buildAccessibleWidget(
+              semanticLabel: 'Back to login',
+              onTap: () {
+                accessibilityService.triggerHapticFeedback();
+                Get.offAllNamed('/');
+              },
+              child: Container(
+                height: 40,
+                width: 40,
+                alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: const Color(0xFF000647), width: 2),
+                  color: Colors.white, // White background
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: const Color(0xFFFF8C00).withOpacity(0.2), width: 1),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      spreadRadius: 1,
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
+                      color: Colors.black.withOpacity(0.2),
+                      blurRadius: 6,
+                      offset: const Offset(0, 3),
                     ),
                   ],
                 ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(60),
-                  child: profileController.profileImageUrl.value.isNotEmpty
-                    ? Image.network(
-                        profileController.profileImageUrl.value,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) => Container(
-                          color: Colors.grey[100],
-                          child: const Icon(
-                            Icons.person,
-                            size: 60,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      )
-                    : Container(
-                        color: Colors.grey[100],
-                        child: const Icon(
-                          Icons.person,
-                          size: 60,
-                          color: Colors.grey,
-                        ),
-                      ),
+                child: const Icon(
+                  Icons.arrow_back,
+                  color: Colors.black, // Black icon
+                  size: 20,
                 ),
-              )),
-              
-              // Texte de bienvenue avec données en temps réel
-              StreamBuilder(
-                stream: AuthService.instance.getCurrentUserDataStream(),
-                builder: (context, snapshot) {
-                  String displayName = 'User';
-                  
-                  if (snapshot.hasData && snapshot.data != null) {
-                    displayName = snapshot.data!.fullName;
-                  } else {
-                    // Fallback to preferences only if Firebase data is not available
-                    final cachedName = PreferencesService.getString(PrefKeys.fullName);
-                    if (cachedName.isNotEmpty) {
-                      displayName = cachedName;
-                    }
-                  }
-                  
-                  return RichText(
-                    textAlign: TextAlign.center,
-                    text: TextSpan(
-                      text: '${translationService.getText('welcome')} ',
-                      style: accessibilityService.getAccessibleTextStyle(
-                        fontSize: AppTheme.fontSizeMedium,
-                        color: const Color(0xFF000647),
-                        fontWeight: FontWeight.w400,
-                      ),
-                      children: [
-                        TextSpan(
-                          text: displayName,
-                          style: accessibilityService.getAccessibleTextStyle(
-                            fontSize: AppTheme.fontSizeMedium,
-                            color: Colors.black87,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
               ),
-            ],
-          ),
-        ),
-        
-        // Actions modernes
-        Row(
-          children: [
+            ),
+            
+            const Spacer(),
+            
             // User Menu Button
             accessibilityService.buildAccessibleWidget(
               semanticLabel: 'User menu',
@@ -145,37 +94,249 @@ Widget homeAppBar({VoidCallback? onRefresh}) {
                 _showUserMenu();
               },
               child: Container(
-                height: 38,
-                width: 38,
+                height: 40,
+                width: 40,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: const Color(0xFF000647),
-                  borderRadius: BorderRadius.circular(AppTheme.radiusRegular),
+                  color: Colors.white, // White background
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: const Color(0xFFFF8C00).withOpacity(0.2), width: 1),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      blurRadius: 6,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
                 ),
                 child: const Icon(
-                  Icons.person,
-                  color: Colors.white,
-                  size: 18,
+                  Icons.menu,
+                  color: Colors.black, // Black icon
+                  size: 20,
                 ),
               ),
+            ),
+            ],
+          ),
+        ),
+        
+        const SizedBox(height: 2),
+        
+        // Profile section
+        Column(
+          children: [
+            // Profile Image avec fonctionnalité upload
+            Stack(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    accessibilityService.triggerHapticFeedback();
+                    profileController.onTapGallery1();
+                  },
+                  child: Obx(() => Container(
+                    width: 90,
+                    height: 90,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Colors.white,
+                          Colors.white.withOpacity(0.9),
+                        ],
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          spreadRadius: 3,
+                          blurRadius: 10,
+                          offset: const Offset(0, 5),
+                        ),
+                        BoxShadow(
+                          color: const Color(0xFF000647).withOpacity(0.1),
+                          spreadRadius: 1,
+                          blurRadius: 15,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Container(
+                      margin: const EdgeInsets.all(4),
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(43),
+                        child: profileController.profileImageUrl.value.isNotEmpty
+                          ? Image.network(
+                              profileController.profileImageUrl.value,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) => Container(
+                                color: const Color(0xFF000647).withOpacity(0.1),
+                                child: const Icon(
+                                  Icons.person, 
+                                  size: 54, 
+                                  color: Color(0xFF000647),
+                                ),
+                              ),
+                            )
+                          : Container(
+                              color: const Color(0xFF000647).withOpacity(0.1),
+                              child: const Icon(
+                                Icons.person, 
+                                size: 48, 
+                                color: Color(0xFF000647),
+                              ),
+                            ),
+                      ),
+                    ),
+                  )),
+                ),
+                // Camera icon pour upload
+                Positioned(
+                  bottom: 6,
+                  right: 6,
+                  child: GestureDetector(
+                    onTap: () {
+                      accessibilityService.triggerHapticFeedback();
+                      _showPhotoUploadOptions(profileController);
+                    },
+                    child: Container(
+                      width: 32,
+                      height: 32,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            const Color(0xFF000647),
+                            const Color(0xFF000647).withOpacity(0.8),
+                          ],
+                        ),
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white, width: 2),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.3),
+                            blurRadius: 8,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: const Icon(
+                        Icons.camera_alt,
+                        color: Colors.white,
+                        size: 19,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+              
+            const SizedBox(height: 6),
+            
+            // Welcome message avec gradient
+            StreamBuilder(
+              stream: AuthService.instance.getCurrentUserDataStream(),
+              builder: (context, snapshot) {
+                String displayName = 'candidate';
+                
+                if (snapshot.hasData && snapshot.data != null) {
+                  displayName = snapshot.data!.fullName;
+                } else {
+                  final cachedName = PreferencesService.getString(PrefKeys.fullName);
+                  if (cachedName.isNotEmpty) {
+                    displayName = cachedName;
+                  }
+                }
+                
+                return Column(
+                  children: [
+                    RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                        text: '${translationService.getText('welcome')} ',
+                        style: accessibilityService.getAccessibleTextStyle(
+                          fontSize: 17,
+                          color: Colors.white.withOpacity(0.9),
+                          fontWeight: FontWeight.w400,
+                        ),
+                        children: [
+                          TextSpan(
+                            text: displayName,
+                            style: accessibilityService.getAccessibleTextStyle(
+                              fontSize: 19,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    InkWell(
+                      onTap: () {
+                        accessibilityService.triggerHapticFeedback();
+                        if (onRefresh != null) onRefresh();
+                        Get.snackbar(
+                          'Refreshing',
+                          'Updating dashboard data...',
+                          backgroundColor: Colors.white,
+                          colorText: const Color(0xFF000647),
+                          duration: const Duration(seconds: 1),
+                          snackPosition: SnackPosition.TOP,
+                          margin: const EdgeInsets.all(10),
+                          borderRadius: 10,
+                        );
+                      },
+                      borderRadius: BorderRadius.circular(20),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.15),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: Colors.white.withOpacity(0.3), width: 1),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.refresh, color: Colors.white, size: 14),
+                            const SizedBox(width: 6),
+                            Text(
+                              'Refresh',
+                              style: accessibilityService.getAccessibleTextStyle(
+                                fontSize: 12,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
           ],
         ),
       ],
     ),
-  ));
+  );});
 }
 
-void _showUserMenu() {
+void _showPhotoUploadOptions(ProfileController profileController) {
+  final AccessibilityService accessibilityService = Get.find<AccessibilityService>();
+  
   Get.bottomSheet(
     Container(
-      padding: const EdgeInsets.all(AppTheme.spacingMedium),
+      padding: const EdgeInsets.all(24),
       margin: const EdgeInsets.only(bottom: 80),
       decoration: const BoxDecoration(
-        color: AppTheme.white,
+        color: Colors.white,
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(AppTheme.radiusLarge),
-          topRight: Radius.circular(AppTheme.radiusLarge),
+          topLeft: Radius.circular(24),
+          topRight: Radius.circular(24),
         ),
       ),
       child: Column(
@@ -186,22 +347,52 @@ void _showUserMenu() {
             width: 40,
             height: 4,
             decoration: BoxDecoration(
-              color: AppTheme.lightGrey,
+              color: Colors.grey[300],
               borderRadius: BorderRadius.circular(2),
             ),
           ),
-          const SizedBox(height: AppTheme.spacingMedium),
+          const SizedBox(height: 20),
           
-          // Menu items
-          _buildMenuItem(Icons.settings_outlined, 'Settings', () {
-            Get.back();
-            Get.to(() => const SettingsScreenU());
-          }),
-          _buildMenuItem(Icons.accessibility, 'Accessibility', () {
-            Get.back();
-            Get.to(() => const AccessibilityPanel());
-          }),
-          _buildMenuItem(Icons.logout, 'Logout', () => Get.offAllNamed('/')),
+          // Title
+          Text(
+            'Upload Profile Photo',
+            style: accessibilityService.getAccessibleTextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: const Color(0xFF000647),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Choose how you want to upload your photo',
+            style: accessibilityService.getAccessibleTextStyle(
+              fontSize: 14,
+              color: Colors.grey[600],
+            ),
+          ),
+          const SizedBox(height: 24),
+          
+          // Options
+          _buildPhotoOption(
+            Icons.camera_alt,
+            'Take Photo',
+            'Use your camera to take a new photo',
+            () {
+              Get.back();
+              profileController.onTapImage();
+            },
+          ),
+          const SizedBox(height: 16),
+          _buildPhotoOption(
+            Icons.photo_library,
+            'Choose from Gallery',
+            'Select an existing photo from your gallery',
+            () {
+              Get.back();
+              profileController.onTapGallery1();
+            },
+          ),
+          const SizedBox(height: 24),
         ],
       ),
     ),
@@ -209,29 +400,224 @@ void _showUserMenu() {
   );
 }
 
-Widget _buildMenuItem(IconData icon, String title, VoidCallback onTap) {
+Widget _buildPhotoOption(IconData icon, String title, String subtitle, VoidCallback onTap) {
   final AccessibilityService accessibilityService = Get.find<AccessibilityService>();
   
   return accessibilityService.buildAccessibleWidget(
     semanticLabel: title,
     onTap: onTap,
     child: Container(
-      margin: const EdgeInsets.only(bottom: AppTheme.spacingSmall),
-      padding: const EdgeInsets.all(AppTheme.spacingRegular),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppTheme.backgroundGrey,
-        borderRadius: BorderRadius.circular(AppTheme.radiusRegular),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.grey[50]!,
+            Colors.white,
+          ],
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFF000647).withOpacity(0.1), width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Row(
         children: [
-          Icon(icon, color: AppTheme.primaryRed),
-          const SizedBox(width: AppTheme.spacingRegular),
-          Text(
-            title,
-            style: accessibilityService.getAccessibleTextStyle(
-              fontSize: AppTheme.fontSizeMedium,
-              fontWeight: FontWeight.w500,
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  const Color(0xFF000647),
+                  const Color(0xFF000647).withOpacity(0.8),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(12),
             ),
+            child: Icon(icon, color: Colors.white, size: 24),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: accessibilityService.getAccessibleTextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: const Color(0xFF000647),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  subtitle,
+                  style: accessibilityService.getAccessibleTextStyle(
+                    fontSize: 12,
+                    color: Colors.grey[600],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Icon(
+            Icons.arrow_forward_ios,
+            color: const Color(0xFF000647).withOpacity(0.3),
+            size: 16,
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+void _showUserMenu() {
+  Get.bottomSheet(
+    Container(
+      padding: const EdgeInsets.all(24),
+      margin: const EdgeInsets.only(bottom: 80),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Colors.white,
+            Colors.grey[50]!,
+          ],
+        ),
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(24),
+          topRight: Radius.circular(24),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 20,
+            offset: const Offset(0, -5),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Header
+          Container(
+            width: 40,
+            height: 4,
+            decoration: BoxDecoration(
+              color: Colors.grey[300],
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(height: 20),
+          
+          // Title
+          Text(
+            'Menu',
+            style: Get.find<AccessibilityService>().getAccessibleTextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: const Color(0xFF000647),
+            ),
+          ),
+          const SizedBox(height: 20),
+          
+          // Menu items
+          _buildMenuItem(Icons.settings_outlined, 'Settings', () {
+            Get.back();
+            Get.to(() => const SettingsScreenU());
+          }),
+          const SizedBox(height: 12),
+          _buildMenuItem(Icons.accessibility, 'Accessibility', () {
+            Get.back();
+            Get.to(() => const AccessibilityPanel());
+          }),
+          const SizedBox(height: 12),
+          _buildMenuItem(Icons.logout, 'Logout', () => Get.offAllNamed('/'), isDestructive: true),
+          const SizedBox(height: 10),
+        ],
+      ),
+    ),
+    isScrollControlled: true,
+  );
+}
+
+Widget _buildMenuItem(IconData icon, String title, VoidCallback onTap, {bool isDestructive = false}) {
+  final AccessibilityService accessibilityService = Get.find<AccessibilityService>();
+  
+  return accessibilityService.buildAccessibleWidget(
+    semanticLabel: title,
+    onTap: onTap,
+    child: Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: isDestructive ? [
+            Colors.red[50]!,
+            Colors.white,
+          ] : [
+            Colors.grey[50]!,
+            Colors.white,
+          ],
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: isDestructive 
+            ? Colors.red.withOpacity(0.1) 
+            : const Color(0xFF000647).withOpacity(0.1), 
+          width: 1
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: isDestructive ? [
+                  Colors.red,
+                  Colors.red.withOpacity(0.8),
+                ] : [
+                  const Color(0xFF000647),
+                  const Color(0xFF000647).withOpacity(0.8),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Icon(icon, color: Colors.white, size: 20),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Text(
+              title,
+              style: accessibilityService.getAccessibleTextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: isDestructive ? Colors.red : const Color(0xFF000647),
+              ),
+            ),
+          ),
+          Icon(
+            Icons.arrow_forward_ios,
+            color: isDestructive 
+              ? Colors.red.withOpacity(0.3) 
+              : const Color(0xFF000647).withOpacity(0.3),
+            size: 16,
           ),
         ],
       ),

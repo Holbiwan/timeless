@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:timeless/screen/dashboard/home/salons_emploi_screen.dart';
 import 'package:timeless/screen/dashboard/home/webinaires_screen.dart';
@@ -11,7 +13,6 @@ import 'package:timeless/services/accessibility_service.dart';
 import 'package:timeless/utils/app_res.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/common/widgets/neumorphic_button.dart';
-import 'package:timeless/screen/analytics/candidate_analytics_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -23,25 +24,59 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   var args = Get.arguments;
   JobDetailsUploadCvController jobDetailsUploadCvController = Get.put(JobDetailsUploadCvController());
-  late YoutubePlayerController _youtubeController;
+  
+  final List<String> _videoIds = [
+    'QzLCf84hIwE',
+    'bM8XmugoQuI',
+    'Wz285x6ygGA',
+  ];
+  
+  late List<YoutubePlayerController> _controllers;
+  final PageController _pageController = PageController(viewportFraction: 0.9, initialPage: 1000);
+  int _currentIndex = 0;
+  Timer? _carouselTimer;
 
   @override
   void initState() {
     super.initState();
-    _youtubeController = YoutubePlayerController(
-      initialVideoId: 'QzLCf84hIwE',
+    _controllers = _videoIds.map((id) => YoutubePlayerController(
+      initialVideoId: id,
       flags: const YoutubePlayerFlags(
         autoPlay: false,
         mute: false,
         disableDragSeek: false,
         enableCaption: true,
+        forceHD: false,
       ),
-    );
+    )).toList();
+    
+    // Sync index with initial page
+    _currentIndex = 1000 % _videoIds.length;
+    
+    // Start auto-scroll
+    _startAutoScroll();
+  }
+
+  void _startAutoScroll() {
+    _carouselTimer = Timer.periodic(const Duration(seconds: 3), (timer) {
+      // Only scroll if the current video is NOT playing
+      final currentController = _controllers[_currentIndex];
+      if (!currentController.value.isPlaying) {
+        _pageController.nextPage(
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
   }
 
   @override
   void dispose() {
-    _youtubeController.dispose();
+    _carouselTimer?.cancel();
+    for (var controller in _controllers) {
+      controller.dispose();
+    }
+    _pageController.dispose();
     super.dispose();
   }
 
@@ -50,297 +85,331 @@ class _HomeScreenState extends State<HomeScreen> {
     jobDetailsUploadCvController.init();
     final accessibilityService = AccessibilityService.instance;
 
-    return Obx(() => Container(
-      height: Get.height,
-      width: Get.width,
-      color: accessibilityService.backgroundColor,
-      child: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: Column(
-              children: [
-                const SizedBox(height: 60),
-                homeAppBar(),
-                
-                  const SizedBox(height: 20),
+    return Scaffold(
+      backgroundColor: Colors.grey[50],
+      body: SafeArea(
+        child: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: Column(
+                children: [
+                  homeAppBar(onRefresh: () => setState(() {})),
+                  
+                  const SizedBox(height: 6),
 
-                  // --- SECTION: Boutons Neumorphism côte à côte ---
+                  // --- SECTION: Actions principales élégantes ---
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Row(
                       children: [
-                        // Bouton My Applications Neumorphism
+                        // Card My Applications moderne
                         Expanded(
                           child: StreamBuilder<int>(
                             stream: CandidateDashboardService.getCandidateApplicationsCount(),
                             builder: (context, snapshot) {
                               final count = snapshot.data ?? 0;
                               
-                              return NeumorphicButton(
-                                text: "My Applications",
+                              return _buildActionCard(
+                                title: "My Applications",
+                                subtitle: count > 0 ? "$count pending" : "No applications",
                                 icon: Icons.assignment_outlined,
-                                height: 55,
-                                backgroundColor: const Color(0xFF000647),
-                                textColor: Colors.white,
-                                fontSize: 12,
-                                badge: count > 0 ? NeumorphicBadge(count: count) : null,
-                                onPressed: () {
-                                  Get.toNamed(AppRes.applicationsUser);
-                                },
+                                color: const Color(0xFF000647),
+                                onTap: () => Get.toNamed(AppRes.applicationsUser),
+                                badge: count,
                               );
                             },
                           ),
                         ),
                         
-                        const SizedBox(width: 16),
+                        const SizedBox(width: 12),
                         
-                        // Bouton Job Offers Neumorphism
+                        // Card Job Offers moderne
                         Expanded(
-                          child: NeumorphicButton(
-                            text: "See All Job Offers",
+                          child: _buildActionCard(
+                            title: "Browse Jobs",
+                            subtitle: "Find opportunities",
                             icon: Icons.work_outline,
-                            height: 55,
-                            backgroundColor: const Color(0xFF000647),
-                            textColor: Colors.white,
-                            fontSize: 12,
-                            onPressed: () {
-                              Get.toNamed(AppRes.jobRecommendationScreen);
-                            },
+                            color: const Color(0xFF1565C0),
+                            onTap: () => Get.toNamed(AppRes.jobRecommendationScreen),
                           ),
                         ),
                       ],
                     ),
                   ),
 
-                  const SizedBox(height: 15),
+                  const SizedBox(height: 8),
 
-                  // --- SECTION: Events Emploi + Calendrier ---
+                  // --- SECTION: Learning & Events ---
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 18.0),
-                    child: Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            const Color(0xFF000647),
-                            const Color(0xFF000647).withOpacity(0.95),
-                            const Color(0xFF000647).withOpacity(0.9),
-                          ],
-                          stops: const [0.0, 0.5, 1.0],
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [Colors.white, const Color(0xFFE3F2FD)], // White to very light blue
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                            ),
+                            borderRadius: BorderRadius.circular(30),
+                            border: Border.all(color: const Color(0xFF0D47A1).withOpacity(0.15)),
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(0xFF0D47A1).withOpacity(0.08),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: Text(
+                            "Learning & Events",
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.inter(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 0.5,
+                              color: const Color(0xFF0D47A1),
+                            ),
+                          ),
                         ),
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xFF000647).withOpacity(0.4),
-                            blurRadius: 15,
-                            offset: const Offset(0, 8),
-                            spreadRadius: 1,
-                          ),
-                          BoxShadow(
-                            color: const Color(0xFFFF8C00).withOpacity(0.1),
-                            blurRadius: 20,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          // Header avec calendrier mini
-                          Container(
-                            padding: const EdgeInsets.all(12),
-                            child: Row(
-                              children: [
-                                // Section titre
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Container(
-                                            padding: const EdgeInsets.all(8),
-                                            decoration: BoxDecoration(
-                                              gradient: LinearGradient(
-                                                colors: [
-                                                  const Color(0xFFFF8C00).withOpacity(0.8),
-                                                  const Color(0xFFFF8C00).withOpacity(0.6),
-                                                ],
-                                              ),
-                                              borderRadius: BorderRadius.circular(8),
-                                            ),
-                                            child: const Icon(
-                                              Icons.event_available,
-                                              color: Colors.white,
-                                              size: 20,
-                                            ),
-                                          ),
-                                          const SizedBox(width: 12),
-                                          Text(
-                                            "Upcoming Events",
-                                            style: GoogleFonts.inter(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.w700,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 8),
-                                      Text(
-                                        "Discover upcoming job fairs and webinars",
-                                        style: GoogleFonts.inter(
-                                          fontSize: 12,
-                                          color: Colors.white.withOpacity(0.8),
-                                        ),
-                                      ),
-                                    ],
+                        const SizedBox(height: 12),
+                        
+                        // Video Carousel Section
+                        SizedBox(
+                          height: 120,
+                          child: PageView.builder(
+                            controller: _pageController,
+                            itemBuilder: (context, index) {
+                              final videoIndex = index % _videoIds.length;
+                              return Container(
+                                margin: const EdgeInsets.symmetric(horizontal: 4),
+                                decoration: BoxDecoration(
+                                  color: Colors.black,
+                                  borderRadius: BorderRadius.circular(12),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.1),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 3),
+                                    ),
+                                  ],
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: YoutubePlayer(
+                                    controller: _controllers[videoIndex],
+                                    showVideoProgressIndicator: true,
+                                    progressIndicatorColor: const Color(0xFF000647),
+                                    progressColors: const ProgressBarColors(
+                                      playedColor: Color(0xFF000647),
+                                      handleColor: Color(0xFF000647),
+                                    ),
                                   ),
                                 ),
-                                
-                                // Mini calendrier dynamique
-                                StreamBuilder<DateTime>(
-                                  stream: Stream.periodic(const Duration(seconds: 1), (_) => DateTime.now()),
-                                  builder: (context, snapshot) {
-                                    final now = snapshot.data ?? DateTime.now();
-                                    return Container(
-                                      padding: const EdgeInsets.all(8),
-                                      decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          begin: Alignment.topCenter,
-                                          end: Alignment.bottomCenter,
-                                          colors: [
-                                            const Color(0xFFE67E22),
-                                            const Color(0xFFD35400),
-                                          ],
-                                        ),
-                                        borderRadius: BorderRadius.circular(10),
-                                        border: Border.all(color: const Color(0xFFD35400), width: 1),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: const Color(0xFFE67E22).withOpacity(0.4),
-                                            blurRadius: 6,
-                                            offset: const Offset(0, 3),
-                                          ),
-                                        ],
-                                      ),
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Text(
-                                            now.day.toString(),
-                                            style: GoogleFonts.inter(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.w700,
-                                              color: Colors.white,
-                                              shadows: [
-                                                Shadow(
-                                                  color: Colors.black.withOpacity(0.3),
-                                                  offset: const Offset(0, 1),
-                                                  blurRadius: 2,
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Text(
-                                            _getMonthName(now.month).toUpperCase(),
-                                            style: GoogleFonts.inter(
-                                              fontSize: 9,
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.white,
-                                              letterSpacing: 0.5,
-                                              shadows: [
-                                                Shadow(
-                                                  color: Colors.black.withOpacity(0.3),
-                                                  offset: const Offset(0, 1),
-                                                  blurRadius: 2,
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ],
+                              );
+                            },
+                            onPageChanged: (index) {
+                              setState(() {
+                                _currentIndex = index % _videoIds.length;
+                              });
+                            },
+                          ),
+                        ),
+                        
+                        const SizedBox(height: 8),
+                        
+                        // Indicator
+                        Center(
+                          child: AnimatedSmoothIndicator(
+                            activeIndex: _currentIndex,
+                            count: _videoIds.length,
+                            effect: const WormEffect(
+                              dotHeight: 8,
+                              dotWidth: 8,
+                              activeDotColor: Color(0xFF000647),
+                              dotColor: Colors.grey,
                             ),
                           ),
-                          
-                          // Lecteur vidéo amélioré (réduit)
-                          Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 16),
-                            height: 140,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.3),
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: YoutubePlayer(
-                                controller: _youtubeController,
-                                showVideoProgressIndicator: true,
-                                progressIndicatorColor: const Color(0xFFFF8C00),
-                                progressColors: const ProgressBarColors(
-                                  playedColor: Color(0xFFFF8C00),
-                                  handleColor: Color(0xFFFF8C00),
-                                ),
+                        ),
+                        
+                        const SizedBox(height: 8),
+                        
+                        // Events buttons modernes
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _buildEventCard(
+                                title: "Job Fairs",
+                                subtitle: "Network with employers",
+                                icon: Icons.business_center_outlined,
+                                color: const Color(0xFF0D47A1),
+                                onTap: () => Get.to(() => const SalonsEmploiScreen()),
                               ),
                             ),
-                          ),
-                          
-                          const SizedBox(height: 12),
-                          
-                          // Boutons Neumorphism pour les événements
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: NeumorphicButton(
-                                    text: "Job Fairs",
-                                    icon: Icons.domain,
-                                    height: 45,
-                                    backgroundColor: const Color(0xFFE67E22),
-                                    textColor: Colors.white,
-                                    fontSize: 11,
-                                    onPressed: () => Get.to(() => const SalonsEmploiScreen()),
-                                  ),
-                                ),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                  child: NeumorphicButton(
-                                    text: "Webinars",
-                                    icon: Icons.play_circle_fill,
-                                    height: 45,
-                                    backgroundColor: const Color(0xFFE67E22),
-                                    textColor: Colors.white,
-                                    fontSize: 11,
-                                    onPressed: () => Get.to(() => const WebinairesScreen()),
-                                  ),
-                                ),
-                              ],
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: _buildEventCard(
+                                title: "Webinars",
+                                subtitle: "Learn new skills",
+                                icon: Icons.play_circle_outline,
+                                color: const Color(0xFF2196F3),
+                                onTap: () => Get.to(() => const WebinairesScreen()),
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
 
-                const SizedBox(height: 20),
+                const SizedBox(height: 16),
               ],
             ),
           ),
         ],
+        ),
       ),
-    ));
+    );
+  }
+
+  // Widget élégant pour les cartes d'action principales
+  Widget _buildActionCard({
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required Color color,
+    required VoidCallback onTap,
+    int? badge,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.grey[200]!, width: 1),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.08),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: color.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Icon(icon, color: color, size: 18),
+                ),
+                const Spacer(),
+                if (badge != null && badge > 0)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: Colors.red[600],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      badge.toString(),
+                      style: GoogleFonts.inter(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 6),
+            Text(
+              title,
+              style: GoogleFonts.inter(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF1F2937),
+              ),
+            ),
+            const SizedBox(height: 1),
+            Text(
+              subtitle,
+              style: GoogleFonts.inter(
+                fontSize: 11,
+                color: const Color(0xFF6B7280),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Widget élégant pour les cartes d'événements
+  Widget _buildEventCard({
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(8), // Reduced from 12
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: color.withOpacity(0.3), width: 1.5),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.06),
+              blurRadius: 6,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Icon(icon, color: color, size: 16),
+            ),
+            const SizedBox(height: 4), // Reduced from 6
+            Text(
+              title,
+              style: GoogleFonts.inter(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF1F2937),
+              ),
+            ),
+            const SizedBox(height: 1),
+            Text(
+              subtitle,
+              style: GoogleFonts.inter(
+                fontSize: 10,
+                color: const Color(0xFF6B7280),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   // Widget moderne pour les boutons d'events

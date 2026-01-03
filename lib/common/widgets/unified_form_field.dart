@@ -49,24 +49,35 @@ class _UnifiedFormFieldState extends State<UnifiedFormField>
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
-      duration: const Duration(milliseconds: 200),
-      vsync: this,
-    );
-    _scaleAnimation = Tween<double>(
-      begin: 1.0,
-      end: 1.02,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    ));
-    _borderColorAnimation = ColorTween(
-      begin: const Color(0xFF000647),
-      end: const Color(0xFFFF8C00),
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    ));
+    try {
+      _animationController = AnimationController(
+        duration: const Duration(milliseconds: 200),
+        vsync: this,
+      );
+      _scaleAnimation = Tween<double>(
+        begin: 1.0,
+        end: 1.02,
+      ).animate(CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.easeInOut,
+      ));
+      _borderColorAnimation = ColorTween(
+        begin: const Color(0xFF000647),
+        end: const Color(0xFFFF8C00),
+      ).animate(CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.easeInOut,
+      ));
+    } catch (e) {
+      print('Error initializing animations in UnifiedFormField: $e');
+      // Fallback: create dummy animations
+      _animationController = AnimationController(
+        duration: const Duration(milliseconds: 200),
+        vsync: this,
+      );
+      _scaleAnimation = AlwaysStoppedAnimation<double>(1.0);
+      _borderColorAnimation = AlwaysStoppedAnimation<Color?>(const Color(0xFF000647));
+    }
   }
 
   @override
@@ -76,13 +87,20 @@ class _UnifiedFormFieldState extends State<UnifiedFormField>
   }
 
   void _onFocusChange(bool focused) {
+    if (!mounted) return;
+    
     setState(() {
       _isFocused = focused;
     });
-    if (focused) {
-      _animationController.forward();
-    } else {
-      _animationController.reverse();
+    
+    try {
+      if (focused) {
+        _animationController.forward();
+      } else {
+        _animationController.reverse();
+      }
+    } catch (e) {
+      print('Error in animation focus change: $e');
     }
   }
 

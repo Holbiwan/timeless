@@ -17,6 +17,7 @@ import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/app_theme.dart';
 import 'package:timeless/services/unified_translation_service.dart';
 import 'package:timeless/services/accessibility_service.dart';
+import 'package:timeless/services/email_service.dart';
 
 import 'package:timeless/screen/auth/employer_signin/employer_signin_controller.dart';
 import 'package:timeless/screen/legal/terms_of_service_screen.dart';
@@ -215,7 +216,6 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
                                       isRequired: true,
                                       keyboardType: TextInputType.number,
                                       maxLength: 5,
-                                      prefixIcon: Icons.markunread_mailbox_outlined,
                                     ),
                                   ],
                                 ),
@@ -458,32 +458,39 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
       return;
     }
 
-    // Validation des champs
+    // Validate fields
     if (_validateFields()) {
       setState(() {
         isLoading = true;
       });
 
       try {
-        // Créer le compte Firebase Auth
+        // Create Firebase Auth account
         UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: ctrl.emailController.text.trim(),
           password: ctrl.passwordController.text.trim(),
         );
 
         if (userCredential.user != null) {
-          // Sauvegarder les données employeur dans Firestore
+          // Send email verification
+          await userCredential.user!.sendEmailVerification();
+
+          // Save employer data to Firestore with active status
           final employerData = {
             'companyName': ctrl.companyNameController.text.trim(),
             'address': ctrl.addressController.text.trim(),
             'postalCode': ctrl.postalCodeController.text.trim(),
+            'city': ctrl.cityController.text.trim(),
             'country': ctrl.countryController.text.trim(),
             'siretCode': ctrl.siretController.text.trim(),
             'apeCode': ctrl.apeController.text.trim(),
             'email': ctrl.emailController.text.trim(),
             'userType': 'employer',
-            'isVerified': false,
+            'isActive': true,
+            'isVerified': true, // Auto-verify new PRO accounts
+            'emailVerified': false, // Will be true after email verification
             'createdAt': FieldValue.serverTimestamp(),
+            'lastUpdated': FieldValue.serverTimestamp(),
           };
 
           await FirebaseFirestore.instance
@@ -491,14 +498,20 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
               .doc(userCredential.user!.uid)
               .set(employerData);
 
-          AppTheme.showStandardSnackBar(
-            title: "✅ Account Created!",
-            message: "Your employer account has been created successfully",
-            isError: false,
-          );
+          // Send welcome email to employer
+          try {
+            await EmailService.sendEmployerWelcomeEmail(
+              email: ctrl.emailController.text.trim(),
+              fullName: 'Employer', // You might want to add a name field
+              companyName: ctrl.companyNameController.text.trim(),
+              siretCode: ctrl.siretController.text.trim(),
+            );
+          } catch (e) {
+            print('❌ Welcome email failed: $e');
+          }
 
-          // Redirection ou action suivante
-          Get.offAllNamed('/employer-dashboard');
+          // Show success popup dialog
+          _showAccountCreatedDialog();
         }
       } on FirebaseAuthException catch (e) {
         String message;
@@ -617,6 +630,97 @@ class _EmployerSignInScreenState extends State<EmployerSignInScreen> {
     }
 
     return true;
+  }
+
+  // Show account created confirmation dialog
+  void _showAccountCreatedDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: Row(
+            children: [
+              Icon(Icons.check_circle, color: Colors.green, size: 28),
+              const SizedBox(width: 12),
+              Text(
+                'Account Created!',
+                style: GoogleFonts.inter(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: _primaryBlue,
+                ),
+              ),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Your PRO employer account has been successfully created.',
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.grey[700],
+                ),
+              ),
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.blue[50],
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.blue[200]!),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.email_outlined, color: Colors.blue[700], size: 20),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'A verification email has been sent to your email address. Please check your inbox and verify your email before signing in.',
+                        style: GoogleFonts.inter(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.blue[700],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Get.back(); // Close dialog
+                Get.back(); // Go back to previous screen
+              },
+              style: TextButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                backgroundColor: _primaryBlue,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: Text(
+                'OK',
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   // Helper widget to build labels for form fields

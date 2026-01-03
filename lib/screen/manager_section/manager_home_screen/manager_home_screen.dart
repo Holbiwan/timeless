@@ -208,6 +208,162 @@ class ManagerHomeScreen extends StatelessWidget {
             
             const SizedBox(height: 20),
             
+            // Quick Actions Section
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: InkWell(
+                      onTap: () {
+                        // Navigate to all jobs screen
+                        Get.toNamed('/employer-jobs');
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [ColorRes.logoColor, ColorRes.containerColor],
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 4,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          children: [
+                            Icon(
+                              Icons.work_outline,
+                              color: Colors.white,
+                              size: 24,
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Manage Jobs',
+                              style: appTextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            
+            const SizedBox(height: 16),
+            
+            // Statistics Section
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: GetBuilder<ManagerHomeScreenController>(
+                id: "stats",
+                builder: (controller) {
+                  return Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: Colors.grey[200]!),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                blurRadius: 4,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            children: [
+                              Icon(
+                                Icons.work,
+                                color: ColorRes.logoColor,
+                                size: 20,
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                controller.statsLoading ? '...' : '${controller.activeJobsCount}',
+                                style: appTextStyle(
+                                  color: ColorRes.black,
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              Text(
+                                'Active Jobs',
+                                style: appTextStyle(
+                                  color: ColorRes.grey,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: Colors.grey[200]!),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                blurRadius: 4,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            children: [
+                              Icon(
+                                Icons.people,
+                                color: const Color(0xFF6C63FF),
+                                size: 20,
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                controller.statsLoading ? '...' : '${controller.totalApplicationsCount}',
+                                style: appTextStyle(
+                                  color: ColorRes.black,
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              Text(
+                                'Total Applications',
+                                style: appTextStyle(
+                                  color: ColorRes.grey,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
+            
+            const SizedBox(height: 20),
+            
             // Contenu scrollable
             Expanded(
               child: SingleChildScrollView(

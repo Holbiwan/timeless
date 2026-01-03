@@ -18,6 +18,77 @@ Widget recentPeopleBox({bool? homeScreen, String? position}) {
       Get.put(JobDetailsUploadCvController());
   jobDetailsUploadCvController.init();
   CreateVacanciesController create = Get.put(CreateVacanciesController());
+  
+  // Check if there are any valid applications for this company
+  bool hasApplications = false;
+  for (int i = 0; i < contro.userData.length; i++) {
+    final companyNameData = contro.userData[i]['companyName'];
+    String? companyMatch;
+    
+    if (companyNameData is List) {
+      for (var element in companyNameData) {
+        if (element['companyname'].toString().toLowerCase() ==
+            PreferencesService.getString(PrefKeys.companyName).toString().toLowerCase()) {
+          companyMatch = element['companyname'];
+          break;
+        }
+      }
+    } else if (companyNameData is String) {
+      if (companyNameData.toLowerCase() == 
+          PreferencesService.getString(PrefKeys.companyName).toString().toLowerCase()) {
+        companyMatch = companyNameData;
+      }
+    }
+    
+    if (companyMatch != null) {
+      hasApplications = true;
+      break;
+    }
+  }
+  
+  // If no applications, show empty state
+  if (!hasApplications || contro.userData.isEmpty) {
+    return Container(
+      height: 120,
+      margin: const EdgeInsets.symmetric(horizontal: 18),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(color: Colors.grey[300]!),
+        color: Colors.grey[50],
+      ),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.inbox_outlined,
+              size: 32,
+              color: Colors.grey[400],
+            ),
+            const SizedBox(height: 8),
+            Text(
+              "No applications yet",
+              style: TextStyle(
+                color: Colors.grey[600],
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              "Applications will appear here when candidates apply",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.grey[500],
+                fontSize: 12,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  
   return SingleChildScrollView(
     child: SizedBox(
       height: Get.height / 1.40,

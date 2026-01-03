@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:timeless/screen/job_detail_screen/job_detail_controller.dart';
 import 'package:timeless/screen/job_detail_screen/job_detail_widget/job_detail_widget.dart';
 import 'package:timeless/screen/savejobs/save_job_screen.dart';
@@ -13,7 +14,6 @@ import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/utils/string.dart';
 
-// ignore: must_be_immutable
 class JobDetailScreen extends StatelessWidget {
   JobDetailScreen({super.key});
   final JobDetailsController controller = Get.put(JobDetailsController());
@@ -21,389 +21,378 @@ class JobDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (kDebugMode) {
-      print(args['saved']['location']);
-    }
+    // Safe data access
+    final doc = args['saved'] as DocumentSnapshot;
+    final data = doc.data() as Map<String, dynamic>;
+    final position = data['Position'] ?? 'Unknown Position';
+    final company = data['CompanyName'] ?? 'Unknown Company';
+    final salary = data['salary'] ?? '0';
+    final location = data['location'] ?? 'Unknown Location';
+    final type = data['type'] ?? data['jobType'] ?? 'Full-time';
+    final description = data['description'] ?? 'No description provided.';
+    final requirementsList = data['RequirementsList'] as List<dynamic>? ?? []; // Safely cast to List<dynamic>
+
     return Scaffold(
-      backgroundColor: Colors.black87,
-      body: SingleChildScrollView(
+      backgroundColor: Colors.grey[50], // Consistent with Job Offers screen
+      body: SafeArea(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 18),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 50),
-                    SizedBox(
-                      height: 45,
-                      width: Get.width,
-                      child: Stack(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  if (Navigator.canPop(context)) {
-                                    Navigator.pop(context);
-                                  } else {
-                                    Get.offAllNamed('/dashboard');
-                                  }
-                                },
-                                child: Container(
-                                  height: 40,
-                                  width: 40,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    border: Border.all(color: const Color(0xFF000647), width: 2),
-                                    borderRadius: BorderRadius.circular(10),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: const Color(0xFF000647).withOpacity(0.2),
-                                        blurRadius: 6,
-                                        offset: const Offset(0, 2),
-                                      ),
-                                    ],
-                                  ),
-                                  child: const Align(
-                                    alignment: Alignment.center,
-                                    child: Icon(
-                                      Icons.arrow_back_ios,
-                                      color: Color(0xFF000647),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                height: 40,
-                                width: 40,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  border: Border.all(color: const Color(0xFF000647), width: 2),
-                                  borderRadius: BorderRadius.circular(10),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: const Color(0xFF000647).withOpacity(0.2),
-                                      blurRadius: 6,
-                                      offset: const Offset(0, 2),
-                                    ),
-                                  ],
-                                ),
-                                child: GetBuilder<JobDetailsController>(
-                                    id: "bookmark",
-                                    builder: (con) {
-                                      return Align(
-                                        alignment: Alignment.center,
-                                        child: (args['saved']
-                                                    ['BookMarkUserList']
-                                                .contains(PreferencesService.getString(
-                                                    PrefKeys.userId)))
-                                            ? InkWell(
-                                                onTap: () {
-                                                  Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder: (con) =>
-                                                              SaveJobScreen()));
-                                                },
-                                                child: Image.asset(
-                                                  AssetRes.bookMarkFillIcon,
-                                                  height: 20,
-                                                  width: 20,
-                                                ),
-                                              )
-                                            : InkWell(
-                                                onTap: () {
-                                                  Map<String, dynamic> map = {
-                                                    "Position": args['saved']
-                                                        ['Position'],
-                                                    "CompanyName": args['saved']
-                                                        ['CompanyName'],
-                                                    "salary": args['saved']
-                                                        ['salary'],
-                                                    "location": args['saved']
-                                                        ['location'],
-                                                    "type": args['saved']
-                                                        ['type'],
-                                                  };
-
-                                                  List bookmark = [];
-                                                  bookmark = args['saved']
-                                                      ['BookMarkUserList'];
-                                                  if (bookmark.isEmpty) {
-                                                    bookmark.add(
-                                                        PreferencesService.getString(
-                                                            PrefKeys.userId));
-                                                  }
-                                                  for (int i = 0;
-                                                      i < bookmark.length;
-                                                      i++) {
-                                                    if (bookmark[i] !=
-                                                        PreferencesService.getString(
-                                                            PrefKeys.userId)) {
-                                                      bookmark.add(
-                                                          PreferencesService.getString(
-                                                              PrefKeys.userId));
-                                                    }
-                                                  }
-                                                  List<String> bookmarkList =
-                                                      List.generate(
-                                                          bookmark.length,
-                                                          (index) {
-                                                    return bookmark[index]
-                                                        .toString();
-                                                  });
-                                                  Map<String, dynamic> map2 = {
-                                                    "BookMarkUserList":
-                                                        bookmarkList,
-                                                  };
-
-                                                  FirebaseFirestore.instance
-                                                      .collection('allPost')
-                                                      .doc(args['saved'].id)
-                                                      .update(map2);
-
-                                                  // ignore: avoid_single_cascade_in_expression_statements
-                                                  FirebaseFirestore.instance
-                                                      .collection('BookMark')
-                                                      .doc(
-                                                          PreferencesService.getString(
-                                                              PrefKeys.userId))
-                                                      .collection("BookMark1")
-                                                    ..doc().set(map);
-
-                                                  controller
-                                                      .update(['bookmark']);
-                                                },
-                                                child: Image.asset(
-                                                  AssetRes.bookMarkBorderIcon,
-                                                  height: 20,
-                                                  width: 20,
-                                                ),
-                                              ),
-                                      );
-                                    }),
-                              ),
-                            ],
-                          ),
-                          Align(
-                            alignment: Alignment.center,
-                            child: Center(
-                              child: Text(
-                                Strings.jobDetails,
-                                style: appTextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+            // Custom Header (Similar to Job Offers Header)
+            Container(
+              margin: const EdgeInsets.fromLTRB(16, 4, 16, 6),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Colors.black,
+                    Colors.black.withOpacity(0.9),
+                    const Color(0xFF000647),
                   ],
-                )),
-            SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(
-                    height: 25,
+                  stops: const [0.0, 0.6, 1.0],
+                ),
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.3),
+                    blurRadius: 15,
+                    offset: const Offset(0, 8),
                   ),
-                  Container(
-                    height: 92,
-                    width: Get.width,
-                    margin:
-                        const EdgeInsets.symmetric(horizontal: 18, vertical: 4),
-                    padding: const EdgeInsets.all(15),
-                    decoration: BoxDecoration(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(15)),
-                        border: Border.all(color: Colors.grey.withOpacity(0.3)),
-                        color: Colors.black.withOpacity(0.8),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.3),
-                            spreadRadius: 2,
-                            blurRadius: 8,
-                            offset: const Offset(0, 3),
-                          ),
-                        ],),
-                    child: Row(
-                      children: [
-                        Image.asset(AssetRes.airBnbLogo),
-                        const SizedBox(width: 20),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(args["saved"]["Position"],
-                                style: appTextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600)),
-                            const SizedBox(height: 4),
-                            Text(args["saved"]["CompanyName"],
-                                style: appTextStyle(
-                                    color: ColorRes.appleGreen,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500)),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    width: Get.width,
-                    margin:
-                        const EdgeInsets.symmetric(horizontal: 18, vertical: 5),
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 18, horizontal: 18),
-                    decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(15),
-                        ),
-                        border: Border.all(color: Colors.grey.withOpacity(0.3)),
-                        color: Colors.black.withOpacity(0.8),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.3),
-                            spreadRadius: 2,
-                            blurRadius: 8,
-                            offset: const Offset(0, 3),
-                          ),
-                        ],),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("Salary",
-                                style: appTextStyle(
-                                    color: Colors.white,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w600)),
-                            Text("\$${args["saved"]["salary"]}",
-                                style: appTextStyle(
-                                    color: ColorRes.appleGreen,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w600)),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("Type",
-                                style: appTextStyle(
-                                    color: Colors.white,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w600)),
-                            Text(args["saved"]["type"],
-                                style: appTextStyle(
-                                    color: ColorRes.appleGreen,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w600)),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("Location",
-                                style: appTextStyle(
-                                    color: Colors.white,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w600)),
-                            Text(args["saved"]["location"],
-                                style: appTextStyle(
-                                    color: ColorRes.appleGreen,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w600)),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 15),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 20, right: 20),
-                    child: Text(
-                      Strings.requirements,
-                      style: appTextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                  ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: args["saved"]["RequirementsList"].length,
-                      itemBuilder: (context, index) {
-                        return detailBox(
-                            args["saved"]["RequirementsList"][index], false);
-                      }),
-                  GestureDetector(
-                    onTap: () {
-                      Get.toNamed(AppRes.jobDetailUploadCvScreen, arguments: {
-                        "doc": args["saved"],
-                      });
-                    },
-                    child: Container(
-                      height: 60,
-                      width: Get.width,
-                      alignment: Alignment.center,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      margin: const EdgeInsets.only(
-                          right: 18, left: 18, top: 20, bottom: 30),
-                      decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.all(Radius.circular(15)),
-                        gradient: const LinearGradient(
-                          colors: [
-                            ColorRes.gradientColor,
-                            ColorRes.containerColor,
-                          ],
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: ColorRes.gradientColor.withOpacity(0.3),
-                            blurRadius: 10,
-                            offset: const Offset(0, 5),
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            Icons.work,
-                            color: Colors.white,
-                            size: 24,
-                          ),
-                          const SizedBox(width: 10),
-                          Text(
-                            "Apply Now",
-                            style: appTextStyle(
-                              color: Colors.white,
-                              fontSize: 18, 
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                  BoxShadow(
+                    color: const Color(0xFF000647).withOpacity(0.2),
+                    blurRadius: 20,
+                    offset: const Offset(0, 4),
                   ),
                 ],
+              ),
+              child: Row(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context); // Always pop for detail screens
+                    },
+                    child: Container(
+                      height: 40,
+                      width: 40,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.white.withOpacity(0.2)),
+                      ),
+                      child: const Icon(
+                        Icons.arrow_back,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Text(
+                      'Job Details',
+                      style: GoogleFonts.inter(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  // Bookmark Button (Re-styled for consistency)
+                  GetBuilder<JobDetailsController>(
+                    id: "bookmark",
+                    builder: (con) {
+                      final bookmarks = data['BookMarkUserList'] as List? ?? [];
+                      final isBookmarked = bookmarks.contains(PreferencesService.getString(PrefKeys.userId));
+                      return GestureDetector(
+                        onTap: () {
+                          // Bookmark logic (copied from original, needs doc.id)
+                          List updatedBookmarks = List.from(bookmarks);
+                          if (isBookmarked) {
+                            updatedBookmarks.remove(PreferencesService.getString(PrefKeys.userId));
+                          } else {
+                            updatedBookmarks.add(PreferencesService.getString(PrefKeys.userId));
+                          }
+                          FirebaseFirestore.instance
+                              .collection('allPost')
+                              .doc(doc.id)
+                              .update({"BookMarkUserList": updatedBookmarks});
+                          con.update(['bookmark']);
+                        },
+                        child: Container(
+                          height: 40,
+                          width: 40,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.15),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: Colors.white.withOpacity(0.2)),
+                          ),
+                          child: Icon(
+                            isBookmarked ? Icons.bookmark : Icons.bookmark_border,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+            
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 16),
+
+                    // Job Info Card (Position, Company)
+                    Container(
+                      width: double.infinity,
+                      margin: const EdgeInsets.only(bottom: 16),
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                        border: Border.all(color: Colors.grey[100]!),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            position,
+                            style: GoogleFonts.inter(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700,
+                              color: const Color(0xFF000647),
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            company,
+                            style: GoogleFonts.inter(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // Key Details Card (Salary, Type, Location)
+                    Container(
+                      width: double.infinity,
+                      margin: const EdgeInsets.only(bottom: 16),
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                        border: Border.all(color: Colors.grey[100]!),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildDetailRow(Icons.monetization_on, 'Salary', '$salary€', Colors.black), // Black salary
+                          const Divider(height: 24),
+                          _buildDetailRow(Icons.work, 'Type', type, const Color(0xFF000647)),
+                          const Divider(height: 24),
+                          _buildDetailRow(Icons.location_on, 'Location', location, Colors.blue),
+                        ],
+                      ),
+                    ),
+
+                    // Description
+                    Text(
+                      'Description',
+                      style: GoogleFonts.inter(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: const Color(0xFF000647),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Container(
+                      width: double.infinity,
+                      margin: const EdgeInsets.only(bottom: 16),
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                        border: Border.all(color: Colors.grey[100]!),
+                      ),
+                      child: Text(
+                        description,
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
+                          height: 1.5,
+                          color: Colors.grey[700],
+                        ),
+                      ),
+                    ),
+
+                    // Requirements
+                    Text(
+                      Strings.requirements,
+                      style: GoogleFonts.inter(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: const Color(0xFF000647),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Container(
+                      width: double.infinity,
+                      margin: const EdgeInsets.only(bottom: 16),
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                        border: Border.all(color: Colors.grey[100]!),
+                      ),
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: requirementsList.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4.0),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Icon(Icons.check_circle_outline, size: 18, color: const Color(0xFF000647)),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    requirementsList[index].toString(),
+                                    style: GoogleFonts.inter(
+                                      fontSize: 14,
+                                      color: Colors.grey[700],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                  ],
+                ),
+              ),
+            ),
+            // Apply Now Button (Smaller and consistent)
+            Container(
+              height: 50, // Reduced height
+              width: double.infinity,
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                gradient: LinearGradient(
+                  colors: [
+                    const Color(0xFF000647), // Dark Blue
+                    const Color(0xFF000647).withOpacity(0.8), // Slightly lighter Dark Blue
+                  ],
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF000647).withOpacity(0.3),
+                    blurRadius: 10,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
+              ),
+              child: MaterialButton(
+                onPressed: () {
+                  Get.toNamed(AppRes.jobApplicationScreen, arguments: {
+                    'job': data,
+                    'docId': doc.id,
+                  });
+                },
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding: EdgeInsets.zero,
+                child: Text(
+                  "Apply Now",
+                  style: GoogleFonts.inter(
+                    color: Colors.white,
+                    fontSize: 14, // Reduced font size
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  // Helper widget for detail rows
+  Widget _buildDetailRow(IconData icon, String title, String value, Color iconColor) {
+    return Row(
+      children: [
+        Icon(icon, color: iconColor, size: 20),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.grey[600],
+                ),
+              ),
+              Text(
+                value,
+                style: GoogleFonts.inter(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF000647),
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

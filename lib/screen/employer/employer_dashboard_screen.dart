@@ -10,7 +10,6 @@ import 'package:timeless/screen/employer/simple_applications_screen.dart';
 import 'package:timeless/screen/employer/post_job_screen.dart';
 import 'package:timeless/screen/employer/simple_profile_screen.dart';
 import 'package:timeless/services/accessibility_service.dart';
-import 'package:timeless/screen/analytics/employer_analytics_screen.dart';
 
 class EmployerDashboardScreen extends StatefulWidget {
   const EmployerDashboardScreen({super.key});
@@ -335,12 +334,6 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
           color: _accentOrange,
           isPrimary: true,
           onTap: () => Get.to(() => const PostJobScreen()),
-        ),
-        _buildActionCard(
-          title: 'Company Analytics',
-          icon: Icons.bar_chart_rounded,
-          color: _primaryBlue,
-          onTap: () => Get.to(() => const EmployerAnalyticsScreen()),
         ),
         _buildActionCard(
           title: 'Manage Jobs',

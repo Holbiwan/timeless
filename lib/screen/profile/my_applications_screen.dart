@@ -306,115 +306,131 @@ class ApplicationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: _getStatusColor().withOpacity(0.3)),
+    final statusColor = _getStatusColor();
+    
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            offset: const Offset(0, 4),
+            blurRadius: 12,
+            spreadRadius: 0,
+          ),
+        ],
       ),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // En-tête avec statut
-              Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Candidature envoyée', // TODO: Get job title
-                          style: GoogleFonts.inter(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: ColorRes.black,
-                          ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        Text(
-                          'Entreprise', // TODO: Get company name from job
-                          style: GoogleFonts.inter(
-                            fontSize: 14,
-                            color: ColorRes.darkGold,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: _getStatusColor().withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: _getStatusColor().withOpacity(0.3)),
-                    ),
-                    child: Text(
-                      application.statusDisplay,
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: _getStatusColor(),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 12),
-
-              // Informations
-              Row(
-                children: [
-                  Icon(Icons.calendar_today, size: 14, color: ColorRes.textTertiary),
-                  const SizedBox(width: 4),
-                  Text(
-                    'Envoyée le ${_formatDate(application.appliedAt)}',
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      color: ColorRes.textTertiary,
-                    ),
-                  ),
-                  if (application.reviewedAt != null) ...[
-                    const SizedBox(width: 16),
-                    Icon(Icons.visibility, size: 14, color: ColorRes.textTertiary),
-                    const SizedBox(width: 4),
-                    Text(
-                      'Vue le ${_formatDate(application.reviewedAt!)}',
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        color: ColorRes.textTertiary,
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-
-              if (application.coverLetter != null) ...[
-                const SizedBox(height: 8),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(16),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(Icons.description, size: 14, color: ColorRes.darkGold),
-                    const SizedBox(width: 4),
-                    Text(
-                      'Avec lettre de motivation',
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        color: ColorRes.darkGold,
-                        fontWeight: FontWeight.w500,
+                    // Job Icon Container
+                    Container(
+                      height: 48,
+                      width: 48,
+                      decoration: BoxDecoration(
+                        color: statusColor.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Icon(
+                        Icons.work_outline,
+                        color: statusColor,
+                        size: 24,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    // Main Content
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Candidature envoyée', // TODO: Get job title from jobData if available
+                            style: GoogleFonts.inter(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                              color: ColorRes.black,
+                              height: 1.2,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'Entreprise', // TODO: Get company name
+                            style: GoogleFonts.inter(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: ColorRes.textSecondary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    // Status Chip
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: statusColor.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        application.statusDisplay,
+                        style: GoogleFonts.inter(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: statusColor,
+                        ),
                       ),
                     ),
                   ],
                 ),
+                
+                const SizedBox(height: 16),
+                Divider(height: 1, color: Colors.grey.withOpacity(0.1)),
+                const SizedBox(height: 12),
+
+                // Footer Info
+                Row(
+                  children: [
+                    Icon(Icons.access_time_rounded, size: 14, color: ColorRes.textTertiary),
+                    const SizedBox(width: 6),
+                    Text(
+                      'Postulé le ${_formatDate(application.appliedAt)}',
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        color: ColorRes.textTertiary,
+                      ),
+                    ),
+                    const Spacer(),
+                    if (application.coverLetter != null) ...[
+                      Icon(Icons.description_outlined, size: 14, color: ColorRes.darkGold),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Lettre incluse',
+                        style: GoogleFonts.inter(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: ColorRes.darkGold,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
               ],
-            ],
+            ),
           ),
         ),
       ),

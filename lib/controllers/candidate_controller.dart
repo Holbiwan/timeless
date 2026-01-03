@@ -2,6 +2,7 @@
 import 'package:get/get.dart';
 import 'package:flutter/foundation.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 import '../models/candidate_profile_model.dart';
@@ -74,6 +75,57 @@ class CandidateController extends GetxController {
   }
 
   // --- Profile ---
+
+  // Upload profile picture
+  Future<bool> uploadProfilePicture() async {
+    try {
+      _isLoading.value = true;
+      _errorMessage.value = '';
+
+      final ImagePicker picker = ImagePicker();
+      final XFile? image = await picker.pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 800,
+        maxHeight: 800,
+        imageQuality: 85,
+      );
+
+      if (image == null) {
+        _isLoading.value = false;
+        return false;
+      }
+
+      final file = File(image.path);
+
+      // Upload to Storage
+      final photoUrl = await CandidateApiService.uploadProfilePhoto(file: file);
+
+      // Update Profile with new URL
+      if (_candidateProfile.value != null) {
+        final updatedProfile = _candidateProfile.value!.copyWith(photoURL: photoUrl);
+        await updateProfile(updatedProfile);
+      }
+
+      AppTheme.showStandardSnackBar(
+        title: 'Success',
+        message: 'Profile picture updated',
+        isSuccess: true,
+      );
+
+      return true;
+    } catch (e) {
+      _errorMessage.value = 'Photo upload failed: $e';
+      AppTheme.showStandardSnackBar(
+        title: 'Error',
+        message: _errorMessage.value,
+        isError: true,
+      );
+      if (kDebugMode) print('CandidateController uploadProfilePicture error: $e');
+      return false;
+    } finally {
+      _isLoading.value = false;
+    }
+  }
 
   // Load candidate profile
   Future<void> loadCandidateProfile() async {

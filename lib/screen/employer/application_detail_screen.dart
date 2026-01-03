@@ -38,6 +38,16 @@ class ApplicationDetailScreen extends StatelessWidget {
                 ],
               ),
             ),
+            PopupMenuItem(
+              value: 'schedule_interview',
+              child: Row(
+                children: [
+                  Icon(Icons.calendar_today, size: 20, color: Colors.teal),
+                  const SizedBox(width: 8),
+                  Text('Schedule Interview'),
+                ],
+              ),
+            ),
             if (application.candidatePhone?.isNotEmpty ?? false)
               PopupMenuItem(
                 value: 'phone',
@@ -679,6 +689,9 @@ class ApplicationDetailScreen extends StatelessWidget {
       case 'download_cv':
         _downloadCv();
         break;
+      case 'schedule_interview':
+        _showInterviewScheduleDialog(controller);
+        break;
     }
   }
 
@@ -803,5 +816,162 @@ class ApplicationDetailScreen extends StatelessWidget {
       case ApplicationStatus.accepted:
         return 'Accepted';
     }
+  }
+
+  // Show interview scheduling dialog
+  void _showInterviewScheduleDialog(EmployerApplicationsController controller) {
+    DateTime selectedDate = DateTime.now().add(Duration(days: 1));
+    TimeOfDay selectedTime = TimeOfDay(hour: 14, minute: 0);
+    final locationController = TextEditingController(text: 'Company Office');
+    final messageController = TextEditingController();
+
+    Get.dialog(
+      AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Row(
+          children: [
+            Icon(Icons.calendar_today, color: Colors.teal, size: 24),
+            SizedBox(width: 8),
+            Text(
+              'Schedule Interview',
+              style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w600),
+            ),
+          ],
+        ),
+        content: StatefulBuilder(
+          builder: (context, setState) {
+            return SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Candidate info
+                  Container(
+                    padding: EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.blue[50],
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.person, color: Colors.blue[700], size: 20),
+                        SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            'Candidate: ${application.candidateName}',
+                            style: GoogleFonts.inter(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.blue[700],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 16),
+
+                  // Date selection
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: Icon(Icons.date_range, color: Colors.teal),
+                    title: Text('Interview Date'),
+                    subtitle: Text(DateFormat('EEEE, MMMM d, yyyy').format(selectedDate)),
+                    onTap: () async {
+                      final date = await showDatePicker(
+                        context: context,
+                        initialDate: selectedDate,
+                        firstDate: DateTime.now(),
+                        lastDate: DateTime.now().add(Duration(days: 90)),
+                      );
+                      if (date != null) {
+                        setState(() => selectedDate = date);
+                      }
+                    },
+                  ),
+
+                  // Time selection
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: Icon(Icons.access_time, color: Colors.teal),
+                    title: Text('Interview Time'),
+                    subtitle: Text(selectedTime.format(context)),
+                    onTap: () async {
+                      final time = await showTimePicker(
+                        context: context,
+                        initialTime: selectedTime,
+                      );
+                      if (time != null) {
+                        setState(() => selectedTime = time);
+                      }
+                    },
+                  ),
+
+                  SizedBox(height: 16),
+
+                  // Location
+                  TextFormField(
+                    controller: locationController,
+                    decoration: InputDecoration(
+                      labelText: 'Interview Location',
+                      prefixIcon: Icon(Icons.location_on, color: Colors.teal),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                    ),
+                  ),
+
+                  SizedBox(height: 16),
+
+                  // Additional message
+                  TextFormField(
+                    controller: messageController,
+                    maxLines: 3,
+                    decoration: InputDecoration(
+                      labelText: 'Additional Message (Optional)',
+                      prefixIcon: Icon(Icons.message, color: Colors.teal),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                      hintText: 'Any additional details for the candidate...',
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(),
+            child: Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              // Create interview datetime
+              final interviewDateTime = DateTime(
+                selectedDate.year,
+                selectedDate.month,
+                selectedDate.day,
+                selectedTime.hour,
+                selectedTime.minute,
+              );
+
+              Get.back(); // Close dialog first
+
+              // Send invitation
+              await controller.sendInterviewInvitation(
+                application: application,
+                interviewDate: interviewDateTime,
+                location: locationController.text.trim(),
+                additionalMessage: messageController.text.trim().isNotEmpty 
+                    ? messageController.text.trim() 
+                    : null,
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.teal,
+              foregroundColor: Colors.white,
+            ),
+            child: Text('Send Invitation'),
+          ),
+        ],
+      ),
+    );
   }
 }

@@ -20,12 +20,12 @@ class DashBoardScreen extends StatelessWidget {
     final String token = PreferencesService.getString(PrefKeys.userId);
     final accessibilityService = AccessibilityService.instance;
 
-    return Obx(() => WillPopScope(
+    return WillPopScope(
       onWillPop: () async {
         alertU(context);
         return true;
       },
-      child: Scaffold(
+      child: Obx(() => Scaffold(
         backgroundColor: accessibilityService.backgroundColor,
         resizeToAvoidBottomInset: false,
         body: GetBuilder<DashBoardController>(
@@ -34,7 +34,7 @@ class DashBoardScreen extends StatelessWidget {
             // Toujours afficher Home, le bouton Retour ne change pas l'écran affiché
             return token.isEmpty
                 ? const HomePageNewScreenU()
-                : HomeScreen();
+                : const HomeScreen();
           },
         ),
         bottomNavigationBar: GetBuilder<DashBoardController>(
@@ -66,7 +66,7 @@ class DashBoardScreen extends StatelessWidget {
             );
           },
         ),
-      ),
-    ));
+      )),
+    );
   }
 }

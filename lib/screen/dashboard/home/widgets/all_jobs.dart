@@ -15,26 +15,50 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
   final HomeController controller = Get.put(HomeController());
   final UnifiedTranslationService translationService = Get.find<UnifiedTranslationService>();
 
-  return FutureBuilder<List<Map<String, dynamic>>>(
-    future: _getCombinedJobs(stream),
+  return StreamBuilder<QuerySnapshot>(
+    stream: stream as Stream<QuerySnapshot>,
     builder: (context, snapshot) {
       if (snapshot.connectionState == ConnectionState.waiting) {
         return const CommonLoader();
       }
       
       if (snapshot.hasError) {
-        return Center(child: Text('Erreur: ${snapshot.error}'));
+        return Center(child: Text('Error: ${snapshot.error}'));
       }
       
-      final combinedJobs = snapshot.data ?? [];
+      if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.work_off, size: 60, color: Colors.grey),
+              SizedBox(height: 16),
+              Text(
+                translationService.getText("no_job_offers_available"),
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        );
+      }
+
+      final firebaseJobs = snapshot.data!.docs.map((doc) {
+        final data = doc.data() as Map<String, dynamic>;
+        return {
+          ...data,
+          'source': 'firebase',
+          'docId': doc.id,
+        };
+      }).where((job) => job['isFromVerifiedEmployer'] == true).toList();
       
       return GetBuilder<JobRecommendationController>(
         id: "search",
         init: JobRecommendationController(),
         builder: (jrController) {
           try {
-            // Directement utiliser les jobs combinés
-            final filteredJobs = _filterJobs(combinedJobs, jrController);
+            // Use Firebase jobs with real-time updates
+            final filteredJobs = _filterJobs(firebaseJobs, jrController);
             final total = filteredJobs.length;
             
             controller.jobTypesSaved =
@@ -454,53 +478,7 @@ String _generateDefaultDescription(String position, String company) {
   return descriptions[hash % descriptions.length];
 }
 
-// Fonction pour combiner les offres Firebase et Google Jobs
-Future<List<Map<String, dynamic>>> _getCombinedJobs(Stream stream) async {
-  final List<Map<String, dynamic>> allJobs = [];
-  
-  try {
-    // 1. Récupérer les offres de votre base Firebase (existantes)
-    final snapshots = await stream.first;
-    if (snapshots != null && snapshots.docs != null) {
-      for (var doc in snapshots.docs) {
-        final data = doc.data() as Map<String, dynamic>;
-        if (data['isFromVerifiedEmployer'] == true) {
-          allJobs.add({
-            ...data,
-            'source': 'firebase',
-            'docId': doc.id,
-          });
-        }
-      }
-    }
-    
-    // 2. Récupérer les vraies offres via Indeed/JSearch API
-    final realJobs = await IndeedJobsService.searchJobs(
-      query: 'développeur digital marketing tech',
-      location: 'France',
-      maxResults: 10,
-    );
-    
-    // 3. Combiner les deux sources
-    for (var realJob in realJobs) {
-      allJobs.add({
-        ...realJob,
-        'source': 'real_api',
-      });
-    }
-    
-    // 4. Mélanger et limiter les résultats
-    allJobs.shuffle();
-    
-    print('📋 Total jobs récupérées: ${allJobs.length} (Firebase: ${allJobs.where((j) => j['source'] == 'firebase').length}, API Réelles: ${allJobs.where((j) => j['source'] == 'real_api').length})');
-    
-  } catch (e) {
-    print('❌ Erreur lors de la récupération des jobs: $e');
-    // En cas d'erreur, retourner au moins les jobs Firebase si disponibles
-  }
-  
-  return allJobs;
-}
+// Real-time Firebase jobs now handled by StreamBuilder above
 
 // Fonction pour filtrer les jobs selon les critères du controller
 List<Map<String, dynamic>> _filterJobs(List<Map<String, dynamic>> jobs, dynamic controller) {

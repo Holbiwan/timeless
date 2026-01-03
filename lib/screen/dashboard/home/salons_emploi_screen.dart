@@ -17,31 +17,22 @@ class SalonsEmploiScreen extends StatelessWidget {
         slivers: [
           // Modern App Bar
           SliverAppBar(
-            expandedHeight: 200,
+            expandedHeight: 160,
             floating: false,
             pinned: true,
-            backgroundColor: const Color(0xFF000647),
+            backgroundColor: Colors.black,
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      const Color(0xFF000647),
-                      const Color(0xFF000647).withOpacity(0.8),
-                      const Color(0xFFE67E22).withOpacity(0.1),
-                    ],
-                    stops: const [0.0, 0.7, 1.0],
-                  ),
+                decoration: const BoxDecoration(
+                  color: Colors.black,
                 ),
                 child: Stack(
                   children: [
                     Positioned(
-                      top: 60,
+                      top: 50,
                       right: 20,
                       child: Container(
-                        padding: const EdgeInsets.all(12),
+                        padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
                           color: const Color(0xFFE67E22).withOpacity(0.2),
                           borderRadius: BorderRadius.circular(50),
@@ -49,12 +40,12 @@ class SalonsEmploiScreen extends StatelessWidget {
                         child: const Icon(
                           Icons.event,
                           color: Color(0xFFE67E22),
-                          size: 40,
+                          size: 28,
                         ),
                       ),
                     ),
                     Positioned(
-                      bottom: 30,
+                      bottom: 20,
                       left: 20,
                       right: 80,
                       child: Column(
@@ -63,18 +54,18 @@ class SalonsEmploiScreen extends StatelessWidget {
                           Text(
                             'Job Fairs',
                             style: GoogleFonts.inter(
-                              fontSize: 28,
-                              fontWeight: FontWeight.w700,
+                              fontSize: 22,
+                              fontWeight: FontWeight.w600,
                               color: Colors.white,
                             ),
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: 6),
                           Text(
-                            'Discover upcoming job events that could change your career',
+                            'Discover upcoming job events',
                             style: GoogleFonts.inter(
-                              fontSize: 14,
-                              color: Colors.white.withOpacity(0.9),
-                              height: 1.4,
+                              fontSize: 12,
+                              color: Colors.white.withOpacity(0.8),
+                              height: 1.3,
                             ),
                           ),
                         ],
@@ -87,11 +78,11 @@ class SalonsEmploiScreen extends StatelessWidget {
             leading: Container(
               margin: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                icon: const Icon(Icons.arrow_back, color: Colors.black),
                 onPressed: () => Get.back(),
               ),
             ),
@@ -100,14 +91,14 @@ class SalonsEmploiScreen extends StatelessWidget {
           // Content
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(20.0),
+              padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Statistics Card
                   Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         begin: Alignment.topLeft,
@@ -123,15 +114,15 @@ class SalonsEmploiScreen extends StatelessWidget {
                     child: Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.all(12),
+                          padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
                             color: const Color(0xFFE67E22),
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(10),
                           ),
                           child: const Icon(
                             Icons.trending_up,
                             color: Colors.white,
-                            size: 24,
+                            size: 20,
                           ),
                         ),
                         const SizedBox(width: 16),
@@ -142,16 +133,16 @@ class SalonsEmploiScreen extends StatelessWidget {
                               Text(
                                 '3 Upcoming Events',
                                 style: GoogleFonts.inter(
-                                  fontSize: 18,
+                                  fontSize: 16,
                                   fontWeight: FontWeight.w600,
                                   color: const Color(0xFF000647),
                                 ),
                               ),
-                              const SizedBox(height: 4),
+                              const SizedBox(height: 2),
                               Text(
-                                'Don\'t miss these career opportunities',
+                                'Don\'t miss these opportunities',
                                 style: GoogleFonts.inter(
-                                  fontSize: 12,
+                                  fontSize: 11,
                                   color: Colors.grey[600],
                                 ),
                               ),
@@ -162,7 +153,7 @@ class SalonsEmploiScreen extends StatelessWidget {
                     ),
                   ),
                   
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 20),
             
             // Salon du Travail et de la Mobilité Professionnelle
             _buildSalonCard(
@@ -174,7 +165,7 @@ class SalonsEmploiScreen extends StatelessWidget {
               color: const Color(0xFF000647),
             ),
             
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             
             // Salon Your Future
             _buildSalonCard(
@@ -186,7 +177,7 @@ class SalonsEmploiScreen extends StatelessWidget {
               color: const Color(0xFF1565C0),
             ),
             
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
 
             // Salon Formations Coding & Informatique
             _buildSalonCard(
@@ -225,7 +216,7 @@ class SalonsEmploiScreen extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
           child: Container(
             width: double.infinity,
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
@@ -259,7 +250,7 @@ class SalonsEmploiScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(12),
+                      padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           begin: Alignment.topLeft,
@@ -281,7 +272,7 @@ class SalonsEmploiScreen extends StatelessWidget {
                       child: Icon(
                         icon,
                         color: Colors.white,
-                        size: 24,
+                        size: 20,
                       ),
                     ),
                     const SizedBox(width: 16),
@@ -292,15 +283,15 @@ class SalonsEmploiScreen extends StatelessWidget {
                           Text(
                             title,
                             style: GoogleFonts.inter(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
                               color: const Color(0xFF000647),
                               height: 1.3,
                             ),
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: 6),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                             decoration: BoxDecoration(
                               color: const Color(0xFFE67E22),
                               borderRadius: BorderRadius.circular(20),
@@ -308,8 +299,8 @@ class SalonsEmploiScreen extends StatelessWidget {
                             child: Text(
                               date,
                               style: GoogleFonts.inter(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w500,
                                 color: Colors.white,
                               ),
                             ),
@@ -320,11 +311,11 @@ class SalonsEmploiScreen extends StatelessWidget {
                   ],
                 ),
                 
-                const SizedBox(height: 20),
+                const SizedBox(height: 12),
                 
                 // Location
                 Container(
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     color: Colors.grey.shade100,
                     borderRadius: BorderRadius.circular(12),
@@ -333,23 +324,23 @@ class SalonsEmploiScreen extends StatelessWidget {
                   child: Row(
                     children: [
                       Container(
-                        padding: const EdgeInsets.all(6),
+                        padding: const EdgeInsets.all(5),
                         decoration: BoxDecoration(
                           color: const Color(0xFFE67E22),
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(6),
                         ),
                         child: const Icon(
                           Icons.location_on,
                           color: Colors.white,
-                          size: 16,
+                          size: 14,
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: 10),
                       Expanded(
                         child: Text(
                           location,
                           style: GoogleFonts.inter(
-                            fontSize: 13,
+                            fontSize: 12,
                             fontWeight: FontWeight.w500,
                             color: const Color(0xFF000647),
                           ),
@@ -359,12 +350,12 @@ class SalonsEmploiScreen extends StatelessWidget {
                   ),
                 ),
                 
-                const SizedBox(height: 16),
+                const SizedBox(height: 12),
                 
                 // Action button
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  padding: const EdgeInsets.symmetric(vertical: 10),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.centerLeft,
@@ -383,13 +374,13 @@ class SalonsEmploiScreen extends StatelessWidget {
                       Icon(
                         Icons.open_in_new,
                         color: color,
-                        size: 18,
+                        size: 16,
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: 6),
                       Text(
                         'View Details & Register',
                         style: GoogleFonts.inter(
-                          fontSize: 14,
+                          fontSize: 12,
                           fontWeight: FontWeight.w600,
                           color: color,
                         ),

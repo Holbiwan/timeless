@@ -4,6 +4,7 @@ import 'package:timeless/common/widgets/back_button.dart';
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/color_res.dart';
+import 'package:timeless/services/unified_translation_service.dart'; // Import the translation service
 
 // ignore: must_be_immutable
 class SentScreen extends StatelessWidget {
@@ -22,6 +23,16 @@ class SentScreen extends StatelessWidget {
       this.location,
       this.type});
 
+  final translationService = Get.find<UnifiedTranslationService>(); // Inject translation service
+
+  // Helper function to format salary
+  String _formatSalary(String? salary, UnifiedTranslationService ts) {
+    if (salary == null || salary.isEmpty || salary == '0' || salary.toLowerCase().contains('negotiable')) {
+      return ts.getText('salary_negotiable');
+    }
+    return salary;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,6 +48,7 @@ class SentScreen extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(18.0),
                     child: InkWell(
+                      onTap: () => Get.back(), // Added onTap for back button
                       child: backButton(),
                     ),
                   ),
@@ -46,7 +58,7 @@ class SentScreen extends StatelessWidget {
                   child: Align(
                     alignment: Alignment.center,
                     child: Text(
-                      'Application',
+                      translationService.getText('application_screen_title'), // Localized
                       style: appTextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w500,
@@ -100,14 +112,14 @@ class SentScreen extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      position ?? "",
+                                      position ?? translationService.getText('position_not_specified'), // Localized
                                       style: appTextStyle(
                                           color: ColorRes.black,
                                           fontSize: 15,
                                           fontWeight: FontWeight.w500),
                                     ),
                                     Text(
-                                      companyName ?? "",
+                                      companyName ?? translationService.getText('company_not_specified'), // Localized
                                       style: appTextStyle(
                                           color: ColorRes.black,
                                           fontSize: 12,
@@ -131,7 +143,7 @@ class SentScreen extends StatelessWidget {
                             ),
                             child: Center(
                               child: Text(
-                                "Application Sent",
+                                translationService.getText('application_sent'), // Localized
                                 style: appTextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w500,
@@ -160,14 +172,14 @@ class SentScreen extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Salary",
+                                translationService.getText('salary'), // Localized
                                 style: appTextStyle(
                                     color: ColorRes.black.withOpacity(0.8),
                                     fontSize: 12,
                                     fontWeight: FontWeight.w500),
                               ),
                               Text(
-                                salary ?? "",
+                                _formatSalary(salary, translationService), // Formatted salary
                                 style: appTextStyle(
                                     color: ColorRes.containerColor,
                                     fontSize: 12,
@@ -180,14 +192,14 @@ class SentScreen extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Type",
+                                translationService.getText('type'), // Localized
                                 style: appTextStyle(
                                     color: ColorRes.black.withOpacity(0.8),
                                     fontSize: 12,
                                     fontWeight: FontWeight.w500),
                               ),
                               Text(
-                                type ?? "",
+                                type ?? translationService.getText('not_specified'), // Localized
                                 style: appTextStyle(
                                     color: ColorRes.containerColor,
                                     fontSize: 12,
@@ -200,14 +212,14 @@ class SentScreen extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Location",
+                                translationService.getText('location_match'), // Re-using existing key
                                 style: appTextStyle(
                                     color: ColorRes.black.withOpacity(0.8),
                                     fontSize: 12,
                                     fontWeight: FontWeight.w500),
                               ),
                               Text(
-                                location ?? "",
+                                location ?? translationService.getText('location_not_specified'), // Localized
                                 style: appTextStyle(
                                     color: ColorRes.containerColor,
                                     fontSize: 12,
@@ -222,7 +234,7 @@ class SentScreen extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Text(
-                        message ?? "",
+                        message ?? translationService.getText('description_not_available'), // Localized
                         style: appTextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w500,

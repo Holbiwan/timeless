@@ -17,31 +17,22 @@ class WebinairesScreen extends StatelessWidget {
         slivers: [
           // Modern App Bar
           SliverAppBar(
-            expandedHeight: 200,
+            expandedHeight: 160,
             floating: false,
             pinned: true,
-            backgroundColor: const Color(0xFF000647),
+            backgroundColor: Colors.black,
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      const Color(0xFF000647),
-                      const Color(0xFF000647).withOpacity(0.8),
-                      const Color(0xFFE67E22).withOpacity(0.1),
-                    ],
-                    stops: const [0.0, 0.7, 1.0],
-                  ),
+                decoration: const BoxDecoration(
+                  color: Colors.black,
                 ),
                 child: Stack(
                   children: [
                     Positioned(
-                      top: 60,
+                      top: 50,
                       right: 20,
                       child: Container(
-                        padding: const EdgeInsets.all(12),
+                        padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
                           color: const Color(0xFFE67E22).withOpacity(0.2),
                           borderRadius: BorderRadius.circular(50),
@@ -49,12 +40,12 @@ class WebinairesScreen extends StatelessWidget {
                         child: const Icon(
                           Icons.play_circle_fill,
                           color: Color(0xFFE67E22),
-                          size: 40,
+                          size: 28,
                         ),
                       ),
                     ),
                     Positioned(
-                      bottom: 30,
+                      bottom: 20,
                       left: 20,
                       right: 80,
                       child: Column(
@@ -63,18 +54,18 @@ class WebinairesScreen extends StatelessWidget {
                           Text(
                             'Webinars',
                             style: GoogleFonts.inter(
-                              fontSize: 28,
-                              fontWeight: FontWeight.w700,
+                              fontSize: 22,
+                              fontWeight: FontWeight.w600,
                               color: Colors.white,
                             ),
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: 6),
                           Text(
-                            'Join online sessions to boost your career skills and knowledge',
+                            'Join online sessions to boost your skills',
                             style: GoogleFonts.inter(
-                              fontSize: 14,
-                              color: Colors.white.withOpacity(0.9),
-                              height: 1.4,
+                              fontSize: 12,
+                              color: Colors.white.withOpacity(0.8),
+                              height: 1.3,
                             ),
                           ),
                         ],
@@ -87,11 +78,11 @@ class WebinairesScreen extends StatelessWidget {
             leading: Container(
               margin: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                icon: const Icon(Icons.arrow_back, color: Colors.black),
                 onPressed: () => Get.back(),
               ),
             ),
@@ -100,14 +91,14 @@ class WebinairesScreen extends StatelessWidget {
           // Content
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(20.0),
+              padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Information Card
                   Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         begin: Alignment.topLeft,
@@ -125,23 +116,23 @@ class WebinairesScreen extends StatelessWidget {
                         Row(
                           children: [
                             Container(
-                              padding: const EdgeInsets.all(10),
+                              padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
                                 color: const Color(0xFFE67E22),
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(10),
                               ),
                               child: const Icon(
                                 Icons.video_call,
                                 color: Colors.white,
-                                size: 20,
+                                size: 18,
                               ),
                             ),
                             const SizedBox(width: 16),
                             Expanded(
                               child: Text(
-                                'Click on a webinar to register or access the replay',
+                                'Click to register or access replay',
                                 style: GoogleFonts.inter(
-                                  fontSize: 14,
+                                  fontSize: 12,
                                   fontWeight: FontWeight.w500,
                                   color: const Color(0xFF000647),
                                 ),
@@ -149,9 +140,9 @@ class WebinairesScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 12),
                         Container(
-                          padding: const EdgeInsets.all(12),
+                          padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
                             color: Colors.red.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(12),
@@ -160,23 +151,23 @@ class WebinairesScreen extends StatelessWidget {
                           child: Row(
                             children: [
                               Container(
-                                padding: const EdgeInsets.all(6),
+                                padding: const EdgeInsets.all(4),
                                 decoration: BoxDecoration(
                                   color: Colors.red,
-                                  borderRadius: BorderRadius.circular(8),
+                                  borderRadius: BorderRadius.circular(6),
                                 ),
                                 child: const Icon(
                                   Icons.live_tv,
                                   color: Colors.white,
-                                  size: 16,
+                                  size: 14,
                                 ),
                               ),
-                              const SizedBox(width: 12),
+                              const SizedBox(width: 10),
                               Expanded(
                                 child: Text(
-                                  'Webinars marked "LIVE" are upcoming events',
+                                  'LIVE webinars are upcoming events',
                                   style: GoogleFonts.inter(
-                                    fontSize: 12,
+                                    fontSize: 11,
                                     fontWeight: FontWeight.w600,
                                     color: Colors.red.shade700,
                                   ),
@@ -189,7 +180,7 @@ class WebinairesScreen extends StatelessWidget {
                     ),
                   ),
                   
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 20),
             
             // Webinar Emploi & Credit Management
             _buildWebinarCard(
@@ -246,7 +237,7 @@ class WebinairesScreen extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
           child: Container(
             width: double.infinity,
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,

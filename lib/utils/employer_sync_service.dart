@@ -12,7 +12,7 @@ class EmployerSyncService {
     {
       'id': 'vitoranda_company_id',
       'companyName': 'VITORANDA',
-      'email': 'vitoranda971@gmail.com',
+      'email': 'vitoranda@outlook.com',
       'address': '25 Rue de Rivoli',
       'postalCode': '75001',
       'city': 'Paris',
@@ -325,6 +325,94 @@ class EmployerSyncService {
     } catch (e) {
       if (kDebugMode) {
         print('❌ Error cleaning demo data: $e');
+      }
+    }
+  }
+
+  // Update VITORANDA email address migration
+  static Future<void> migrateVitorandaEmail() async {
+    try {
+      Get.snackbar(
+        'Migration',
+        'Updating VITORANDA email and auth account...',
+        duration: const Duration(seconds: 2),
+      );
+
+      // Find VITORANDA company by SIRET
+      final querySnapshot = await _firestore
+          .collection('employers')
+          .where('siretCode', isEqualTo: '12345678901235')
+          .limit(1)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        final doc = querySnapshot.docs.first;
+        final employerData = doc.data();
+        final currentEmail = employerData['email'] ?? '';
+        
+        // Step 1: Create Firebase Auth account with new email
+        try {
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+            email: 'vitoranda@outlook.com',
+            password: 'Lecture2025',
+          );
+          
+          if (kDebugMode) {
+            print('✅ Firebase Auth account created for vitoranda@outlook.com');
+          }
+        } on FirebaseAuthException catch (e) {
+          if (e.code == 'email-already-in-use') {
+            if (kDebugMode) {
+              print('ℹ️ Firebase Auth account already exists for vitoranda@outlook.com');
+            }
+          } else {
+            throw e;
+          }
+        }
+        
+        // Step 2: Update the email address and ensure account is active
+        await doc.reference.update({
+          'email': 'vitoranda@outlook.com',
+          'previousEmail': currentEmail,
+          'isActive': true,
+          'isVerified': true,
+          'emailVerified': true,
+          'lastUpdated': FieldValue.serverTimestamp(),
+          'emailMigratedAt': FieldValue.serverTimestamp(),
+        });
+
+        Get.snackbar(
+          'Success!',
+          'VITORANDA email updated to vitoranda@outlook.com',
+          backgroundColor: const Color(0xFF4CAF50),
+          colorText: Colors.white,
+          duration: const Duration(seconds: 4),
+        );
+
+        if (kDebugMode) {
+          print('✅ VITORANDA email migrated successfully from $currentEmail to vitoranda@outlook.com');
+        }
+      } else {
+        Get.snackbar(
+          'Warning',
+          'VITORANDA company not found in database',
+          backgroundColor: const Color(0xFFFF9800),
+          colorText: Colors.white,
+        );
+
+        if (kDebugMode) {
+          print('⚠️ VITORANDA company not found for migration');
+        }
+      }
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Error during VITORANDA email migration: $e',
+        backgroundColor: const Color(0xFFF44336),
+        colorText: Colors.white,
+      );
+      if (kDebugMode) {
+        print('❌ VITORANDA migration error: $e');
       }
     }
   }

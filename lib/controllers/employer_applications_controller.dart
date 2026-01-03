@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:timeless/models/application_model.dart';
 import 'package:timeless/models/job_offer_model.dart';
 import 'package:timeless/services/job_service.dart';
+import 'package:timeless/services/email_service.dart';
 import 'package:timeless/services/preferences_service.dart';
 
 // Employer applications controller
@@ -288,6 +289,55 @@ class EmployerApplicationsController extends GetxController {
         return Colors.grey;
       case ApplicationStatus.accepted:
         return Colors.green;
+    }
+  }
+
+  // Send interview invitation
+  Future<void> sendInterviewInvitation({
+    required ApplicationModel application,
+    required DateTime interviewDate,
+    required String location,
+    String? additionalMessage,
+  }) async {
+    try {
+      // Get job details for the invitation
+      final job = getJobForApplication(application);
+      if (job == null) {
+        throw Exception('Job not found for this application');
+      }
+
+      // Send the invitation email
+      final emailSent = await EmailService.sendInterviewInvitation(
+        candidateEmail: application.candidateEmail,
+        candidateName: application.candidateName,
+        companyName: job.companyName,
+        jobTitle: job.title,
+        interviewDate: interviewDate,
+        location: location,
+        additionalMessage: additionalMessage,
+      );
+
+      if (emailSent) {
+        // Update application status to interview
+        await updateApplicationStatus(application.id, ApplicationStatus.interview);
+
+        Get.snackbar(
+          '✅ Interview Invitation Sent!',
+          'The candidate has been notified and the application status has been updated.',
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 4),
+        );
+      } else {
+        throw Exception('Failed to send email invitation');
+      }
+    } catch (e) {
+      Get.snackbar(
+        '❌ Error',
+        'Failed to send interview invitation: $e',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     }
   }
 }
