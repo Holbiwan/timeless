@@ -521,7 +521,7 @@ void _showUserMenu() {
           Text(
             'Menu',
             style: Get.find<AccessibilityService>().getAccessibleTextStyle(
-              fontSize: 18,
+              fontSize: 14,
               fontWeight: FontWeight.w600,
               color: const Color(0xFF000647),
             ),

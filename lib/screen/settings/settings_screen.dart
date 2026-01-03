@@ -6,15 +6,13 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:timeless/screen/dashboard/dashboard_controller.dart';
 import 'package:timeless/screen/looking_for_screen/looking_for_screen.dart';
 import 'package:timeless/screen/profile/profile_controller.dart';
-import 'package:timeless/screen/settings/widgets/settings_menu_item.dart';
-import 'package:timeless/screen/settings/widgets/settings_divider.dart';
+import 'package:timeless/screen/accessibility/accessibility_panel.dart';
 import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/services/google_auth_service.dart';
 import 'package:timeless/services/auth_service.dart';
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/pref_keys.dart';
-import 'package:timeless/utils/string.dart';
 import 'package:timeless/utils/app_theme.dart';
 
 class SettingsScreenU extends StatelessWidget {
@@ -31,16 +29,16 @@ class SettingsScreenU extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            // Header moderne
+            // Header moderne avec gradient
             Container(
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: const Color(0xFF000000),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.06),
-                    blurRadius: 10,
-                    offset: const Offset(0, 2),
+                    color: const Color(0xFF000647).withOpacity(0.2),
+                    blurRadius: 15,
+                    offset: const Offset(0, 5),
                   ),
                 ],
               ),
@@ -58,13 +56,14 @@ class SettingsScreenU extends StatelessWidget {
                       height: 40,
                       width: 40,
                       decoration: BoxDecoration(
-                        color: Colors.grey[100],
+                        color: Colors.white.withOpacity(0.2),
                         borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.white.withOpacity(0.3)),
                       ),
                       child: const Icon(
                         Icons.arrow_back,
-                        color: Color(0xFF1F2937),
-                        size: 20,
+                        color: Colors.white,
+                        size: 18,
                       ),
                     ),
                   ),
@@ -72,9 +71,9 @@ class SettingsScreenU extends StatelessWidget {
                   Text(
                     "Settings",
                     style: GoogleFonts.inter(
-                      fontSize: 24,
+                      fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: const Color(0xFF1F2937),
+                      color: Colors.white,
                     ),
                   ),
                 ],
@@ -88,26 +87,23 @@ class SettingsScreenU extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    // Section Account
+                    _buildModernSectionHeader(
                       "Account",
-                      style: GoogleFonts.inter(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: const Color(0xFF6B7280),
-                      ),
+                      "Manage your personal information and security",
+                      Icons.person_outline,
                     ),
                     const SizedBox(height: 16),
                     
-                    // Profile settings card
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.04),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
+                            color: Colors.black.withOpacity(0.08),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4),
                           ),
                         ],
                       ),
@@ -124,7 +120,7 @@ class SettingsScreenU extends StatelessWidget {
                           _buildSettingsItem(
                             icon: Icons.lock_outline,
                             title: "Change password",
-                            subtitle: "Update your password",
+                            subtitle: "Update your password securely",
                             color: const Color(0xFF2196F3),
                             onTap: () => _showChangePassword(context),
                           ),
@@ -134,27 +130,143 @@ class SettingsScreenU extends StatelessWidget {
 
                     const SizedBox(height: 32),
 
-                    Text(
-                      "Danger Zone",
-                      style: GoogleFonts.inter(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: const Color(0xFF6B7280),
-                      ),
+                    // Section Accessibility
+                    _buildModernSectionHeader(
+                      "Accessibility & Preferences",
+                      "Customize your app experience",
+                      Icons.accessibility_new,
                     ),
                     const SizedBox(height: 16),
-
-                    // Dangerous actions card
+                    
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: Colors.red[100]!, width: 1),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.04),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
+                            color: Colors.black.withOpacity(0.08),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          _buildSettingsItem(
+                            icon: Icons.accessibility_new,
+                            title: "Accessibility Settings",
+                            subtitle: "Visual, audio & navigation preferences",
+                            color: const Color(0xFF2196F3),
+                            onTap: () => Get.to(() => const AccessibilityPanel()),
+                          ),
+                          _buildDivider(),
+                          _buildSettingsItem(
+                            icon: Icons.notifications_outlined,
+                            title: "Notifications",
+                            subtitle: "Manage your notification preferences",
+                            color: const Color(0xFFFF9800),
+                            onTap: () => _showNotificationSettings(context),
+                          ),
+                          _buildDivider(),
+                          _buildSettingsItem(
+                            icon: Icons.language_outlined,
+                            title: "Language & Region",
+                            subtitle: "App language and regional settings",
+                            color: const Color(0xFF2196F3),
+                            onTap: () => _showLanguageSettings(context),
+                          ),
+                          _buildDivider(),
+                          _buildSettingsItem(
+                            icon: Icons.dark_mode_outlined,
+                            title: "Appearance",
+                            subtitle: "Theme and display preferences",
+                            color: const Color(0xFF607D8B),
+                            onTap: () => _showAppearanceSettings(context),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 32),
+
+                    // Section Support
+                    _buildModernSectionHeader(
+                      "Support & Information",
+                      "Get help and learn more about the app",
+                      Icons.help_outline,
+                    ),
+                    const SizedBox(height: 16),
+                    
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.08),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          _buildSettingsItem(
+                            icon: Icons.help_outline,
+                            title: "Help & Support",
+                            subtitle: "Get assistance and find answers",
+                            color: const Color(0xFF2196F3),
+                            onTap: () => _showHelpSupport(context),
+                          ),
+                          _buildDivider(),
+                          _buildSettingsItem(
+                            icon: Icons.info_outline,
+                            title: "About Timeless",
+                            subtitle: "Version info and legal information",
+                            color: const Color(0xFF607D8B),
+                            onTap: () => _showAboutApp(context),
+                          ),
+                          _buildDivider(),
+                          _buildSettingsItem(
+                            icon: Icons.star_outline,
+                            title: "Rate App",
+                            subtitle: "Share your feedback with us",
+                            color: const Color(0xFFFF8C00),
+                            onTap: () => _showRateApp(context),
+                          ),
+                          _buildDivider(),
+                          _buildSettingsItem(
+                            icon: Icons.logout,
+                            title: "Sign out",
+                            subtitle: "Sign out of your account safely",
+                            color: const Color(0xFF0D47A1),
+                            onTap: () => _showLogoutConfirmation(context, controller),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 32),
+
+                    // Section Danger Zone
+                    _buildSectionHeader(
+                      "Danger Zone",
+                      "Irreversible account actions",
+                      Icons.warning_outlined,
+                      isWarning: true,
+                    ),
+                    const SizedBox(height: 16),
+
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: const Color(0xFFFF8C00).withOpacity(0.3), width: 1.5),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFFFF8C00).withOpacity(0.1),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4),
                           ),
                         ],
                       ),
@@ -163,18 +275,9 @@ class SettingsScreenU extends StatelessWidget {
                           _buildSettingsItem(
                             icon: Icons.delete_outline,
                             title: "Delete account",
-                            subtitle: "Permanently delete your account",
-                            color: Colors.red[600]!,
+                            subtitle: "Permanently delete your account and all data",
+                            color: const Color(0xFFFF8C00),
                             onTap: () => _showDeleteAccount(context),
-                            isDangerous: true,
-                          ),
-                          _buildDivider(),
-                          _buildSettingsItem(
-                            icon: Icons.logout,
-                            title: "Sign out",
-                            subtitle: "Sign out of your account",
-                            color: const Color(0xFF0D47A1),
-                            onTap: () => _showLogoutConfirmation(context, controller),
                             isDangerous: true,
                           ),
                         ],
@@ -312,7 +415,7 @@ class SettingsScreenU extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Colors.blue[100],
+                color: const Color(0xFF0D47A1).withOpacity(0.2),
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Icon(Icons.logout_rounded, color: const Color(0xFF0D47A1), size: 24),
@@ -345,13 +448,13 @@ class SettingsScreenU extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.blue[50],
+                color: const Color(0xFF0D47A1).withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.blue[200]!),
+                border: Border.all(color: const Color(0xFF0D47A1).withOpacity(0.3)!),
               ),
               child: Row(
                 children: [
-                  Icon(Icons.info_outline, color: Colors.blue[600], size: 20),
+                  Icon(Icons.info_outline, color: const Color(0xFF0D47A1), size: 20),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
@@ -591,7 +694,7 @@ class SettingsScreenU extends StatelessWidget {
       Get.snackbar(
         "Logout Error",
         "An error occurred during logout: $e",
-        backgroundColor: Colors.red,
+        backgroundColor: const Color(0xFFFF8C00),
         colorText: Colors.white,
         duration: const Duration(seconds: 4),
       );
@@ -762,9 +865,9 @@ class SettingsScreenU extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.blue[50],
+                color: const Color(0xFF0D47A1).withOpacity(0.1),
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.blue[200]!),
+                border: Border.all(color: const Color(0xFF0D47A1).withOpacity(0.3)!),
               ),
               child: Column(
                 children: [
@@ -775,7 +878,7 @@ class SettingsScreenU extends StatelessWidget {
                     style: appTextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: Colors.blue[800],
+                      color: const Color(0xFF000647),
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -862,14 +965,14 @@ class SettingsScreenU extends StatelessWidget {
         ),
         title: Row(
           children: [
-            Icon(Icons.warning_amber_rounded, color: Colors.red[600], size: 28),
+            Icon(Icons.warning_amber_rounded, color: const Color(0xFFFF8C00), size: 28),
             const SizedBox(width: 8),
             Text(
               'Delete Account',
               style: appTextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 18,
-                color: Colors.red[600],
+                color: const Color(0xFFFF8C00),
               ),
             ),
           ],
@@ -881,13 +984,13 @@ class SettingsScreenU extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.red[50],
+                color: const Color(0xFFFF8C00).withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.red[200]!),
+                border: Border.all(color: const Color(0xFFFF8C00).withOpacity(0.3)),
               ),
               child: Row(
                 children: [
-                  Icon(Icons.info_outline, color: Colors.red[600], size: 20),
+                  Icon(Icons.info_outline, color: const Color(0xFFFF8C00), size: 20),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
@@ -895,7 +998,7 @@ class SettingsScreenU extends StatelessWidget {
                       style: appTextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
-                        color: Colors.red[600],
+                        color: const Color(0xFFFF8C00),
                       ),
                     ),
                   ),
@@ -950,7 +1053,7 @@ class SettingsScreenU extends StatelessWidget {
               _confirmDeleteAccount();
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red[600],
+              backgroundColor: const Color(0xFFFF8C00),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -1052,7 +1155,7 @@ class SettingsScreenU extends StatelessWidget {
                   Get.snackbar(
                     "Error",
                     "Failed to update name: $e",
-                    backgroundColor: Colors.red,
+                    backgroundColor: const Color(0xFFFF8C00),
                     colorText: Colors.white,
                   );
                 } finally {
@@ -1062,7 +1165,7 @@ class SettingsScreenU extends StatelessWidget {
                 Get.snackbar(
                   "Error",
                   "Name cannot be empty",
-                  backgroundColor: Colors.red,
+                  backgroundColor: const Color(0xFFFF8C00),
                   colorText: Colors.white,
                 );
               } else {
@@ -1156,7 +1259,7 @@ class SettingsScreenU extends StatelessWidget {
                   Get.snackbar(
                     "Error",
                     "Failed to update email: $e",
-                    backgroundColor: Colors.red,
+                    backgroundColor: const Color(0xFFFF8C00),
                     colorText: Colors.white,
                   );
                 } finally {
@@ -1166,7 +1269,7 @@ class SettingsScreenU extends StatelessWidget {
                 Get.snackbar(
                   "Error",
                   "Please enter a valid email address",
-                  backgroundColor: Colors.red,
+                  backgroundColor: const Color(0xFFFF8C00),
                   colorText: Colors.white,
                 );
               } else {
@@ -1260,7 +1363,7 @@ class SettingsScreenU extends StatelessWidget {
                   Get.snackbar(
                     "Error",
                     "Failed to update phone number: $e",
-                    backgroundColor: Colors.red,
+                    backgroundColor: const Color(0xFFFF8C00),
                     colorText: Colors.white,
                   );
                 } finally {
@@ -1371,7 +1474,7 @@ class SettingsScreenU extends StatelessWidget {
         Get.snackbar(
           "Error",
           "Failed to send password reset email: $error",
-          backgroundColor: Colors.red,
+          backgroundColor: const Color(0xFFFF8C00),
           colorText: Colors.white,
           duration: const Duration(seconds: 4),
         );
@@ -1380,7 +1483,7 @@ class SettingsScreenU extends StatelessWidget {
       Get.snackbar(
         "Error",
         "No email address found in your profile",
-        backgroundColor: Colors.red,
+        backgroundColor: const Color(0xFFFF8C00),
         colorText: Colors.white,
       );
     }
@@ -1403,14 +1506,14 @@ class SettingsScreenU extends StatelessWidget {
         ),
         title: Row(
           children: [
-            Icon(Icons.dangerous, color: Colors.red[700], size: 28),
+            Icon(Icons.dangerous, color: const Color(0xFFFF8C00), size: 28),
             const SizedBox(width: 8),
             Text(
               'Final Confirmation',
               style: appTextStyle(
                 fontWeight: FontWeight.w700,
                 fontSize: 18,
-                color: Colors.red[700],
+                color: const Color(0xFFFF8C00),
               ),
             ),
           ],
@@ -1422,20 +1525,20 @@ class SettingsScreenU extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.red[50],
+                color: const Color(0xFFFF8C00).withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.red[300]!, width: 2),
+                border: Border.all(color: const Color(0xFFFF8C00).withOpacity(0.5)!, width: 2),
               ),
               child: Column(
                 children: [
-                  Icon(Icons.warning_amber_rounded, color: Colors.red[700], size: 32),
+                  Icon(Icons.warning_amber_rounded, color: const Color(0xFFFF8C00), size: 32),
                   const SizedBox(height: 8),
                   Text(
                     'LAST WARNING',
                     style: appTextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
-                      color: Colors.red[700],
+                      color: const Color(0xFFFF8C00),
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -1443,7 +1546,7 @@ class SettingsScreenU extends StatelessWidget {
                     'This action cannot be undone!',
                     style: appTextStyle(
                       fontSize: 12,
-                      color: Colors.red[600],
+                      color: const Color(0xFFFF8C00),
                     ),
                   ),
                 ],
@@ -1492,7 +1595,7 @@ class SettingsScreenU extends StatelessWidget {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Colors.red[600]!, width: 2),
+                  borderSide: BorderSide(color: const Color(0xFFFF8C00), width: 2),
                 ),
                 hintText: "Type DELETE here",
                 hintStyle: appTextStyle(color: Colors.grey[500]),
@@ -1500,7 +1603,7 @@ class SettingsScreenU extends StatelessWidget {
               style: appTextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: Colors.red[600],
+                color: const Color(0xFFFF8C00),
               ),
             ),
           ],
@@ -1521,7 +1624,7 @@ class SettingsScreenU extends StatelessWidget {
               Get.back(result: true);
             } : null,
             style: ElevatedButton.styleFrom(
-              backgroundColor: canDelete.value ? Colors.red[700] : Colors.grey[400],
+              backgroundColor: canDelete.value ? const Color(0xFFFF8C00) : Colors.grey[400],
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -1653,11 +1756,137 @@ class SettingsScreenU extends StatelessWidget {
       Get.snackbar(
         "Deletion Error",
         "Failed to delete account: $e\n\nPlease contact support for assistance.",
-        backgroundColor: Colors.red,
+        backgroundColor: const Color(0xFFFF8C00),
         colorText: Colors.white,
         duration: const Duration(seconds: 6),
       );
     }
+  }
+
+  // Widget moderne pour les en-têtes de section avec fond noir
+  Widget _buildModernSectionHeader(String title, String subtitle, IconData icon) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            const Color(0xFF000647),
+            const Color(0xFF000000),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF000647).withOpacity(0.3),
+            blurRadius: 8,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.15),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(
+              icon,
+              color: Colors.white,
+              size: 16,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: GoogleFonts.inter(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  subtitle,
+                  style: GoogleFonts.inter(
+                    fontSize: 10,
+                    color: Colors.white.withOpacity(0.8),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Widget pour les en-têtes de section
+  Widget _buildSectionHeader(String title, String subtitle, IconData icon, {bool isWarning = false}) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: isWarning
+              ? [const Color(0xFFFF8C00).withOpacity(0.1), const Color(0xFFFF8C00).withOpacity(0.2)]
+              : [const Color(0xFF0D47A1).withOpacity(0.1)!, const Color(0xFF0D47A1).withOpacity(0.2)!],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isWarning ? const Color(0xFFFF8C00).withOpacity(0.3) : const Color(0xFF0D47A1).withOpacity(0.3),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: isWarning ? const Color(0xFFFF8C00).withOpacity(0.3) : const Color(0xFF0D47A1).withOpacity(0.3),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(
+              icon,
+              color: isWarning ? const Color(0xFFFF8C00) : const Color(0xFF000647),
+              size: 20,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: GoogleFonts.inter(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: isWarning ? const Color(0xFFFF8C00) : const Color(0xFF000647),
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  subtitle,
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    color: isWarning ? const Color(0xFFFF8C00) : const Color(0xFF0D47A1),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   // Widget moderne pour les éléments de settings
@@ -1670,14 +1899,22 @@ class SettingsScreenU extends StatelessWidget {
     bool isDangerous = false,
   }) {
     return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       leading: Container(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(8),
+          gradient: LinearGradient(
+            colors: [
+              color.withOpacity(0.15),
+              color.withOpacity(0.05),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: color.withOpacity(0.3), width: 1),
         ),
-        child: Icon(icon, color: color, size: 20),
+        child: Icon(icon, color: color, size: 22),
       ),
       title: Text(
         title,
@@ -1690,14 +1927,21 @@ class SettingsScreenU extends StatelessWidget {
       subtitle: Text(
         subtitle,
         style: GoogleFonts.inter(
-          fontSize: 14,
+          fontSize: 13,
           color: const Color(0xFF6B7280),
         ),
       ),
-      trailing: Icon(
-        Icons.arrow_forward_ios,
-        size: 16,
-        color: Colors.grey[400],
+      trailing: Container(
+        padding: const EdgeInsets.all(4),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: Icon(
+          Icons.arrow_forward_ios,
+          size: 14,
+          color: color,
+        ),
       ),
       onTap: onTap,
     );
@@ -1710,7 +1954,621 @@ class SettingsScreenU extends StatelessWidget {
       child: Divider(
         height: 1,
         color: Colors.grey[200],
+        thickness: 0.5,
       ),
     );
   }
-}
+
+  // Nouvelles méthodes pour les fonctionnalités ajoutées
+  void _showNotificationSettings(BuildContext context) {
+    Get.bottomSheet(
+      Container(
+        padding: const EdgeInsets.all(24),
+        margin: const EdgeInsets.only(bottom: 80),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.notifications_outlined, color: const Color(0xFFFF9800), size: 24),
+                const SizedBox(width: 8),
+                Text(
+                  "Notification Settings",
+                  style: GoogleFonts.inter(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: const Color(0xFF1F2937),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            _buildNotificationToggle("Job Alerts", "New job opportunities matching your profile", true),
+            _buildNotificationToggle("Application Updates", "Status changes for your applications", true),
+            _buildNotificationToggle("Messages", "New messages from employers", true),
+            _buildNotificationToggle("Marketing", "Product updates and promotional content", false),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () => Get.back(),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF000647),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                ),
+                child: Text(
+                  "Save Changes",
+                  style: GoogleFonts.inter(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNotificationToggle(String title, String subtitle, bool initialValue) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.grey[50],
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.grey[200]!),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: GoogleFonts.inter(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: const Color(0xFF1F2937),
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  subtitle,
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    color: const Color(0xFF6B7280),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Switch(
+            value: initialValue,
+            onChanged: (value) {},
+            activeColor: const Color(0xFF000647),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showLanguageSettings(BuildContext context) {
+    Get.bottomSheet(
+      Container(
+        padding: const EdgeInsets.all(24),
+        margin: const EdgeInsets.only(bottom: 80),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.language_outlined, color: const Color(0xFF000647), size: 20),
+                const SizedBox(width: 8),
+                Text(
+                  "Language & Region",
+                  style: GoogleFonts.inter(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: const Color(0xFF1F2937),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            _buildLanguageOption("English", "English (US)", true),
+            _buildLanguageOption("Français", "French", false),
+            _buildLanguageOption("Español", "Spanish", false),
+            _buildLanguageOption("العربية", "Arabic", false),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () => Get.back(),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF9C27B0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                ),
+                child: Text(
+                  "Apply Language",
+                  style: GoogleFonts.inter(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLanguageOption(String language, String subtitle, bool isSelected) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+        leading: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: isSelected ? const Color(0xFF9C27B0).withOpacity(0.1) : Colors.grey[100],
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(
+            Icons.language,
+            color: isSelected ? const Color(0xFF9C27B0) : Colors.grey[600],
+            size: 20,
+          ),
+        ),
+        title: Text(
+          language,
+          style: GoogleFonts.inter(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: isSelected ? const Color(0xFF9C27B0) : const Color(0xFF1F2937),
+          ),
+        ),
+        subtitle: Text(
+          subtitle,
+          style: GoogleFonts.inter(
+            fontSize: 12,
+            color: const Color(0xFF6B7280),
+          ),
+        ),
+        trailing: isSelected ? const Icon(Icons.check_circle, color: Color(0xFF9C27B0)) : null,
+        onTap: () {},
+      ),
+    );
+  }
+
+  void _showAppearanceSettings(BuildContext context) {
+    Get.bottomSheet(
+      Container(
+        padding: const EdgeInsets.all(24),
+        margin: const EdgeInsets.only(bottom: 80),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.dark_mode_outlined, color: const Color(0xFF607D8B), size: 24),
+                const SizedBox(width: 8),
+                Text(
+                  "Appearance Settings",
+                  style: GoogleFonts.inter(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: const Color(0xFF1F2937),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            Text(
+              "Theme Preference",
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF1F2937),
+              ),
+            ),
+            const SizedBox(height: 12),
+            _buildThemeOption("Light", "Clean and bright interface", Icons.light_mode, true),
+            _buildThemeOption("Dark", "Easy on the eyes in low light", Icons.dark_mode, false),
+            _buildThemeOption("System", "Follow device settings", Icons.settings_system_daydream, false),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () => Get.back(),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF607D8B),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                ),
+                child: Text(
+                  "Apply Theme",
+                  style: GoogleFonts.inter(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildThemeOption(String title, String subtitle, IconData icon, bool isSelected) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+        leading: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: isSelected ? const Color(0xFF607D8B).withOpacity(0.1) : Colors.grey[100],
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(
+            icon,
+            color: isSelected ? const Color(0xFF607D8B) : Colors.grey[600],
+            size: 20,
+          ),
+        ),
+        title: Text(
+          title,
+          style: GoogleFonts.inter(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: isSelected ? const Color(0xFF607D8B) : const Color(0xFF1F2937),
+          ),
+        ),
+        subtitle: Text(
+          subtitle,
+          style: GoogleFonts.inter(
+            fontSize: 12,
+            color: const Color(0xFF6B7280),
+          ),
+        ),
+        trailing: isSelected ? const Icon(Icons.check_circle, color: Color(0xFF607D8B)) : null,
+        onTap: () {},
+      ),
+    );
+  }
+
+  void _showHelpSupport(BuildContext context) {
+    Get.bottomSheet(
+      Container(
+        padding: const EdgeInsets.all(24),
+        margin: const EdgeInsets.only(bottom: 80),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.help_outline, color: const Color(0xFF2196F3), size: 24),
+                const SizedBox(width: 8),
+                Text(
+                  "Help & Support",
+                  style: GoogleFonts.inter(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: const Color(0xFF1F2937),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            _buildHelpOption("Frequently Asked Questions", Icons.quiz_outlined),
+            _buildHelpOption("Contact Support", Icons.support_agent),
+            _buildHelpOption("Report a Bug", Icons.bug_report_outlined),
+            _buildHelpOption("Feature Request", Icons.lightbulb_outline),
+            _buildHelpOption("Privacy Policy", Icons.privacy_tip_outlined),
+            _buildHelpOption("Terms of Service", Icons.description_outlined),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHelpOption(String title, IconData icon) {
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+      leading: Icon(icon, color: const Color(0xFF2196F3)),
+      title: Text(
+        title,
+        style: GoogleFonts.inter(
+          fontSize: 15,
+          fontWeight: FontWeight.w500,
+          color: const Color(0xFF1F2937),
+        ),
+      ),
+      trailing: const Icon(Icons.arrow_forward_ios, size: 14),
+      onTap: () {},
+    );
+  }
+
+  void _showAboutApp(BuildContext context) {
+    Get.dialog(
+      AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        title: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [const Color(0xFF000647), const Color(0xFF0D47A1)],
+                ),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Icon(Icons.info_outline, color: Colors.white, size: 20),
+            ),
+            const SizedBox(width: 12),
+            Text(
+              'About Timeless',
+              style: GoogleFonts.inter(
+                fontWeight: FontWeight.w600,
+                fontSize: 18,
+                color: const Color(0xFF1F2937),
+              ),
+            ),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [const Color(0xFF000647).withOpacity(0.1), const Color(0xFF0D47A1).withOpacity(0.1)!],
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  children: [
+                    const Icon(Icons.work, size: 32, color: Color(0xFF000647)),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Timeless',
+                      style: GoogleFonts.inter(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: const Color(0xFF000647),
+                      ),
+                    ),
+                    Text(
+                      'Version 1.0.0',
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Connect talent with opportunity. Timeless makes job searching and hiring simple, efficient, and effective.',
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                color: Colors.grey[700],
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            _buildAboutItem('Developed by', 'Timeless Team'),
+            _buildAboutItem('Build', '1.0.0 (100)'),
+            _buildAboutItem('Platform', 'Flutter'),
+            const SizedBox(height: 12),
+            Center(
+              child: Text(
+                '© 2024 Timeless. All rights reserved.',
+                style: GoogleFonts.inter(
+                  fontSize: 11,
+                  color: Colors.grey[500],
+                ),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          ElevatedButton(
+            onPressed: () => Get.back(),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF000647),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            child: Text(
+              'Close',
+              style: GoogleFonts.inter(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAboutItem(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: GoogleFonts.inter(
+              fontSize: 12,
+              color: Colors.grey[600],
+            ),
+          ),
+          Text(
+            value,
+            style: GoogleFonts.inter(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: const Color(0xFF1F2937),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+    void _showRateApp(BuildContext context) {
+      Get.dialog(
+        AlertDialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          title: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.amber[100],
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(Icons.star, color: Color(0xFFFFC107), size: 20),
+              ),
+              const SizedBox(width: 12),
+              Text(
+                'Rate Timeless',
+                style: GoogleFonts.inter(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 18,
+                  color: const Color(0xFF1F2937),
+                ),
+              ),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Love using Timeless?',
+                style: GoogleFonts.inter(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: const Color(0xFF1F2937),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Your feedback helps us improve and reach more job seekers!',
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  color: Colors.grey[600],
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(5, (index) => const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 2),
+                  child: Icon(Icons.star, color: Color(0xFFFFC107), size: 24),
+                )),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Get.back(),
+              child: Text(
+                'Maybe Later',
+                style: GoogleFonts.inter(
+                  color: Colors.grey[600],
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Get.back();
+                Get.snackbar(
+                  'Thank You!',
+                  'Redirecting to App Store...',
+                  backgroundColor: const Color(0xFFFFC107),
+                  colorText: Colors.white,
+                  duration: const Duration(seconds: 2),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFFFC107),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: Text(
+                'Rate Now',
+                style: GoogleFonts.inter(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+  }

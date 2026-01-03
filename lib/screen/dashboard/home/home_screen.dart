@@ -145,33 +145,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [Colors.white, const Color(0xFFE3F2FD)], // White to very light blue
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                            ),
-                            borderRadius: BorderRadius.circular(30),
-                            border: Border.all(color: const Color(0xFF0D47A1).withOpacity(0.15)),
-                            boxShadow: [
-                              BoxShadow(
-                                color: const Color(0xFF0D47A1).withOpacity(0.08),
-                                blurRadius: 10,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
-                          ),
-                          child: Text(
-                            "Learning & Events",
-                            textAlign: TextAlign.center,
-                            style: GoogleFonts.inter(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w700,
-                              letterSpacing: 0.5,
-                              color: const Color(0xFF0D47A1),
-                            ),
+                        Text(
+                          "Learning & Events",
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.inter(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 0.5,
+                            color: const Color(0xFF0D47A1),
                           ),
                         ),
                         const SizedBox(height: 12),
