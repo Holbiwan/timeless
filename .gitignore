@@ -51,8 +51,30 @@ ios/Runner.xcodeproj/xcuserdata/
 **/GeneratedPluginRegistrant.*
 
 # =====================================================================
+# SENSITIVE CODE - BUSINESS LOGIC (NEVER COMMIT)
+# =====================================================================
+
+# Services sensibles - Authentication, paiements, API calls
+lib/services/
+lib/api/
+lib/config/
+lib/controllers/
+
+# =====================================================================
 # FIREBASE & SECRETS (NEVER COMMIT)
 # =====================================================================
+
+# Firebase credentials
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
+firebase/service-account-key.json
+firebase/adminsdk-*.json
+firebase/private-key.json
+
+# Firebase generated options
+lib/firebase_options.dart
+lib/firebase_options.dart.example
+firebase/
 
 # Env files
 *.env
@@ -63,30 +85,16 @@ ios/Runner.xcodeproj/xcuserdata/
 firebase/.env.*
 firebase/.env.firestore-send-email
 
-# Firebase credentials
-android/app/google-services.json
-ios/Runner/GoogleService-Info.plist
-firebase/service-account-key.json
-firebase/adminsdk-*.json
-firebase/private-key.json
-
-# Firebase generated options
-lib/firebase/firebase_options.dart
-Firebase/
-
 # =====================================================================
-# API KEYS & CONFIG FILES
+# API KEYS & CONFIG FILES (NEVER COMMIT)
 # =====================================================================
-lib/config/api_config.dart
-lib/config/secrets.dart
-
 config/secrets.yaml
 config/secrets.json
 config/api_keys.yaml
 config/local_settings.yaml
 
 # =====================================================================
-# CERTIFICATES & AUTH
+# CERTIFICATES & AUTH (NEVER COMMIT)
 # =====================================================================
 *.jks
 *.keystore
@@ -193,7 +201,6 @@ fix_*.dart
 run_employer_sync.dart
 run_vitoranda_fix.dart
 test_vitoranda_email.dart
-vitoranda_toranda debug files
 **/vitoranda_*.dart
 **/email_debug_*.dart
 **/signup_debug_*.dart
@@ -216,8 +223,7 @@ scripts/
 # =====================================================================
 .mailmap
 
-
- =====================================================================
+# =====================================================================
 # DOCS
 # =====================================================================
 CLEANUP_GUIDE.md
