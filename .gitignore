@@ -57,8 +57,6 @@ ios/Runner.xcodeproj/xcuserdata/
 # Services sensibles - Authentication, paiements, API calls
 lib/services/
 lib/api/
-lib/config/
-lib/controllers/
 
 # =====================================================================
 # FIREBASE & SECRETS (NEVER COMMIT)
