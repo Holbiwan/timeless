@@ -40,7 +40,7 @@
   "back": "Atrás",
   "next": "Siguiente",
   "continue": "Continuar",
-  "first_name": "Nombre",
-  "last_name": "Apellido",
+  "first_name": "First Name",
+  "last_name": "Last Name",
   "password": "Contraseña"
 }

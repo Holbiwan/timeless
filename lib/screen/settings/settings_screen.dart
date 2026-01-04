@@ -118,7 +118,7 @@ class SettingsScreenU extends StatelessWidget {
                             icon: Icons.person_outline,
                             title: "Edit profile",
                             subtitle: "Update your personal information",
-                            color: const Color(0xFF0D47A1),
+                            color: const Color(0xFF000647),
                             onTap: () => _showEditProfile(context),
                           ),
                           _buildDivider(),
@@ -126,7 +126,7 @@ class SettingsScreenU extends StatelessWidget {
                             icon: Icons.lock_outline,
                             title: "Change password",
                             subtitle: "Update your password securely",
-                            color: const Color(0xFF2196F3),
+                            color: const Color(0xFF000647),
                             onTap: () => _showChangePassword(context),
                           ),
                         ],
@@ -162,7 +162,7 @@ class SettingsScreenU extends StatelessWidget {
                             icon: Icons.accessibility_new,
                             title: "Accessibility Settings",
                             subtitle: "Visual, audio & navigation preferences",
-                            color: const Color(0xFF2196F3),
+                            color: const Color(0xFF000647),
                             onTap: () => Get.to(() => const AccessibilityPanel()),
                           ),
                           _buildDivider(),
@@ -170,7 +170,7 @@ class SettingsScreenU extends StatelessWidget {
                             icon: Icons.notifications_outlined,
                             title: "Notifications",
                             subtitle: "Manage your notification preferences",
-                            color: const Color(0xFFFF9800),
+                            color: const Color(0xFF000647),
                             onTap: () => _showNotificationSettings(context),
                           ),
                           _buildDivider(),
@@ -178,7 +178,7 @@ class SettingsScreenU extends StatelessWidget {
                             icon: Icons.language_outlined,
                             title: "Language & Region",
                             subtitle: "App language and regional settings",
-                            color: const Color(0xFF2196F3),
+                            color: const Color(0xFF000647),
                             onTap: () => _showLanguageSettings(context),
                           ),
                           _buildDivider(),
@@ -186,7 +186,7 @@ class SettingsScreenU extends StatelessWidget {
                             icon: Icons.dark_mode_outlined,
                             title: "Appearance",
                             subtitle: "Theme and display preferences",
-                            color: const Color(0xFF607D8B),
+                            color: const Color(0xFF000647),
                             onTap: () => _showAppearanceSettings(context),
                           ),
                         ],
@@ -222,7 +222,7 @@ class SettingsScreenU extends StatelessWidget {
                             icon: Icons.help_outline,
                             title: "Help & Support",
                             subtitle: "Get assistance and find answers",
-                            color: const Color(0xFF2196F3),
+                            color: const Color(0xFF000647),
                             onTap: () => _showHelpSupport(context),
                           ),
                           _buildDivider(),
@@ -230,7 +230,7 @@ class SettingsScreenU extends StatelessWidget {
                             icon: Icons.info_outline,
                             title: "About Timeless",
                             subtitle: "Version info and legal information",
-                            color: const Color(0xFF607D8B),
+                            color: const Color(0xFF000647),
                             onTap: () => _showAboutApp(context),
                           ),
                           _buildDivider(),
@@ -238,7 +238,7 @@ class SettingsScreenU extends StatelessWidget {
                             icon: Icons.star_outline,
                             title: "Rate App",
                             subtitle: "Share your feedback with us",
-                            color: const Color(0xFFFF8C00),
+                            color: const Color(0xFF000647),
                             onTap: () => _showRateApp(context),
                           ),
                           _buildDivider(),
@@ -246,7 +246,7 @@ class SettingsScreenU extends StatelessWidget {
                             icon: Icons.logout,
                             title: "Sign out",
                             subtitle: "Sign out of your account safely",
-                            color: const Color(0xFF0D47A1),
+                            color: const Color(0xFF000647),
                             onTap: () => _showLogoutConfirmation(context, controller),
                           ),
                         ],
@@ -285,7 +285,7 @@ class SettingsScreenU extends StatelessWidget {
                             icon: Icons.delete_outline,
                             title: "Delete account",
                             subtitle: "Permanently delete your account and all data",
-                            color: const Color(0xFFFF8C00),
+                            color: Colors.red,
                             onTap: () => _showDeleteAccount(context),
                             isDangerous: true,
                           ),
@@ -1858,17 +1858,14 @@ class SettingsScreenU extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: isWarning
-              // ignore: deprecated_member_use
-              ? [const Color(0xFFFF8C00).withOpacity(0.1), const Color(0xFFFF8C00).withOpacity(0.2)]
-              // ignore: deprecated_member_use
+              ? [Colors.black, Colors.black]
               : [const Color(0xFF0D47A1).withOpacity(0.1), const Color(0xFF0D47A1).withOpacity(0.2)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          // ignore: deprecated_member_use
-          color: isWarning ? const Color(0xFFFF8C00).withOpacity(0.3) : const Color(0xFF0D47A1).withOpacity(0.3),
+          color: isWarning ? Colors.white.withOpacity(0.3) : const Color(0xFF0D47A1).withOpacity(0.3),
           width: 1,
         ),
       ),
@@ -1877,13 +1874,12 @@ class SettingsScreenU extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              // ignore: deprecated_member_use
-              color: isWarning ? const Color(0xFFFF8C00).withOpacity(0.3) : const Color(0xFF0D47A1).withOpacity(0.3),
+              color: isWarning ? Colors.white.withOpacity(0.15) : const Color(0xFF0D47A1).withOpacity(0.3),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(
               icon,
-              color: isWarning ? const Color(0xFFFF8C00) : const Color(0xFF000647),
+              color: isWarning ? Colors.white : const Color(0xFF000647),
               size: 20,
             ),
           ),
@@ -1897,7 +1893,7 @@ class SettingsScreenU extends StatelessWidget {
                   style: GoogleFonts.inter(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
-                    color: isWarning ? const Color(0xFFFF8C00) : const Color(0xFF000647),
+                    color: isWarning ? Colors.white : const Color(0xFF000647),
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -1905,7 +1901,7 @@ class SettingsScreenU extends StatelessWidget {
                   subtitle,
                   style: GoogleFonts.inter(
                     fontSize: 12,
-                    color: isWarning ? const Color(0xFFFF8C00) : const Color(0xFF0D47A1),
+                    color: isWarning ? Colors.white.withOpacity(0.8) : const Color(0xFF0D47A1),
                   ),
                 ),
               ],
@@ -1949,7 +1945,7 @@ class SettingsScreenU extends StatelessWidget {
       title: Text(
         title,
         style: GoogleFonts.inter(
-          fontSize: 16,
+          fontSize: 14,
           fontWeight: FontWeight.w600,
           color: isDangerous ? color : const Color(0xFF1F2937),
         ),

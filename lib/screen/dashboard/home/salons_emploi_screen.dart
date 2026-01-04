@@ -15,30 +15,17 @@ class SalonsEmploiScreen extends StatelessWidget {
       backgroundColor: accessibilityService.backgroundColor,
       body: CustomScrollView(
         slivers: [
-          // Modern App Bar with smooth scroll behavior
+          // Modern App Bar with static title
           SliverAppBar(
             expandedHeight: 160,
-            floating: true,
+            floating: false,
             pinned: true,
-            snap: true,
+            snap: false,
             backgroundColor: Colors.black,
             elevation: 0,
             shadowColor: Colors.black.withOpacity(0.3),
             surfaceTintColor: Colors.transparent,
             flexibleSpace: FlexibleSpaceBar(
-              titlePadding: const EdgeInsets.only(left: 20, bottom: 20),
-              title: AnimatedOpacity(
-                opacity: 1.0,
-                duration: const Duration(milliseconds: 300),
-                child: Text(
-                  'Job Fairs',
-                  style: GoogleFonts.inter(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
               background: Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -385,7 +372,7 @@ class SalonsEmploiScreen extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(5),
                         decoration: BoxDecoration(
-                          color: Colors.black,
+                          color: const Color(0xFF000647),
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: const Icon(
@@ -420,19 +407,19 @@ class SalonsEmploiScreen extends StatelessWidget {
                       begin: Alignment.centerLeft,
                       end: Alignment.centerRight,
                       colors: [
-                        color.withOpacity(0.1),
-                        color.withOpacity(0.05),
+                        Colors.black,
+                        Colors.black.withOpacity(0.9),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: color.withOpacity(0.2)),
+                    border: Border.all(color: Colors.black.withOpacity(0.2)),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.open_in_new,
-                        color: color,
+                        color: Colors.white,
                         size: 16,
                       ),
                       const SizedBox(width: 6),
@@ -441,7 +428,7 @@ class SalonsEmploiScreen extends StatelessWidget {
                         style: GoogleFonts.inter(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
-                          color: color,
+                          color: Colors.white,
                         ),
                       ),
                     ],

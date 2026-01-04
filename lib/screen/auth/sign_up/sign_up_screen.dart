@@ -172,12 +172,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                           
                           // First Name field
-                          _buildLabel(translationService.getText('first_name')),
+                          _buildLabel("First Name"),
                           const SizedBox(height: 8),
                           UnifiedFormField(
                             controller: ctrl.firstNameCtrl,
                             hintText: 'Enter your first name',
-                            labelText: translationService.getText('first_name'),
+                            labelText: "First Name",
                             isRequired: true,
                             onChanged: ctrl.onChanged,
                             prefixIcon: Icons.person_outline,
@@ -186,12 +186,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           const SizedBox(height: 20),
 
                           // Last Name field
-                          _buildLabel(translationService.getText('last_name')),
+                          _buildLabel("Last Name"),
                           const SizedBox(height: 8),
                           UnifiedFormField(
                             controller: ctrl.lastNameCtrl,
                             hintText: 'Enter your last name',
-                            labelText: translationService.getText('last_name'),
+                            labelText: "Last Name",
                             isRequired: true,
                             onChanged: ctrl.onChanged,
                             prefixIcon: Icons.person_outline,

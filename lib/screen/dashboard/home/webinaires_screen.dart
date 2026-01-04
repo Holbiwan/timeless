@@ -15,30 +15,17 @@ class WebinairesScreen extends StatelessWidget {
       backgroundColor: accessibilityService.backgroundColor,
       body: CustomScrollView(
         slivers: [
-          // Modern App Bar with smooth scroll behavior
+          // Modern App Bar with static title
           SliverAppBar(
             expandedHeight: 160,
-            floating: true,
+            floating: false,
             pinned: true,
-            snap: true,
+            snap: false,
             backgroundColor: Colors.black,
             elevation: 0,
             shadowColor: Colors.black.withOpacity(0.3),
             surfaceTintColor: Colors.transparent,
             flexibleSpace: FlexibleSpaceBar(
-              titlePadding: const EdgeInsets.only(left: 20, bottom: 20),
-              title: AnimatedOpacity(
-                opacity: 1.0,
-                duration: const Duration(milliseconds: 300),
-                child: Text(
-                  'Webinars',
-                  style: GoogleFonts.inter(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
               background: Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -172,34 +159,6 @@ class WebinairesScreen extends StatelessWidget {
                     ),
                     child: Column(
                       children: [
-                        Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: Colors.black,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: const Icon(
-                                Icons.video_call,
-                                color: Colors.white,
-                                size: 18,
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: Text(
-                                'Click to register or access replay',
-                                style: GoogleFonts.inter(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                  color: const Color(0xFF000647),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
                         Container(
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
@@ -434,7 +393,7 @@ class WebinairesScreen extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
-                              color: Colors.black,
+                              color: const Color(0xFF000647),
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: const Icon(
@@ -463,7 +422,7 @@ class WebinairesScreen extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
-                              color: Colors.black,
+                              color: const Color(0xFF000647),
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: const Icon(
@@ -506,34 +465,34 @@ class WebinairesScreen extends StatelessWidget {
                 // Action button
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  padding: const EdgeInsets.symmetric(vertical: 10),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.centerLeft,
                       end: Alignment.centerRight,
                       colors: [
-                        color.withOpacity(0.1),
-                        color.withOpacity(0.05),
+                        Colors.black,
+                        Colors.black.withOpacity(0.9),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: color.withOpacity(0.3), width: 1.5),
+                    border: Border.all(color: Colors.black.withOpacity(0.2)),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
                         isLive ? Icons.how_to_reg : Icons.play_circle_fill,
-                        color: color,
-                        size: 20,
+                        color: Colors.white,
+                        size: 16,
                       ),
-                      const SizedBox(width: 10),
+                      const SizedBox(width: 6),
                       Text(
                         isLive ? 'Register Now' : 'View Details',
                         style: GoogleFonts.inter(
-                          fontSize: 15,
+                          fontSize: 12,
                           fontWeight: FontWeight.w600,
-                          color: color,
+                          color: Colors.white,
                         ),
                       ),
                     ],

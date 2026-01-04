@@ -57,36 +57,17 @@ class FirstScreen extends StatelessWidget {
               Container(
                 width: Get.width,
                 alignment: Alignment.centerLeft,
-                padding: const EdgeInsets.only(left: 16, top: 1),
+                padding: const EdgeInsets.only(left: 16, top: 1), // Reverted padding
                 child: SimpleLanguageSwitch(),
               ),
 
-              const SizedBox(height: 20), // Espace pour les boutons fixes
+              const SizedBox(height: 20), // Reverted SizedBox height
 
               // Welcome message with gradient effect
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
                   children: [
-                    ShaderMask(
-                      shaderCallback: (bounds) => LinearGradient(
-                        colors: [
-                          Colors.white,
-                          const Color(0xFFFF8C00).withOpacity(0.8),
-                          Colors.white,
-                        ],
-                      ).createShader(bounds),
-                      child: Text(
-                        "Welcome to",
-                        style: GoogleFonts.inter(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w300,
-                          letterSpacing: 1.5,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
                     ShaderMask(
                       shaderCallback: (bounds) => LinearGradient(
                         colors: [
@@ -112,6 +93,25 @@ class FirstScreen extends StatelessWidget {
                         ),
                       ),
                     ),
+                    const SizedBox(height: 8),
+                    ShaderMask(
+                      shaderCallback: (bounds) => LinearGradient(
+                        colors: [
+                          const Color(0xFFFF8C00),
+                          Colors.white,
+                          const Color(0xFFFF8C00),
+                        ],
+                      ).createShader(bounds),
+                      child: Text(
+                        "Job App",
+                        style: GoogleFonts.inter(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w300,
+                          letterSpacing: 1.5,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
                     const SizedBox(height: 12),
                     Text(
                       "Because opportunities don't wait",
@@ -127,11 +127,11 @@ class FirstScreen extends StatelessWidget {
                 ),
               ),
 
-              SizedBox(height: Get.height * 0.005),
+              const SizedBox(height: 0), // Keeping this tight
 
               Container(
                 width: Get.width * 0.85,
-                height: Get.height * 0.25,
+                height: Get.height * 0.20, // Keeping this tighter
                 alignment: Alignment.center,
                 child: RepaintBoundary(
                   child: Opacity(
@@ -139,7 +139,7 @@ class FirstScreen extends StatelessWidget {
                     child: Image.asset(
                       'assets/images/logo.png',
                       width: Get.width * 0.85,
-                      height: Get.height * 0.23,
+                      height: Get.height * 0.18, // Keeping this tighter
                       fit: BoxFit.contain,
                       filterQuality: FilterQuality.high,
                       gaplessPlayback: false,
@@ -148,7 +148,6 @@ class FirstScreen extends StatelessWidget {
                   ),
                 ),
               ),
-
               SizedBox(height: Get.height * 0.01),
 
               GestureDetector(
@@ -414,20 +413,29 @@ class FirstScreen extends StatelessWidget {
                   ),
                 ),
 
-              SizedBox(height: Get.height * 0.03),
+              SizedBox(height: 10),
 
               // Section des réseaux sociaux
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
                   children: [
-                    Text(
-                      "Connect with us",
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                        letterSpacing: 0.5,
-                        color: Colors.white.withOpacity(0.9),
+                    ShaderMask(
+                      shaderCallback: (bounds) => LinearGradient(
+                        colors: [
+                          const Color(0xFFFF8C00),
+                          Colors.white,
+                          const Color(0xFFFF8C00),
+                        ],
+                      ).createShader(bounds),
+                      child: Text(
+                        "Connect with us",
+                        style: GoogleFonts.inter(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: 0.5,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -443,7 +451,7 @@ class FirstScreen extends StatelessWidget {
                         _buildSocialIcon(
                           'https://x.com/Holbiwan_Place',
                           FontAwesomeIcons.xTwitter,
-                          Colors.white, // X/Twitter white
+                          Colors.white, // Changed to white for visibility on dark background
                         ),
                         const SizedBox(width: 15),
                         _buildSocialIcon(
@@ -494,24 +502,12 @@ class FirstScreen extends StatelessWidget {
       child: Container(
         width: 32,
         height: 32,
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.1),
+        decoration: const BoxDecoration(
           shape: BoxShape.circle,
-          border: Border.all(
-            color: color.withOpacity(0.3),
-            width: 1.5,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: color.withOpacity(0.2),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
         ),
         child: Icon(
           icon,
-          color: color,
+          color: color, // Keep original brand color
           size: 16,
         ),
       ),

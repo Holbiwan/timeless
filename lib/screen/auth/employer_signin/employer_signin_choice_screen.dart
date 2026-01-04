@@ -160,7 +160,7 @@ class EmployerSignInChoiceScreen extends StatelessWidget {
                               child: Text(
                                 "OR",
                                 style: GoogleFonts.inter(
-                                  color: Colors.grey[500],
+                                  color: _primaryBlue,
                                   fontSize: 12,
                                   fontWeight: FontWeight.w700,
                                 ),
@@ -239,7 +239,7 @@ class EmployerSignInChoiceScreen extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: _primaryBlue.withOpacity(0.2), width: 2),
+          border: Border.all(color: _primaryBlue, width: 2),
           boxShadow: [
             BoxShadow(
               color: _primaryBlue.withOpacity(0.08),
