@@ -97,12 +97,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   
                   const SizedBox(height: 6),
 
-                  // --- SECTION: Actions principales élégantes ---
+                  // Main action cards section
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Row(
                       children: [
-                        // Card My Applications moderne
+                        // My Applications card
                         Expanded(
                           child: StreamBuilder<int>(
                             stream: CandidateDashboardService.getCandidateApplicationsCount(),
@@ -123,7 +123,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         
                         const SizedBox(width: 12),
                         
-                        // Card Job Offers moderne
+                        // Browse Jobs card
                         Expanded(
                           child: _buildActionCard(
                             title: "Browse Jobs",
@@ -139,7 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   const SizedBox(height: 8),
 
-                  // --- SECTION: Learning & Events ---
+                  // Learning & Events section
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Column(
@@ -157,7 +157,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         const SizedBox(height: 12),
                         
-                        // Video Carousel Section
+                        // Video carousel
                         SizedBox(
                           height: 120,
                           child: PageView.builder(
@@ -201,7 +201,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         
                         const SizedBox(height: 8),
                         
-                        // Indicator
+                        // Page indicator
                         Center(
                           child: AnimatedSmoothIndicator(
                             activeIndex: _currentIndex,
@@ -217,7 +217,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         
                         const SizedBox(height: 8),
                         
-                        // Events buttons modernes
+                        // Event action buttons
                         Row(
                           children: [
                             Expanded(
@@ -255,7 +255,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Widget élégant pour les cartes d'action principales
+  // Main action card widget
   Widget _buildActionCard({
     required String title,
     required String subtitle,
@@ -335,7 +335,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Widget élégant pour les cartes d'événements
+  // Event card widget
   Widget _buildEventCard({
     required String title,
     required String subtitle,
@@ -393,7 +393,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Widget moderne pour les boutons d'events
+  // Modern event button widget
   Widget _buildModernEventButton(String title, IconData icon, String subtitle, VoidCallback onTap) {
     return InkWell(
       onTap: onTap,
@@ -453,7 +453,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Fonction pour obtenir le nom du mois
+  // Get month name helper function
   String _getMonthName(int month) {
     const months = [
       'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',

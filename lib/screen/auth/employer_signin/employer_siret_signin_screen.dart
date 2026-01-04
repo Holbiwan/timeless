@@ -17,12 +17,14 @@ class EmployerSiretSignInScreen extends StatefulWidget {
   const EmployerSiretSignInScreen({super.key});
 
   @override
-  State<EmployerSiretSignInScreen> createState() => _EmployerSiretSignInScreenState();
+  State<EmployerSiretSignInScreen> createState() =>
+      _EmployerSiretSignInScreenState();
 }
 
 class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
   final TextEditingController siretController = TextEditingController();
-  final UnifiedTranslationService translationService = UnifiedTranslationService.instance;
+  final UnifiedTranslationService translationService =
+      UnifiedTranslationService.instance;
   bool isLoading = false;
 
   @override
@@ -57,7 +59,7 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 100),
-                
+
                 // Logo
                 Center(
                   child: Container(
@@ -111,12 +113,13 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                
+
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: const Color(0xFF000647), width: 2.0),
+                    border:
+                        Border.all(color: const Color(0xFF000647), width: 2.0),
                   ),
                   child: TextFormField(
                     controller: siretController,
@@ -129,7 +132,8 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
                         fontSize: 11,
                       ),
                       border: InputBorder.none,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 6),
                       suffixIcon: Container(
                         margin: const EdgeInsets.all(4),
                         decoration: BoxDecoration(
@@ -142,7 +146,11 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
                         ),
                       ),
                     ),
-                    buildCounter: (context, {required currentLength, required isFocused, maxLength}) => null,
+                    buildCounter: (context,
+                            {required currentLength,
+                            required isFocused,
+                            maxLength}) =>
+                        null,
                     style: GoogleFonts.inter(
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
@@ -225,14 +233,14 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
               ],
             ),
           ),
-          
+
           // Bouton de retour
           const Positioned(
             top: 40,
             left: 20,
             child: UniversalBackFab(),
           ),
-          
+
           // Loader
           if (isLoading) const CommonLoader(),
         ],
@@ -242,7 +250,7 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
 
   Future<void> _signInWithSiret() async {
     final siret = siretController.text.trim();
-    
+
     if (siret.isEmpty) {
       AppTheme.showStandardSnackBar(
         title: "⚠️ Required Field",
@@ -276,7 +284,8 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
       if (querySnapshot.docs.isEmpty) {
         AppTheme.showStandardSnackBar(
           title: "❌ Account Not Found",
-          message: "No employer account found with this SIRET. Please create an account first.",
+          message:
+              "No employer account found with this SIRET. Please create an account first.",
           isError: true,
         );
         return;
@@ -284,10 +293,10 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
 
       final employerDoc = querySnapshot.docs.first;
       final employerData = employerDoc.data();
-      
+
       // Récupérer l'email associé à ce compte
       final email = employerData['email'];
-      
+
       if (email == null) {
         AppTheme.showStandardSnackBar(
           title: "❌ Error",
@@ -299,7 +308,6 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
 
       // Afficher une boîte de dialogue pour saisir le mot de passe
       _showPasswordDialog(email, employerDoc.id);
-
     } catch (e) {
       AppTheme.showStandardSnackBar(
         title: "❌ Error",
@@ -370,7 +378,9 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
                         });
                       },
                       icon: Icon(
-                        isPasswordHidden ? Icons.visibility : Icons.visibility_off,
+                        isPasswordHidden
+                            ? Icons.visibility
+                            : Icons.visibility_off,
                         color: const Color(0xFF000647),
                       ),
                     ),
@@ -381,9 +391,11 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
           ),
           actions: [
             TextButton(
-              onPressed: isPasswordLoading ? null : () {
-                Navigator.of(context).pop();
-              },
+              onPressed: isPasswordLoading
+                  ? null
+                  : () {
+                      Navigator.of(context).pop();
+                    },
               child: Text(
                 'Cancel',
                 style: GoogleFonts.inter(
@@ -392,81 +404,83 @@ class _EmployerSiretSignInScreenState extends State<EmployerSiretSignInScreen> {
               ),
             ),
             ElevatedButton(
-              onPressed: isPasswordLoading ? null : () async {
-                final password = passwordController.text.trim();
-                if (password.isEmpty) {
-                  AppTheme.showStandardSnackBar(
-                    title: "⚠️ Required Field",
-                    message: "Please enter your password",
-                    isError: true,
-                  );
-                  return;
-                }
+              onPressed: isPasswordLoading
+                  ? null
+                  : () async {
+                      final password = passwordController.text.trim();
+                      if (password.isEmpty) {
+                        AppTheme.showStandardSnackBar(
+                          title: "⚠️ Required Field",
+                          message: "Please enter your password",
+                          isError: true,
+                        );
+                        return;
+                      }
 
-                setDialogState(() {
-                  isPasswordLoading = true;
-                });
+                      setDialogState(() {
+                        isPasswordLoading = true;
+                      });
 
-                try {
-                  // Connexion Firebase Auth
-                  await FirebaseAuth.instance.signInWithEmailAndPassword(
-                    email: email,
-                    password: password,
-                  );
+                      try {
+                        // Connexion Firebase Auth
+                        await FirebaseAuth.instance.signInWithEmailAndPassword(
+                          email: email,
+                          password: password,
+                        );
 
-                  Navigator.of(context).pop(); // Fermer la dialog
-                  
-                  AppTheme.showStandardSnackBar(
-                    title: "✅ Sign In Successful",
-                    message: "Welcome to your employer space!",
-                    isError: false,
-                  );
+                        Navigator.of(context).pop(); // Fermer la dialog
 
-                  // Redirection vers le dashboard employeur
-                  await PreferencesService.setUserType('employer');
-                  await PreferencesService.setString(PrefKeys.employerId, uid);
-                  await PreferencesService.setValue(PrefKeys.isLogin, true);
-                  
-                  Navigator.of(context).pop(); // Close dialog
-                  Navigator.of(context).pop(); // Close SIRET screen
-                  Navigator.of(context).pop(); // Close choice screen
-                  Get.offAllNamed(AppRes.employerDashboardScreen);
+                        AppTheme.showStandardSnackBar(
+                          title: "✅ Sign In Successful",
+                          message: "Welcome to your employer space!",
+                          isError: false,
+                        );
 
-                } on FirebaseAuthException catch (e) {
-                  String message;
-                  switch (e.code) {
-                    case 'wrong-password':
-                      message = 'Incorrect password';
-                      break;
-                    case 'user-not-found':
-                      message = 'Account not found';
-                      break;
-                    case 'invalid-email':
-                      message = 'Invalid email';
-                      break;
-                    case 'user-disabled':
-                      message = 'Account disabled';
-                      break;
-                    default:
-                      message = 'Connection error: ${e.message}';
-                  }
-                  AppTheme.showStandardSnackBar(
-                    title: "❌ Error",
-                    message: message,
-                    isError: true,
-                  );
-                } catch (e) {
-                  AppTheme.showStandardSnackBar(
-                    title: "❌ Error",
-                    message: "An error occurred: $e",
-                    isError: true,
-                  );
-                } finally {
-                  setDialogState(() {
-                    isPasswordLoading = false;
-                  });
-                }
-              },
+                        // Redirection vers le dashboard employeur
+                        await PreferencesService.setUserType('employer');
+                        PreferencesService.setString(PrefKeys.employerId, uid);
+                        PreferencesService.setValue(
+                            PrefKeys.isLogin, true.toString());
+
+                        Navigator.of(context).pop(); // Close dialog
+                        Navigator.of(context).pop(); // Close SIRET screen
+                        Navigator.of(context).pop(); // Close choice screen
+                        Get.offAllNamed(AppRes.employerDashboardScreen);
+                      } on FirebaseAuthException catch (e) {
+                        String message;
+                        switch (e.code) {
+                          case 'wrong-password':
+                            message = 'Incorrect password';
+                            break;
+                          case 'user-not-found':
+                            message = 'Account not found';
+                            break;
+                          case 'invalid-email':
+                            message = 'Invalid email';
+                            break;
+                          case 'user-disabled':
+                            message = 'Account disabled';
+                            break;
+                          default:
+                            message = 'Connection error: ${e.message}';
+                        }
+                        AppTheme.showStandardSnackBar(
+                          title: "❌ Error",
+                          message: message,
+                          isError: true,
+                        );
+                      } catch (e) {
+                        AppTheme.showStandardSnackBar(
+                          title: "❌ Error",
+                          message: "An error occurred: $e",
+                          isError: true,
+                        );
+                      } finally {
+                        setDialogState(() {
+                          isPasswordLoading = false;
+                        });
+                      }
+                    },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF000647),
                 foregroundColor: Colors.white,

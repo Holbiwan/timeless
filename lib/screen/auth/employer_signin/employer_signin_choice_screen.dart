@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:timeless/common/widgets/universal_back_fab.dart';
 import 'package:timeless/screen/auth/employer_signin/employer_siret_signin_screen.dart';
 import 'package:timeless/screen/auth/employer_signin/employer_ape_signin_screen.dart';
-import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/asset_res.dart';
 
 class EmployerSignInChoiceScreen extends StatelessWidget {
@@ -12,7 +10,6 @@ class EmployerSignInChoiceScreen extends StatelessWidget {
 
   // Brand Colors
   final Color _primaryBlue = const Color(0xFF000647);
-  final Color _accentOrange = const Color(0xFFE67E22);
 
   @override
   Widget build(BuildContext context) {

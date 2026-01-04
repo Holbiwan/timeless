@@ -1,14 +1,13 @@
 // ignore_for_file: deprecated_member_use, duplicate_ignore
 
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/services/employer_service.dart';
 import 'package:timeless/services/job_email_service.dart';
-import 'package:timeless/services/preferences_service.dart';
-import 'package:timeless/utils/pref_keys.dart';
+import 'package:timeless/utils/job_categories.dart';
 
 class PostJobScreen extends StatefulWidget {
   const PostJobScreen({super.key});
@@ -104,11 +103,41 @@ class _PostJobScreenState extends State<PostJobScreen> {
       );
 
   void _publish() async {
-    if (!_formKey.currentState!.validate()) return;
+    if (!_formKey.currentState!.validate()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('❌ Please fill in all required fields'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+    
     if (_employerData == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('❌ Employer data not loaded'),
+          content: Text('❌ Employer data not loaded. Please retry.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    // Additional validation
+    if (_titleCtrl.text.trim().length < 3) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('❌ Job title must be at least 3 characters long'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    if (_descriptionCtrl.text.trim().length < 10) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('❌ Job description must be at least 10 characters long'),
           backgroundColor: Colors.red,
         ),
       );
@@ -131,12 +160,12 @@ class _PostJobScreenState extends State<PostJobScreen> {
       // Prepare job posting data with real employer data
       final jobData = {
         'Position': _titleCtrl.text.trim(),
-        'category': _category, // Correspond aux filtres existants
+        'category': JobCategories.normalizeCategory(_category ?? ''), // Normaliser la catégorie
         'location': _locationCtrl.text.trim(),
         'salaryMin': _salaryMinCtrl.text.trim(),
         'salaryMax': _salaryMaxCtrl.text.trim(),
         'salary': '${_salaryMinCtrl.text}-${_salaryMaxCtrl.text}',
-        'jobType': _jobType, // CDI, CDD, Internship, etc.
+        'jobType': JobCategories.normalizeJobType(_jobType ?? ''), // Normaliser le type de job
         'remote': _remote,
         'workMode': _remote ? 'Remote' : 'On-site',
         'description': _descriptionCtrl.text.trim(),
@@ -277,19 +306,9 @@ class _PostJobScreenState extends State<PostJobScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const categories = <String>[
-      'Data',
-      'UX/UI',
-      'Security',
-    ];
+    const categories = JobCategories.allCategories;
 
-    const jobTypes = <String>[
-      'Full-time',
-      'Contract',
-      'Internship',
-      'Freelance',
-      'Temporary'
-    ];
+    const jobTypes = JobCategories.jobTypesDisplay;
 
     // Show loading state
     if (_isLoadingEmployerData) {
@@ -362,6 +381,30 @@ class _PostJobScreenState extends State<PostJobScreen> {
                   child: const Text('Retry'),
                 ),
                 const SizedBox(height: 12),
+                // Debug button to create sample employer (only in debug mode)
+                if (kDebugMode) ...[
+                  ElevatedButton(
+                    onPressed: () async {
+                      final user = FirebaseAuth.instance.currentUser;
+                      if (user != null) {
+                        setState(() {
+                          _isLoadingEmployerData = true;
+                          _employerError = null;
+                        });
+                        
+                        await EmployerService.createSampleEmployer(user.uid);
+                        await Future.delayed(const Duration(seconds: 1));
+                        await _loadEmployerData();
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.orange,
+                      foregroundColor: Colors.white,
+                    ),
+                    child: const Text('Create Sample Employer (Debug)'),
+                  ),
+                  const SizedBox(height: 12),
+                ],
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
                   child: const Text('Go Back'),

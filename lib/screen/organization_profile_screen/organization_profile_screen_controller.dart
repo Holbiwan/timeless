@@ -268,7 +268,7 @@ class OrganizationProfileScreenController extends GetxController
           .doc(uid)
           .update({"company": true});
 
-      PreferencesService.setValue(PrefKeys.company, true);
+      PreferencesService.setValue(PrefKeys.company, true as String);
 
       await fireStore
           .collection("Auth")

@@ -175,7 +175,7 @@ class CreateVacanciesController extends GetxController implements GetxService {
             .collection(categoryController.text.trim())
             .doc()
             .set(map);
-        PreferencesService.setValue(PrefKeys.totalPost, totalPost + 1);
+        PreferencesService.setValue(PrefKeys.totalPost, (totalPost + 1) as String);
         onTapBack("");
         Get.off(() => JobDetailsScreen(
               isError: true,

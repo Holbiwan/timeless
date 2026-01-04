@@ -1150,7 +1150,7 @@ class _EmployerSettingsScreenState extends State<EmployerSettingsScreen> {
     
     if (email.isNotEmpty) {
       try {
-        final success = await authService.resetPassword(email);
+        final success = await AuthService.resetPassword(email);
         
         if (success) {
           Get.dialog(
@@ -1843,7 +1843,7 @@ class _EmployerSettingsScreenState extends State<EmployerSettingsScreen> {
         barrierDismissible: false,
       );
       
-      await authService.signOut();
+      await AuthService.signOut();
       await employerProfileController.clearEmployerProfileData();
       await _clearAllPreferences();
       

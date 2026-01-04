@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import
+
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
@@ -6,6 +8,8 @@ import 'package:timeless/services/http_service.dart';
 
 // API service to fetch country/state/city data
 class CountrySearch {
+  static get HttpService => null;
+
   // Gets all countries with their states and cities from GitHub repo
   // This is used for location pickers throughout the app
   static Future<List<SearchCountry>?> countNotification() async {

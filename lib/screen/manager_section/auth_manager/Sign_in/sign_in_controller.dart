@@ -47,8 +47,8 @@ class SignInScreenControllerM extends GetxController {
           final data = employerDoc.data()!;
           
           PreferencesService.setValue(PrefKeys.rol, "Manager");
-          PreferencesService.setValue(PrefKeys.totalPost, 0); // Par défaut pour nouveaux employeurs
-          PreferencesService.setValue(PrefKeys.company, true);
+          PreferencesService.setValue(PrefKeys.totalPost, 0 as String); // Par défaut pour nouveaux employeurs
+          PreferencesService.setValue(PrefKeys.company, true as String);
           PreferencesService.setValue(PrefKeys.userId, credential.user!.uid);
           PreferencesService.setValue(PrefKeys.companyName, data['companyName'] ?? 'Unknown Company');
 
@@ -276,8 +276,8 @@ class SignInScreenControllerM extends GetxController {
     
     // Définir les préférences locales
     await PreferencesService.setValue(PrefKeys.rol, "Manager");
-    await PreferencesService.setValue(PrefKeys.totalPost, 0);
-    await PreferencesService.setValue(PrefKeys.company, true);
+    await PreferencesService.setValue(PrefKeys.totalPost, 0 as String);
+    await PreferencesService.setValue(PrefKeys.company, true as String);
     await PreferencesService.setValue(PrefKeys.userId, demoUserId);
     await PreferencesService.setValue(PrefKeys.companyName, "Timeless Demo Corp");
     
@@ -326,8 +326,8 @@ class SignInScreenControllerM extends GetxController {
 
       // Définir les préférences
       await PreferencesService.setValue(PrefKeys.rol, "Manager");
-      await PreferencesService.setValue(PrefKeys.totalPost, 0);
-      await PreferencesService.setValue(PrefKeys.company, true);
+      await PreferencesService.setValue(PrefKeys.totalPost, 0 as String);
+      await PreferencesService.setValue(PrefKeys.company, true as String);
       await PreferencesService.setValue(PrefKeys.userId, userId);
       await PreferencesService.setValue(PrefKeys.companyName, "Timeless Demo Corp");
     } catch (e) {
@@ -373,8 +373,8 @@ class SignInScreenControllerM extends GetxController {
         isManager = true;
         
         PreferencesService.setValue(PrefKeys.rol, "Manager");
-        PreferencesService.setValue(PrefKeys.totalPost, 0); // Par défaut pour nouveaux employeurs
-        PreferencesService.setValue(PrefKeys.company, true);
+        PreferencesService.setValue(PrefKeys.totalPost, 0 as String); // Par défaut pour nouveaux employeurs
+        PreferencesService.setValue(PrefKeys.company, true as String);
         PreferencesService.setValue(PrefKeys.userId, user.uid);
         PreferencesService.setValue(PrefKeys.companyName, data['companyName'] ?? 'Unknown Company');
 

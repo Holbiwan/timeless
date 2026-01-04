@@ -207,21 +207,20 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
     });
 
     try {
+      final trimmedPhone = _phoneController.text.trim();
       await JobService.submitApplication(
         jobId: widget.docId ?? 'unknown_job_id',
         candidateId: PreferencesService.getString(PrefKeys.userId),
         employerId: widget.job['employerId'] ?? 'unknown_employer',
         candidateName: _nameController.text.trim(),
         candidateEmail: _emailController.text.trim(),
-        candidatePhone: _phoneController.text.trim().isNotEmpty
-            ? _phoneController.text.trim()
-            : null,
+        candidatePhone: trimmedPhone.isNotEmpty ? trimmedPhone : '',
         cvFile: _selectedCV!,
         coverLetter: _commentController.text.trim().isNotEmpty
             ? _commentController.text.trim()
             : null,
         candidateProfile: {
-          'phone': _phoneController.text.trim(),
+          'phone': trimmedPhone,
           'appliedAt': DateTime.now().toIso8601String(),
         },
       );

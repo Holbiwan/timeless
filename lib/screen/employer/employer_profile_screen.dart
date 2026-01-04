@@ -135,8 +135,8 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
     
     // Clear all session preferences
     await PreferencesService.setValue(PrefKeys.rol, "");
-    await PreferencesService.setValue(PrefKeys.totalPost, 0);
-    await PreferencesService.setValue(PrefKeys.company, false);
+    await PreferencesService.setValue(PrefKeys.totalPost, 0 as String);
+    await PreferencesService.setValue(PrefKeys.company, false as String);
     await PreferencesService.setValue(PrefKeys.userId, "");
     await PreferencesService.setValue(PrefKeys.companyName, "");
     

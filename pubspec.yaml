@@ -55,6 +55,7 @@ dependencies:
   
   # Video Player
   youtube_player_flutter: ^9.1.0
+  uuid: ^4.5.2
 
 dependency_overrides:
   

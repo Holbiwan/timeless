@@ -188,7 +188,7 @@ class ApplicationController extends GetxController {
         candidateEmail: emailController.text.trim(),
         candidatePhone: phoneController.text.trim().isNotEmpty 
             ? phoneController.text.trim() 
-            : null,
+            : '',
         cvFile: selectedCvFile.value!,
         coverLetter: coverLetterController.text.trim().isNotEmpty 
             ? coverLetterController.text.trim() 
@@ -230,10 +230,10 @@ class ApplicationController extends GetxController {
   // Save user data to preferences
   Future<void> _saveUserData() async {
     try {
-      await PreferencesService.setString(PrefKeys.firstName, firstNameController.text.trim());
-      await PreferencesService.setString(PrefKeys.lasttName, lastNameController.text.trim()); // Note: Uses existing typo in PrefKeys
-      await PreferencesService.setString(PrefKeys.email, emailController.text.trim());
-      await PreferencesService.setString(PrefKeys.phone, phoneController.text.trim());
+      PreferencesService.setString(PrefKeys.firstName, firstNameController.text.trim());
+      PreferencesService.setString(PrefKeys.lasttName, lastNameController.text.trim()); // Note: Uses existing typo in PrefKeys
+      PreferencesService.setString(PrefKeys.email, emailController.text.trim());
+      PreferencesService.setString(PrefKeys.phone, phoneController.text.trim());
     } catch (e) {
       print('Error saving user data: $e');
     }
@@ -251,7 +251,7 @@ class ApplicationController extends GetxController {
   // Get estimated application time
   String get estimatedTime {
     if (!isFormValid) {
-      return 'Complétez le formulaire pour estimer le temps';
+      return 'Complétez le formulaire pour estimer le temps'; // Direct literal string
     }
     
     int timeMinutes = 2; // Base time
@@ -259,8 +259,8 @@ class ApplicationController extends GetxController {
     if (coverLetterController.text.isEmpty) {
       timeMinutes += 5; // If they need to write cover letter
     }
-    
-    return 'Temps estimé: $timeMinutes minutes';
+
+    return 'Temps estimé: $timeMinutes minutes'; // Direct literal string
   }
 
   // Auto-fill suggestion
@@ -274,7 +274,7 @@ class ApplicationController extends GetxController {
             TextButton(
               onPressed: () => Get.back(),
               child: Text('Non'),
-            ),
+            ), // Changed from deprecated `primary`
             TextButton(
               onPressed: () {
                 loadUserData();

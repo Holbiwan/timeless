@@ -8,8 +8,8 @@ import 'package:timeless/utils/string.dart';
 
 import 'notification_controller.dart';
 
-class NotificationScreenU extends StatelessWidget {
-  const NotificationScreenU({super.key});
+class NotificationSettingsScreen extends StatelessWidget {
+  const NotificationSettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

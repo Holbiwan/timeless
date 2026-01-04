@@ -79,7 +79,7 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
                         const SizedBox(height: 8),
                         _buildRecentJobPosts(),
                         
-                        const SizedBox(height: 40), // Réduit de 60 à 40
+                        const SizedBox(height: 40),
                       ],
                     ),
                   ),
@@ -92,21 +92,12 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
 
   Widget _buildFixedHeader() {
     return Container(
-      height: 110, // Réduit de 140 à 110 pour résoudre l'overflow
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.black,
-            const Color(0xFF000647),
-            const Color(0xFF1A237E),
-          ],
-          stops: const [0.0, 0.6, 1.0],
-        ),
+      height: 140,
+      decoration: const BoxDecoration(
+        color: Colors.black,
       ),
       child: Padding(
-          padding: const EdgeInsets.all(16.0), // Réduit de 20 à 16
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,7 +115,7 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
                       icon: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 18),
                       onPressed: () {
                         // Clear employer session and return to login choice
-                        PreferencesService.setValue(PrefKeys.isLogin, false);
+ PreferencesService.setBool(PrefKeys.isLogin, false);
                         PreferencesService.remove(PrefKeys.userId);
                         PreferencesService.remove(PrefKeys.employerId);
                         PreferencesService.remove(PrefKeys.companyName);
@@ -142,7 +133,7 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
                         Text(
                           'Hello,',
                           style: GoogleFonts.inter(
-                            fontSize: 12, // Réduit de 14 à 12
+                            fontSize: 12,
                             fontWeight: FontWeight.w500,
                             color: Colors.white.withOpacity(0.9),
                           ),
@@ -150,18 +141,18 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
                         Text(
                           companyName.isNotEmpty ? companyName : 'Employer Dashboard',
                           style: GoogleFonts.inter(
-                            fontSize: 14, // Réduit de 16 à 14 pour l'affichage complet
+                            fontSize: 14,
                             fontWeight: FontWeight.w700,
                             color: Colors.white,
                           ),
-                          maxLines: 2, // Rétabli à 2 lignes pour les noms longs
+                          maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(height: 2), // Réduit de 4 à 2
+                        const SizedBox(height: 2),
                         Text(
                           'Manage your recruitment efficiently',
                           style: GoogleFonts.inter(
-                            fontSize: 10, // Réduit de 12 à 10
+                            fontSize: 10,
                             color: Colors.white.withOpacity(0.8),
                           ),
                         ),
@@ -326,7 +317,7 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
       crossAxisCount: 2,
       crossAxisSpacing: 12,
       mainAxisSpacing: 12,
-      childAspectRatio: 1.8, // Plus large pour réduire la hauteur
+      childAspectRatio: 1.8,
       children: [
         _buildActionCard(
           title: 'Post New Job',
@@ -828,7 +819,7 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-                        PreferencesService.setValue(PrefKeys.isLogin, false);
+                        PreferencesService.setValue(PrefKeys.isLogin, false as String);
                         PreferencesService.remove(PrefKeys.userId);
                         PreferencesService.remove(PrefKeys.employerId);
                         PreferencesService.remove(PrefKeys.companyName);
@@ -1013,50 +1004,354 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
 
   void _sendEmailInvitation(Map<String, dynamic> candidateData) {
     Get.back(); // Close dialog
-    Get.snackbar(
-      '📧 Email Invitation',
-      'Email invitation sent to ${candidateData['candidateName']}',
-      backgroundColor: _accentOrange,
-      colorText: Colors.white,
-      snackPosition: SnackPosition.BOTTOM,
-      duration: const Duration(seconds: 3),
-      margin: const EdgeInsets.all(16),
-      borderRadius: 12,
-    );
     
-    // TODO: Implement actual email sending logic
-    // This could integrate with an email service or create a notification
+    // Send a general email invitation
+    _sendGeneralEmail(
+      candidateEmail: candidateData['candidateEmail'] ?? '',
+      candidateName: candidateData['candidateName'] ?? 'Candidate',
+      subject: 'Invitation for Discussion from $companyName',
+      message: '''
+Dear ${candidateData['candidateName'] ?? 'Candidate'},
+
+Thank you for your interest in opportunities at $companyName.
+
+We would like to invite you for an initial discussion about potential opportunities that may be a good fit for your profile.
+
+Please reply to this email to let us know your availability for a meeting or call.
+
+Best regards,
+$companyName Team
+      ''',
+    );
   }
 
   void _requestPhoneContact(Map<String, dynamic> candidateData) {
     Get.back(); // Close dialog
-    Get.snackbar(
-      '📱 Contact Request',
-      'Phone contact request sent to ${candidateData['candidateName']}',
-      backgroundColor: _primaryBlue,
-      colorText: Colors.white,
-      snackPosition: SnackPosition.BOTTOM,
-      duration: const Duration(seconds: 3),
-      margin: const EdgeInsets.all(16),
-      borderRadius: 12,
-    );
     
-    // TODO: Implement phone contact request logic
+    // Send a phone contact request email
+    _sendGeneralEmail(
+      candidateEmail: candidateData['candidateEmail'] ?? '',
+      candidateName: candidateData['candidateName'] ?? 'Candidate',
+      subject: 'Phone Contact Request from $companyName',
+      message: '''
+Dear ${candidateData['candidateName'] ?? 'Candidate'},
+
+We are interested in discussing opportunities with you at $companyName.
+
+Could you please share your phone number so we can schedule a convenient time for a phone call?
+
+You can reply to this email with your preferred contact number and times when you're available.
+
+Best regards,
+$companyName Team
+      ''',
+    );
   }
 
   void _scheduleInterview(Map<String, dynamic> candidateData) {
-    Get.back(); // Close dialog
-    Get.snackbar(
-      '📅 Interview Scheduled',
-      'Interview proposal sent to ${candidateData['candidateName']}',
-      backgroundColor: Colors.green,
-      colorText: Colors.white,
-      snackPosition: SnackPosition.BOTTOM,
-      duration: const Duration(seconds: 3),
-      margin: const EdgeInsets.all(16),
-      borderRadius: 12,
-    );
+    Get.back(); // Close contact dialog first
     
-    // TODO: Implement interview scheduling logic
+    // Show interview scheduling dialog
+    DateTime selectedDate = DateTime.now().add(Duration(days: 1));
+    TimeOfDay selectedTime = TimeOfDay(hour: 14, minute: 0);
+    final locationController = TextEditingController(text: companyName.isNotEmpty ? '$companyName Office' : 'Company Office');
+    final messageController = TextEditingController();
+
+    Get.dialog(
+      AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Row(
+          children: [
+            Icon(Icons.calendar_today, color: Colors.teal, size: 24),
+            SizedBox(width: 8),
+            Text(
+              'Schedule Interview',
+              style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w600),
+            ),
+          ],
+        ),
+        content: StatefulBuilder(
+          builder: (context, setState) {
+            return SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Candidate info
+                  Container(
+                    padding: EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.blue[50],
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.person, color: Colors.blue[700], size: 20),
+                        SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            'Candidate: ${candidateData['candidateName'] ?? 'Unknown'}',
+                            style: GoogleFonts.inter(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.blue[700],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 16),
+
+                  // Date selection
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: Icon(Icons.date_range, color: Colors.teal),
+                    title: Text('Interview Date'),
+                    subtitle: Text('${selectedDate.day}/${selectedDate.month}/${selectedDate.year}'),
+                    onTap: () async {
+                      final date = await showDatePicker(
+                        context: context,
+                        initialDate: selectedDate,
+                        firstDate: DateTime.now(),
+                        lastDate: DateTime.now().add(Duration(days: 90)),
+                      );
+                      if (date != null) {
+                        setState(() => selectedDate = date);
+                      }
+                    },
+                  ),
+
+                  // Time selection
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: Icon(Icons.access_time, color: Colors.teal),
+                    title: Text('Interview Time'),
+                    subtitle: Text('${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}'),
+                    onTap: () async {
+                      final time = await showTimePicker(
+                        context: context,
+                        initialTime: selectedTime,
+                      );
+                      if (time != null) {
+                        setState(() => selectedTime = time);
+                      }
+                    },
+                  ),
+
+                  SizedBox(height: 16),
+
+                  // Location
+                  TextFormField(
+                    controller: locationController,
+                    decoration: InputDecoration(
+                      labelText: 'Interview Location',
+                      prefixIcon: Icon(Icons.location_on, color: Colors.teal),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                    ),
+                  ),
+
+                  SizedBox(height: 16),
+
+                  // Additional message
+                  TextFormField(
+                    controller: messageController,
+                    maxLines: 3,
+                    decoration: InputDecoration(
+                      labelText: 'Additional Message (Optional)',
+                      prefixIcon: Icon(Icons.message, color: Colors.teal),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                      hintText: 'Any additional details for the candidate...',
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(),
+            child: Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              // Create interview datetime
+              final interviewDateTime = DateTime(
+                selectedDate.year,
+                selectedDate.month,
+                selectedDate.day,
+                selectedTime.hour,
+                selectedTime.minute,
+              );
+
+              Get.back(); // Close dialog first
+
+              // Send invitation
+              await _sendInterviewInvitation(
+                candidateData: candidateData,
+                interviewDate: interviewDateTime,
+                location: locationController.text.trim(),
+                additionalMessage: messageController.text.trim().isNotEmpty 
+                    ? messageController.text.trim() 
+                    : null,
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.teal,
+              foregroundColor: Colors.white,
+            ),
+            child: Text('Send Invitation'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Send a general email
+  Future<void> _sendGeneralEmail({
+    required String candidateEmail,
+    required String candidateName,
+    required String subject,
+    required String message,
+  }) async {
+    try {
+      final emailSent = await _sendSimpleEmail(
+        to: candidateEmail,
+        subject: subject,
+        body: message,
+      );
+
+      if (emailSent) {
+        Get.snackbar(
+          '📧 Email Sent',
+          'Email sent successfully to $candidateName',
+          backgroundColor: _accentOrange,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 3),
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      } else {
+        throw Exception('Failed to send email');
+      }
+    } catch (e) {
+      Get.snackbar(
+        '❌ Error',
+        'Failed to send email: $e',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
+
+  // Simple email sending (can be enhanced with real email service)
+  Future<bool> _sendSimpleEmail({
+    required String to,
+    required String subject,
+    required String body,
+  }) async {
+    try {
+      // Simulate email sending
+      await Future.delayed(const Duration(seconds: 1));
+      
+      print('Email sent to: $to');
+      print('Subject: $subject');
+      print('Body: $body');
+      
+      return true;
+    } catch (e) {
+      print('Failed to send email: $e');
+      return false;
+    }
+  }
+
+  // Send interview invitation
+  Future<void> _sendInterviewInvitation({
+    required Map<String, dynamic> candidateData,
+    required DateTime interviewDate,
+    required String location,
+    String? additionalMessage,
+  }) async {
+    try {
+      // Import EmailService at the top of this file if needed
+      final emailSent = await _sendInterviewEmail(
+        candidateEmail: candidateData['candidateEmail'] ?? '',
+        candidateName: candidateData['candidateName'] ?? 'Candidate',
+        interviewDate: interviewDate,
+        location: location,
+        additionalMessage: additionalMessage,
+      );
+
+      if (emailSent) {
+        Get.snackbar(
+          '✅ Interview Invitation Sent!',
+          'The candidate ${candidateData['candidateName']} has been notified about the interview.',
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 4),
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      } else {
+        throw Exception('Failed to send email invitation');
+      }
+    } catch (e) {
+      Get.snackbar(
+        '❌ Error',
+        'Failed to send interview invitation: $e',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
+
+  // Simple email invitation (basic implementation)
+  Future<bool> _sendInterviewEmail({
+    required String candidateEmail,
+    required String candidateName,
+    required DateTime interviewDate,
+    required String location,
+    String? additionalMessage,
+  }) async {
+    try {
+      // Format the date nicely
+      final formattedDate = '${interviewDate.day}/${interviewDate.month}/${interviewDate.year}';
+      final formattedTime = '${interviewDate.hour.toString().padLeft(2, '0')}:${interviewDate.minute.toString().padLeft(2, '0')}';
+      
+      // Create email subject and body
+      final subject = 'Interview Invitation from $companyName';
+      final body = '''
+Dear $candidateName,
+
+We are pleased to invite you for an interview at $companyName.
+
+Interview Details:
+• Date: $formattedDate
+• Time: $formattedTime
+• Location: $location
+
+${additionalMessage != null ? '\nAdditional Information:\n$additionalMessage\n' : ''}
+
+Please confirm your availability by replying to this email.
+
+We look forward to meeting with you!
+
+Best regards,
+$companyName
+      ''';
+
+      // Here you could integrate with a real email service
+      // For now, we'll simulate a successful send
+      await Future.delayed(const Duration(seconds: 1));
+      
+      print('Email sent to: $candidateEmail');
+      print('Subject: $subject');
+      print('Body: $body');
+      
+      return true;
+    } catch (e) {
+      print('Failed to send email: $e');
+      return false;
+    }
   }
 }

@@ -68,7 +68,7 @@ class ModernLanguageSelector extends StatelessWidget {
         children: [
           // Current language flag
           Text(
-            translationService.currentFlag,
+            translationService.currentFlag ?? '🌐',
             style: const TextStyle(fontSize: 18),
           ),
           const SizedBox(width: 6),
@@ -109,7 +109,7 @@ class ModernLanguageSelector extends StatelessWidget {
         children: [
           // Current language flag
           Text(
-            translationService.currentFlag,
+            translationService.currentFlag ?? '🌐',
             style: const TextStyle(fontSize: 20),
           ),
           const SizedBox(width: 8),
@@ -439,7 +439,7 @@ class FloatingLanguageSelector extends StatelessWidget {
           foregroundColor: Colors.black87,
           elevation: 4,
           child: Text(
-            translationService.currentFlag,
+            translationService.currentFlag ?? '🌐',
             style: const TextStyle(fontSize: 18),
           ),
         ),

@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -21,10 +23,12 @@ class EmployerEmailVerificationScreen extends StatefulWidget {
   });
 
   @override
-  State<EmployerEmailVerificationScreen> createState() => _EmployerEmailVerificationScreenState();
+  State<EmployerEmailVerificationScreen> createState() =>
+      _EmployerEmailVerificationScreenState();
 }
 
-class _EmployerEmailVerificationScreenState extends State<EmployerEmailVerificationScreen> {
+class _EmployerEmailVerificationScreenState
+    extends State<EmployerEmailVerificationScreen> {
   bool _isLoading = false;
   bool _isResendingEmail = false;
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -215,7 +219,8 @@ class _EmployerEmailVerificationScreenState extends State<EmployerEmailVerificat
                     width: double.infinity,
                     height: 50,
                     child: OutlinedButton(
-                      onPressed: _isResendingEmail ? null : _resendVerificationEmail,
+                      onPressed:
+                          _isResendingEmail ? null : _resendVerificationEmail,
                       style: OutlinedButton.styleFrom(
                         foregroundColor: const Color(0xFF000647),
                         side: const BorderSide(color: Color(0xFF000647)),
@@ -305,11 +310,14 @@ class _EmployerEmailVerificationScreenState extends State<EmployerEmailVerificat
         await FirebaseFirestore.instance
             .collection('employers')
             .doc(user.uid)
-            .update({'isVerified': true, 'verifiedAt': FieldValue.serverTimestamp()});
+            .update({
+          'isVerified': true,
+          'verifiedAt': FieldValue.serverTimestamp()
+        });
 
         // Save employer preferences
         await PreferencesService.setUserType('employer');
-        await PreferencesService.setValue(PrefKeys.isLogin, true);
+        await PreferencesService.setValue(PrefKeys.isLogin, true.toString());
         await PreferencesService.setValue(PrefKeys.userId, user.uid);
 
         // Success message
@@ -356,10 +364,10 @@ class _EmployerEmailVerificationScreenState extends State<EmployerEmailVerificat
         debugPrint('🔄 Resending verification email to: ${user.email}');
         debugPrint('🔍 Current user emailVerified: ${user.emailVerified}');
         debugPrint('🔍 Current user uid: ${user.uid}');
-        
+
         await user.sendEmailVerification();
         debugPrint('✅ Verification email resent successfully');
-        
+
         Get.snackbar(
           '📧 Email Sent',
           'Verification email sent to ${widget.email}. Please check your inbox and spam folder.',
@@ -379,7 +387,7 @@ class _EmployerEmailVerificationScreenState extends State<EmployerEmailVerificat
     } catch (e) {
       debugPrint('❌ Error resending email: $e');
       debugPrint('❌ Error details: ${e.toString()}');
-      
+
       Get.snackbar(
         '❌ Error',
         'Failed to resend email: $e\n\nPlease try again or contact support.',
@@ -396,9 +404,8 @@ class _EmployerEmailVerificationScreenState extends State<EmployerEmailVerificat
 
   Future<void> _debugEmailTest() async {
     try {
-      
       debugPrint('🔍 DEBUG: Target email: ${widget.email}');
-      
+
       final user = _auth.currentUser;
       if (user != null) {
         debugPrint('🔍 DEBUG: Current user found');
@@ -406,13 +413,13 @@ class _EmployerEmailVerificationScreenState extends State<EmployerEmailVerificat
         debugPrint('   - UID: ${user.uid}');
         debugPrint('   - Email verified: ${user.emailVerified}');
         debugPrint('   - Provider data: ${user.providerData}');
-        
+
         // Check Firestore data
         final employerDoc = await FirebaseFirestore.instance
             .collection('employers')
             .doc(user.uid)
             .get();
-            
+
         if (employerDoc.exists) {
           final data = employerDoc.data();
           debugPrint('🔍 DEBUG: Employer data found in Firestore');
@@ -422,12 +429,12 @@ class _EmployerEmailVerificationScreenState extends State<EmployerEmailVerificat
         } else {
           debugPrint('❌ DEBUG: No employer data found in Firestore');
         }
-        
+
         // Force resend verification email
         debugPrint('🔄 DEBUG: Force sending verification email...');
         await user.sendEmailVerification();
         debugPrint('✅ DEBUG: Verification email sent successfully!');
-        
+
         Get.snackbar(
           '🧪 DEBUG: Email Test',
           'Debug email verification sent to ${user.email}!\nCheck console for detailed logs.',
@@ -435,18 +442,18 @@ class _EmployerEmailVerificationScreenState extends State<EmployerEmailVerificat
           colorText: Colors.white,
           duration: const Duration(seconds: 10),
         );
-        
       } else {
         debugPrint('❌ DEBUG: No current user signed in');
-        
+
         // Search for the company in Firestore
         final employersQuery = await FirebaseFirestore.instance
             .collection('employers')
             .where('email', isEqualTo: widget.email)
             .get();
-            
+
         if (employersQuery.docs.isNotEmpty) {
-          debugPrint('🔍 DEBUG: Found company in Firestore but no active user session');
+          debugPrint(
+              '🔍 DEBUG: Found company in Firestore but no active user session');
           for (var doc in employersQuery.docs) {
             final data = doc.data();
             debugPrint('   - UID: ${doc.id}');
@@ -456,7 +463,7 @@ class _EmployerEmailVerificationScreenState extends State<EmployerEmailVerificat
         } else {
           debugPrint('❌ DEBUG: No company data found in Firestore');
         }
-        
+
         Get.snackbar(
           '❌ DEBUG: No User Session',
           'No active user session. Company may need to sign in first.',
@@ -468,7 +475,7 @@ class _EmployerEmailVerificationScreenState extends State<EmployerEmailVerificat
     } catch (e, stackTrace) {
       debugPrint('❌ DEBUG: Error in email test: $e');
       debugPrint('❌ DEBUG: Stack trace: $stackTrace');
-      
+
       Get.snackbar(
         '❌ DEBUG: Error',
         'Debug test failed: $e',

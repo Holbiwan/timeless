@@ -1,4 +1,4 @@
-// 
+//
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -50,8 +50,9 @@ class EmployerSignInController extends GetxController {
   // Load saved employer data if Remember me was enabled
   void getRememberEmployerData() {
     final email = PreferencesService.getString(PrefKeys.emailRememberManager);
-    final password = PreferencesService.getString(PrefKeys.passwordRememberManager);
-    
+    final password =
+        PreferencesService.getString(PrefKeys.passwordRememberManager);
+
     // Only pre-fill if we have saved data AND Remember me was enabled
     if (email.isNotEmpty && password.isNotEmpty) {
       rememberMe = true;
@@ -77,7 +78,7 @@ class EmployerSignInController extends GetxController {
   // Toggle Remember me
   void onRememberMeChange(bool? value) {
     rememberMe = value ?? false;
-    
+
     // If disabling Remember Me, remove saved data
     if (!rememberMe) {
       PreferencesService.remove(PrefKeys.emailRememberManager);
@@ -115,10 +116,10 @@ class EmployerSignInController extends GetxController {
       debugPrint('🔄 Attempting to send email verification to ${user.email}');
       debugPrint('🔍 User emailVerified status: ${user.emailVerified}');
       debugPrint('🔍 User uid: ${user.uid}');
-      
+
       await user.sendEmailVerification();
       debugPrint('✅ Email verification sent successfully to ${user.email}');
-      
+
       // Show success message to user
       Get.snackbar(
         '📧 Email Sent',
@@ -130,7 +131,7 @@ class EmployerSignInController extends GetxController {
     } catch (e) {
       debugPrint('❌ Error sending verification email: $e');
       debugPrint('❌ Error details: ${e.toString()}');
-      
+
       // Show error to user
       Get.snackbar(
         '❌ Email Error',
@@ -159,7 +160,8 @@ class EmployerSignInController extends GetxController {
   }
 
   // Welcome email for employers
-  Future<void> _sendWelcomeEmailWithVerification(String email, String companyName) async {
+  Future<void> _sendWelcomeEmailWithVerification(
+      String email, String companyName) async {
     try {
       debugPrint("📧 Sending welcome email to employer: $email");
 
@@ -168,9 +170,8 @@ class EmployerSignInController extends GetxController {
       // Here you would integrate with your email service
       // For now, we'll show a placeholder
       debugPrint("✅ Welcome email generated for $companyName");
-      
+
       // TODO: Integrate with actual email service (SendGrid, AWS SES, etc.)
-      
     } catch (e) {
       debugPrint('❌ Error sending welcome email: $e');
       rethrow;
@@ -178,7 +179,8 @@ class EmployerSignInController extends GetxController {
   }
 
   // Generate professional welcome email for employers
-  Future<String> _generateEmployerWelcomeEmail(String email, String companyName) async {
+  Future<String> _generateEmployerWelcomeEmail(
+      String email, String companyName) async {
     return '''
     <!DOCTYPE html>
     <html>
@@ -282,7 +284,8 @@ class EmployerSignInController extends GetxController {
 
   // Validation APE (basique)
   bool _isValidApe(String ape) {
-    return ape.length == 5 && RegExp(r'^\d{4}[A-Z]$').hasMatch(ape.toUpperCase());
+    return ape.length == 5 &&
+        RegExp(r'^\d{4}[A-Z]$').hasMatch(ape.toUpperCase());
   }
 
   // Connexion employeur
@@ -342,7 +345,8 @@ class EmployerSignInController extends GetxController {
 
         // Vérifier les codes SIRET et APE
         if (employer.siretCode != siretController.text.trim() ||
-            employer.apeCode.toUpperCase() != apeController.text.trim().toUpperCase()) {
+            employer.apeCode.toUpperCase() !=
+                apeController.text.trim().toUpperCase()) {
           Get.snackbar(
             'Error',
             'Incorrect SIRET/APE codes for this account',
@@ -361,20 +365,21 @@ class EmployerSignInController extends GetxController {
             backgroundColor: Colors.orange,
             colorText: Colors.white,
           );
-          
+
           // Redirect to email verification screen
           Get.offAll(() => EmployerEmailVerificationScreen(
-            email: employer.email,
-            companyName: employer.companyName,
-          ));
+                email: employer.email,
+                companyName: employer.companyName,
+              ));
           return;
         }
 
         // Sauvegarder les préférences
-        await PreferencesService.setUserType('employer');
-        await PreferencesService.setString(PrefKeys.employerId, employer.id);
-        await PreferencesService.setString(PrefKeys.companyName, employer.companyName);
-        await PreferencesService.setValue(PrefKeys.isLogin, true);
+        PreferencesService.setUserType('employer');
+        PreferencesService.setString(PrefKeys.employerId, employer.id);
+        PreferencesService.setString(
+            PrefKeys.companyName, employer.companyName);
+        PreferencesService.setString(PrefKeys.isLogin, 'true');
 
         Get.snackbar(
           'Login Successful',
@@ -445,7 +450,8 @@ class EmployerSignInController extends GetxController {
       }
 
       // Créer le compte Firebase Auth
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+      UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
       );
@@ -482,8 +488,10 @@ class EmployerSignInController extends GetxController {
 
         // Save credentials if Remember me is enabled and account creation succeeded
         if (rememberMe) {
-          await PreferencesService.setValue(PrefKeys.emailRememberManager, emailController.text.trim());
-          await PreferencesService.setValue(PrefKeys.passwordRememberManager, passwordController.text.trim());
+          PreferencesService.setValue(
+              PrefKeys.emailRememberManager, emailController.text.trim());
+          PreferencesService.setValue(
+              PrefKeys.passwordRememberManager, passwordController.text.trim());
         } else {
           // If Remember me is not enabled, ensure no data is saved
           PreferencesService.remove(PrefKeys.emailRememberManager);
@@ -510,9 +518,9 @@ class EmployerSignInController extends GetxController {
 
         // Navigate to employer email verification screen
         Get.offAll(() => EmployerEmailVerificationScreen(
-          email: emailController.text.trim(),
-          companyName: companyNameController.text.trim(),
-        ));
+              email: emailController.text.trim(),
+              companyName: companyNameController.text.trim(),
+            ));
       }
     } on FirebaseAuthException catch (e) {
       String errorMessage;

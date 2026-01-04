@@ -4,13 +4,15 @@ import 'package:timeless/services/notification_service.dart';
 import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/color_res.dart';
 
-class NotificationScreenU extends StatelessWidget {
-  const NotificationScreenU({super.key});
+class NotificationListScreen extends StatelessWidget {
+  const NotificationListScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Initialize the notification service
-    final notificationService = Get.put(NotificationService());
+    // Initialize the notification service if not found
+    final notificationService = Get.isRegistered<NotificationService>()
+        ? Get.find<NotificationService>()
+        : Get.put(NotificationService());
     
     return Scaffold(
       backgroundColor: Colors.white,
@@ -58,7 +60,7 @@ class NotificationScreenU extends StatelessWidget {
                     right: 20,
                     child: GestureDetector(
                       onTap: () async {
-                        await notificationService.clearAllNotifications();
+                        notificationService.clearAllNotifications();
                         Get.snackbar(
                           'Cleared',
                           'All notifications removed',
@@ -112,9 +114,7 @@ class NotificationScreenU extends StatelessWidget {
                       return _NotificationTile(
                         notification: notification,
                         onTap: () async {
-                          if (notification['id'] != null) {
-                            await notificationService.markAsRead(notification['id']);
-                          }
+                          notificationService.markAsRead(notification.id);
                         },
                       );
                     },
@@ -135,13 +135,21 @@ class _NotificationTile extends StatelessWidget {
     required this.onTap,
   });
   
-  final Map<String, dynamic> notification;
+  final NotificationItem notification;
   final VoidCallback onTap;
+
+  String get _timeAgo {
+    final difference = DateTime.now().difference(notification.timestamp);
+    if (difference.inDays > 0) return '${difference.inDays}d ago';
+    if (difference.inHours > 0) return '${difference.inHours}h ago';
+    if (difference.inMinutes > 0) return '${difference.inMinutes}m ago';
+    return 'Just now';
+  }
 
   @override
   Widget build(BuildContext context) {
-    final isRead = notification['isRead'] ?? false;
-    final type = notification['type'] ?? 'default';
+    final isRead = notification.isRead;
+    final type = notification.type;
     
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
@@ -180,13 +188,13 @@ class _NotificationTile extends StatelessWidget {
           children: [
             Expanded(
               child: Text(
-                notification['title'] ?? 'Notification',
+                notification.title,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: appTextStyle(
                   fontSize: 16,
                   fontWeight: isRead ? FontWeight.w500 : FontWeight.w600,
-                  color: isRead ? Colors.white70 : Colors.white,
+                  color: isRead ? Colors.black54 : Colors.black87,
                 ),
               ),
             ),
@@ -207,18 +215,18 @@ class _NotificationTile extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                notification['body'] ?? 'No details available',
+                notification.message,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: appTextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w400,
-                  color: isRead ? Colors.white60 : Colors.white.withOpacity(0.8),
+                  color: isRead ? Colors.grey : Colors.black54,
                 ),
               ),
               const SizedBox(height: 6),
               Text(
-                notification['timeAgo'] ?? 'Unknown',
+                _timeAgo,
                 style: appTextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
@@ -233,31 +241,43 @@ class _NotificationTile extends StatelessWidget {
     );
   }
   
-  IconData _getIconData(String type) {
+  IconData _getIconData(NotificationType type) {
     switch (type) {
-      case 'application_sent':
+      case NotificationType.application_sent:
         return Icons.send_rounded;
-      case 'match':
+      case NotificationType.match:
         return Icons.favorite_rounded;
-      case 'interview':
+      case NotificationType.interview:
         return Icons.video_call_rounded;
-      case 'message':
+      case NotificationType.message:
         return Icons.message_rounded;
+      case NotificationType.success:
+        return Icons.check_circle_rounded;
+      case NotificationType.warning:
+        return Icons.warning_rounded;
+      case NotificationType.error:
+        return Icons.error_rounded;
       default:
         return Icons.notifications_active_rounded;
     }
   }
   
-  Color _getIconColor(String type) {
+  Color _getIconColor(NotificationType type) {
     switch (type) {
-      case 'application_sent':
+      case NotificationType.application_sent:
         return ColorRes.appleGreen;
-      case 'match':
+      case NotificationType.match:
         return ColorRes.red;
-      case 'interview':
+      case NotificationType.interview:
         return Colors.purple;
-      case 'message':
+      case NotificationType.message:
         return Colors.blue;
+      case NotificationType.success:
+        return Colors.green;
+      case NotificationType.warning:
+        return Colors.orange;
+      case NotificationType.error:
+        return Colors.red;
       default:
         return ColorRes.brightYellow;
     }

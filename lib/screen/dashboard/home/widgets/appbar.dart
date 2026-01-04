@@ -325,6 +325,19 @@ Widget homeAppBar({VoidCallback? onRefresh}) {
   );});
 }
 
+extension on Object? {
+  String get fullName {
+    if (this == null) return '';
+    try {
+      final dynamic obj = this;
+      final name = obj.fullName;
+      return name != null ? name.toString() : '';
+    } catch (e) {
+      return '';
+    }
+  }
+}
+
 void _showPhotoUploadOptions(ProfileController profileController) {
   final AccessibilityService accessibilityService = Get.find<AccessibilityService>();
   

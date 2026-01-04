@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -14,12 +15,15 @@ class ProfileCompletionScreen extends StatefulWidget {
   const ProfileCompletionScreen({super.key});
 
   @override
-  State<ProfileCompletionScreen> createState() => _ProfileCompletionScreenState();
+  State<ProfileCompletionScreen> createState() =>
+      _ProfileCompletionScreenState();
 }
 
 class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
-  final ProfileCompletionController controller = Get.put(ProfileCompletionController());
-  final UnifiedTranslationService _translationService = UnifiedTranslationService.instance;
+  final ProfileCompletionController controller =
+      Get.put(ProfileCompletionController());
+  final UnifiedTranslationService _translationService =
+      UnifiedTranslationService.instance;
 
   @override
   void initState() {
@@ -53,11 +57,13 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: const Color(0xFF000647), width: 2.0),
+                            border: Border.all(
+                                color: const Color(0xFF000647), width: 2.0),
                           ),
                           child: IconButton(
                             onPressed: () => Navigator.pop(context),
-                            icon: const Icon(Icons.arrow_back, color: Colors.black),
+                            icon: const Icon(Icons.arrow_back,
+                                color: Colors.black),
                           ),
                         ),
                         // Center profile avatar
@@ -65,7 +71,8 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
                           child: Center(
                             child: CircleAvatar(
                               radius: 30,
-                              backgroundImage: controller.userPhotoUrl.value.isNotEmpty
+                              backgroundImage: controller
+                                      .userPhotoUrl.value.isNotEmpty
                                   ? NetworkImage(controller.userPhotoUrl.value)
                                   : null,
                               child: controller.userPhotoUrl.value.isEmpty
@@ -74,10 +81,11 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
                             ),
                           ),
                         ),
-                        
+
                         // Menu seul
                         PopupMenuButton<String>(
-                          icon: const Icon(Icons.more_vert, color: Color.fromARGB(255, 246, 246, 59)),
+                          icon: const Icon(Icons.more_vert,
+                              color: Color.fromARGB(255, 246, 246, 59)),
                           onSelected: (String value) async {
                             if (value == 'switch_account') {
                               await _switchAccount();
@@ -92,7 +100,8 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
                                 children: [
                                   const Icon(Icons.swap_horiz, size: 20),
                                   const SizedBox(width: 8),
-                                  Obx(() => Text(_translationService.getText('switch_account'))),
+                                  Obx(() => Text(_translationService
+                                      .getText('switch_account'))),
                                 ],
                               ),
                             ),
@@ -102,7 +111,8 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
                                 children: [
                                   const Icon(Icons.logout, size: 20),
                                   const SizedBox(width: 8),
-                                  Obx(() => Text(_translationService.getText('sign_out'))),
+                                  Obx(() => Text(
+                                      _translationService.getText('sign_out'))),
                                 ],
                               ),
                             ),
@@ -115,23 +125,25 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
 
                     // Titre de bienvenue
                     Obx(() => Text(
-                      _translationService.getText('welcome_user')
-                          .replaceAll('{name}', controller.firstName.value),
-                      style: GoogleFonts.inter(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w600,
-                        color: ColorRes.textPrimary,
-                      ),
-                    )),
+                          _translationService
+                              .getText('welcome_user')
+                              .replaceAll('{name}', controller.firstName.value),
+                          style: GoogleFonts.inter(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w600,
+                            color: ColorRes.textPrimary,
+                          ),
+                        )),
                     const SizedBox(height: 8),
                     Obx(() => Text(
-                      _translationService.getText('complete_profile_description'),
-                      style: GoogleFonts.inter(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                        color: ColorRes.textSecondary,
-                      ),
-                    )),
+                          _translationService
+                              .getText('complete_profile_description'),
+                          style: GoogleFonts.inter(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                            color: ColorRes.textSecondary,
+                          ),
+                        )),
 
                     const SizedBox(height: 30),
 
@@ -190,53 +202,54 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
                     ),
                     const SizedBox(height: 8),
                     Obx(() => Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(
-                          color: ColorRes.borderColor.withOpacity(0.3),
-                          width: 1,
-                        ),
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            offset: const Offset(0, 2),
-                            color: Colors.black.withOpacity(0.08),
-                            spreadRadius: 0,
-                            blurRadius: 8,
-                          ),
-                        ],
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton<String>(
-                          value: controller.selectedExperience.value,
-                          isExpanded: true,
-                          items: [
-                            'internship',
-                            'junior',
-                            'mid',
-                            'senior',
-                            'expert'
-                          ].map((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(
-                                controller.getExperienceLabel(value),
-                                style: GoogleFonts.inter(
-                                  fontSize: 14,
-                                  color: ColorRes.textPrimary,
-                                ),
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(
+                              color: ColorRes.borderColor.withOpacity(0.3),
+                              width: 1,
+                            ),
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                offset: const Offset(0, 2),
+                                color: Colors.black.withOpacity(0.08),
+                                spreadRadius: 0,
+                                blurRadius: 8,
                               ),
-                            );
-                          }).toList(),
-                          onChanged: (String? newValue) {
-                            if (newValue != null) {
-                              controller.selectedExperience.value = newValue;
-                            }
-                          },
-                        ),
-                      ),
-                    )),
+                            ],
+                          ),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton<String>(
+                              value: controller.selectedExperience.value,
+                              isExpanded: true,
+                              items: [
+                                'internship',
+                                'junior',
+                                'mid',
+                                'senior',
+                                'expert'
+                              ].map((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(
+                                    controller.getExperienceLabel(value),
+                                    style: GoogleFonts.inter(
+                                      fontSize: 14,
+                                      color: ColorRes.textPrimary,
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                              onChanged: (String? newValue) {
+                                if (newValue != null) {
+                                  controller.selectedExperience.value =
+                                      newValue;
+                                }
+                              },
+                            ),
+                          ),
+                        )),
 
                     const SizedBox(height: 16),
 
@@ -269,7 +282,8 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
                             style: OutlinedButton.styleFrom(
                               backgroundColor: Colors.white,
                               foregroundColor: Colors.black,
-                              side: const BorderSide(color: Color(0xFF000647), width: 2.0),
+                              side: const BorderSide(
+                                  color: Color(0xFF000647), width: 2.0),
                               padding: const EdgeInsets.symmetric(vertical: 15),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
@@ -296,7 +310,8 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,
                               foregroundColor: Colors.black,
-                              side: const BorderSide(color: Color(0xFF000647), width: 2.0),
+                              side: const BorderSide(
+                                  color: Color(0xFF000647), width: 2.0),
                               padding: const EdgeInsets.symmetric(vertical: 15),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
@@ -391,7 +406,8 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
             maxLines: maxLines,
             keyboardType: keyboardType,
             decoration: InputDecoration(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
               hintText: hintText ?? label,
               filled: true,
               fillColor: Colors.transparent,
@@ -425,13 +441,13 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
   Future<void> _switchAccount() async {
     try {
       controller.loading.value = true;
-      
+
       // Déconnecter le compte actuel
       await GoogleAuthService.signOut();
-      
+
       // Relancer la connexion Google (permettra de choisir un autre compte)
-      final user = await GoogleAuthService.signInWithGoogle();
-      
+      final user = await GoogleAuthService.signIn();
+
       if (user != null) {
         // Mettre à jour les données avec le nouveau compte
         controller.initializeWithGoogleData();
@@ -549,16 +565,16 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
 
     try {
       controller.loading.value = true;
-      
+
       // Sauvegarder les informations complètes
       await controller.saveProfileData();
-      
+
       AppTheme.showStandardSnackBar(
         title: "Profil complété !",
         message: "Bienvenue sur Timeless",
         isSuccess: true,
       );
-      
+
       // Aller au dashboard
       Get.offAll(() => DashBoardScreen());
     } catch (e) {
@@ -571,4 +587,8 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
       controller.loading.value = false;
     }
   }
+}
+
+extension on UserCredential {
+  get email => null;
 }

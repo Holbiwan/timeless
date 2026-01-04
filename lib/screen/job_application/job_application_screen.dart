@@ -121,7 +121,7 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
 
       final user = await GoogleAuthService.signInWithGoogle();
       if (user != null) {
-        await GoogleAuthService.saveUserToFirestore(user);
+        await GoogleAuthService.saveUserToFirestore(user as User);
         Get.snackbar(
           translationService.getText('success'), // Using existing 'success' key
           translationService.getText('connection_success'),
@@ -181,7 +181,7 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
         cvFile: _selectedCV!,
         coverLetter: _coverLetterController.text.trim().isEmpty
             ? null
-            : _coverLetterController.text.trim(),
+            : _coverLetterController.text.trim(), candidateProfile: {},
       );
 
       Get.snackbar(

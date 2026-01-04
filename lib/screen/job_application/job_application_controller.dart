@@ -74,7 +74,7 @@ class JobApplicationController extends GetxController {
         cvFile: selectedCV.value!,
         coverLetter: coverLetter.value.trim().isEmpty 
             ? null 
-            : coverLetter.value.trim(),
+            : coverLetter.value.trim(), candidateProfile: {},
       );
 
       hasApplied.value = true;

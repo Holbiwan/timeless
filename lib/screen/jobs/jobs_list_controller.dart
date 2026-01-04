@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:timeless/models/job_offer_model.dart';
@@ -20,8 +22,7 @@ class JobsListController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // Charger immédiatement les données factices au démarrage
-    jobs.value = _getMockJobs();
+    // Load real jobs from Firebase
     loadJobs();
   }
 
@@ -103,20 +104,36 @@ class JobsListController extends GetxController {
   Future<void> loadJobs() async {
     try {
       isLoading.value = true;
-      final jobsList = await JobService.getAllJobOffers(limit: 50);
+      final jobsList = await JobService.getAllJobOffers(
+        limit: 50,
+        searchTerm: searchTerm.value.isNotEmpty ? searchTerm.value : null,
+        location: location.value.isNotEmpty ? location.value : null,
+        jobType: selectedJobTypes.isNotEmpty ? selectedJobTypes.first : null,
+        experienceLevel: selectedExperienceLevels.isNotEmpty ? selectedExperienceLevels.first : null,
+      );
+      
       jobs.value = jobsList;
+      
+      print('✅ Loaded ${jobsList.length} real jobs from Firebase');
 
-      // Si pas de jobs trouvés, utiliser des données factices
+      // Si pas de jobs trouvés, utiliser des données factices pour les tests
       if (jobsList.isEmpty) {
         jobs.value = _getMockJobs();
+        Get.snackbar(
+          'Mode démo',
+          'Aucune offre trouvée. Affichage des exemples.',
+          backgroundColor: Colors.blue,
+          colorText: Colors.white,
+        );
       }
     } catch (e) {
       // En cas d'erreur, utiliser des données factices
+      print('❌ Error loading jobs: $e');
       jobs.value = _getMockJobs();
       Get.snackbar(
         'Mode démo',
-        'Chargement des offres d\'exemple',
-        backgroundColor: Colors.blue,
+        'Erreur de chargement. Affichage des exemples.',
+        backgroundColor: Colors.orange,
         colorText: Colors.white,
       );
     } finally {
@@ -418,7 +435,7 @@ class JobsListController extends GetxController {
         experienceLevel: experienceFilter,
       );
 
-      jobs.value = jobsList;
+      jobs.value = jobsList as List<JobOfferModel>;
 
       // Si pas de jobs trouvés, utiliser des données factices filtrées
       if (jobsList.isEmpty) {
@@ -534,4 +551,8 @@ class JobsListController extends GetxController {
       colorText: Colors.white,
     );
   }
+}
+
+extension on Future<List<JobOfferModel>> {
+  get isEmpty => null;
 }

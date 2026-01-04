@@ -7,9 +7,7 @@ import 'package:timeless/screen/job_detail_screen/job_detail_upload_cv_screen/up
 import 'package:timeless/screen/manager_section/auth_manager/Sign_in/sign_in_controller.dart';
 import 'package:timeless/screen/auth/forgot_password/forgot_password_screen.dart';
 import 'package:timeless/screen/manager_section/auth_manager/sign_up_new/sign_up_new_screen.dart';
-import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/asset_res.dart';
-import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/string.dart';
 
 class SignInScreenM extends StatefulWidget {

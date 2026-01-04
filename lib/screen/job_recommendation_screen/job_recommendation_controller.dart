@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:timeless/common/widgets/date_sort_filter.dart';
+import 'package:timeless/utils/job_categories.dart';
 
 class JobRecommendationController extends GetxController
     implements GetxService {
@@ -25,25 +26,9 @@ class JobRecommendationController extends GetxController
   Rx<DateSortOption> selectedDateSort = DateSortOption.newest.obs;
 
   // Options de filtres (Digital/Informatique uniquement)
-  final List<String> categories = [
-    'All', 
-    'Development', 
-    'UX/UI', 
-    'Data', 
-    'Security', 
-    'DevOps', 
-    'Digital Marketing', 
-    'QA/Testing'
-  ];
+  final List<String> categories = JobCategories.candidateCategories;
 
-  final List<String> jobTypes = [
-    'All',
-    'CDI',
-    'CDD',
-    'Internship',
-    'Freelance',
-    'Intérim'
-  ];
+  final List<String> jobTypes = JobCategories.candidateJobTypesDisplay;
 
   final List<String> locations = [
     'All',
@@ -172,13 +157,8 @@ class JobRecommendationController extends GetxController
       filteredDocs = filteredDocs.where((doc) {
         final data = doc.data() as Map<String, dynamic>;
         final docCategory = data['category']?.toString() ?? '';
-        // Correspondance entre UX/UI et UX pour les données Firestore
-        if (selectedCategory.value == 'UX/UI') {
-          return docCategory == 'UX' ||
-              docCategory == 'UI' ||
-              docCategory == 'UX/UI';
-        }
-        return docCategory == selectedCategory.value;
+        // Utiliser la fonction de mapping centralisée
+        return JobCategories.categoryMatches(selectedCategory.value, docCategory);
       }).toList();
     }
 
@@ -186,7 +166,8 @@ class JobRecommendationController extends GetxController
     if (selectedJobType.value != 'All' && selectedJobType.value.isNotEmpty) {
       filteredDocs = filteredDocs.where((doc) {
         final data = doc.data() as Map<String, dynamic>;
-        return data['jobType'] == selectedJobType.value;
+        final internalJobType = JobCategories.jobTypeDisplayToInternal(selectedJobType.value);
+        return data['jobType'] == internalJobType;
       }).toList();
     }
 

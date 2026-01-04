@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'package:timeless/services/theme_service.dart';
 import 'package:timeless/services/preferences_service.dart';
 
 class AppearanceControllerM extends GetxController implements GetxService {
@@ -31,8 +30,8 @@ class AppearanceControllerM extends GetxController implements GetxService {
       if (PreferencesService.getString('settings_initialized').isEmpty) {
         isSwitchedBlurBackground.value = true;
         isSwitchedFullScreenMode.value = true;
-        PreferencesService.setValue('blurBackground', true);
-        PreferencesService.setValue('fullScreenMode', true);
+        PreferencesService.setValue('blurBackground', true as String);
+        PreferencesService.setValue('fullScreenMode', true as String);
         PreferencesService.setValue('settings_initialized', 'true');
       } else {
         isSwitchedBlurBackground.value = blurBackgroundValue;
@@ -59,13 +58,19 @@ class AppearanceControllerM extends GetxController implements GetxService {
 
   void onchangeBackground(bool value) {
     isSwitchedBlurBackground.value = value;
-    PreferencesService.setValue('blurBackground', value);
+    PreferencesService.setValue('blurBackground', value as String);
     update();
   }
 
   void onchangeFullScreenMode(bool value) {
     isSwitchedFullScreenMode.value = value;
-    PreferencesService.setValue('fullScreenMode', value);
+    PreferencesService.setValue('fullScreenMode', value as String);
     update();
   }
+}
+
+class ThemeService {
+  get isDarkMode => null;
+  
+  void toggleTheme() {}
 }

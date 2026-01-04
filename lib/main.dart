@@ -68,7 +68,7 @@ Future<void> main() async {
   try {
     final fcmToken = await FirebaseMessaging.instance.getToken();
     if (fcmToken != null) {
-      await PreferencesService.setValue(PrefKeys.deviceToken, fcmToken);
+      PreferencesService.setString(PrefKeys.deviceToken, fcmToken);
     }
   } catch (e) {
     print('Notification error: $e');

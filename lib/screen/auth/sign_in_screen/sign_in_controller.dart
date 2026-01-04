@@ -6,11 +6,11 @@ import 'package:get/get.dart';
 
 import 'package:timeless/screen/dashboard/dashboard_screen.dart';
 import 'package:timeless/screen/dashboard/dashboard_controller.dart';
-import 'package:timeless/screen/auth/email_verification/email_verification_screen.dart';
 import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/services/auth_service.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/utils/app_theme.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SignInScreenController extends GetxController {
   // State and controllers
@@ -100,11 +100,13 @@ class SignInScreenController extends GetxController {
 
 
 
-  void _persistUserPrefs(User user, {String? email, String? fullName}) {
-    PreferencesService.setValue(PrefKeys.rol, "User");
-    PreferencesService.setValue(PrefKeys.userId, user.uid);
-    if (email != null) PreferencesService.setValue(PrefKeys.email, email);
-    if (fullName != null) PreferencesService.setValue(PrefKeys.fullName, fullName);
+  Future<void> _persistUserPrefs(User user, {String? email, String? fullName}) async {
+    await PreferencesService.setValue(PrefKeys.rol, "User");
+    await PreferencesService.setValue(PrefKeys.userId, user.uid);
+    if (email != null) await PreferencesService.setValue(PrefKeys.email, email);
+    if (fullName != null) await PreferencesService.setValue(PrefKeys.fullName, fullName);
+    
+    print('✅ User preferences saved: userId=${user.uid}, email=$email');
   }
 
   Future<void> _mergeUserDoc({
@@ -293,17 +295,28 @@ class SignInScreenController extends GetxController {
     loading.value = true;
     
     try {
-      // Use AuthService for consistent Google Sign-in
+      // Show user that they can select account
+      AppTheme.showStandardSnackBar(
+        title: "Google Sign-In",
+        message: "Vous pouvez choisir votre compte Google...",
+      );
+      
+      // Use AuthService for consistent Google Sign-in with account selection
       final success = await AuthService.instance.signInWithGoogle();
       
       if (success) {
         print('🎯 Google sign-in successful, navigating to dashboard');
+        AppTheme.showStandardSnackBar(
+          title: "Connexion réussie",
+          message: "Bienvenue !",
+          isSuccess: true,
+        );
         // Navigate to dashboard directly after successful authentication
         _gotoDashboard();
       } else {
         AppTheme.showStandardSnackBar(
           title: "Google",
-          message: "Sign-in cancelled",
+          message: "Connexion annulée",
         );
       }
     } catch (e) {
@@ -325,85 +338,185 @@ class SignInScreenController extends GetxController {
   // GitHub (optionnel) // --- SECTION: 
 
 
+  // Show GitHub account selection dialog
+  void showGitHubAccountOptions() {
+    Get.dialog(
+      AlertDialog(
+        title: const Text('Connexion GitHub'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Choisissez votre option de connexion :'),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Get.back();
+                      _directGitHubSignIn();
+                    },
+                    child: const Text('Continuer avec le compte actuel'),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () {
+                      Get.back();
+                      _showGitHubSwitchInstructions();
+                    },
+                    child: const Text('Changer de compte'),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
+  void _directGitHubSignIn() async {
+    await _performGitHubSignIn();
+  }
+
+  // Open GitHub website for manual sign out
+  void _openGitHubWebsite() async {
+    try {
+      const url = 'https://github.com/logout';
+      if (await canLaunchUrl(Uri.parse(url))) {
+        await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+        AppTheme.showStandardSnackBar(
+          title: "GitHub",
+          message: "Déconnectez-vous, puis revenez dans l'app",
+        );
+      } else {
+        AppTheme.showStandardSnackBar(
+          title: "Erreur",
+          message: "Impossible d'ouvrir GitHub. Allez manuellement sur github.com",
+          isError: true,
+        );
+      }
+    } catch (e) {
+      if (kDebugMode) print("Error opening GitHub: $e");
+      AppTheme.showStandardSnackBar(
+        title: "Erreur",
+        message: "Allez manuellement sur github.com pour vous déconnecter",
+        isError: true,
+      );
+    }
+  }
+
+  void _showGitHubSwitchInstructions() {
+    Get.dialog(
+      AlertDialog(
+        title: const Text('Changer de compte GitHub'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Pour utiliser un autre compte GitHub :'),
+            const SizedBox(height: 12),
+            const Text('1. Cliquez "Ouvrir GitHub" ci-dessous'),
+            const Text('2. Déconnectez-vous de votre compte actuel'),
+            const Text('3. Revenez ici et cliquez "Essayer maintenant"'),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () {
+                      _openGitHubWebsite();
+                    },
+                    child: const Text('Ouvrir GitHub'),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Get.back();
+                      _directGitHubSignIn();
+                    },
+                    child: const Text('Essayer maintenant'),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Main GitHub sign-in entry point - shows options first
   Future<void> signInWithGitHub() async {
+    // Show account selection options dialog
+    showGitHubAccountOptions();
+  }
+
+  // Internal method that does the actual GitHub authentication
+  Future<void> _performGitHubSignIn() async {
     if (loading.value) return;
     loading.value = true;
+    
     try {
-      final provider = GithubAuthProvider()
-        ..addScope('read:user')
-        ..addScope('user:email')
-        ..addScope('public_repo')  // Access to public repositories (optional)
-        ..setCustomParameters({
-          'allow_signup': 'true',  // Allow new accounts and existing ones
-        });
-
-      UserCredential cred;
+      // Inform user about account selection
+      AppTheme.showStandardSnackBar(
+        title: "GitHub Sign-In",
+        message: "Ouverture de GitHub...",
+      );
       
-      if (kIsWeb) {
-        // Web version uses popup
-        cred = await auth.signInWithPopup(provider);
-      } else {
-        // Mobile version uses redirect
-        cred = await auth.signInWithProvider(provider);
-      }
-
-      final user = cred.user;
-      if (user == null) {
+      print('🚀 Starting GitHub sign-in...');
+      final success = await AuthService.instance.signInWithGitHub();
+      
+      if (success) {
+        print('🎯 GitHub sign-in successful, checking user data...');
+        
         AppTheme.showStandardSnackBar(
-            title: "GitHub",
-            message: "Sign-in cancelled");
-        return;
-      }
-
-      // Get email if hidden by GitHub
-      String email = user.email ?? '';
-      if (email.isEmpty) {
-        for (final p in user.providerData) {
-          if ((p.email ?? '').isNotEmpty) {
-            email = p.email!;
-            break;
-          }
+          title: "GitHub",
+          message: "Connexion GitHub réussie !",
+          isSuccess: true,
+        );
+        
+        // Wait a moment to ensure preferences are saved by AuthService
+        await Future.delayed(const Duration(milliseconds: 300));
+        
+        // Verify data was saved
+        final userId = PreferencesService.getString(PrefKeys.userId);
+        final userEmail = PreferencesService.getString(PrefKeys.email);
+        print('🔍 Verified - UserId: $userId, Email: $userEmail');
+        
+        if (userId.isNotEmpty) {
+          print('✅ User data confirmed, navigating to dashboard');
+          _gotoDashboard();
+        } else {
+          print('❌ User data not saved properly');
+          AppTheme.showStandardSnackBar(
+            title: "GitHub Sign-In",
+            message: "Données utilisateur non sauvegardées. Veuillez réessayer.",
+            isError: true,
+          );
         }
-        if (email.isEmpty && cred.additionalUserInfo?.profile is Map) {
-          final map = cred.additionalUserInfo!.profile! as Map;
-          final maybe = map['email'];
-          if (maybe is String && maybe.isNotEmpty) email = maybe;
-        }
-        if (email.isEmpty) email = '${user.uid}@users.noreply.github';
+      } else {
+        AppTheme.showStandardSnackBar(
+          title: "GitHub",
+          message: "Connexion annulée. Pour changer de compte GitHub, déconnectez-vous sur github.com puis réessayez.",
+        );
       }
-
-      await _mergeUserDoc(uid: user.uid, data: {
-        "Email": email,
-        "fullName": user.displayName ?? "",
-        "photoURL": user.photoURL ?? "",
-        "provider": "github",
-        "createdAt": FieldValue.serverTimestamp(),
-        "uid": user.uid,
-      });
-
-      _persistUserPrefs(user, email: email, fullName: user.displayName ?? "");
-      _gotoDashboard();
-    } on FirebaseAuthException catch (e) {
-      if (kDebugMode) print("GitHubAuth error: ${e.code} ${e.message}");
-      String message = e.message ?? 'Firebase error: ${e.code}';
-      if (e.code == 'cancelled-popup-request') {
-        message = 'Sign-in was cancelled';
-      } else if (e.code == 'popup-blocked') {
-        message = 'Popup was blocked by browser. Please allow popups and try again.';
-      } else if (e.code == 'popup-closed-by-user') {
-        message = 'Sign-in was cancelled by user';
-      }
-      AppTheme.showStandardSnackBar(
-          title: "GitHub Sign-In",
-          message: message,
-          isError: true);
     } catch (e) {
-      if (kDebugMode) print("GitHubAuth error: $e");
+      if (kDebugMode) print("GitHub sign-in error: $e");
       AppTheme.showStandardSnackBar(
-          title: "GitHub Sign-In",
-          message: "Unexpected error occurred. Please try again.",
-          isError: true);
+        title: "GitHub Sign-In",
+        message: "Erreur lors de la connexion GitHub",
+        isError: true,
+      );
     } finally {
       loading.value = false;
     }

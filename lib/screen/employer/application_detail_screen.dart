@@ -738,17 +738,33 @@ class ApplicationDetailScreen extends StatelessWidget {
 
   Future<void> _downloadCv() async {
     try {
-      // TODO: Implement CV download functionality
-      Get.snackbar(
-        'Download',
-        'Download functionality in development',
-        backgroundColor: Colors.blue,
-        colorText: Colors.white,
-      );
+      if (application.cvUrl.isEmpty) {
+        Get.snackbar(
+          'Error',
+          'CV file not available',
+          backgroundColor: ColorRes.royalBlue,
+          colorText: Colors.white,
+        );
+        return;
+      }
+
+      // Launch CV URL to open in browser for download
+      final Uri cvUri = Uri.parse(application.cvUrl);
+      if (await canLaunchUrl(cvUri)) {
+        await launchUrl(cvUri);
+        Get.snackbar(
+          'CV Download',
+          'CV file opened in your browser for download',
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+      } else {
+        throw Exception('Cannot open CV URL');
+      }
     } catch (e) {
       Get.snackbar(
         'Error',
-        'Unable to download CV',
+        'Unable to download CV: ${e.toString()}',
         backgroundColor: ColorRes.royalBlue,
         colorText: Colors.white,
       );

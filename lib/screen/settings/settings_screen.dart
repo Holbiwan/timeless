@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use, duplicate_ignore
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -56,8 +58,10 @@ class SettingsScreenU extends StatelessWidget {
                       height: 40,
                       width: 40,
                       decoration: BoxDecoration(
+                        // ignore: deprecated_member_use
                         color: Colors.white.withOpacity(0.2),
                         borderRadius: BorderRadius.circular(12),
+                        // ignore: deprecated_member_use
                         border: Border.all(color: Colors.white.withOpacity(0.3)),
                       ),
                       child: const Icon(
@@ -101,6 +105,7 @@ class SettingsScreenU extends StatelessWidget {
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
+                            // ignore: deprecated_member_use
                             color: Colors.black.withOpacity(0.08),
                             blurRadius: 12,
                             offset: const Offset(0, 4),
@@ -144,6 +149,7 @@ class SettingsScreenU extends StatelessWidget {
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
+                            // ignore: deprecated_member_use
                             color: Colors.black.withOpacity(0.08),
                             blurRadius: 12,
                             offset: const Offset(0, 4),
@@ -203,6 +209,7 @@ class SettingsScreenU extends StatelessWidget {
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
+                            // ignore: deprecated_member_use
                             color: Colors.black.withOpacity(0.08),
                             blurRadius: 12,
                             offset: const Offset(0, 4),
@@ -261,9 +268,11 @@ class SettingsScreenU extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(16),
+                        // ignore: deprecated_member_use
                         border: Border.all(color: const Color(0xFFFF8C00).withOpacity(0.3), width: 1.5),
                         boxShadow: [
                           BoxShadow(
+                            // ignore: deprecated_member_use
                             color: const Color(0xFFFF8C00).withOpacity(0.1),
                             blurRadius: 12,
                             offset: const Offset(0, 4),
@@ -324,6 +333,7 @@ class SettingsScreenU extends StatelessWidget {
                   style: appTextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 14,
+                      // ignore: deprecated_member_use
                       color: ColorRes.black.withOpacity(0.8)),
                 ),
                 const SizedBox(height: 30),
@@ -415,6 +425,7 @@ class SettingsScreenU extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
+                // ignore: deprecated_member_use
                 color: const Color(0xFF0D47A1).withOpacity(0.2),
                 borderRadius: BorderRadius.circular(20),
               ),
@@ -448,9 +459,11 @@ class SettingsScreenU extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
+                // ignore: deprecated_member_use
                 color: const Color(0xFF0D47A1).withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: const Color(0xFF0D47A1).withOpacity(0.3)!),
+                // ignore: deprecated_member_use
+                border: Border.all(color: const Color(0xFF0D47A1).withOpacity(0.3)),
               ),
               child: Row(
                 children: [
@@ -592,7 +605,7 @@ class SettingsScreenU extends StatelessWidget {
       dashController.currentTab = 0;
       dashController.update(["bottom_bar"]);
 
-      await authService.signOut();
+      await AuthService.signOut();
       
       profileController.clearProfileData();
       
@@ -639,6 +652,7 @@ class SettingsScreenU extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
+                  // ignore: deprecated_member_use
                   color: const Color(0xFF000647).withOpacity(0.1),
                   borderRadius: BorderRadius.circular(6),
                 ),
@@ -865,9 +879,11 @@ class SettingsScreenU extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
+                // ignore: deprecated_member_use
                 color: const Color(0xFF0D47A1).withOpacity(0.1),
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: const Color(0xFF0D47A1).withOpacity(0.3)!),
+                // ignore: deprecated_member_use
+                border: Border.all(color: const Color(0xFF0D47A1).withOpacity(0.3)),
               ),
               child: Column(
                 children: [
@@ -984,8 +1000,10 @@ class SettingsScreenU extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
+                // ignore: deprecated_member_use
                 color: const Color(0xFFFF8C00).withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
+                // ignore: deprecated_member_use
                 border: Border.all(color: const Color(0xFFFF8C00).withOpacity(0.3)),
               ),
               child: Row(
@@ -1399,7 +1417,7 @@ class SettingsScreenU extends StatelessWidget {
     
     if (email.isNotEmpty) {
       try {
-        final success = await authService.resetPassword(email);
+        final success = await AuthService.resetPassword(email);
         
         if (success) {
           Get.dialog(
@@ -1525,9 +1543,11 @@ class SettingsScreenU extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
+                // ignore: deprecated_member_use
                 color: const Color(0xFFFF8C00).withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: const Color(0xFFFF8C00).withOpacity(0.5)!, width: 2),
+                // ignore: deprecated_member_use
+                border: Border.all(color: const Color(0xFFFF8C00).withOpacity(0.5), width: 2),
               ),
               child: Column(
                 children: [
@@ -1779,6 +1799,7 @@ class SettingsScreenU extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
+            // ignore: deprecated_member_use
             color: const Color(0xFF000647).withOpacity(0.3),
             blurRadius: 8,
             offset: const Offset(0, 3),
@@ -1790,6 +1811,7 @@ class SettingsScreenU extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
+              // ignore: deprecated_member_use
               color: Colors.white.withOpacity(0.15),
               borderRadius: BorderRadius.circular(8),
             ),
@@ -1817,6 +1839,7 @@ class SettingsScreenU extends StatelessWidget {
                   subtitle,
                   style: GoogleFonts.inter(
                     fontSize: 10,
+                    // ignore: deprecated_member_use
                     color: Colors.white.withOpacity(0.8),
                   ),
                 ),
@@ -1835,13 +1858,16 @@ class SettingsScreenU extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: isWarning
+              // ignore: deprecated_member_use
               ? [const Color(0xFFFF8C00).withOpacity(0.1), const Color(0xFFFF8C00).withOpacity(0.2)]
-              : [const Color(0xFF0D47A1).withOpacity(0.1)!, const Color(0xFF0D47A1).withOpacity(0.2)!],
+              // ignore: deprecated_member_use
+              : [const Color(0xFF0D47A1).withOpacity(0.1), const Color(0xFF0D47A1).withOpacity(0.2)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
+          // ignore: deprecated_member_use
           color: isWarning ? const Color(0xFFFF8C00).withOpacity(0.3) : const Color(0xFF0D47A1).withOpacity(0.3),
           width: 1,
         ),
@@ -1851,6 +1877,7 @@ class SettingsScreenU extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
+              // ignore: deprecated_member_use
               color: isWarning ? const Color(0xFFFF8C00).withOpacity(0.3) : const Color(0xFF0D47A1).withOpacity(0.3),
               borderRadius: BorderRadius.circular(8),
             ),
@@ -1905,13 +1932,16 @@ class SettingsScreenU extends StatelessWidget {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
+              // ignore: deprecated_member_use
               color.withOpacity(0.15),
+              // ignore: deprecated_member_use
               color.withOpacity(0.05),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
           borderRadius: BorderRadius.circular(10),
+          // ignore: deprecated_member_use
           border: Border.all(color: color.withOpacity(0.3), width: 1),
         ),
         child: Icon(icon, color: color, size: 22),
@@ -1934,6 +1964,7 @@ class SettingsScreenU extends StatelessWidget {
       trailing: Container(
         padding: const EdgeInsets.all(4),
         decoration: BoxDecoration(
+          // ignore: deprecated_member_use
           color: color.withOpacity(0.1),
           borderRadius: BorderRadius.circular(6),
         ),
@@ -2059,6 +2090,7 @@ class SettingsScreenU extends StatelessWidget {
           Switch(
             value: initialValue,
             onChanged: (value) {},
+            // ignore: deprecated_member_use
             activeColor: const Color(0xFF000647),
           ),
         ],
@@ -2136,6 +2168,7 @@ class SettingsScreenU extends StatelessWidget {
         leading: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
+            // ignore: deprecated_member_use
             color: isSelected ? const Color(0xFF9C27B0).withOpacity(0.1) : Colors.grey[100],
             borderRadius: BorderRadius.circular(8),
           ),
@@ -2244,6 +2277,7 @@ class SettingsScreenU extends StatelessWidget {
         leading: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
+            // ignore: deprecated_member_use
             color: isSelected ? const Color(0xFF607D8B).withOpacity(0.1) : Colors.grey[100],
             borderRadius: BorderRadius.circular(8),
           ),
@@ -2373,7 +2407,7 @@ class SettingsScreenU extends StatelessWidget {
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [const Color(0xFF000647).withOpacity(0.1), const Color(0xFF0D47A1).withOpacity(0.1)!],
+                    colors: [const Color(0xFF000647).withOpacity(0.1), const Color(0xFF0D47A1).withOpacity(0.1)],
                   ),
                   borderRadius: BorderRadius.circular(12),
                 ),

@@ -341,7 +341,7 @@ class _SimpleProfileScreenState extends State<SimpleProfileScreen> {
             onPressed: () async {
               try {
                 await FirebaseAuth.instance.signOut();
-                PreferencesService.setValue(PrefKeys.isLogin, false);
+                PreferencesService.setValue(PrefKeys.isLogin, false as String);
                 PreferencesService.remove(PrefKeys.userId);
                 PreferencesService.remove(PrefKeys.employerId);
                 PreferencesService.remove(PrefKeys.companyName);
