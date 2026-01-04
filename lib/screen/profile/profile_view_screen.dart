@@ -31,7 +31,7 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
       appBar: AppBar(
         title: Text(
           Get.find<UnifiedTranslationService>().getText('my_profile'),
-          style: const TextStyle(color: Colors.black),
+          style: const TextStyle(color: Colors.black, fontSize: 16),
         ),
         backgroundColor: Colors.white,
         elevation: 0,
@@ -333,11 +333,11 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
         ),
         title: const Text(
           'Clear Profile Data',
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(color: Colors.black, fontSize: 16),
         ),
         content: const Text(
           'This will clear all your profile data from Firebase. Are you sure?',
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(color: Colors.black, fontSize: 14),
         ),
         actions: [
           TextButton(
@@ -372,7 +372,7 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                       SizedBox(width: 20),
                       Text(
                         'Clearing data...',
-                        style: TextStyle(color: Colors.black),
+                        style: TextStyle(color: Colors.black, fontSize: 14),
                       ),
                     ],
                   ),
@@ -403,7 +403,7 @@ class _ProfileViewScreenState extends State<ProfileViewScreen> {
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
-            child: const Text('Clear', style: TextStyle(color: Colors.red)),
+            child: const Text('Clear', style: TextStyle(color: Colors.red, fontSize: 14)),
           ),
         ],
       ),

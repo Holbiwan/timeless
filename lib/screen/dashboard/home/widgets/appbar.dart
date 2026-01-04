@@ -534,7 +534,7 @@ void _showUserMenu() {
           Text(
             'Menu',
             style: Get.find<AccessibilityService>().getAccessibleTextStyle(
-              fontSize: 14,
+              fontSize: 12,
               fontWeight: FontWeight.w600,
               color: const Color(0xFF000647),
             ),
@@ -619,7 +619,7 @@ Widget _buildMenuItem(IconData icon, String title, VoidCallback onTap, {bool isD
             child: Text(
               title,
               style: accessibilityService.getAccessibleTextStyle(
-                fontSize: 16,
+                fontSize: 14,
                 fontWeight: FontWeight.w500,
                 color: isDestructive ? Colors.red : const Color(0xFF000647),
               ),

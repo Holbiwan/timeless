@@ -147,8 +147,8 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
   InputDecoration _dec(String label, {String? hint}) => InputDecoration(
         labelText: label,
         hintText: hint,
-        labelStyle: const TextStyle(color: Colors.white),
-        hintStyle: const TextStyle(color: Colors.grey),
+        labelStyle: const TextStyle(color: Colors.white, fontSize: 16),
+        hintStyle: const TextStyle(color: Colors.grey, fontSize: 16),
         border: const OutlineInputBorder(
           borderSide: BorderSide(color: Colors.white),
         ),
@@ -168,7 +168,7 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: const Text('Professional Space', style: TextStyle(color: Colors.white)),
+        title: const Text('Professional Space', style: TextStyle(color: Colors.white, fontSize: 18)),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: Get.back,
@@ -206,7 +206,7 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
               children: [
                 TextFormField(
                   controller: _companyCtrl,
-                  style: const TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white, fontSize: 16),
                   decoration: _dec('Company name', hint: 'Ex: Timeless SAS'),
                   validator: (v) =>
                       (v == null || v.trim().isEmpty) ? 'Required' : null,
@@ -215,7 +215,7 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: _websiteCtrl,
-                  style: const TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white, fontSize: 16),
                   decoration: _dec('Website', hint: 'https://example.com'),
                   keyboardType: TextInputType.url,
                   enableInteractiveSelection: true,
@@ -223,14 +223,14 @@ class _EmployerProfileScreenState extends State<EmployerProfileScreen> {
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: _locationCtrl,
-                  style: const TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white, fontSize: 16),
                   decoration: _dec('Location', hint: 'City, Country'),
                   enableInteractiveSelection: true,
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: _aboutCtrl,
-                  style: const TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white, fontSize: 16),
                   minLines: 4,
                   maxLines: 6,
                   decoration: _dec('About the company'),

@@ -17,10 +17,12 @@ class AppTextStyles {
     double? height,
     TextDecoration? decoration,
   }) {
+    final double resolvedFontSize = fontSize ?? AppDimensions.fontSizeMD;
+    
     return GoogleFonts.inter(
       fontWeight: fontWeight ?? FontWeight.w400,
       color: color ?? ColorRes.textPrimary,
-      fontSize: fontSize ?? AppDimensions.fontSizeMD,
+      fontSize: resolvedFontSize,
       letterSpacing: letterSpacing ?? 0,
       height: height ?? AppDimensions.lineHeightNormal,
       decoration: decoration ?? TextDecoration.none,
@@ -156,11 +158,13 @@ TextStyle appTextStyle({
   double? height,
   TextDecoration? textDecoration,
 }) {
+  final double resolvedFontSize = fontSize ?? AppDimensions.fontSizeMD;
+  
   return GoogleFonts.inter(
     decoration: textDecoration ?? TextDecoration.none,
     color: color ?? ColorRes.textPrimary,
     fontWeight: fontWeight ?? FontWeight.w400,
-    fontSize: fontSize ?? AppDimensions.fontSizeMD,
+    fontSize: resolvedFontSize,
     letterSpacing: letterSpacing ?? 0,
     height: height ?? AppDimensions.lineHeightNormal,
   );

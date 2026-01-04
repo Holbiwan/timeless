@@ -87,7 +87,7 @@ class JobsListScreen extends StatelessWidget {
                       onPressed: () => controller.searchJobs(),
                       icon: const Icon(Icons.search, color: Colors.white),
                       label: Text('Rechercher',
-                          style: TextStyle(color: Colors.white)),
+                          style: TextStyle(color: Colors.white, fontSize: 16)),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: ColorRes.darkGold,
                         padding: const EdgeInsets.symmetric(
@@ -438,7 +438,7 @@ class JobFiltersSheet extends StatelessWidget {
                   onPressed: () => controller.clearAllFilters(),
                   child: Text(
                     'Tout effacer',
-                    style: TextStyle(color: ColorRes.darkGold),
+                    style: TextStyle(color: ColorRes.darkGold, fontSize: 16),
                   ),
                 ),
               ],
@@ -498,7 +498,7 @@ class JobFiltersSheet extends StatelessWidget {
                     ),
                     child: Text(
                       'Annuler',
-                      style: TextStyle(color: ColorRes.darkGold),
+                      style: TextStyle(color: ColorRes.darkGold, fontSize: 16),
                     ),
                   ),
                 ),
@@ -515,7 +515,7 @@ class JobFiltersSheet extends StatelessWidget {
                     ),
                     child: const Text(
                       'Appliquer',
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: Colors.white, fontSize: 16),
                     ),
                   ),
                 ),

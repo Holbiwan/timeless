@@ -300,7 +300,7 @@ class ApplicationScreen extends StatelessWidget {
                         ),
                         child: Text(
                           'Annuler',
-                          style: TextStyle(color: ColorRes.darkGold),
+                          style: TextStyle(color: ColorRes.darkGold, fontSize: 16),
                         ),
                       ),
                     ),

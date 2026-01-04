@@ -480,7 +480,7 @@ class JobRecommendationScreen extends StatelessWidget {
             children: [
               OutlinedButton(
                 onPressed: () => Get.back(),
-                child: Text('Cancel', style: TextStyle(color: Colors.grey[600])),
+                child: Text('Cancel', style: TextStyle(color: Colors.grey[600], fontSize: 16)),
               ),
               const SizedBox(width: 16),
               ElevatedButton(
@@ -492,7 +492,7 @@ class JobRecommendationScreen extends StatelessWidget {
                     'docId': doc?.id ?? jobData['docId'] ?? 'unknown',
                   });
                 },
-                child: const Text('Apply', style: TextStyle(color: Colors.white)),
+                child: const Text('Apply', style: TextStyle(color: Colors.white, fontSize: 16)),
               ),
             ],
           ),

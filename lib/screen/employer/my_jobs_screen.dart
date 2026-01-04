@@ -91,7 +91,7 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
                   const SizedBox(height: 8),
                   const Text(
                     'Create your first job posting!',
-                    style: TextStyle(color: Colors.grey),
+                    style: TextStyle(color: Colors.grey, fontSize: 16),
                   ),
                   const SizedBox(height: 20),
                   ElevatedButton.icon(
@@ -426,7 +426,7 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
                 );
               }
             },
-            child: const Text('Delete', style: TextStyle(color: ColorRes.royalBlue)),
+            child: const Text('Delete', style: TextStyle(color: ColorRes.royalBlue, fontSize: 16)),
           ),
         ],
       ),

@@ -69,7 +69,7 @@ class ApplicationsScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 2),
                           Text(
-                            translationService.getText('cv_sent'),
+                            "CV sent",
                             style: appTextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w400,

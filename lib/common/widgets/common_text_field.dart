@@ -22,7 +22,7 @@ Widget commonTextFormField({
       keyboardType: type ?? TextInputType.text,
       controller: controller,
       decoration: textDecoration,
-      style: const TextStyle(fontWeight: FontWeight.bold),
+      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
       onTap: onTap ?? () {},
       onChanged: onChanged ?? (value) {},
       obscureText: obscureText ?? false,

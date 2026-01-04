@@ -15,57 +15,109 @@ class SalonsEmploiScreen extends StatelessWidget {
       backgroundColor: accessibilityService.backgroundColor,
       body: CustomScrollView(
         slivers: [
-          // Modern App Bar
+          // Modern App Bar with smooth scroll behavior
           SliverAppBar(
             expandedHeight: 160,
-            floating: false,
+            floating: true,
             pinned: true,
+            snap: true,
             backgroundColor: Colors.black,
+            elevation: 0,
+            shadowColor: Colors.black.withOpacity(0.3),
+            surfaceTintColor: Colors.transparent,
             flexibleSpace: FlexibleSpaceBar(
+              titlePadding: const EdgeInsets.only(left: 20, bottom: 20),
+              title: AnimatedOpacity(
+                opacity: 1.0,
+                duration: const Duration(milliseconds: 300),
+                child: Text(
+                  'Job Fairs',
+                  style: GoogleFonts.inter(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
               background: Container(
-                decoration: const BoxDecoration(
-                  color: Colors.black,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Colors.black,
+                      Colors.black.withOpacity(0.9),
+                    ],
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      blurRadius: 20,
+                      offset: const Offset(0, 10),
+                    ),
+                  ],
                 ),
                 child: Stack(
                   children: [
-                    Positioned(
-                      top: 50,
-                      right: 20,
-                      child: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFE67E22).withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        child: const Icon(
-                          Icons.event,
-                          color: Color(0xFFE67E22),
-                          size: 28,
-                        ),
+                    // Animated background pattern
+                    Positioned.fill(
+                      child: CustomPaint(
+                        painter: _DotPatternPainter(),
                       ),
                     ),
                     Positioned(
-                      bottom: 20,
+                      top: 50,
+                      right: 20,
+                      child: TweenAnimationBuilder<double>(
+                        tween: Tween(begin: 0.0, end: 1.0),
+                        duration: const Duration(milliseconds: 600),
+                        builder: (context, value, child) {
+                          return Transform.scale(
+                            scale: value,
+                            child: Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFE67E22).withOpacity(0.15),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(
+                                  color: const Color(0xFFE67E22).withOpacity(0.3),
+                                  width: 1,
+                                ),
+                              ),
+                              child: const Icon(
+                                Icons.event,
+                                color: Color(0xFFE67E22),
+                                size: 32,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 30,
                       left: 20,
-                      right: 80,
+                      right: 100,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             'Job Fairs',
                             style: GoogleFonts.inter(
-                              fontSize: 22,
-                              fontWeight: FontWeight.w600,
+                              fontSize: 26,
+                              fontWeight: FontWeight.w700,
                               color: Colors.white,
+                              letterSpacing: -0.5,
                             ),
                           ),
-                          const SizedBox(height: 6),
+                          const SizedBox(height: 8),
                           Text(
                             'Discover upcoming job events',
                             style: GoogleFonts.inter(
-                              fontSize: 12,
-                              color: Colors.white.withOpacity(0.8),
-                              height: 1.3,
+                              fontSize: 14,
+                              color: Colors.white.withOpacity(0.85),
+                              height: 1.4,
+                              fontWeight: FontWeight.w400,
                             ),
                           ),
                         ],
@@ -78,11 +130,18 @@ class SalonsEmploiScreen extends StatelessWidget {
             leading: Container(
               margin: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Colors.white.withOpacity(0.95),
                 borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
               child: IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.black),
+                icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black, size: 20),
                 onPressed: () => Get.back(),
               ),
             ),
@@ -256,14 +315,14 @@ class SalonsEmploiScreen extends StatelessWidget {
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                           colors: [
-                            color,
-                            color.withOpacity(0.8),
+                            Colors.black,
+                            Colors.black.withOpacity(0.8),
                           ],
                         ),
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
-                            color: color.withOpacity(0.3),
+                            color: Colors.black.withOpacity(0.3),
                             blurRadius: 8,
                             offset: const Offset(0, 4),
                           ),
@@ -326,7 +385,7 @@ class SalonsEmploiScreen extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(5),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFE67E22),
+                          color: Colors.black,
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: const Icon(
@@ -407,4 +466,26 @@ class SalonsEmploiScreen extends StatelessWidget {
       );
     }
   }
+}
+
+// Custom painter for animated background pattern
+class _DotPatternPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.white.withOpacity(0.05)
+      ..style = PaintingStyle.fill;
+
+    const double spacing = 40.0;
+    const double dotRadius = 1.5;
+
+    for (double x = 0; x <= size.width + spacing; x += spacing) {
+      for (double y = 0; y <= size.height + spacing; y += spacing) {
+        canvas.drawCircle(Offset(x, y), dotRadius, paint);
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

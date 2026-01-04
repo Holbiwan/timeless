@@ -19,7 +19,7 @@ class EmployerApplicationsScreen extends StatelessWidget {
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: const Text('Professional Space - Applications', style: TextStyle(color: Colors.white)),
+        title: const Text('Professional Space - Applications', style: TextStyle(color: Colors.white, fontSize: 18)),
         iconTheme: const IconThemeData(color: Colors.white),
         actions: [
           IconButton(
@@ -210,7 +210,7 @@ class EmployerApplicationsScreen extends StatelessWidget {
                 const Spacer(),
                 TextButton(
                   onPressed: () => controller.clearFilters(),
-                  child: const Text('Effacer tout', style: TextStyle(color: Colors.white)),
+                  child: const Text('Effacer tout', style: TextStyle(color: Colors.white, fontSize: 16)),
                 ),
               ],
             ),

@@ -639,7 +639,7 @@ class AccessibilityPanel extends StatelessWidget {
             onPressed: () => Navigator.pop(context),
             child: Text(
               'Cancel',
-              style: TextStyle(color: accessibilityService.primaryColor),
+              style: TextStyle(color: accessibilityService.primaryColor, fontSize: 16),
             ),
           ),
           ElevatedButton(
@@ -653,7 +653,7 @@ class AccessibilityPanel extends StatelessWidget {
             style: accessibilityService.getAccessibleButtonStyle(),
             child: const Text(
               'Reset',
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: Colors.white, fontSize: 16),
             ),
           ),
         ],

@@ -56,6 +56,7 @@ class LanguageTestWidget extends StatelessWidget {
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: ColorRes.primaryBlueDark,
+                fontSize: 16,
               ),
             ),
           ),

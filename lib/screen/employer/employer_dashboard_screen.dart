@@ -92,119 +92,169 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
 
   Widget _buildFixedHeader() {
     return Container(
-      height: 140,
-      decoration: const BoxDecoration(
-        color: Colors.black,
+      height: 160,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.black,
+            Colors.black.withOpacity(0.9),
+            _primaryBlue,
+          ],
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
+        ],
       ),
-      child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // Back button
-                  Container(
+      child: Stack(
+        children: [
+          // Animated background pattern
+          Positioned.fill(
+            child: CustomPaint(
+              painter: _BusinessPatternPainter(),
+            ),
+          ),
+          Positioned(
+            top: 50,
+            right: 20,
+            child: TweenAnimationBuilder<double>(
+              tween: Tween(begin: 0.0, end: 1.0),
+              duration: const Duration(milliseconds: 600),
+              builder: (context, value, child) {
+                return Transform.scale(
+                  scale: value,
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.15),
-                      borderRadius: BorderRadius.circular(12),
+                      color: _accentOrange.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: _accentOrange.withOpacity(0.3),
+                        width: 1,
+                      ),
                     ),
-                    child: IconButton(
-                      icon: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 18),
-                      onPressed: () {
-                        // Clear employer session and return to login choice
- PreferencesService.setBool(PrefKeys.isLogin, false);
-                        PreferencesService.remove(PrefKeys.userId);
-                        PreferencesService.remove(PrefKeys.employerId);
-                        PreferencesService.remove(PrefKeys.companyName);
-                        Get.offAllNamed(AppRes.firstScreen);
-                      },
-                      tooltip: 'Back to Login',
+                    child: Icon(
+                      Icons.business_center,
+                      color: _accentOrange,
+                      size: 28,
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                );
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // Back button
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.2),
+                          width: 1,
+                        ),
+                      ),
+                      child: IconButton(
+                        icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 18),
+                        onPressed: () {
+                          // Clear employer session and return to login choice
+                          PreferencesService.setBool(PrefKeys.isLogin, false);
+                          PreferencesService.remove(PrefKeys.userId);
+                          PreferencesService.remove(PrefKeys.employerId);
+                          PreferencesService.remove(PrefKeys.companyName);
+                          Get.offAllNamed(AppRes.firstScreen);
+                        },
+                        tooltip: 'Back to Login',
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'Employer Dashboard',
+                            style: GoogleFonts.inter(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white,
+                              letterSpacing: -0.5,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'Manage your recruitment efficiently',
+                            style: GoogleFonts.inter(
+                              fontSize: 12,
+                              color: Colors.white.withOpacity(0.85),
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(
-                          'Hello,',
-                          style: GoogleFonts.inter(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white.withOpacity(0.9),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.15),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: IconButton(
+                            icon: const Icon(Icons.refresh_rounded, color: Colors.white, size: 16),
+                            onPressed: () {
+                              setState(() {});
+                              Get.snackbar(
+                                'Refreshed',
+                                'Dashboard data reloaded',
+                                snackPosition: SnackPosition.BOTTOM,
+                                backgroundColor: _primaryBlue,
+                                colorText: Colors.white,
+                                duration: const Duration(seconds: 1),
+                                margin: const EdgeInsets.all(16),
+                                borderRadius: 16,
+                              );
+                            },
+                            tooltip: 'Refresh',
                           ),
                         ),
-                        Text(
-                          companyName.isNotEmpty ? companyName : 'Employer Dashboard',
-                          style: GoogleFonts.inter(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
+                        const SizedBox(width: 8),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.15),
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          'Manage your recruitment efficiently',
-                          style: GoogleFonts.inter(
-                            fontSize: 10,
-                            color: Colors.white.withOpacity(0.8),
+                          child: IconButton(
+                            icon: const Icon(Icons.logout_rounded, color: Colors.white, size: 16),
+                            onPressed: _logout,
+                            tooltip: 'Logout',
                           ),
                         ),
                       ],
                     ),
-                  ),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.15),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: IconButton(
-                          icon: const Icon(Icons.refresh_rounded, color: Colors.white, size: 16),
-                          onPressed: () {
-                            setState(() {});
-                            Get.snackbar(
-                              'Refreshed',
-                              'Dashboard data reloaded',
-                              snackPosition: SnackPosition.BOTTOM,
-                              backgroundColor: _primaryBlue,
-                              colorText: Colors.white,
-                              duration: const Duration(seconds: 1),
-                              margin: const EdgeInsets.all(16),
-                              borderRadius: 16,
-                            );
-                          },
-                          tooltip: 'Refresh',
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.15),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: IconButton(
-                          icon: const Icon(Icons.logout_rounded, color: Colors.white, size: 16),
-                          onPressed: _logout,
-                          tooltip: 'Logout',
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
-        ),
-      );
+        ],
+      ),
+    );
   }
 
   Widget _buildStatsOverview() {
@@ -1354,4 +1404,33 @@ $companyName
       return false;
     }
   }
+}
+
+// Custom painter for business-themed background pattern
+class _BusinessPatternPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.white.withOpacity(0.04)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.0;
+
+    const double spacing = 45.0;
+
+    for (double x = 0; x <= size.width + spacing; x += spacing) {
+      for (double y = 0; y <= size.height + spacing; y += spacing) {
+        // Draw diamond pattern for business theme
+        final path = Path();
+        path.moveTo(x, y - 8);
+        path.lineTo(x + 8, y);
+        path.lineTo(x, y + 8);
+        path.lineTo(x - 8, y);
+        path.close();
+        canvas.drawPath(path, paint);
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
