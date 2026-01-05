@@ -2,12 +2,12 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:url_launcher/url_launcher.dart';
+
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:timeless/common/widgets/common_loader.dart';
-import 'package:timeless/common/widgets/modern_loader.dart';
+
 import 'package:timeless/common/widgets/unified_form_field.dart';
 import 'package:timeless/common/widgets/unified_button.dart';
 import 'package:timeless/utils/asset_res.dart';

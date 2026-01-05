@@ -9,6 +9,7 @@ import 'package:timeless/screen/dashboard/dashboard_screen.dart';
 import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/utils/app_theme.dart';
+import 'package:timeless/services/email_service.dart';
 
 class SignUpController extends GetxController {
   // State / Controllers for Sign Up Screen
@@ -109,158 +110,7 @@ class SignUpController extends GetxController {
   }
 
 
-  Future<void> _sendWelcomeEmailWithVerification(
-      String email, String fullName) async {
-    try {
-      if (kDebugMode) {
-        print(" Sending welcome email with verification to $email");
-      }
-
-      // Generate professional welcome email with verification instructions
-      final emailHTML =
-          await _generateVerificationWelcomeEmail(email, fullName);
-
-      // Send via Firebase Extensions (mail collection)
-      final mailDoc = await _db.collection("mail").add({
-        "to": [email],
-        "message": {
-          "subject": " Welcome to Timeless - Please verify your email",
-          "html": emailHTML,
-          "text":
-              "Welcome to Timeless, $fullName! Please verify your email to complete your registration."
-        }
-      });
-
-      // Log email sending attempt
-      await _db.collection("emailQueue").add({
-        "to": email,
-        "template": "welcome_verification",
-        "templateData": {
-          "fullName": fullName,
-          "email": email,
-          "verificationRequired": true,
-          "appName": "Timeless"
-        },
-        "subject": " Welcome to Timeless - Please verify your email",
-        "priority": "high",
-        "createdAt": FieldValue.serverTimestamp(),
-        "status": "sent",
-        "mailDocId": mailDoc.id
-      });
-
-      if (kDebugMode) {
-        print("✅ Welcome email with verification sent successfully to $email");
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        print("❌ Error sending welcome email: $e");
-      }
-      // Don't fail account creation for email issues
-    }
-  }
-
-
-  Future<String> _generateVerificationWelcomeEmail(
-      String email, String fullName) async {
-    return """
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to Timeless - Verify Your Email</title>
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f5f5; margin: 0; padding: 20px; }
-        .container { max-width: 600px; margin: 0 auto; background-color: white; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.1); }
-        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-align: center; padding: 40px 20px; }
-        .header h1 { margin: 0; font-size: 28px; font-weight: 700; }
-        .header p { margin: 10px 0 0 0; opacity: 0.9; font-size: 16px; }
-        .content { padding: 40px 30px; }
-        .content h2 { color: #333; margin-top: 0; font-size: 24px; }
-        .verification-box { background: #f8f9fa; padding: 25px; border-radius: 10px; margin: 25px 0; border-left: 4px solid #667eea; text-align: center; }
-        .verification-notice { background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 15px; margin: 20px 0; }
-        .feature { display: flex; align-items: center; margin: 15px 0; padding: 10px; }
-        .feature-icon { color: #667eea; margin-right: 15px; font-size: 20px; }
-        .feature-text { color: #555; font-size: 16px; }
-        .footer { background-color: #f8f9fa; text-align: center; padding: 30px 20px; border-top: 1px solid #eee; }
-        .footer h3 { color: #333; margin: 0 0 10px 0; }
-        .footer p { color: #666; margin: 5px 0; }
-        .small-text { font-size: 12px; color: #999; margin-top: 20px; }
-        .highlight { color: #667eea; font-weight: 600; }
-        @media (max-width: 600px) {
-            .content { padding: 30px 20px; }
-            .header { padding: 30px 20px; }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1> Welcome to Timeless!</h1>
-            <p>Your professional journey starts here</p>
-        </div>
-        
-        <div class="content">
-            <h2>Hello $fullName,</h2>
-            
-            <p>Welcome to Timeless! We're excited to have you join our community of professionals. Your account has been created successfully, and we just need to verify your email address to get started.</p>
-            
-            <div class="verification-box">
-                <h3 style="margin-top: 0; color: #333;"> Email Verification Required</h3>
-                <p><strong>We've sent a verification link to:</strong></p>
-                <p class="highlight" style="font-size: 16px;">$email</p>
-                <p style="margin-bottom: 0; color: #666;">Please check your inbox and click the verification link to activate your account.</p>
-            </div>
-            
-            <div class="verification-notice">
-                <p style="margin: 0; color: #856404;"><strong>⚠️ Important:</strong> You'll need to verify your email before you can access all features of your Timeless account.</p>
-            </div>
-            
-            <h3 style="color: #333;"> What you can do once verified:</h3>
-            
-            <div class="feature">
-                <span class="feature-icon">✨</span>
-                <span class="feature-text">Browse thousands of quality job listings</span>
-            </div>
-            <div class="feature">
-                <span class="feature-icon">⚡</span>
-                <span class="feature-text">Apply to jobs with one-click using your profile</span>
-            </div>
-            <div class="feature">
-                <span class="feature-icon"></span>
-                <span class="feature-text">Track your applications in real-time</span>
-            </div>
-            <div class="feature">
-                <span class="feature-icon"></span>
-                <span class="feature-text">Receive personalized job recommendations</span>
-            </div>
-            <div class="feature">
-                <span class="feature-icon"></span>
-                <span class="feature-text">Connect directly with employers</span>
-            </div>
-            <div class="feature">
-                <span class="feature-icon"></span>
-                <span class="feature-text">Get notified about application updates</span>
-            </div>
-            
-            <p style="margin-top: 30px; color: #666;">If you don't see the verification email in your inbox, please check your spam folder. If you need assistance, our support team is available 24/7.</p>
-        </div>
-        
-        <div class="footer">
-            <h3>The Timeless Team </h3>
-            <p>Your professional success is our priority</p>
-            <p> support@timeless.app |  www.timeless.app</p>
-            
-            <div class="small-text">
-                <p>This email was sent automatically after account creation.</p>
-                <p>If you didn't create this account, you can safely ignore this email.</p>
-            </div>
-        </div>
-    </div>
-</body>
-</html>
-    """;
-  }
+  
 
 // Register Email/Password with Email Verification
   Future<void> onSignUpTap() async {
@@ -325,7 +175,7 @@ class SignUpController extends GetxController {
       await sendEmailVerification(user);
 
       // Also send custom welcome email for better UX
-      await _sendWelcomeEmailWithVerification(email, fullName);
+      await EmailService.sendCandidateWelcomeEmail(email: email, fullName: fullName);
 
       // Show instruction for checking Firebase verification email
       AppTheme.showStandardSnackBar(
@@ -528,7 +378,7 @@ class SignUpController extends GetxController {
       await PreferencesService.setValue(PrefKeys.fullName, fullName);
 
       // Send welcome email
-      await _sendWelcomeEmailWithVerification(email, fullName);
+      await EmailService.sendCandidateWelcomeEmail(email: email, fullName: fullName);
 
       AppTheme.showStandardSnackBar(
         title: "✅ Account Created Successfully!",

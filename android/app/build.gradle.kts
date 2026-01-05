@@ -9,11 +9,9 @@ plugins {
 android {
     namespace = "com.example.timeless"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = "27.0.12077973"
-
     defaultConfig {
         applicationId = "com.example.timeless"
-        minSdk = flutter.minSdkVersion
+        minSdkVersion(23)
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName

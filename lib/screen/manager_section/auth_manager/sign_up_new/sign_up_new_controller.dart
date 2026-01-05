@@ -86,6 +86,11 @@ class SignUpControllerM extends GetxController {
       // 3. Sauvegarder les données dans Firestore
       await _saveEmployerToFirestore(cred.user!);
 
+      // 3b. Envoyer l'email de confirmation de compte (Natif Firebase)
+      if (!cred.user!.emailVerified) {
+        await cred.user!.sendEmailVerification();
+      }
+
       // 4. Envoyer email de bienvenue
       await _sendWelcomeEmail(cred.user!);
 
