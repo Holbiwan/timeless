@@ -1,3 +1,6 @@
+// Main candidate dashboard that provides navigation between core app features
+// Handles authenticated vs guest modes and integrates accessibility theming
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:timeless/screen/dashboard/dashboard_controller.dart';
@@ -22,7 +25,7 @@ class DashBoardScreen extends StatelessWidget {
 
     return WillPopScope(
       onWillPop: () async {
-        alertU(context);
+        alertU(context); // Show exit confirmation dialog
         return true;
       },
       child: Obx(() => Scaffold(
@@ -31,10 +34,10 @@ class DashBoardScreen extends StatelessWidget {
         body: GetBuilder<DashBoardController>(
           id: "bottom_bar",
           builder: (c) {
-            // Toujours afficher Home, le bouton Retour ne change pas l'écran affiché
+            // Show appropriate home screen based on authentication status
             return token.isEmpty
-                ? const HomePageNewScreenU()
-                : const HomeScreen();
+                ? const HomePageNewScreenU() // Guest/unauthenticated experience
+                : const HomeScreen(); // Full authenticated candidate dashboard
           },
         ),
         bottomNavigationBar: GetBuilder<DashBoardController>(
@@ -42,7 +45,7 @@ class DashBoardScreen extends StatelessWidget {
           builder: (c) {
             return Theme(
               data: Theme.of(context).copyWith(
-                canvasColor: Colors.black, // fond noir
+                canvasColor: Colors.black, // Dark theme for bottom navigation
               ),
               child: BottomNavigationBar(
                 currentIndex: c.currentTab,

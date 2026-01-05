@@ -1,4 +1,4 @@
-// Country search model for location picker
+// api/country_model.dart
 // Handles the hierarchical structure: Country > State > City
 
 import 'dart:convert';

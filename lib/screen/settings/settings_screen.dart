@@ -1,3 +1,6 @@
+// User preferences and account management screen with accessibility integration
+// Provides profile settings, logout functionality, and navigation to specialized settings sections
+
 // ignore_for_file: deprecated_member_use, duplicate_ignore
 
 import 'package:flutter/material.dart';
@@ -31,7 +34,7 @@ class SettingsScreenU extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            // Header moderne avec gradient
+            // Modern header with gradient styling for visual consistency
             Container(
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
               decoration: BoxDecoration(

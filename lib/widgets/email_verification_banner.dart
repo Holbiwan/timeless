@@ -1,4 +1,4 @@
-// ignore_for_file: unused_import, unused_element
+// ignore_for_file: unused_element
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -6,7 +6,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:timeless/utils/color_res.dart';
-import 'package:timeless/utils/email_verification_guard.dart';
 
 class EmailVerificationBanner extends StatefulWidget {
   const EmailVerificationBanner({super.key});

@@ -1,3 +1,6 @@
+// Main landing page that presents authentication options for different user types
+// Features candidate sign-in/up, employer authentication, language switching, and social media links
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -23,7 +26,7 @@ class FirstScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (kDebugMode) {
-      // ignorer avoid_print
+      // Debug screen dimensions for responsive design testing
       print('size: ${Get.width} x ${Get.height}');
     }
 
@@ -53,17 +56,17 @@ class FirstScreen extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              // Language selector at top left
+              // Language selector positioned at top left for easy access
               Container(
                 width: Get.width,
                 alignment: Alignment.centerLeft,
-                padding: const EdgeInsets.only(left: 16, top: 1), // Reverted padding
+                padding: const EdgeInsets.only(left: 16, top: 1),
                 child: SimpleLanguageSwitch(),
               ),
 
               const SizedBox(height: 20), // Reverted SizedBox height
 
-              // Welcome message with gradient effect
+              // App branding section with gradient text effects
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
@@ -253,7 +256,7 @@ class FirstScreen extends StatelessWidget {
                 ),
               SizedBox(height: Get.height * 0.01),
 
-              // 💼 BOUTON SIGN IN AS PRO
+              // Professional employer authentication entry point
               GestureDetector(
                 onTap: () {
                   Navigator.push(
@@ -415,7 +418,7 @@ class FirstScreen extends StatelessWidget {
 
               SizedBox(height: 10),
 
-              // Section des réseaux sociaux
+              // Social media links section for brand engagement
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
@@ -494,7 +497,7 @@ class FirstScreen extends StatelessWidget {
           }
         } catch (e) {
           if (kDebugMode) {
-            print('Erreur lors de l\'ouverture du lien: $e');
+            print('Error opening social media link: $e');
           }
         }
       },

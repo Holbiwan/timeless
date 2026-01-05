@@ -1,4 +1,6 @@
-// Candidate controller (GetX)
+// GetX controller that manages candidate profile, CVs, applications, and job interactions
+// Handles file uploads, profile updates, and application tracking with local state sync
+
 import 'package:get/get.dart';
 import 'package:flutter/foundation.dart';
 import 'package:file_picker/file_picker.dart';
@@ -12,20 +14,20 @@ import '../utils/app_theme.dart';
 
 class CandidateController extends GetxController {
 
-  // Candidate profile
+  // Current user's complete profile including skills, experience, education
   final Rx<CandidateProfileModel?> _candidateProfile =
       Rx<CandidateProfileModel?>(null);
   CandidateProfileModel? get candidateProfile => _candidateProfile.value;
 
-  // CV list
+  // List of uploaded CVs with download URLs and metadata
   final RxList<CVModel> _cvs = <CVModel>[].obs;
   List<CVModel> get cvs => _cvs;
 
-  // Applications list
+  // Complete job application history with status tracking
   final RxList<ApplicationModel> _applications = <ApplicationModel>[].obs;
   List<ApplicationModel> get applications => _applications;
 
-  // Loading flags
+  // State management flags for UI feedback
   final RxBool _isLoading = false.obs;
   bool get isLoading => _isLoading.value;
 
@@ -35,7 +37,7 @@ class CandidateController extends GetxController {
   final RxBool _isApplying = false.obs;
   bool get isApplying => _isApplying.value;
 
-  // Candidate stats
+  // Analytics data like application count, profile views, success rate
   final RxMap<String, dynamic> _stats = <String, dynamic>{}.obs;
   Map<String, dynamic> get stats => _stats;
 
@@ -49,16 +51,16 @@ class CandidateController extends GetxController {
     _initializeData();
   }
 
-  // Load all candidate data
+  // Initialize controller by loading profile and related data in parallel
   Future<void> _initializeData() async {
     try {
       _isLoading.value = true;
       _errorMessage.value = '';
 
-      // Load profile
+      // Load core profile first as other data depends on it
       await loadCandidateProfile();
 
-      // Load related data
+      // Load supporting data concurrently once profile exists
       if (_candidateProfile.value != null) {
         await Future.wait([
           loadCVs(),
@@ -74,9 +76,9 @@ class CandidateController extends GetxController {
     }
   }
 
-  // --- Profile ---
+  // --- Profile Management ---
 
-  // Upload profile picture
+  // Handle image selection, compression, upload, and profile update
   Future<bool> uploadProfilePicture() async {
     try {
       _isLoading.value = true;
@@ -97,10 +99,10 @@ class CandidateController extends GetxController {
 
       final file = File(image.path);
 
-      // Upload to Storage
+      // Upload to Firebase Storage and get public URL
       final photoUrl = await CandidateApiService.uploadProfilePhoto(file: file);
 
-      // Update Profile with new URL
+      // Update profile model with new photo URL and save to Firestore
       if (_candidateProfile.value != null) {
         final updatedProfile = _candidateProfile.value!.copyWith(photoURL: photoUrl);
         await updateProfile(updatedProfile);
@@ -287,9 +289,9 @@ class CandidateController extends GetxController {
     updateProfile(updatedProfile);
   }
 
-  // --- CVs ---
+  // --- CV Management ---
 
-  // Load CV list
+  // Fetch all uploaded CVs with metadata and download URLs
   Future<void> loadCVs() async {
     try {
       final cvsList = await CandidateApiService.getCandidateCVs();
@@ -306,7 +308,7 @@ class CandidateController extends GetxController {
       _isUploadingCV.value = true;
       _errorMessage.value = '';
 
-      // Pick file
+      // Show file picker limited to resume formats
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
         allowedExtensions: ['pdf', 'doc', 'docx'],
@@ -318,16 +320,16 @@ class CandidateController extends GetxController {
       final file = File(result.files.single.path!);
       final fileName = result.files.single.name;
 
-      // Upload file
+      // Upload to storage and create CV record in Firestore
       final cvModel = await CandidateApiService.uploadCV(
         file: file,
         fileName: fileName,
       );
 
-      // Update local list
+      // Add to local list for immediate UI update
       _cvs.add(cvModel);
 
-      // Refresh profile
+      // Reload profile in case CV count or default CV changed
       await loadCandidateProfile();
 
       AppTheme.showStandardSnackBar(
@@ -394,9 +396,9 @@ class CandidateController extends GetxController {
     return await updateProfile(updatedProfile);
   }
 
-  // --- Applications ---
+  // --- Job Applications ---
 
-  // Load applications
+  // Fetch complete application history with job and status details
   Future<void> loadApplications() async {
     try {
       final applicationsList =
@@ -426,10 +428,10 @@ class CandidateController extends GetxController {
         answers: answers,
       );
 
-      // Add locally
+      // Add to local list for immediate UI feedback
       _applications.add(application);
 
-      // Refresh stats
+      // Update stats to reflect new application
       await loadStats();
 
       AppTheme.showStandardSnackBar(
@@ -461,7 +463,7 @@ class CandidateController extends GetxController {
 
       await CandidateApiService.withdrawApplication(applicationId);
 
-      // Update local status
+      // Update local application status without full reload
       final index = _applications.indexWhere((app) => app.id == applicationId);
       if (index != -1) {
         _applications[index] =
@@ -498,9 +500,9 @@ class CandidateController extends GetxController {
         app.jobId == jobId && app.status != ApplicationStatus.withdrawn);
   }
 
-  // --- Stats ---
+  // --- Analytics & Insights ---
 
-  // Load stats
+  // Fetch application metrics and profile performance data
   Future<void> loadStats() async {
     try {
       final statistics = await CandidateApiService.getCandidateStats();
@@ -510,9 +512,9 @@ class CandidateController extends GetxController {
     }
   }
 
-  // --- Utils ---
+  // --- Utility Methods ---
 
-  // Profile completion status
+  // Check if profile has all required fields completed
   bool get isProfileComplete => _candidateProfile.value?.isComplete ?? false;
 
   // Profile completion score
@@ -545,10 +547,10 @@ class CandidateController extends GetxController {
   }
 }
 
-// Application helpers
+// Extension to add copyWith method for immutable application updates
 extension ApplicationModelExtension on ApplicationModel {
 
-  // Copy with updates
+  // Create new instance with updated fields while preserving unchanged data
   ApplicationModel copyWith({
     String? id,
     String? jobId,

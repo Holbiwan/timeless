@@ -1,3 +1,6 @@
+// Comprehensive accessibility settings panel for inclusive app experience
+// Provides toggles for visual, motor, and cognitive accessibility features
+
 // ignore_for_file: unused_local_variable
 
 import 'package:flutter/material.dart';
@@ -20,7 +23,7 @@ class AccessibilityPanel extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            // Header moderne avec gradient
+            // Styled header section with accessibility-aware design
             Container(
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
               decoration: BoxDecoration(

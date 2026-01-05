@@ -1,9 +1,6 @@
-// ignore_for_file: unused_import
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:timeless/services/accessibility_service.dart';
-import 'package:timeless/utils/app_theme.dart';
 
 class AccessibilityTestScreen extends StatelessWidget {
   const AccessibilityTestScreen({super.key});

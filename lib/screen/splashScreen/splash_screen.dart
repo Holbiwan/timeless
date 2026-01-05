@@ -1,3 +1,6 @@
+// Animated splash screen that displays app branding and onboarding slides
+// Features auto-advancing slides, particle animations, and smooth transitions to first screen
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -15,15 +18,18 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
+  // Controls overall fade-in/out transitions for the entire screen
   late final AnimationController _masterController = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 800),
   );
 
+  // Creates subtle breathing effect on the main logo
   late final AnimationController _logoController = AnimationController(
       vsync: this, duration: const Duration(milliseconds: 2500))
     ..repeat(reverse: true);
 
+  // Drives floating particle animation in background
   late final AnimationController _particleController = AnimationController(
       vsync: this, duration: const Duration(milliseconds: 4000))
     ..repeat();
@@ -36,12 +42,13 @@ class _SplashScreenState extends State<SplashScreen>
   Timer? _autoSlideTimer;
   late PageController _pageController;
 
+  // Onboarding slide content configuration
   final List<Map<String, dynamic>> _slides = [
     {
       'title': '',
       'subtitle': '',
       'description': '',
-      'isLogo': true
+      'isLogo': true // Shows main app logo with breathing animation
     },
     {
       'title': 'New app for',
@@ -67,6 +74,7 @@ class _SplashScreenState extends State<SplashScreen>
     _startAutoSlideShow();
   }
 
+  // Auto-advance slides with longer duration on logo slide for brand impact
   void _startAutoSlideShow() {
     _autoSlideTimer = Timer.periodic(
       Duration(milliseconds: _currentSlide == 0 ? 6000 : 5000),
@@ -86,6 +94,7 @@ class _SplashScreenState extends State<SplashScreen>
     }
   }
 
+  // Smoothly transition to main app with fade animation
   void _navigateToNextScreen() async {
     await _masterController.reverse();
     Get.offAll(
@@ -125,7 +134,7 @@ class _SplashScreenState extends State<SplashScreen>
           child: SafeArea(
             child: Stack(
               children: [
-                // Enhanced animated background particles
+                // Floating particles create dynamic background atmosphere
                 AnimatedBuilder(
                   animation: _particleController,
                   builder: (context, child) {
@@ -165,7 +174,7 @@ class _SplashScreenState extends State<SplashScreen>
                   },
                 ),
 
-                // Contenu avec PageView pour transitions naturelles
+                // Slide content with smooth PageView transitions
                 PageView.builder(
                   controller: _pageController,
                   onPageChanged: (index) {
@@ -180,12 +189,12 @@ class _SplashScreenState extends State<SplashScreen>
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            // Image de la page courante
+                            // Main visual element for current slide
                             _buildMainVisual(_slides[index], 1.0),
                             
                             const SizedBox(height: 20),
                             
-                            // Texte de la page courante
+                            // Text content for current slide
                             _buildPageText(_slides[index]),
                           ],
                         ),
@@ -194,7 +203,7 @@ class _SplashScreenState extends State<SplashScreen>
                   },
                 ),
 
-                // Enhanced Skip button
+                // Skip button for users who want to jump to main app
                 Positioned(
                   top: 50,
                   right: 20,
@@ -249,7 +258,7 @@ class _SplashScreenState extends State<SplashScreen>
                   ),
                 ),
 
-                // Enhanced Progress dots with smooth animations
+                // Animated progress indicators showing current slide position
                 Positioned(
                   bottom: 80,
                   left: 0,
@@ -387,7 +396,7 @@ class _SplashScreenState extends State<SplashScreen>
   Widget _buildPageText(Map<String, dynamic> slideData) {
     return Column(
       children: [
-        // Titre seulement si il n'est pas vide
+        // Show title only when not empty
         if (slideData['title']!.isNotEmpty) ...[
           Text(
             slideData['title']!,

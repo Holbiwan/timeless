@@ -1,3 +1,6 @@
+// Smart job recommendation system that suggests relevant positions based on user profile
+// Features advanced filtering, sorting, accessibility support, and personalized job matching
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -26,7 +29,7 @@ class JobRecommendationScreen extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            // Header Custom (Black Gradient)
+            // Styled header with gradient design for visual appeal
             Container(
               margin: const EdgeInsets.fromLTRB(16, 4, 16, 6),
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),

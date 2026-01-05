@@ -1,3 +1,6 @@
+// Post-authentication profile setup screen for collecting additional user information
+// Handles Google account data integration and profile finalization before entering main app
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -28,7 +31,7 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
   @override
   void initState() {
     super.initState();
-    controller.initializeWithGoogleData();
+    controller.initializeWithGoogleData(); // Pre-fill form with authenticated user data
   }
 
   @override

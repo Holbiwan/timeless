@@ -1,9 +1,12 @@
+// Complete job application form with CV upload and candidate information collection
+// Handles file selection, form validation, user data pre-population, and application submission
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:file_picker/file_picker.dart';
-// import 'package:timeless/models/job_offer_model.dart'; // Removed - using Map instead
+// Using Map<String, dynamic> for job data instead of dedicated model
 import 'package:timeless/services/job_service.dart';
 import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/services/unified_translation_service.dart';
@@ -22,13 +25,17 @@ class JobApplicationScreen extends StatefulWidget {
 
 class _JobApplicationScreenState extends State<JobApplicationScreen> {
   final _formKey = GlobalKey<FormState>();
+  
+  // Form controllers for user input fields
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
-  final _commentController = TextEditingController();
+  final _commentController = TextEditingController(); // Cover letter or additional notes
+  
   final UnifiedTranslationService translationService =
       UnifiedTranslationService();
 
+  // CV file handling
   File? _selectedCV;
   bool _isLoading = false;
   String? _cvFileName;
@@ -36,11 +43,12 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
   @override
   void initState() {
     super.initState();
-    _loadUserInfo();
+    _loadUserInfo(); // Pre-populate form with saved user data
   }
 
   @override
   void dispose() {
+    // Clean up controllers to prevent memory leaks
     _nameController.dispose();
     _emailController.dispose();
     _phoneController.dispose();

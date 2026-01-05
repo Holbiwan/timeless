@@ -1,3 +1,6 @@
+// Manager/Employer dashboard with bottom navigation for recruiting workflow
+// Features job management, applications review, messaging, and profile sections
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
@@ -11,12 +14,10 @@ import 'package:timeless/utils/app_style.dart';
 import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/string.dart';
 
-// --- SECTION: 
-
-// Palette Jamaïque ---
-const _kJBlack = Colors.black; // fond
-const _kJYellow = Color(0xFFFED100); // actif
-const _kJGreen = Color(0xFF1FA24A); // inactif
+// Jamaica-inspired color palette for manager interface
+const _kJBlack = Colors.black; // Background color
+const _kJYellow = Color(0xFFFED100); // Active tab highlight
+const _kJGreen = Color(0xFF1FA24A); // Inactive elements
 
 class ManagerDashBoardScreen extends StatelessWidget {
   ManagerDashBoardScreen({super.key});
@@ -28,23 +29,23 @@ class ManagerDashBoardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        alert(context);
+        alert(context); // Confirm exit from manager dashboard
         return true;
       },
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        backgroundColor: Colors.black, // couleur globale de page
+        backgroundColor: Colors.black, // Consistent dark theme
         body: Obx(() {
           switch (controller.currentTab.value) {
             case 0:
-              return ManagerHomeScreen();
+              return ManagerHomeScreen(); // Job posting and management
             case 1:
-              return const EmployerApplicationsScreen();
+              return const EmployerApplicationsScreen(); // Review candidates
             case 2:
               return const Center(
-                  child: Text('Chat temporarily unavailable'));
+                  child: Text('Chat temporarily unavailable')); // Future messaging
             default:
-              return const EmployerProfileScreen();
+              return const EmployerProfileScreen(); // Company profile management
           }
         }),
         bottomNavigationBar: Obx(

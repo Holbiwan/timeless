@@ -1,3 +1,6 @@
+// Candidate authentication screen with email/password and social login options
+// Supports Google, GitHub sign-in, remember me, password recovery, and form validation
+
 // ignore_for_file: unused_import, unused_element
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -39,7 +42,7 @@ class SigninScreenU extends StatefulWidget {
 class _SigninScreenUState extends State<SigninScreenU> {
   final SignInScreenController controller = Get.put(SignInScreenController());
 
-  // Brand colors
+  // App brand colors for consistent theming
   final Color _primaryBlue = const Color(0xFF000647);
   final Color _accentOrange = const Color(0xFFE67E22);
 
@@ -52,10 +55,12 @@ class _SigninScreenUState extends State<SigninScreenU> {
     });
   }
 
+  // Handle Google account switching for users with multiple accounts
   Future<void> _onSwitchGoogleAccount() async {
     await controller.signWithGoogle();
   }
 
+  // Standard Google sign-in flow
   Future<void> _onGoogleSignInTap() async {
     await controller.signWithGoogle();
   }
@@ -96,8 +101,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
       backgroundColor: _primaryBlue, // Dark background base
       body: Stack(
         children: [
-          // --- 1. Background Design ---
-          // Gradient
+          // Main background with gradient from black to brand blue
           Container(
             height: size.height,
             width: size.width,
@@ -115,7 +119,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
           
 
 
-          // Decorative Blue Circle (Bottom Left)
+          // Subtle decorative element for visual depth
           Positioned(
             bottom: -50,
             left: -50,
@@ -136,18 +140,18 @@ class _SigninScreenUState extends State<SigninScreenU> {
             ),
           ),
 
-          // --- 2. Content ---
+          // Main content area with proper safe area handling
           SafeArea(
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  // Top Section (Logo & Title)
+                  // Header section with logo and welcome message
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Back Button
+                        // Navigation back button with subtle styling
                         InkWell(
                           onTap: () => Get.back(),
                           borderRadius: BorderRadius.circular(12),
@@ -163,7 +167,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                         ),
                         const SizedBox(height: 12),
                         
-                        // Header Text & Logo
+                        // App logo and sign-in messaging
                         Row(
                           children: [
                             Container(
@@ -204,7 +208,7 @@ class _SigninScreenUState extends State<SigninScreenU> {
                   
                   const SizedBox(height: 14),
 
-                  // Bottom Section (White Card Form)
+                  // Main form container with card-like appearance
                   Container(
                     width: size.width,
                     constraints: BoxConstraints(minHeight: size.height * 0.6), // Ensure it covers enough space

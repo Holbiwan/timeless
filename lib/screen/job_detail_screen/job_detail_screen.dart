@@ -1,3 +1,6 @@
+// Detailed job posting view with application functionality and requirement analysis
+// Displays comprehensive job information, company details, and provides apply/save actions
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +24,7 @@ class JobDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Safe data access
+    // Extract and sanitize job data from Firestore document
     final doc = args['saved'] as DocumentSnapshot;
     final data = doc.data() as Map<String, dynamic>;
     final position = data['Position'] ?? 'Unknown Position';
@@ -30,14 +33,14 @@ class JobDetailScreen extends StatelessWidget {
     final location = data['location'] ?? 'Unknown Location';
     final type = data['type'] ?? data['jobType'] ?? 'Full-time';
     final description = data['description'] ?? 'No description provided.';
-    final requirementsList = data['RequirementsList'] as List<dynamic>? ?? []; // Safely cast to List<dynamic>
+    final requirementsList = data['RequirementsList'] as List<dynamic>? ?? []; // Job requirements list
 
     return Scaffold(
-      backgroundColor: Colors.grey[50], // Consistent with Job Offers screen
+      backgroundColor: Colors.grey[50], // Light background for content readability
       body: SafeArea(
         child: Column(
           children: [
-            // Custom Header (Similar to Job Offers Header)
+            // Header section with gradient styling matching app theme
             Container(
               margin: const EdgeInsets.fromLTRB(16, 4, 16, 6),
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),

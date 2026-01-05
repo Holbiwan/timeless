@@ -1,3 +1,5 @@
+// Central repository of all app route constants
+// Used by GetX navigation system to maintain consistent routing throughout the app
 class AppRes {
   static String notificationScreen = "/notificationScreen";
   static String jobDetailScreen = "/jobDetailScreen";
