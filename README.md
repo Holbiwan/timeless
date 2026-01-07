@@ -12,7 +12,7 @@ Timeless makes job hunting easier, faster, and always available, because opportu
   &nbsp;&nbsp;&nbsp;
  </p>
 
-<p align="center"><small><em>See landing page by scanning the QR code or </em></small></p>
+<p align="center"><small><em>See landing page by clicking below</em></small></p>
 <p align="center">
   <a href="https://holbiwan.github.io/timeless-landing/">
     <a href="https://holbiwan.github.io/timeless-landing/">
