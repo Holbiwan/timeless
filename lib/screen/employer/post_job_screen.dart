@@ -215,7 +215,8 @@ class _PostJobScreenState extends State<PostJobScreen> {
       // Show modern confirmation popup
       await _showSuccessDialog();
 
-      Get.back();
+      // Return to dashboard with a refresh notification
+      Get.back(result: 'job_posted');
     } catch (e) {
       debugPrint('❌ Firebase publication error: $e');
       ScaffoldMessenger.of(context).showSnackBar(

@@ -1,12 +1,15 @@
+// ignore_for_file: unused_element, duplicate_ignore
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/utils/app_res.dart';
 import 'package:timeless/screen/employer/my_jobs_screen.dart';
-import 'package:timeless/screen/employer/simple_applications_screen.dart';
+import 'package:timeless/screen/employer/enhanced_applications_screen.dart';
 import 'package:timeless/screen/employer/post_job_screen.dart';
 import 'package:timeless/screen/employer/simple_profile_screen.dart';
 import 'package:timeless/services/accessibility_service.dart';
@@ -20,9 +23,9 @@ class EmployerDashboardScreen extends StatefulWidget {
 }
 
 class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
-  final String currentUserId = PreferencesService.getString(PrefKeys.userId);
+  // Use FirebaseAuth ID as the source of truth to match PostJobScreen
+  final String uid = FirebaseAuth.instance.currentUser?.uid ?? PreferencesService.getString(PrefKeys.userId);
   final String companyName = PreferencesService.getString(PrefKeys.companyName);
-  final String employerId = PreferencesService.getString(PrefKeys.employerId);
 
   // Brand Colors
   final Color _primaryBlue = const Color(0xFF000647);
@@ -67,17 +70,8 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
                         
                         const SizedBox(height: 24),
 
-                        // Recent Applications Section
-                        _buildSectionHeader('Recent Applications', () => Get.to(() => const SimpleApplicationsScreen())),
-                        const SizedBox(height: 8),
-                        _buildRecentApplications(),
-
-                        const SizedBox(height: 24),
-
-                        // Recent Job Posts Section
-                        _buildSectionHeader('Recent Job Posts', () => Get.to(() => const MyJobsScreen())),
-                        const SizedBox(height: 8),
-                        _buildRecentJobPosts(),
+                        // Company Info Section
+                        _buildCompanyInfo(),
                         
                         const SizedBox(height: 40),
                       ],
@@ -117,35 +111,6 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
           Positioned.fill(
             child: CustomPaint(
               painter: _BusinessPatternPainter(),
-            ),
-          ),
-          Positioned(
-            top: 50,
-            right: 20,
-            child: TweenAnimationBuilder<double>(
-              tween: Tween(begin: 0.0, end: 1.0),
-              duration: const Duration(milliseconds: 600),
-              builder: (context, value, child) {
-                return Transform.scale(
-                  scale: value,
-                  child: Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: _accentOrange.withOpacity(0.15),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: _accentOrange.withOpacity(0.3),
-                        width: 1,
-                      ),
-                    ),
-                    child: Icon(
-                      Icons.business_center,
-                      color: _accentOrange,
-                      size: 28,
-                    ),
-                  ),
-                );
-              },
             ),
           ),
           Padding(
@@ -236,8 +201,12 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
                         const SizedBox(width: 8),
                         Container(
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.15),
+                            color: Colors.black,
                             borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: Colors.black.withOpacity(0.3),
+                              width: 1,
+                            ),
                           ),
                           child: IconButton(
                             icon: const Icon(Icons.logout_rounded, color: Colors.white, size: 16),
@@ -261,102 +230,118 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
     return Row(
       children: [
         Expanded(
-          child: _buildStatCard(
-            title: 'Active Jobs',
+          child: StreamBuilder<QuerySnapshot>(
             stream: FirebaseFirestore.instance
                 .collection('allPost')
-                .where('EmployerId',
-                    isEqualTo: employerId.isNotEmpty ? employerId : currentUserId)
-                .where('isActive', isEqualTo: true)
+                .where('EmployerId', isEqualTo: uid)
                 .snapshots(),
-            icon: Icons.work_outline_rounded,
-            accentColor: _primaryBlue,
+            builder: (context, snapshot) {
+              int count = 0;
+              if (snapshot.hasData) {
+                // Client-side filter for active jobs
+                count = snapshot.data!.docs
+                    .where((doc) => (doc.data() as Map<String, dynamic>)['isActive'] == true)
+                    .length;
+              }
+              return _buildStatCardWidget(
+                title: 'Active Jobs',
+                count: count,
+                icon: Icons.work_outline_rounded,
+                accentColor: _primaryBlue,
+                onTap: () => Get.to(() => const MyJobsScreen()),
+              );
+            },
           ),
         ),
         const SizedBox(width: 16),
         Expanded(
-          child: _buildStatCard(
-            title: 'Total Applications',
+          child: StreamBuilder<QuerySnapshot>(
             stream: FirebaseFirestore.instance
                 .collection('applications')
-                .where('employerId',
-                    isEqualTo: employerId.isNotEmpty ? employerId : currentUserId)
+                .where('employerId', isEqualTo: uid)
                 .snapshots(),
-            icon: Icons.people_alt_outlined,
-            accentColor: _accentOrange,
+            builder: (context, snapshot) {
+              int count = 0;
+              if (snapshot.hasData) {
+                count = snapshot.data!.docs.length;
+              }
+              return _buildStatCardWidget(
+                title: 'Total Applications',
+                count: count,
+                icon: Icons.people_alt_outlined,
+                accentColor: _accentOrange,
+                onTap: () => Get.to(() => const EnhancedApplicationsScreen()),
+              );
+            },
           ),
         ),
       ],
     );
   }
 
-  Widget _buildStatCard({
+  // Refactored helper to accept count directly instead of stream
+  Widget _buildStatCardWidget({
     required String title,
-    required Stream<QuerySnapshot> stream,
+    required int count,
     required IconData icon,
     required Color accentColor,
+    required VoidCallback onTap,
   }) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: stream,
-      builder: (context, snapshot) {
-        int count = 0;
-        if (snapshot.hasData) {
-          count = snapshot.data!.docs.length;
-        }
-
-        return Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.08),
-                blurRadius: 16,
-                offset: const Offset(0, 6),
-                spreadRadius: 2,
-              ),
-              BoxShadow(
+    return Container(
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
+            spreadRadius: 2,
+          ),
+          BoxShadow(
+            color: accentColor.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+        border: Border.all(color: accentColor.withOpacity(0.15), width: 1.5),
+      ),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
                 color: accentColor.withOpacity(0.1),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
+                borderRadius: BorderRadius.circular(8),
               ),
-            ],
-            border: Border.all(color: accentColor.withOpacity(0.15), width: 1.5),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: accentColor.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(icon, color: accentColor, size: 20),
+              child: Icon(icon, color: accentColor, size: 16),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              count.toString(),
+              style: GoogleFonts.inter(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: _primaryBlue,
               ),
-              const SizedBox(height: 12),
-              Text(
-                count.toString(),
-                style: GoogleFonts.inter(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                  color: _primaryBlue,
-                ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              title,
+              style: GoogleFonts.inter(
+                fontSize: 10,
+                fontWeight: FontWeight.w500,
+                color: Colors.grey.shade600,
               ),
-              const SizedBox(height: 4),
-              Text(
-                title,
-                style: GoogleFonts.inter(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.grey.shade600,
-                ),
-              ),
-            ],
-          ),
-        );
-      },
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -367,14 +352,30 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
       crossAxisCount: 2,
       crossAxisSpacing: 12,
       mainAxisSpacing: 12,
-      childAspectRatio: 1.8,
+      childAspectRatio: 1.4,
       children: [
         _buildActionCard(
           title: 'Post New Job',
           icon: Icons.add_circle_outline_rounded,
           color: _accentOrange,
           isPrimary: true,
-          onTap: () => Get.to(() => const PostJobScreen()),
+          onTap: () async {
+            final result = await Get.to(() => const PostJobScreen());
+            if (result == 'job_posted') {
+              setState(() {});
+              Get.snackbar(
+                '🎉 Job Posted Successfully!',
+                'Your job offer is now live and visible to candidates',
+                snackPosition: SnackPosition.BOTTOM,
+                backgroundColor: _accentOrange,
+                colorText: Colors.white,
+                duration: const Duration(seconds: 3),
+                margin: const EdgeInsets.all(16),
+                borderRadius: 16,
+                icon: Icon(Icons.work_outline, color: Colors.white),
+              );
+            }
+          },
         ),
         _buildActionCard(
           title: 'Manage Jobs',
@@ -383,12 +384,112 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
           onTap: () => Get.to(() => const MyJobsScreen()),
         ),
         _buildActionCard(
+          title: 'View Applications',
+          icon: Icons.people_alt_outlined,
+          color: _primaryBlue,
+          onTap: () => Get.to(() => const EnhancedApplicationsScreen()),
+        ),
+        _buildActionCard(
           title: 'Profile Settings',
           icon: Icons.settings_outlined,
           color: _primaryBlue,
           onTap: () => Get.to(() => const SimpleProfileScreen()),
         ),
       ],
+    );
+  }
+
+  Widget _buildCompanyInfo() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            _primaryBlue,
+            _primaryBlue.withOpacity(0.8),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: _primaryBlue.withOpacity(0.3),
+          width: 1.5,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: _primaryBlue.withOpacity(0.2),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      companyName.isNotEmpty ? companyName : 'Your Company',
+                      style: GoogleFonts.inter(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Recruit the best talent efficiently',
+                      style: GoogleFonts.inter(
+                        fontSize: 12,
+                        color: Colors.white.withOpacity(0.9),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: Colors.white.withOpacity(0.2),
+                width: 1,
+              ),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.tips_and_updates,
+                  color: Colors.white,
+                  size: 20,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    'Start posting jobs and managing applications to grow your team',
+                    style: GoogleFonts.inter(
+                      fontSize: 11,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -403,7 +504,7 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
       onTap: onTap,
       borderRadius: BorderRadius.circular(16),
       child: Container(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
           color: isPrimary ? color : Colors.white,
           borderRadius: BorderRadius.circular(16),
@@ -426,21 +527,26 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
               : Border.all(color: color.withOpacity(0.15), width: 1.5),
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               icon,
               color: isPrimary ? Colors.white : color,
-              size: 28,
+              size: 24,
             ),
+            const SizedBox(height: 8),
             Text(
               title,
               style: GoogleFonts.inter(
-                fontSize: 13, // Reduced from 14
+                fontSize: 11,
                 fontWeight: FontWeight.w600,
                 color: isPrimary ? Colors.white : _primaryBlue,
+                height: 1.1,
               ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
             ),
           ],
         ),
@@ -448,6 +554,7 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
     );
   }
 
+  // ignore: unused_element
   Widget _buildSectionHeader(String title, VoidCallback onViewAll) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -489,10 +596,7 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
           .collection('applications')
-          .where('employerId',
-              isEqualTo: employerId.isNotEmpty ? employerId : currentUserId)
-          .orderBy('createdAt', descending: true)
-          .limit(3)
+          .where('employerId', isEqualTo: uid)
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -502,6 +606,15 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
           return _buildEmptyState('No applications yet');
         }
+
+        final docs = snapshot.data!.docs;
+        docs.sort((a, b) {
+          final aTime = (a.data() as Map<String, dynamic>)['createdAt'] as Timestamp?;
+          final bTime = (b.data() as Map<String, dynamic>)['createdAt'] as Timestamp?;
+          if (aTime == null) return 1;
+          if (bTime == null) return -1;
+          return bTime.compareTo(aTime);
+        });
 
         return Container(
           decoration: BoxDecoration(
@@ -523,8 +636,9 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
             border: Border.all(color: _accentOrange.withOpacity(0.2), width: 1.5),
           ),
           child: Column(
-            children: snapshot.data!.docs.map((doc) {
+            children: docs.take(3).map((doc) {
               final data = doc.data() as Map<String, dynamic>;
+              data['id'] = doc.id; // Inject ID
               return _buildApplicationItem(data);
             }).toList(),
           ),
@@ -537,10 +651,7 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
           .collection('allPost')
-          .where('EmployerId',
-              isEqualTo: employerId.isNotEmpty ? employerId : currentUserId)
-          .orderBy('createdAt', descending: true)
-          .limit(3)
+          .where('EmployerId', isEqualTo: uid)
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -550,6 +661,15 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
           return _buildEmptyState('No job posts yet');
         }
+
+        final docs = snapshot.data!.docs;
+        docs.sort((a, b) {
+          final aTime = (a.data() as Map<String, dynamic>)['createdAt'] as Timestamp?;
+          final bTime = (b.data() as Map<String, dynamic>)['createdAt'] as Timestamp?;
+          if (aTime == null) return 1;
+          if (bTime == null) return -1;
+          return bTime.compareTo(aTime);
+        });
 
         return Container(
           decoration: BoxDecoration(
@@ -571,7 +691,7 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
             border: Border.all(color: _accentOrange.withOpacity(0.2), width: 1.5),
           ),
           child: Column(
-            children: snapshot.data!.docs.map((doc) {
+            children: docs.take(3).map((doc) {
               final data = doc.data() as Map<String, dynamic>;
               return _buildJobItem(data);
             }).toList(),
@@ -789,6 +909,9 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
         break;
       case 'rejected':
         color = Colors.red;
+        break;
+      case 'interview':
+        color = Colors.blue;
         break;
       default:
         color = _accentOrange;
@@ -1072,6 +1195,7 @@ Please reply to this email to let us know your availability for a meeting or cal
 Best regards,
 $companyName Team
       ''',
+      applicationId: candidateData['id'],
     );
   }
 
@@ -1095,6 +1219,7 @@ You can reply to this email with your preferred contact number and times when yo
 Best regards,
 $companyName Team
       ''',
+      applicationId: candidateData['id'],
     );
   }
 
@@ -1257,36 +1382,50 @@ $companyName Team
     );
   }
 
-  // Send a general email
+  // Send a general email (stored as message in Firestore)
   Future<void> _sendGeneralEmail({
     required String candidateEmail,
     required String candidateName,
     required String subject,
     required String message,
+    String? applicationId,
   }) async {
     try {
-      final emailSent = await _sendSimpleEmail(
-        to: candidateEmail,
-        subject: subject,
-        body: message,
-      );
+      // If we have an application ID, store this message in Firestore
+      if (applicationId != null) {
+        final messageData = {
+          'from': 'employer',
+          'fromId': uid,
+          'message': '$subject\n\n$message',
+          'timestamp': FieldValue.serverTimestamp(),
+          'type': 'general_message'
+        };
 
-      if (emailSent) {
+        await FirebaseFirestore.instance
+            .collection('applications')
+            .doc(applicationId)
+            .update({
+          'employerMessages': FieldValue.arrayUnion([messageData]),
+          'status': 'interview', // Update status to interview/contacted if appropriate
+          'statusUpdatedAt': FieldValue.serverTimestamp(),
+        });
+
         Get.snackbar(
-          '📧 Email Sent',
-          'Email sent successfully to $candidateName',
+          'Message Sent',
+          'Message sent successfully to $candidateName',
           backgroundColor: _accentOrange,
           colorText: Colors.white,
           duration: const Duration(seconds: 3),
           snackPosition: SnackPosition.BOTTOM,
         );
       } else {
-        throw Exception('Failed to send email');
+         // Fallback for when ID is missing (should not happen with previous fix)
+         Get.snackbar('Error', 'Application ID missing', backgroundColor: Colors.red, colorText: Colors.white);
       }
     } catch (e) {
       Get.snackbar(
         '❌ Error',
-        'Failed to send email: $e',
+        'Failed to send message: $e',
         backgroundColor: Colors.red,
         colorText: Colors.white,
         snackPosition: SnackPosition.BOTTOM,
@@ -1294,28 +1433,7 @@ $companyName Team
     }
   }
 
-  // Simple email sending (can be enhanced with real email service)
-  Future<bool> _sendSimpleEmail({
-    required String to,
-    required String subject,
-    required String body,
-  }) async {
-    try {
-      // Simulate email sending
-      await Future.delayed(const Duration(seconds: 1));
-      
-      print('Email sent to: $to');
-      print('Subject: $subject');
-      print('Body: $body');
-      
-      return true;
-    } catch (e) {
-      print('Failed to send email: $e');
-      return false;
-    }
-  }
-
-  // Send interview invitation
+  // Send interview invitation (stored as message in Firestore)
   Future<void> _sendInterviewInvitation({
     required Map<String, dynamic> candidateData,
     required DateTime interviewDate,
@@ -1323,27 +1441,53 @@ $companyName Team
     String? additionalMessage,
   }) async {
     try {
-      // Import EmailService at the top of this file if needed
-      final emailSent = await _sendInterviewEmail(
-        candidateEmail: candidateData['candidateEmail'] ?? '',
-        candidateName: candidateData['candidateName'] ?? 'Candidate',
-        interviewDate: interviewDate,
-        location: location,
-        additionalMessage: additionalMessage,
-      );
+      final applicationId = candidateData['id'];
+      if (applicationId == null) throw Exception('Application ID is missing');
 
-      if (emailSent) {
-        Get.snackbar(
-          '✅ Interview Invitation Sent!',
-          'The candidate ${candidateData['candidateName']} has been notified about the interview.',
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-          duration: const Duration(seconds: 4),
-          snackPosition: SnackPosition.BOTTOM,
-        );
-      } else {
-        throw Exception('Failed to send email invitation');
-      }
+      // Format the date nicely
+      final formattedDate = '${interviewDate.day}/${interviewDate.month}/${interviewDate.year}';
+      final formattedTime = '${interviewDate.hour.toString().padLeft(2, '0')}:${interviewDate.minute.toString().padLeft(2, '0')}';
+      
+      // Create message content
+      final subject = 'Interview Invitation';
+      final body = '''
+We are pleased to invite you for an interview.
+
+Details:
+• Date: $formattedDate
+• Time: $formattedTime
+• Location: $location
+
+${additionalMessage != null ? 'Note: $additionalMessage' : ''}
+      ''';
+
+      final messageData = {
+        'from': 'employer',
+        'fromId': uid,
+        'message': '$subject\n$body',
+        'timestamp': FieldValue.serverTimestamp(),
+        'type': 'interview_proposal',
+        'interviewDate': interviewDate,
+        'location': location
+      };
+
+      await FirebaseFirestore.instance
+          .collection('applications')
+          .doc(applicationId)
+          .update({
+        'employerMessages': FieldValue.arrayUnion([messageData]),
+        'status': 'interview', // Automatically set status to interview
+        'statusUpdatedAt': FieldValue.serverTimestamp(),
+      });
+
+      Get.snackbar(
+        '✅ Invitation Sent!',
+        'Interview proposal sent to ${candidateData['candidateName']}',
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 4),
+        snackPosition: SnackPosition.BOTTOM,
+      );
     } catch (e) {
       Get.snackbar(
         '❌ Error',
@@ -1355,55 +1499,7 @@ $companyName Team
     }
   }
 
-  // Simple email invitation (basic implementation)
-  Future<bool> _sendInterviewEmail({
-    required String candidateEmail,
-    required String candidateName,
-    required DateTime interviewDate,
-    required String location,
-    String? additionalMessage,
-  }) async {
-    try {
-      // Format the date nicely
-      final formattedDate = '${interviewDate.day}/${interviewDate.month}/${interviewDate.year}';
-      final formattedTime = '${interviewDate.hour.toString().padLeft(2, '0')}:${interviewDate.minute.toString().padLeft(2, '0')}';
-      
-      // Create email subject and body
-      final subject = 'Interview Invitation from $companyName';
-      final body = '''
-Dear $candidateName,
-
-We are pleased to invite you for an interview at $companyName.
-
-Interview Details:
-• Date: $formattedDate
-• Time: $formattedTime
-• Location: $location
-
-${additionalMessage != null ? '\nAdditional Information:\n$additionalMessage\n' : ''}
-
-Please confirm your availability by replying to this email.
-
-We look forward to meeting with you!
-
-Best regards,
-$companyName
-      ''';
-
-      // Here you could integrate with a real email service
-      // For now, we'll simulate a successful send
-      await Future.delayed(const Duration(seconds: 1));
-      
-      print('Email sent to: $candidateEmail');
-      print('Subject: $subject');
-      print('Body: $body');
-      
-      return true;
-    } catch (e) {
-      print('Failed to send email: $e');
-      return false;
-    }
-  }
+  // Removed _sendSimpleEmail and _sendInterviewEmail helper methods as they are replaced by direct Firestore logic above
 }
 
 // Custom painter for business-themed background pattern

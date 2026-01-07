@@ -17,7 +17,7 @@ import 'package:timeless/screen/first_page/first_screen.dart' as candidate_auth;
 import 'package:timeless/screen/job_detail_screen/job_detail_screen.dart';
 import 'package:timeless/screen/job_recommendation_screen/job_recommendation_screen.dart';
 import 'package:timeless/screen/jobs/job_application_screen.dart';
-import 'package:timeless/screen/dashboard/applications/applications_screen.dart';
+import 'package:timeless/screen/candidate/enhanced_candidate_applications_screen.dart';
 
 // Global services
 import 'package:timeless/services/unified_translation_service.dart';
@@ -150,7 +150,7 @@ class MyApp extends StatelessWidget {
         ),
         GetPage(
           name: AppRes.applicationsUser,
-          page: () => ApplicationsScreen(),
+          page: () => const EnhancedCandidateApplicationsScreen(),
         ),
 
         // Recruiter login
