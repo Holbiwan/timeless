@@ -10,8 +10,7 @@ Timeless makes job hunting easier, faster, and always available, because opportu
 <p align="center">
   <img src="https://i.postimg.cc/tgfXWsFY/logo.png" alt="Timeless logo" width="270">
   &nbsp;&nbsp;&nbsp;
-  <img src="https://zupimages.net/up/25/52/65sv.png" alt="Timeless QR code" width="200">
-</p>
+ </p>
 
 <p align="center"><small><em>See landing page by scanning the QR code or </em></small></p>
 <p align="center">
