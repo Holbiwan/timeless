@@ -1,0 +1,15 @@
+{
+  "builds": [
+    {
+      "src": "docsab/web_redirect/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/docsab/web_redirect/$1"
+    }
+  ],
+  "outputDirectory": "docsab/web_redirect"
+}
