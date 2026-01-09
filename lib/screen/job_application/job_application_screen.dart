@@ -8,6 +8,8 @@ import 'package:timeless/services/accessibility_service.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:io';
 import 'package:timeless/screen/profile/my_applications_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // Add this import
+
 
 class JobApplicationScreen extends StatefulWidget {
   final Map<String, dynamic> jobData;
@@ -183,6 +185,17 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
             ? null
             : _coverLetterController.text.trim(), candidateProfile: {},
       );
+
+      // Trigger email to recruiter (using Firebase Trigger Email Extension pattern)
+      if (widget.jobData['employerEmail'] != null) {
+        FirebaseFirestore.instance.collection('mail').add({
+          'to': widget.jobData['employerEmail'],
+          'message': {
+            'subject': 'New Application Received: ${widget.jobData['Position']}',
+            'text': 'Hello,\n\nA new candidate (${user.displayName ?? 'Anonymous'}) has applied for the position "${widget.jobData['Position']}".\n\nPlease check your Employer Dashboard to review the application and CV.\n\nBest regards,\nTimeless App',
+          },
+        });
+      }
 
       Get.snackbar(
         translationService.getText('your_application_sent'),

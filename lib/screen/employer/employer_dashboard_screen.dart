@@ -257,6 +257,28 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
         Expanded(
           child: StreamBuilder<QuerySnapshot>(
             stream: FirebaseFirestore.instance
+                .collection('allPost')
+                .where('EmployerId', isEqualTo: uid)
+                .snapshots(),
+            builder: (context, snapshot) {
+              int count = 0;
+              if (snapshot.hasData) {
+                count = snapshot.data!.docs.length; // Total jobs
+              }
+              return _buildStatCardWidget(
+                title: 'Total Jobs',
+                count: count,
+                icon: Icons.list_alt_rounded, // Different icon for total
+                accentColor: Colors.purple, // Different color for total
+                onTap: () => Get.to(() => const MyJobsScreen()),
+              );
+            },
+          ),
+        ),
+        const SizedBox(width: 16),
+        Expanded(
+          child: StreamBuilder<QuerySnapshot>(
+            stream: FirebaseFirestore.instance
                 .collection('applications')
                 .where('employerId', isEqualTo: uid)
                 .snapshots(),
