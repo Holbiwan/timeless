@@ -29,12 +29,45 @@ Timeless makes job hunting easier, faster, and always available, because opportu
   <img alt="Status" src="https://img.shields.io/badge/Status-Demo%20Day-FFCA28?logoColor=black">
 </p>
 
-## 📸 Screenshots
 
-<p align="center">
-  <em>Screenshots of the application will be added here soon.</em>
-</p>
+## 📸 Application Screens & User Journey
 
+Below is an overview of the main user flows in the **Timeless** mobile application, illustrating both **candidate** and **employer** experiences.
+
+
+### 🧭 Onboarding & Authentication
+
+| Welcome Screen | Candidate Login |
+|----------------|-----------------|
+| <img src="assets/screenshots/01_welcome.png" width="300"/> | <img src="assets/screenshots/02_candidate_login.png" width="300"/> |
+
+| Employer Login | Social Authentication |
+|----------------|----------------------|
+| <img src="assets/screenshots/03_employer_login.png" width="300"/> | <img src="assets/screenshots/04_auth_social.png" width="300"/> |
+
+---
+
+### 👤 Candidate Experience
+
+| Dashboard | Browse Jobs |
+|----------|-------------|
+| <img src="assets/screenshots/05_candidate_dashboard.png" width="300"/> | <img src="assets/screenshots/06_browse_jobs.png" width="300"/> |
+
+| Job Fairs & Events | Settings & Accessibility |
+|------------------|--------------------------|
+| <img src="assets/screenshots/07_job_fairs.png" width="300"/> | <img src="assets/screenshots/08_settings.png" width="300"/> |
+
+---
+
+### 🏢 Employer Experience
+
+| Employer Dashboard | Post & Manage Jobs |
+|-------------------|--------------------|
+| <img src="assets/screenshots/09_employer_dashboard.png" width="300"/> | <img src="assets/screenshots/10_post_job.png" width="300"/> |
+
+> Timeless provides distinct user journeys for candidates and employers, with secure authentication, intuitive dashboards, and job management features.
+
+---
 ## 🎬 Demo
 
 <p align="center">
