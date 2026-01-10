@@ -126,16 +126,16 @@ class _EnhancedCandidateApplicationsScreenState extends State<EnhancedCandidateA
               child: Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: _dangerRed.withOpacity(0.15),
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: _dangerRed.withOpacity(0.3),
+                    color: Colors.white,
                     width: 1,
                   ),
                 ),
                 child: Icon(
                   Icons.delete_sweep_outlined,
-                  color: _dangerRed,
+                  color: _primaryBlue,
                   size: 24,
                 ),
               ),
@@ -175,7 +175,7 @@ class _EnhancedCandidateApplicationsScreenState extends State<EnhancedCandidateA
               _deleteAllApplications();
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: _dangerRed,
+              backgroundColor: _primaryBlue,
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
