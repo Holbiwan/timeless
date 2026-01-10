@@ -66,20 +66,32 @@ A quick overview of the main user journey in **Timeless**.
 timeless/
 ├── android/              # Android specific configuration
 ├── ios/                  # iOS specific configuration
-├── assets/               # Images, icons, translations, and demo data
+├── macos/                # macOS specific configuration
+├── web/                  # Web platform configuration
+├── assets/               # Application assets
+│   ├── cv/               # Demo CV files
+│   ├── icons/            # Application icons
+│   ├── images/           # Images and logos
+│   ├── screenshots/      # App screenshots for documentation
+│   ├── translations/     # i18n JSON files (en, fr, es)
+│   └── jobs.json         # Demo job data
 ├── lib/                  # Main Flutter application source code
 │   ├── api/              # API clients and data services
 │   ├── common/           # Reusable UI widgets
-│   ├── config/           # App configuration (themes, constants, etc.)
+│   ├── config/           # App configuration (API config, themes, constants)
 │   ├── controllers/      # GetX controllers for state management
-│   ├── models/           # Data models (Job, User, etc.)
-│   ├── screen/           # Application screens (Authentication, Job List, etc.)
-│   ├── services/         # Core services (Notifications, API, Storage)
+│   ├── models/           # Data models (Job, User, Application, etc.)
+│   ├── screen/           # Application screens
+│   │   ├── auth/         # Authentication screens
+│   │   ├── candidate/    # Candidate-specific screens
+│   │   ├── employer/     # Employer-specific screens
+│   │   ├── dashboard/    # Dashboard screens
+│   │   ├── profile/      # User profile screens
+│   │   └── ...           # Other feature screens
+│   ├── services/         # Core services (Auth, Notifications, Jobs, etc.)
 │   ├── utils/            # Helper functions, formatters, and utilities
+│   ├── widgets/          # Shared widgets
 │   └── main.dart         # Application entry point
-├── backend/              # Node.js / Express backend API
-├── firebase/             # Firestore rules and indexes
-└── tests/                # Flutter unit and widget tests
 ```
 
 ##  Tech Stack
@@ -96,18 +108,6 @@ timeless/
 | Storage                  | Firebase Storage                  |
 | Local Storage            | SharedPreferences                 |
 | Notifications            | Firebase Cloud Messaging (FCM)    |
-
-### Backend (`/backend`)
-
-| Feature                  | Technology/Service                |
-|--------------------------|-----------------------------------|
-| Framework                | Node.js / Express                 |
-| Database                 | MongoDB (with Mongoose)           |
-| Authentication           | JWT (JSON Web Tokens)             |
-| File Uploads             | Multer + Cloudinary               |
-| Social Login             | Google OAuth (Passport)           |
-| API Documentation        | Swagger                           |
-| Testing                  | Jest + Supertest                  |
 
 ## Features Overview
 
@@ -147,6 +147,21 @@ timeless/
     ```
 
 ⚠️ **Note:** Firebase configuration files (`google-services.json`, `GoogleService-Info.plist`, and `firebase_options.dart`) are not included in the repository for security reasons. You will need to set up your own Firebase project and add the configuration files to the appropriate locations (`android/app`, `ios/Runner`, and `lib/` respectively).
+
+## 🧪 Testing
+
+The project includes **7 unit tests** covering the main data models.
+
+**Run all tests:**
+```bash
+flutter test
+```
+
+**Test coverage:**
+- ✅ JobOfferModel (4 tests): creation, display formatting, salary, copyWith
+- ✅ UserModel (3 tests): creation, display name, saved jobs management
+
+See [test/README.md](test/README.md) for detailed test documentation.
 
 ## 📜 License
 
