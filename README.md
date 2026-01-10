@@ -236,7 +236,7 @@ timeless/
 
 - Flutter SDK 3.x or higher
 - Dart 3.0 or higher
-- Android Studio / Xcode (for mobile deployment)
+- Android Studio
 - Firebase project (for authentication and database)
 
 ### Installation
