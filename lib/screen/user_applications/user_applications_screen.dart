@@ -399,10 +399,11 @@ class _UserApplicationsScreenState extends State<UserApplicationsScreen> {
                     await _deleteApplication(application['id'],
                         application['jobTitle'] ?? 'this application');
                   },
-                  icon: const Icon(Icons.delete_outline, size: 16),
+                  icon: const Icon(Icons.delete_outline, size: 16, color: Color(0xFF000647)),
                   label: const Text('Delete'),
                   style: TextButton.styleFrom(
-                    foregroundColor: Colors.red[600],
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.transparent, // Ensure button background doesn't interfere
                   ),
                 ),
               ],
