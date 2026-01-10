@@ -8,7 +8,8 @@
 [![Flutter](https://img.shields.io/badge/Flutter-3.x-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
 [![Firebase](https://img.shields.io/badge/Firebase-Firestore-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)](https://firebase.google.com)
 [![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20iOS-02569B?style=for-the-badge&logo=android&logoColor=white)](https://github.com/Holbiwan/timeless)
-[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
+[![License](https://img.shields.io/badge/License-MIT-02569B?style=for-the-badge)](LICENSE)
+
 
 **A modern Flutter job-search app powered by Firebase**
 Fast, accessible, and intuitive job applications anytime, anywhere
@@ -164,7 +165,7 @@ Fast, accessible, and intuitive job applications anytime, anywhere
 ![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)
 ![Dart](https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=dart&logoColor=white)
 ![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)
-![GetX](https://img.shields.io/badge/GetX-8B5CF6?style=for-the-badge)
+![GetX](https://img.shields.io/badge/GetX-02569B?style=for-the-badge)
 
 </div>
 
@@ -285,7 +286,7 @@ flutter test --coverage
 
 | Model              | Tests | Coverage                                      |
 |--------------------|-------|-----------------------------------------------|
-| `JobOfferModel`    | 4     | Creation, display formatting, salary, copyWith |
+| `JobOfferModel`    | 4     | Creation, display formatting, salary, copyWith|
 | `UserModel`        | 3     | Creation, display name, saved jobs            |
 
 
