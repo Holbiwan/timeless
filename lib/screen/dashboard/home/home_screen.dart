@@ -26,6 +26,8 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<String> _videoIds = [
     'Jk28OrW1Qxo',
     'wYnOBGa73aQ',
+    '1taefyYx6_s',
+    'jCOuji38f_U',
   ];
 
   late List<YoutubePlayerController> _controllers;
