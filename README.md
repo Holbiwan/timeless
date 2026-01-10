@@ -108,17 +108,24 @@ timeless/
 | Storage                  | Firebase Storage                  |
 | Local Storage            | SharedPreferences                 |
 | Notifications            | Firebase Cloud Messaging (FCM)    |
+| Translations             | Easy Localization                 |
+| File Handling            | File Picker                       |
 
-## Features Overview
+## 🎯 Features Overview
 
-| Feature / Service        | Purpose                                       |
-|--------------------------|-----------------------------------------------|
-| 🔐 **Firebase Auth**     | Handles user login via email and social providers (WIP). |
-| 📊 **Firestore**         | Stores job offers, user profiles, and applications. |
-| 📁 **Firebase Storage**  | Manages CV uploads and profile pictures.     |
-| 🔔 **Notifications**     | Sends real-time alerts for jobs and updates.  |
-| 💾 **SharedPreferences** | Saves local settings and authentication tokens. |
-| 🌍 **Translations**      | Supports multiple languages using JSON files in `/assets/translations`. |
+| Feature                  | Description                                                                 |
+|--------------------------|-----------------------------------------------------------------------------|
+| 🔐 **Authentication**    | Email/password login and Google Sign-In via Firebase Auth                  |
+| 👤 **User Profiles**     | Separate profiles for candidates and employers with role-based access      |
+| 💼 **Job Management**    | Create, edit, and browse job offers with advanced filtering                |
+| 📝 **Applications**      | Apply to jobs with CV upload and cover letter                              |
+| 📊 **Dashboard**         | Personalized dashboards for candidates and employers                       |
+| 🔍 **Search & Filter**   | Search jobs by title, location, category, and contract type                |
+| 💾 **Saved Jobs**        | Bookmark favorite job offers for later review                              |
+| 📁 **File Upload**       | CV and profile picture upload via Firebase Storage                         |
+| 🔔 **Notifications**     | Real-time alerts for new jobs and application updates (FCM)                |
+| 🌍 **Multi-language**    | Support for English, French, and Spanish                                   |
+| 📱 **Responsive UI**     | Adaptive design for different screen sizes                                 |
 
 ## 🚧 Installation & Run
 
@@ -146,7 +153,7 @@ timeless/
     flutter run
     ```
 
-⚠️ **Note:** Firebase configuration files (`google-services.json`, `GoogleService-Info.plist`, and `firebase_options.dart`) are not included in the repository for security reasons. You will need to set up your own Firebase project and add the configuration files to the appropriate locations (`android/app`, `ios/Runner`, and `lib/` respectively).
+⚠️ **Note:** Firebase configuration files are not included for security reasons. You need to set up your own Firebase project.
 
 ## 🧪 Testing
 
@@ -161,7 +168,7 @@ flutter test
 - ✅ JobOfferModel (4 tests): creation, display formatting, salary, copyWith
 - ✅ UserModel (3 tests): creation, display name, saved jobs management
 
-See [test/README.md](test/README.md) for detailed test documentation.
+
 
 ## 📜 License
 
