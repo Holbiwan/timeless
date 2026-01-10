@@ -2,9 +2,8 @@
 <p align="center"><em>Because opportunities don’t wait...</em></p>
 
 
-Timeless is a mobile app developed with Flutter that allows candidates to view and apply for job offers directly from their phone, anytime, anywhere. Its name reflects the idea of a timeless flow of job offers: ads that are accessible at any time, without constraints. 
-Timeless emphasizes speed, clarity, and a smooth user experience. It offers an optimized job search feed, intuitive navigation, and simple registration via Google or email/password. Powered by Firebase, the app manages user profiles, saved jobs, and applications. 
-Timeless makes job hunting easier, faster, and always available, because opportunities shouldn't be limited by time. 
+Timeless is a Flutter-based mobile job-search app powered by Firebase, designed for fast and accessible job applications. 
+It provides an optimized job feed, intuitive navigation, and secure authentication, enabling candidates to apply anytime, anywhere. 
 
 
 <p align="center"><small><em>See landing page by clicking below</em></small></p>
