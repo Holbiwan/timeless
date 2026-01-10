@@ -94,7 +94,7 @@ class _CandidateApplicationsScreenState extends State<CandidateApplicationsScree
                   Text(
                     'My Applications',
                     style: GoogleFonts.inter(
-                      fontSize: 20,
+                      fontSize: _getScaledFontSize(context, 20),
                       fontWeight: FontWeight.w700,
                       color: Colors.white,
                       letterSpacing: -0.5,
@@ -104,7 +104,7 @@ class _CandidateApplicationsScreenState extends State<CandidateApplicationsScree
                   Text(
                     'Track your job applications in real-time',
                     style: GoogleFonts.inter(
-                      fontSize: 13,
+                      fontSize: _getScaledFontSize(context, 13),
                       color: Colors.white.withOpacity(0.85),
                       fontWeight: FontWeight.w400,
                     ),
@@ -112,23 +112,27 @@ class _CandidateApplicationsScreenState extends State<CandidateApplicationsScree
                 ],
               ),
             ),
-            InkWell(
-              onTap: _showResetDialog,
-              borderRadius: BorderRadius.circular(16),
-              child: Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
+            Semantics(
+              button: true,
+              label: 'Delete All Applications', // Label for screen readers
+              child: InkWell(
+                onTap: _showResetDialog,
+                borderRadius: BorderRadius.circular(16),
+                child: Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
                     color: Colors.white,
-                    width: 1,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: Colors.white,
+                      width: 1,
+                    ),
                   ),
-                ),
-                child: Icon(
-                  Icons.delete_sweep_outlined,
-                  color: _primaryBlue,
-                  size: 24,
+                  child: Icon(
+                    Icons.delete_sweep_outlined,
+                    color: _primaryBlue,
+                    size: 24,
+                  ),
                 ),
               ),
             ),
@@ -483,7 +487,7 @@ class _CandidateApplicationsScreenState extends State<CandidateApplicationsScree
             Text(
               'No Applications Yet',
               style: GoogleFonts.inter(
-                fontSize: 24,
+                fontSize: _getScaledFontSize(context, 24),
                 fontWeight: FontWeight.w700,
                 color: _primaryBlue,
               ),
@@ -493,7 +497,7 @@ class _CandidateApplicationsScreenState extends State<CandidateApplicationsScree
               'You haven\'t applied to any jobs yet. Start exploring job opportunities and apply to positions that match your skills!',
               textAlign: TextAlign.center,
               style: GoogleFonts.inter(
-                fontSize: 16,
+                fontSize: _getScaledFontSize(context, 16),
                 color: Colors.grey[600],
                 height: 1.5,
               ),
@@ -836,33 +840,37 @@ class _CandidateApplicationsScreenState extends State<CandidateApplicationsScree
   }
 
   Widget _buildActionButton(String label, IconData icon, Color color, VoidCallback onTap) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-        decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: color.withOpacity(0.3),
-            width: 1,
-          ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, color: color, size: 16),
-            const SizedBox(width: 8),
-            Text(
-              label,
-              style: GoogleFonts.inter(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: color,
-              ),
+    return Semantics(
+      button: true,
+      label: label, // Use the button's label as the semantic label
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: color.withOpacity(0.3),
+              width: 1,
             ),
-          ],
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, color: color, size: 16),
+              const SizedBox(width: 8),
+              Text(
+                label,
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: color,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -916,6 +924,11 @@ class _CandidateApplicationsScreenState extends State<CandidateApplicationsScree
       default:
         return 'Pending';
     }
+  }
+
+  // Helper to apply text scaling
+  double _getScaledFontSize(BuildContext context, double baseFontSize) {
+    return baseFontSize * MediaQuery.textScaleFactorOf(context);
   }
 
   Future<void> _viewJobDetails(String? jobId) async {
