@@ -350,7 +350,7 @@ class JobDetailScreen extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: controller.hasAlreadyApplied.value
                       ? ColorRes.textTertiary
-                      : ColorRes.darkGold,
+                      : const Color(0xFF000647),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -359,8 +359,8 @@ class JobDetailScreen extends StatelessWidget {
                     ? CircularProgressIndicator(color: Colors.white)
                     : Text(
                         controller.hasAlreadyApplied.value
-                            ? 'Candidature déjà envoyée'
-                            : 'Postuler maintenant',
+                            ? 'Application already sent'
+                            : 'Send my application',
                         style: GoogleFonts.inter(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,

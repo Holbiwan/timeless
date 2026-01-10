@@ -91,7 +91,7 @@ class SignUpControllerM extends GetxController {
         await cred.user!.sendEmailVerification();
       }
 
-      // 4. Envoyer email de bienvenue
+      // 4. Envoyer email de bienvenue complet (avec confirmation et détails)
       await _sendWelcomeEmail(cred.user!);
 
       _authCompleted = true;
@@ -203,10 +203,13 @@ class SignUpControllerM extends GetxController {
         'siretCode': siretController.text.trim().replaceAll(' ', ''),
         'apeCode': companyInfo?['activitePrincipaleUniteLegale'] ?? '',
         'companyInfo': companyInfo,
+        'logoUrl': 'https://zupimages.net/up/25/51/vaft.png',
         'accountType': 'employer',
         'isVerified': true, // SIRET validé
+        'isActive': true,
         'createdAt': FieldValue.serverTimestamp(),
         'lastLoginAt': FieldValue.serverTimestamp(),
+        'verifiedAt': FieldValue.serverTimestamp(),
         'status': 'active',
         'rememberMe': rememberMe,
       };
@@ -235,7 +238,7 @@ class SignUpControllerM extends GetxController {
     try {
       final fullName = '${firstnameController.text.trim()} ${lastnameController.text.trim()}'.trim();
       final email = user.email ?? '';
-      
+
       if (email.isNotEmpty) {
         final success = await EmailService.sendEmployerWelcomeEmail(
           email: email,

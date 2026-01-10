@@ -8,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:timeless/services/employer_service.dart';
 import 'package:timeless/services/job_email_service.dart';
 import 'package:timeless/utils/job_categories.dart';
+import 'package:timeless/utils/employer_sync_service.dart';
 
 class PostJobScreen extends StatefulWidget {
   const PostJobScreen({super.key});
@@ -239,20 +240,24 @@ class _PostJobScreenState extends State<PostJobScreen> {
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
+        backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Row(
           children: [
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Colors.green[100],
+                color: const Color(0xFFE3F2FD),
                 borderRadius: BorderRadius.circular(50),
               ),
               child:
-                  Icon(Icons.check_circle, color: Colors.green[700], size: 24),
+                  const Icon(Icons.check_circle, color: Color(0xFF000647), size: 24),
             ),
             const SizedBox(width: 12),
-            const Text('🎉 Job Posted!'),
+            const Text(
+              '🎉 Job Posted!',
+              style: TextStyle(color: Color(0xFF000647), fontWeight: FontWeight.bold),
+            ),
           ],
         ),
         content: Column(
@@ -262,38 +267,38 @@ class _PostJobScreenState extends State<PostJobScreen> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.blue[50],
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.blue[200]!),
+                border: Border.all(color: const Color(0xFF000647), width: 1.5),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('📋 Position: ${_titleCtrl.text}',
-                      style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16)),
+                      style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16, color: Color(0xFF000647))),
                   const SizedBox(height: 4),
                   Text('🏢 Company: ${_employerData!['companyName']}',
-                      style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16)),
+                      style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16, color: Color(0xFF000647))),
                   const SizedBox(height: 4),
                   Text('📍 Location: ${_locationCtrl.text}',
-                      style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16)),
+                      style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16, color: Color(0xFF000647))),
                   const SizedBox(height: 4),
                   Text(
                       '💰 Salary: ${_salaryMinCtrl.text}-${_salaryMaxCtrl.text}€',
-                      style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16)),
+                      style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16, color: Color(0xFF000647))),
                 ],
               ),
             ),
             const SizedBox(height: 12),
             const Text('Your job offer is now visible to all candidates!',
-                style: TextStyle(color: Colors.grey, fontSize: 14)),
+                style: TextStyle(color: Color(0xFF000647), fontSize: 14)),
           ],
         ),
         actions: [
           ElevatedButton(
             onPressed: () => Navigator.of(context).pop(),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green[600],
+              backgroundColor: const Color(0xFF000647),
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8)),
@@ -392,7 +397,7 @@ class _PostJobScreenState extends State<PostJobScreen> {
                           _isLoadingEmployerData = true;
                           _employerError = null;
                         });
-                        
+
                         await EmployerService.createSampleEmployer(user.uid);
                         await Future.delayed(const Duration(seconds: 1));
                         await _loadEmployerData();
@@ -403,6 +408,42 @@ class _PostJobScreenState extends State<PostJobScreen> {
                       foregroundColor: Colors.white,
                     ),
                     child: const Text('Create Sample Employer (Debug)'),
+                  ),
+                  const SizedBox(height: 12),
+                  ElevatedButton(
+                    onPressed: () async {
+                      setState(() {
+                        _isLoadingEmployerData = true;
+                        _employerError = null;
+                      });
+
+                      await EmployerSyncService.fixVitorandaAccount();
+                      await Future.delayed(const Duration(seconds: 1));
+                      await _loadEmployerData();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      foregroundColor: Colors.white,
+                    ),
+                    child: const Text('Fix Vitoranda Account (Debug)'),
+                  ),
+                  const SizedBox(height: 12),
+                  ElevatedButton(
+                    onPressed: () async {
+                      setState(() {
+                        _isLoadingEmployerData = true;
+                        _employerError = null;
+                      });
+
+                      await EmployerSyncService.fixEmployerAccounts();
+                      await Future.delayed(const Duration(seconds: 1));
+                      await _loadEmployerData();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.white,
+                    ),
+                    child: const Text('Fix All Employer Accounts (Debug)'),
                   ),
                   const SizedBox(height: 12),
                 ],

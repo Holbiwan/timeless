@@ -329,6 +329,146 @@ class EmployerSyncService {
     }
   }
 
+  // Fix Vitoranda account specifically
+  static Future<void> fixVitorandaAccount() async {
+    try {
+      Get.snackbar(
+        'Fixing Account',
+        'Updating Vitoranda account...',
+        duration: const Duration(seconds: 2),
+      );
+
+      // Find Vitoranda by email
+      final querySnapshot = await _firestore
+          .collection('employers')
+          .where('email', isEqualTo: 'vitoranda@outlook.com')
+          .limit(1)
+          .get();
+
+      if (querySnapshot.docs.isEmpty) {
+        Get.snackbar(
+          'Not Found',
+          'Vitoranda account not found',
+          backgroundColor: const Color(0xFFFF9800),
+          colorText: Colors.white,
+        );
+        return;
+      }
+
+      final doc = querySnapshot.docs.first;
+
+      // Update with missing fields
+      await doc.reference.update({
+        'logoUrl': 'https://zupimages.net/up/25/51/vaft.png',
+        'isActive': true,
+        'isVerified': true,
+        'status': 'active',
+        'verifiedAt': FieldValue.serverTimestamp(),
+        'lastUpdated': FieldValue.serverTimestamp(),
+      });
+
+      Get.snackbar(
+        'Success!',
+        'Vitoranda account has been fixed and is now ready to post jobs!',
+        backgroundColor: const Color(0xFF4CAF50),
+        colorText: Colors.white,
+        duration: const Duration(seconds: 4),
+      );
+
+      if (kDebugMode) {
+        print('✅ Vitoranda account fixed successfully');
+      }
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Error fixing Vitoranda account: $e',
+        backgroundColor: const Color(0xFFF44336),
+        colorText: Colors.white,
+      );
+      if (kDebugMode) {
+        print('❌ Error fixing Vitoranda account: $e');
+      }
+    }
+  }
+
+  // Fix existing employer accounts to add missing fields
+  static Future<void> fixEmployerAccounts() async {
+    try {
+      Get.snackbar(
+        'Fixing Accounts',
+        'Updating employer accounts with missing fields...',
+        duration: const Duration(seconds: 2),
+      );
+
+      // Get all employers
+      final querySnapshot = await _firestore
+          .collection('employers')
+          .get();
+
+      int updatedCount = 0;
+
+      for (var doc in querySnapshot.docs) {
+        final data = doc.data();
+
+        // Check if fields are missing and update
+        Map<String, dynamic> updates = {};
+
+        if (!data.containsKey('logoUrl') || data['logoUrl'] == null) {
+          updates['logoUrl'] = 'https://zupimages.net/up/25/51/vaft.png';
+        }
+
+        if (!data.containsKey('isActive')) {
+          updates['isActive'] = true;
+        }
+
+        if (!data.containsKey('verifiedAt') && data['isVerified'] == true) {
+          updates['verifiedAt'] = FieldValue.serverTimestamp();
+        }
+
+        // Ensure status and isVerified are set
+        if (data['status'] != 'active') {
+          updates['status'] = 'active';
+        }
+
+        if (data['isVerified'] != true) {
+          updates['isVerified'] = true;
+        }
+
+        // Update if there are changes
+        if (updates.isNotEmpty) {
+          await doc.reference.update(updates);
+          updatedCount++;
+
+          if (kDebugMode) {
+            print('✅ Updated employer ${data['companyName']}: $updates');
+          }
+        }
+      }
+
+      Get.snackbar(
+        'Success!',
+        'Updated $updatedCount employer account(s)',
+        backgroundColor: const Color(0xFF4CAF50),
+        colorText: Colors.white,
+        duration: const Duration(seconds: 4),
+      );
+
+      if (kDebugMode) {
+        print('✅ Fixed $updatedCount employer accounts');
+      }
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Error fixing employer accounts: $e',
+        backgroundColor: const Color(0xFFF44336),
+        colorText: Colors.white,
+      );
+      if (kDebugMode) {
+        print('❌ Error fixing employer accounts: $e');
+      }
+    }
+  }
+
   // Update VITORANDA email address migration
   static Future<void> migrateVitorandaEmail() async {
     try {

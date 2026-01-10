@@ -47,14 +47,18 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
                 Expanded(
                   child: SingleChildScrollView(
                     physics: const BouncingScrollPhysics(),
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    padding: const EdgeInsets.only(
+                      left: 20.0,
+                      right: 20.0,
+                      bottom: 100.0, // Extra padding for bottom navbar
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 12),
                         // Stats Overview
                         _buildStatsOverview(),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 12),
 
                         // Quick Actions Grid
                         Text(
@@ -65,15 +69,15 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
                             color: _primaryBlue,
                           ),
                         ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: 10),
                         _buildActionGrid(),
-                        
-                        const SizedBox(height: 24),
+
+                        const SizedBox(height: 16),
 
                         // Company Info Section
                         _buildCompanyInfo(),
-                        
-                        const SizedBox(height: 40),
+
+                        const SizedBox(height: 16),
                       ],
                     ),
                   ),
@@ -86,7 +90,7 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
 
   Widget _buildFixedHeader() {
     return Container(
-      height: 160,
+      height: 120,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -114,7 +118,7 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -310,7 +314,7 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
     required VoidCallback onTap,
   }) {
     return Container(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.all(6),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -336,27 +340,27 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              padding: const EdgeInsets.all(6),
+              padding: const EdgeInsets.all(5),
               decoration: BoxDecoration(
                 color: accentColor.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Icon(icon, color: accentColor, size: 16),
+              child: Icon(icon, color: accentColor, size: 14),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 6),
             Text(
               count.toString(),
               style: GoogleFonts.inter(
-                fontSize: 16,
+                fontSize: 15,
                 fontWeight: FontWeight.w700,
                 color: _primaryBlue,
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 3),
             Text(
               title,
               style: GoogleFonts.inter(
-                fontSize: 10,
+                fontSize: 9,
                 fontWeight: FontWeight.w500,
                 color: Colors.grey.shade600,
               ),
@@ -372,9 +376,9 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       crossAxisCount: 2,
-      crossAxisSpacing: 12,
-      mainAxisSpacing: 12,
-      childAspectRatio: 1.4,
+      crossAxisSpacing: 10,
+      mainAxisSpacing: 10,
+      childAspectRatio: 1.5,
       children: [
         _buildActionCard(
           title: 'Post New Job',
@@ -424,7 +428,7 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
   Widget _buildCompanyInfo() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -434,7 +438,7 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
             _primaryBlue.withOpacity(0.8),
           ],
         ),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: _primaryBlue.withOpacity(0.3),
           width: 1.5,
@@ -442,8 +446,8 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
         boxShadow: [
           BoxShadow(
             color: _primaryBlue.withOpacity(0.2),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
           ),
         ],
       ),
@@ -478,12 +482,12 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 12),
           Container(
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(10),
               border: Border.all(
                 color: Colors.white.withOpacity(0.2),
                 width: 1,
@@ -494,9 +498,9 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
                 Icon(
                   Icons.tips_and_updates,
                   color: Colors.white,
-                  size: 20,
+                  size: 18,
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: 10),
                 Expanded(
                   child: Text(
                     'Start posting jobs and managing applications to grow your team',
@@ -526,7 +530,7 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
       onTap: onTap,
       borderRadius: BorderRadius.circular(16),
       child: Container(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(6),
         decoration: BoxDecoration(
           color: isPrimary ? color : Colors.white,
           borderRadius: BorderRadius.circular(16),
@@ -555,13 +559,13 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
             Icon(
               icon,
               color: isPrimary ? Colors.white : color,
-              size: 24,
+              size: 22,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 6),
             Text(
               title,
               style: GoogleFonts.inter(
-                fontSize: 11,
+                fontSize: 10.5,
                 fontWeight: FontWeight.w600,
                 color: isPrimary ? Colors.white : _primaryBlue,
                 height: 1.1,
