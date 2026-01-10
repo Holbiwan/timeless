@@ -209,5 +209,6 @@
   "password_required_field": "Please enter your password",
   "copied": "Copied",
   "fill_your_infos": "Fill your infos",
-  "terms_agreement": "By creating an account, I accept the"
+  "terms_agreement": "By creating an account, I accept the",
+  "send_my_application": "Send my application"
 }
