@@ -167,7 +167,7 @@ class _CandidateApplicationsScreenState extends State<CandidateApplicationsScree
               _deleteAllApplications();
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: _dangerRed,
+              backgroundColor: _primaryBlue,
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
