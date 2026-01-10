@@ -289,7 +289,7 @@ flutter test --coverage
 | `UserModel`        | 3     | Creation, display name, saved jobs            |
 
 
----
+
 
 ## 📄 License
 
