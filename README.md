@@ -7,11 +7,6 @@ Timeless emphasizes speed, clarity, and a smooth user experience. It offers an o
 Timeless makes job hunting easier, faster, and always available, because opportunities shouldn't be limited by time. 
 
 
-<p align="center">
-  <img src="https://i.postimg.cc/tgfXWsFY/logo.png" alt="Timeless logo" width="270">
-  &nbsp;&nbsp;&nbsp;
- </p>
-
 <p align="center"><small><em>See landing page by clicking below</em></small></p>
 <p align="center">
   <a href="https://holbiwan.github.io/timeless-landing/">
@@ -30,63 +25,40 @@ Timeless makes job hunting easier, faster, and always available, because opportu
 </p>
 
 
-## 📸 Application Screens & User Journey
+## 📸 Screenshots
 
-Below is an overview of the main user flows in the **Timeless** mobile application, covering onboarding, authentication, and both candidate and employer experiences.
+A quick overview of the main user journey in **Timeless**.
 
----
+### 🧭 Onboarding & Authentication
+<p align="center">
+  <img src="assets/screenshots/1-Splash.jpeg" width="170"/>
+  <img src="assets/screenshots/2-ConnexionScreen.jpeg" width="170"/>
+</p>
 
-### 🧭 Onboarding & Entry Point
 
-| Splash Screen | Connection Screen |
-|---------------|------------------|
-| <img src="assets/screenshots/1-Splash.jpeg" width="300"/> | <img src="assets/screenshots/2-ConnexionScreen.jpeg" width="300"/> |
+  ### 👤 Candidate Experience
+<p align="center">
+  <img src="assets/screenshots/6-Connexion%20CANDIDAT.jpeg" width="170"/>
+   <img src="assets/screenshots/7-DashboardCANDIDAT.jpeg" width="170"/>
+</p>
 
----
 
-### 🏢 Employer Onboarding & Access (PRO)
+### 🏢 Employer Experience (PRO)
+<p align="center">
+  <img src="assets/screenshots/4-ConnexionPRO.jpeg" width="170"/>
+  <img src="assets/screenshots/5-DashboardPRO.png" width="170"/>
+</p>
 
-| Create PRO Account | Employer Connection |
-|-------------------|---------------------|
-| <img src="assets/screenshots/3-CreatePROAccount.jpeg" width="300"/> | <img src="assets/screenshots/4-ConnexionPRO.jpeg" width="300"/> |
-
----
-
-### 🏢 Employer Dashboard
-
-| Employer Dashboard |
-|--------------------|
-| <img src="assets/screenshots/5-DashboardPRO.png" width="300"/> |
-
-> Employers can post and manage job offers, view applications, and access recruitment tools from a dedicated dashboard.
-
----
-
-### 👤 Candidate Authentication
-
-| Candidate Login |
-|----------------|
-| <img src="assets/screenshots/6-Connexion CANDIDAT.jpeg" width="300"/> |
-
----
-
-### 👤 Candidate Experience
-
-| Candidate Dashboard |
-|--------------------|
-| <img src="assets/screenshots/7-DashboardCANDIDAT.jpeg" width="300"/> |
-
-> Candidates can browse job offers, manage applications, discover events, and access personalized content.
-
----
-
-> **Timeless provides distinct user journeys for candidates and employers, with secure authentication, role-based access, and intuitive dashboards.**
 
 ## 🎬 Demo
+▶️ Watch the demo of the Timeless mobile application
 
 <p align="center">
-  <em>A video demonstration of the application will be available here shortly.</em>
+  <a href="https://youtu.be/UfaImt6-NZM">
+    <img src="assets/screenshots/0.jpg" width="170"/>
+  </a>
 </p>
+
 
 ##  Project Structure
 
