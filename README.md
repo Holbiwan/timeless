@@ -55,7 +55,7 @@ Fast, accessible, and intuitive job applications anytime, anywhere
 
 ### 📹 Watch the Application in Action
 
-[![Demo Video](https://img.shields.io/badge/▶️_Download_&_Watch_Demo_Video-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://github.com/Holbiwan/timeless/releases/download/v1.0-demo/Timeless.demo.mp4)
+[![Demo Video](https://img.shields.io/badge/▶️_Download_&_Watch_Demo_Video-02569B?style=for-the-badge&logo=playstation&logoColor=white)](https://github.com/Holbiwan/timeless/releases/download/v1.0-demo/Timeless.demo.mp4)
 
 *Experience the complete user journey for both candidates and employers*
 
