@@ -49,14 +49,15 @@ A quick overview of the main user journey in **Timeless**.
 </p>
 
 
-## 🎬 Demo
-▶️ Watch the demo of the Timeless mobile application
+## 🎬 Demo Video
 
-<p align="center">
-  <a href="https://youtu.be/UfaImt6-NZM">
-    <img src="assets/screenshots/0.jpg" width="170"/>
-  </a>
-</p>
+▶️ **Watch the demo of the Timeless mobile application**
+
+👉 [Click here to download and watch the demo video](https://github.com/Holbiwan/timeless/releases/download/v1.0-demo/Timeless.demo.mp4)
+
+> This demo presents the main user journeys for candidates and employers.  
+> This is a school and portfolio project using fictitious data.
+
 
 
 ##  Project Structure
