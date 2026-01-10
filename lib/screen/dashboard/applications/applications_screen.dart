@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +11,6 @@ import 'package:timeless/screen/dashboard/applications/rejected_screen.dart';
 import 'package:timeless/screen/dashboard/home/widgets/search_field.dart';
 import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/app_style.dart';
-import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/utils/string.dart';
@@ -73,7 +74,8 @@ class ApplicationsScreen extends StatelessWidget {
                             style: appTextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w400,
-                                color: const Color.fromARGB(255, 0, 6, 71).withOpacity(0.7)),
+                                color: const Color.fromARGB(255, 0, 6, 71)
+                                    .withOpacity(0.7)),
                           ),
                         ],
                       ),
@@ -147,7 +149,8 @@ class ApplicationsScreen extends StatelessWidget {
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                               border: Border.all(
-                                  color: const Color.fromARGB(255, 0, 6, 71), width: 2),
+                                  color: const Color.fromARGB(255, 0, 6, 71),
+                                  width: 2),
                               borderRadius: const BorderRadius.all(
                                 Radius.circular(10),
                               ),
@@ -221,22 +224,38 @@ class ApplicationsScreen extends StatelessWidget {
                                       ? StreamBuilder<QuerySnapshot>(
                                           stream: FirebaseFirestore.instance
                                               .collection('Interviews')
-                                              .where('candidateEmail', isEqualTo: PreferencesService.getString(PrefKeys.email))
-                                              .where('candidateName', isEqualTo: PreferencesService.getString(PrefKeys.fullName))
-                                              .where('jobTitle', isEqualTo: snapshot2.data!.docs[index2]['position'])
+                                              .where('candidateEmail',
+                                                  isEqualTo: PreferencesService
+                                                      .getString(
+                                                          PrefKeys.email))
+                                              .where('candidateName',
+                                                  isEqualTo: PreferencesService
+                                                      .getString(
+                                                          PrefKeys.fullName))
+                                              .where('jobTitle',
+                                                  isEqualTo: snapshot2.data!
+                                                      .docs[index2]['position'])
                                               .snapshots(),
-                                          builder: (context, interviewSnapshot) {
-                                            String currentStatus = getFieldSafely(
-                                                snapshot2.data!.docs[index2],
-                                                'status');
-                                            
+                                          builder:
+                                              (context, interviewSnapshot) {
+                                            String currentStatus =
+                                                getFieldSafely(
+                                                    snapshot2
+                                                        .data!.docs[index2],
+                                                    'status');
+
                                             // If there's an interview scheduled, update status
-                                            if (interviewSnapshot.hasData && interviewSnapshot.data!.docs.isNotEmpty) {
-                                              currentStatus = 'Schedule Interview';
+                                            if (interviewSnapshot.hasData &&
+                                                interviewSnapshot
+                                                    .data!.docs.isNotEmpty) {
+                                              currentStatus =
+                                                  'Schedule Interview';
                                             }
-                                            
+
                                             return Obx(() {
-                                              final selectedIndex = applicationController.selectedJobs.value;
+                                              final selectedIndex =
+                                                  applicationController
+                                                      .selectedJobs.value;
 
                                               bool shouldShow = false;
                                               switch (selectedIndex) {
@@ -244,10 +263,12 @@ class ApplicationsScreen extends StatelessWidget {
                                                   shouldShow = true;
                                                   break;
                                                 case 1: // Interview
-                                                  shouldShow = currentStatus == 'Schedule Interview';
+                                                  shouldShow = currentStatus ==
+                                                      'Schedule Interview';
                                                   break;
                                                 case 2: // Sent
-                                                  shouldShow = currentStatus == 'Sent';
+                                                  shouldShow =
+                                                      currentStatus == 'Sent';
                                                   break;
                                                 case 3: // Erase - Show all applications with delete mode
                                                   shouldShow = true;
@@ -258,66 +279,154 @@ class ApplicationsScreen extends StatelessWidget {
                                                 children: [
                                                   shouldShow
                                                       ? Container(
-                                                          margin: const EdgeInsets.symmetric(
-                                                              horizontal: 18, vertical: 8),
-                                                          decoration: BoxDecoration(
+                                                          margin:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                                  horizontal:
+                                                                      18,
+                                                                  vertical: 8),
+                                                          decoration:
+                                                              BoxDecoration(
                                                             color: Colors.white,
-                                                            borderRadius: BorderRadius.circular(16),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        16),
                                                             boxShadow: [
                                                               BoxShadow(
-                                                                color: Colors.black.withOpacity(0.05),
-                                                                offset: const Offset(0, 4),
+                                                                color: Colors
+                                                                    .black
+                                                                    .withOpacity(
+                                                                        0.05),
+                                                                offset:
+                                                                    const Offset(
+                                                                        0, 4),
                                                                 blurRadius: 12,
                                                                 spreadRadius: 0,
                                                               ),
                                                             ],
                                                           ),
                                                           child: Material(
-                                                            color: Colors.transparent,
+                                                            color: Colors
+                                                                .transparent,
                                                             child: InkWell(
-                                                              borderRadius: BorderRadius.circular(16),
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          16),
                                                               onTap: () {
-                                                                if (currentStatus == 'Sent') {
-                                                                  Navigator.push(context, MaterialPageRoute(builder: (con) => SentScreen(position: snapshot2.data!.docs[index2]['position'], companyName: snapshot.data!.docs[index]['companyName'], message: snapshot2.data!.docs[index2]['message'], salary: snapshot2.data!.docs[index2]['salary'], location: snapshot2.data!.docs[index2]['location'], type: snapshot2.data!.docs[index2]['type'])));
-                                                                } else if (currentStatus == 'Rejected') {
-                                                                  Navigator.push(context, MaterialPageRoute(builder: (con) => RejectedScreen(position: snapshot2.data!.docs[index2]['position'], companyName: snapshot.data!.docs[index]['companyName'], message: snapshot2.data!.docs[index2]['message'], salary: snapshot2.data!.docs[index2]['salary'], location: snapshot2.data!.docs[index2]['location'], type: snapshot2.data!.docs[index2]['type'])));
-                                                                } else if (currentStatus == 'Schedule Interview') {
-                                                                  if (interviewSnapshot.hasData && interviewSnapshot.data!.docs.isNotEmpty) {
-                                                                    final interviewDoc = interviewSnapshot.data!.docs.first;
-                                                                    final interviewData = interviewDoc.data() as Map<String, dynamic>;
-                                                                    _showInterviewDetails(context, interviewData);
+                                                                if (currentStatus ==
+                                                                    'Sent') {
+                                                                  Navigator.push(
+                                                                      context,
+                                                                      MaterialPageRoute(
+                                                                          builder: (con) => SentScreen(
+                                                                              position: snapshot2.data!.docs[index2]['position'],
+                                                                              companyName: snapshot.data!.docs[index]['companyName'],
+                                                                              message: snapshot2.data!.docs[index2]['message'],
+                                                                              salary: snapshot2.data!.docs[index2]['salary'],
+                                                                              location: snapshot2.data!.docs[index2]['location'],
+                                                                              type: snapshot2.data!.docs[index2]['type'])));
+                                                                } else if (currentStatus ==
+                                                                    'Rejected') {
+                                                                  Navigator.push(
+                                                                      context,
+                                                                      MaterialPageRoute(
+                                                                          builder: (con) => RejectedScreen(
+                                                                              position: snapshot2.data!.docs[index2]['position'],
+                                                                              companyName: snapshot.data!.docs[index]['companyName'],
+                                                                              message: snapshot2.data!.docs[index2]['message'],
+                                                                              salary: snapshot2.data!.docs[index2]['salary'],
+                                                                              location: snapshot2.data!.docs[index2]['location'],
+                                                                              type: snapshot2.data!.docs[index2]['type'])));
+                                                                } else if (currentStatus ==
+                                                                    'Schedule Interview') {
+                                                                  if (interviewSnapshot
+                                                                          .hasData &&
+                                                                      interviewSnapshot
+                                                                          .data!
+                                                                          .docs
+                                                                          .isNotEmpty) {
+                                                                    final interviewDoc =
+                                                                        interviewSnapshot
+                                                                            .data!
+                                                                            .docs
+                                                                            .first;
+                                                                    final interviewData = interviewDoc
+                                                                            .data()
+                                                                        as Map<
+                                                                            String,
+                                                                            dynamic>;
+                                                                    _showInterviewDetails(
+                                                                        context,
+                                                                        interviewData);
                                                                   } else {
-                                                                    Navigator.push(context, MaterialPageRoute(builder: (con) => SentScreen(position: snapshot2.data!.docs[index2]['position'], companyName: snapshot.data!.docs[index]['companyName'], message: snapshot2.data!.docs[index2]['message'], salary: snapshot2.data!.docs[index2]['salary'], location: snapshot2.data!.docs[index2]['location'], type: snapshot2.data!.docs[index2]['type'])));
+                                                                    Navigator.push(
+                                                                        context,
+                                                                        MaterialPageRoute(
+                                                                            builder: (con) => SentScreen(
+                                                                                position: snapshot2.data!.docs[index2]['position'],
+                                                                                companyName: snapshot.data!.docs[index]['companyName'],
+                                                                                message: snapshot2.data!.docs[index2]['message'],
+                                                                                salary: snapshot2.data!.docs[index2]['salary'],
+                                                                                location: snapshot2.data!.docs[index2]['location'],
+                                                                                type: snapshot2.data!.docs[index2]['type'])));
                                                                   }
                                                                 }
                                                               },
                                                               child: Padding(
-                                                                padding: const EdgeInsets.all(16),
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                        .all(
+                                                                        16),
                                                                 child: Column(
                                                                   children: [
                                                                     Row(
-                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
                                                                       children: [
                                                                         // Icon Container
                                                                         Container(
-                                                                          height: 48,
-                                                                          width: 48,
-                                                                          padding: const EdgeInsets.all(10),
-                                                                          decoration: BoxDecoration(
-                                                                            color: (currentStatus == 'Schedule Interview' ? const Color(0xff28a745) : currentStatus == 'Sent' ? const Color(0xff2E5AAC) : const Color(0xffF1C100)).withOpacity(0.1),
-                                                                            borderRadius: BorderRadius.circular(12),
+                                                                          height:
+                                                                              48,
+                                                                          width:
+                                                                              48,
+                                                                          padding: const EdgeInsets
+                                                                              .all(
+                                                                              10),
+                                                                          decoration:
+                                                                              BoxDecoration(
+                                                                            color: (currentStatus == 'Schedule Interview'
+                                                                                    ? const Color(0xff28a745)
+                                                                                    : currentStatus == 'Sent'
+                                                                                        ? const Color(0xff2E5AAC)
+                                                                                        : const Color(0xffF1C100))
+                                                                                .withOpacity(0.1),
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(12),
                                                                           ),
-                                                                          child: Icon(
+                                                                          child:
+                                                                              Icon(
                                                                             Icons.work_outline,
-                                                                            color: currentStatus == 'Schedule Interview' ? const Color(0xff28a745) : currentStatus == 'Sent' ? const Color(0xff2E5AAC) : const Color(0xffF1C100),
-                                                                            size: 24,
+                                                                            color: currentStatus == 'Schedule Interview'
+                                                                                ? const Color(0xff28a745)
+                                                                                : currentStatus == 'Sent'
+                                                                                    ? const Color(0xff2E5AAC)
+                                                                                    : const Color(0xffF1C100),
+                                                                            size:
+                                                                                24,
                                                                           ),
                                                                         ),
-                                                                        const SizedBox(width: 16),
+                                                                        const SizedBox(
+                                                                            width:
+                                                                                16),
                                                                         // Content
                                                                         Expanded(
-                                                                          child: Column(
-                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                          child:
+                                                                              Column(
+                                                                            crossAxisAlignment:
+                                                                                CrossAxisAlignment.start,
                                                                             children: [
                                                                               Text(
                                                                                 snapshot2.data!.docs[index2]['position'],
@@ -340,9 +449,11 @@ class ApplicationsScreen extends StatelessWidget {
                                                                           ),
                                                                         ),
                                                                         // Delete Action or Status Chip
-                                                                        if (applicationController.selectedJobs.value == 3)
+                                                                        if (applicationController.selectedJobs.value ==
+                                                                            3)
                                                                           IconButton(
-                                                                            onPressed: () async {
+                                                                            onPressed:
+                                                                                () async {
                                                                               bool? confirm = await showDialog<bool>(
                                                                                 context: context,
                                                                                 builder: (context) => AlertDialog(
@@ -364,21 +475,38 @@ class ApplicationsScreen extends StatelessWidget {
                                                                                 }
                                                                               }
                                                                             },
-                                                                            icon: const Icon(Icons.delete_outline, color: Colors.red),
+                                                                            icon:
+                                                                                const Icon(Icons.delete_outline, color: Colors.red),
                                                                           )
                                                                         else
                                                                           Container(
-                                                                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                                                                            decoration: BoxDecoration(
-                                                                              color: (currentStatus == 'Schedule Interview' ? const Color(0xff28a745) : currentStatus == 'Sent' ? const Color(0xff2E5AAC) : const Color(0xffF1C100)).withOpacity(0.1),
+                                                                            padding:
+                                                                                const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                                                            decoration:
+                                                                                BoxDecoration(
+                                                                              color: (currentStatus == 'Schedule Interview'
+                                                                                      ? const Color(0xff28a745)
+                                                                                      : currentStatus == 'Sent'
+                                                                                          ? const Color(0xff2E5AAC)
+                                                                                          : const Color(0xffF1C100))
+                                                                                  .withOpacity(0.1),
                                                                               borderRadius: BorderRadius.circular(20),
                                                                             ),
-                                                                            child: Text(
-                                                                              currentStatus == 'Schedule Interview' ? "Interview Scheduled" : currentStatus == 'Sent' ? "Application Sent" : "Application Pending",
+                                                                            child:
+                                                                                Text(
+                                                                              currentStatus == 'Schedule Interview'
+                                                                                  ? "Interview Scheduled"
+                                                                                  : currentStatus == 'Sent'
+                                                                                      ? "Application Sent"
+                                                                                      : "Application Pending",
                                                                               style: appTextStyle(
                                                                                 fontSize: 11,
                                                                                 fontWeight: FontWeight.w600,
-                                                                                color: currentStatus == 'Schedule Interview' ? const Color(0xff28a745) : currentStatus == 'Sent' ? const Color(0xff2E5AAC) : const Color(0xffF1C100),
+                                                                                color: currentStatus == 'Schedule Interview'
+                                                                                    ? const Color(0xff28a745)
+                                                                                    : currentStatus == 'Sent'
+                                                                                        ? const Color(0xff2E5AAC)
+                                                                                        : const Color(0xffF1C100),
                                                                               ),
                                                                             ),
                                                                           ),
@@ -411,13 +539,17 @@ class ApplicationsScreen extends StatelessWidget {
   }
 
   // Show interview details dialog
-  void _showInterviewDetails(BuildContext context, Map<String, dynamic> interviewData) {
+  void _showInterviewDetails(
+      BuildContext context, Map<String, dynamic> interviewData) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        final interviewDate = interviewData['interviewDate']?.toDate() ?? DateTime.now();
-        final formattedDate = "${interviewDate.day}/${interviewDate.month}/${interviewDate.year}";
-        final formattedTime = "${interviewDate.hour.toString().padLeft(2, '0')}:${interviewDate.minute.toString().padLeft(2, '0')}";
+        final interviewDate =
+            interviewData['interviewDate']?.toDate() ?? DateTime.now();
+        final formattedDate =
+            "${interviewDate.day}/${interviewDate.month}/${interviewDate.year}";
+        final formattedTime =
+            "${interviewDate.hour.toString().padLeft(2, '0')}:${interviewDate.minute.toString().padLeft(2, '0')}";
 
         return AlertDialog(
           title: Row(
@@ -449,20 +581,27 @@ class ApplicationsScreen extends StatelessWidget {
                     color: const Color.fromARGB(255, 0, 6, 71).withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: const Color.fromARGB(255, 0, 6, 71).withOpacity(0.3),
+                      color:
+                          const Color.fromARGB(255, 0, 6, 71).withOpacity(0.3),
                     ),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildDetailRow('Company', interviewData['companyName'] ?? 'Unknown'),
-                      _buildDetailRow('Position', interviewData['jobTitle'] ?? 'Unknown'),
+                      _buildDetailRow(
+                          'Company', interviewData['companyName'] ?? 'Unknown'),
+                      _buildDetailRow(
+                          'Position', interviewData['jobTitle'] ?? 'Unknown'),
                       _buildDetailRow('Date', formattedDate),
                       _buildDetailRow('Time', formattedTime),
-                      _buildDetailRow('Location', interviewData['location'] ?? 'TBD'),
-                      if (interviewData['additionalMessage'] != null && 
-                          interviewData['additionalMessage'].toString().isNotEmpty)
-                        _buildDetailRow('Message', interviewData['additionalMessage']),
+                      _buildDetailRow(
+                          'Location', interviewData['location'] ?? 'TBD'),
+                      if (interviewData['additionalMessage'] != null &&
+                          interviewData['additionalMessage']
+                              .toString()
+                              .isNotEmpty)
+                        _buildDetailRow(
+                            'Message', interviewData['additionalMessage']),
                     ],
                   ),
                 ),

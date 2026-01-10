@@ -4,7 +4,6 @@ import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/services/unified_translation_service.dart';
 import 'package:timeless/services/accessibility_service.dart';
 import 'package:timeless/services/auth_service.dart';
-import 'package:timeless/utils/app_theme.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/screen/settings/settings_screen.dart';
 import 'package:timeless/screen/accessibility/accessibility_panel.dart';
@@ -325,18 +324,6 @@ Widget homeAppBar({VoidCallback? onRefresh}) {
   );});
 }
 
-extension on Object? {
-  String get fullName {
-    if (this == null) return '';
-    try {
-      final dynamic obj = this;
-      final name = obj.fullName;
-      return name != null ? name.toString() : '';
-    } catch (e) {
-      return '';
-    }
-  }
-}
 
 void _showPhotoUploadOptions(ProfileController profileController) {
   final AccessibilityService accessibilityService = Get.find<AccessibilityService>();

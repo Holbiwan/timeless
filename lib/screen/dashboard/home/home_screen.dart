@@ -9,10 +9,7 @@ import 'package:timeless/screen/dashboard/home/webinaires_screen.dart';
 import 'package:timeless/screen/dashboard/home/widgets/appbar.dart';
 import 'package:timeless/screen/job_detail_screen/job_detail_upload_cv_screen/upload_cv_controller.dart';
 import 'package:timeless/services/candidate_dashboard_service.dart';
-import 'package:timeless/services/accessibility_service.dart';
 import 'package:timeless/utils/app_res.dart';
-import 'package:timeless/utils/color_res.dart';
-import 'package:timeless/common/widgets/neumorphic_button.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -23,36 +20,39 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   var args = Get.arguments;
-  JobDetailsUploadCvController jobDetailsUploadCvController = Get.put(JobDetailsUploadCvController());
-  
+  JobDetailsUploadCvController jobDetailsUploadCvController =
+      Get.put(JobDetailsUploadCvController());
+
   final List<String> _videoIds = [
-    'QzLCf84hIwE',
-    'bM8XmugoQuI',
-    'Wz285x6ygGA',
+    'Jk28OrW1Qxo',
+    'wYnOBGa73aQ',
   ];
-  
+
   late List<YoutubePlayerController> _controllers;
-  final PageController _pageController = PageController(viewportFraction: 0.9, initialPage: 1000);
+  final PageController _pageController =
+      PageController(viewportFraction: 0.9, initialPage: 1000);
   int _currentIndex = 0;
   Timer? _carouselTimer;
 
   @override
   void initState() {
     super.initState();
-    _controllers = _videoIds.map((id) => YoutubePlayerController(
-      initialVideoId: id,
-      flags: const YoutubePlayerFlags(
-        autoPlay: false,
-        mute: false,
-        disableDragSeek: false,
-        enableCaption: true,
-        forceHD: false,
-      ),
-    )).toList();
-    
+    _controllers = _videoIds
+        .map((id) => YoutubePlayerController(
+              initialVideoId: id,
+              flags: const YoutubePlayerFlags(
+                autoPlay: false,
+                mute: false,
+                disableDragSeek: false,
+                enableCaption: true,
+                forceHD: false,
+              ),
+            ))
+        .toList();
+
     // Sync index with initial page
     _currentIndex = 1000 % _videoIds.length;
-    
+
     // Start auto-scroll
     _startAutoScroll();
   }
@@ -83,7 +83,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     jobDetailsUploadCvController.init();
-    final accessibilityService = AccessibilityService.instance;
 
     return Scaffold(
       backgroundColor: Colors.grey[50],
@@ -94,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 children: [
                   homeAppBar(onRefresh: () => setState(() {})),
-                  
+
                   const SizedBox(height: 6),
 
                   // Main action cards section
@@ -105,24 +104,28 @@ class _HomeScreenState extends State<HomeScreen> {
                         // My Applications card
                         Expanded(
                           child: StreamBuilder<int>(
-                            stream: CandidateDashboardService.getCandidateApplicationsCount(),
+                            stream: CandidateDashboardService
+                                .getCandidateApplicationsCount(),
                             builder: (context, snapshot) {
                               final count = snapshot.data ?? 0;
-                              
+
                               return _buildActionCard(
                                 title: "My Applications",
-                                subtitle: count > 0 ? "$count pending" : "No applications",
+                                subtitle: count > 0
+                                    ? "$count pending"
+                                    : "No applications",
                                 icon: Icons.assignment_outlined,
                                 color: const Color(0xFF000647),
-                                onTap: () => Get.toNamed(AppRes.applicationsUser),
+                                onTap: () =>
+                                    Get.toNamed(AppRes.applicationsUser),
                                 badge: count,
                               );
                             },
                           ),
                         ),
-                        
+
                         const SizedBox(width: 12),
-                        
+
                         // Browse Jobs card
                         Expanded(
                           child: _buildActionCard(
@@ -130,7 +133,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             subtitle: "Find opportunities",
                             icon: Icons.work_outline,
                             color: const Color(0xFF1565C0),
-                            onTap: () => Get.toNamed(AppRes.jobRecommendationScreen),
+                            onTap: () =>
+                                Get.toNamed(AppRes.jobRecommendationScreen),
                           ),
                         ),
                       ],
@@ -156,7 +160,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                         const SizedBox(height: 12),
-                        
+
                         // Video carousel
                         SizedBox(
                           height: 120,
@@ -165,7 +169,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             itemBuilder: (context, index) {
                               final videoIndex = index % _videoIds.length;
                               return Container(
-                                margin: const EdgeInsets.symmetric(horizontal: 4),
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 4),
                                 decoration: BoxDecoration(
                                   color: Colors.black,
                                   borderRadius: BorderRadius.circular(12),
@@ -182,7 +187,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   child: YoutubePlayer(
                                     controller: _controllers[videoIndex],
                                     showVideoProgressIndicator: true,
-                                    progressIndicatorColor: const Color(0xFF000647),
+                                    progressIndicatorColor:
+                                        const Color(0xFF000647),
                                     progressColors: const ProgressBarColors(
                                       playedColor: Color(0xFF000647),
                                       handleColor: Color(0xFF000647),
@@ -198,9 +204,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             },
                           ),
                         ),
-                        
+
                         const SizedBox(height: 8),
-                        
+
                         // Page indicator
                         Center(
                           child: AnimatedSmoothIndicator(
@@ -214,9 +220,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                         ),
-                        
+
                         const SizedBox(height: 8),
-                        
+
                         // Event action buttons
                         Row(
                           children: [
@@ -226,7 +232,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 subtitle: "Network with employers",
                                 icon: Icons.business_center_outlined,
                                 color: const Color(0xFF0D47A1),
-                                onTap: () => Get.to(() => const SalonsEmploiScreen()),
+                                onTap: () =>
+                                    Get.to(() => const SalonsEmploiScreen()),
                               ),
                             ),
                             const SizedBox(width: 10),
@@ -236,7 +243,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 subtitle: "Learn new skills",
                                 icon: Icons.play_circle_outline,
                                 color: const Color(0xFF2196F3),
-                                onTap: () => Get.to(() => const WebinairesScreen()),
+                                onTap: () =>
+                                    Get.to(() => const WebinairesScreen()),
                               ),
                             ),
                           ],
@@ -245,11 +253,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
 
-                const SizedBox(height: 16),
-              ],
+                  const SizedBox(height: 16),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
         ),
       ),
     );
@@ -296,7 +304,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 const Spacer(),
                 if (badge != null && badge > 0)
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     decoration: BoxDecoration(
                       color: const Color(0xFFE67E22),
                       borderRadius: BorderRadius.circular(10),
@@ -391,74 +400,5 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
-  }
-
-  // Modern event button widget
-  Widget _buildModernEventButton(String title, IconData icon, String subtitle, VoidCallback onTap) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(8),
-      child: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.2),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: const Color(0xFFFF8C00).withOpacity(0.4), width: 1),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.15),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    const Color(0xFFFF8C00).withOpacity(0.8),
-                    const Color(0xFFFF8C00).withOpacity(0.6),
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Icon(icon, color: Colors.white, size: 14),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              title,
-              style: GoogleFonts.inter(
-                fontSize: 10,
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            Text(
-              subtitle,
-              style: GoogleFonts.inter(
-                fontSize: 8,
-                fontWeight: FontWeight.w400,
-                color: Colors.white.withOpacity(0.8),
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // Get month name helper function
-  String _getMonthName(int month) {
-    const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-    ];
-    return months[month - 1];
   }
 }

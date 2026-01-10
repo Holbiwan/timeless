@@ -5,15 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:timeless/utils/app_theme.dart';
 import 'package:timeless/screen/job_recommendation_screen/job_recommendation_controller.dart';
 import 'package:timeless/services/unified_translation_service.dart';
-import 'package:timeless/services/accessibility_service.dart';
 import 'package:timeless/common/widgets/modern_filter_dialog.dart';
 import 'package:timeless/common/widgets/modern_sort_dialog.dart';
 import 'package:timeless/common/widgets/date_sort_filter.dart';
 import 'package:timeless/utils/app_res.dart';
-import 'package:timeless/utils/app_style.dart';
 
 class JobRecommendationScreen extends StatelessWidget {
   const JobRecommendationScreen({super.key});
@@ -21,219 +18,246 @@ class JobRecommendationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(JobRecommendationController());
-    final UnifiedTranslationService translationService = Get.find<UnifiedTranslationService>();
-    final AccessibilityService accessibilityService = Get.find<AccessibilityService>();
-    
+    final UnifiedTranslationService translationService =
+        Get.find<UnifiedTranslationService>();
+
     return Obx(() => Scaffold(
-      backgroundColor: Colors.grey[50],
-      body: SafeArea(
-        child: Column(
-          children: [
-            // Styled header with gradient design for visual appeal
-            Container(
-              margin: const EdgeInsets.fromLTRB(16, 4, 16, 6),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Colors.black,
-                    Colors.black.withOpacity(0.9),
-                    const Color(0xFF000647),
-                  ],
-                  stops: const [0.0, 0.6, 1.0],
-                ),
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.3),
-                    blurRadius: 15,
-                    offset: const Offset(0, 8),
-                  ),
-                  BoxShadow(
-                    color: const Color(0xFF000647).withOpacity(0.2),
-                    blurRadius: 20,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      if (Navigator.canPop(context)) {
-                        Navigator.pop(context);
-                      } else {
-                        Get.offAllNamed('/dashboard');
-                      }
-                    },
-                    child: Container(
-                      height: 40,
-                      width: 40,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.15),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.white.withOpacity(0.2)),
-                      ),
-                      child: const Icon(
-                        Icons.arrow_back,
-                        color: Colors.white,
-                        size: 20,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Text(
-                    'Job Offers',
-                    style: GoogleFonts.inter(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // Search & Filter Section
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              padding: const EdgeInsets.all(4),
-              child: Column(
-                children: [
-                  // Search Bar
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
-                          blurRadius: 10,
-                          offset: const Offset(0, 2),
-                        ),
+          backgroundColor: Colors.grey[50],
+          body: SafeArea(
+            child: Column(
+              children: [
+                // Styled header with gradient design for visual appeal
+                Container(
+                  margin: const EdgeInsets.fromLTRB(16, 4, 16, 6),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.black,
+                        Colors.black.withOpacity(0.9),
+                        const Color(0xFF000647),
                       ],
-                      border: Border.all(color: Colors.grey[200]!),
+                      stops: const [0.0, 0.6, 1.0],
                     ),
-                    child: TextField(
-                      onChanged: (value) => controller.updateSearchText(value),
-                      style: GoogleFonts.inter(fontSize: 14),
-                      decoration: InputDecoration(
-                        hintText: '${translationService.getText('search')} jobs...',
-                        hintStyle: GoogleFonts.inter(color: Colors.grey[400], fontSize: 14),
-                        prefixIcon: Icon(Icons.search, color: const Color(0xFF000647)),
-                        border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.3),
+                        blurRadius: 15,
+                        offset: const Offset(0, 8),
                       ),
-                    ),
+                      BoxShadow(
+                        color: const Color(0xFF000647).withOpacity(0.2),
+                        blurRadius: 20,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 12),
-                  
-                  // Horizontal Filters
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        _buildFilterChip('Category', controller.selectedCategory.value, () => _showCategoryFilter(context, controller)),
-                        const SizedBox(width: 6),
-                        _buildFilterChip('Type', controller.selectedJobType.value, () => _showJobTypeFilter(context, controller)),
-                        const SizedBox(width: 6),
-                        _buildFilterChip('Location', controller.selectedLocation.value, () => _showLocationFilter(context, controller)),
-                        const SizedBox(width: 6),
-                        _buildFilterChip('Sort', controller.selectedDateSort.value.label, () => _showDateSortFilter(context, controller)),
-                        
-                        if (controller.hasActiveFilters()) ...[
-                          const SizedBox(width: 6),
-                          GestureDetector(
-                            onTap: () => controller.clearAllFilters(),
-                            child: Container(
-                              padding: const EdgeInsets.all(6),
-                              decoration: BoxDecoration(
-                                color: Colors.red[50],
-                                shape: BoxShape.circle,
-                              ),
-                              child: Icon(Icons.refresh, color: Colors.red[400], size: 14),
-                            ),
+                  child: Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          if (Navigator.canPop(context)) {
+                            Navigator.pop(context);
+                          } else {
+                            Get.offAllNamed('/dashboard');
+                          }
+                        },
+                        child: Container(
+                          height: 40,
+                          width: 40,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.15),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                                color: Colors.white.withOpacity(0.2)),
                           ),
-                        ],
-                      ],
-                    ),
+                          child: const Icon(
+                            Icons.arrow_back,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Text(
+                        'Job Offers',
+                        style: GoogleFonts.inter(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
-            
-            // Job List
-            Expanded(
-              child: StreamBuilder<QuerySnapshot>(
-                stream: FirebaseFirestore.instance
-                    .collection("allPost")
-                    .where('isFromVerifiedEmployer', isEqualTo: true)
-                    .snapshots(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator(color: Color(0xFF000647)));
-                  }
-                  
-                  if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                    return _buildEmptyState(translationService);
-                  }
+                ),
 
-                  final firebaseJobs = snapshot.data!.docs.map((doc) {
-                    final data = doc.data() as Map<String, dynamic>;
-                    return {
-                      ...data,
-                      'source': 'firebase',
-                      'docId': doc.id,
-                      'snapshot': doc, // Keep reference for details screen
-                    };
-                  }).toList();
+                // Search & Filter Section
+                Container(
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.all(4),
+                  child: Column(
+                    children: [
+                      // Search Bar
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.05),
+                              blurRadius: 10,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                          border: Border.all(color: Colors.grey[200]!),
+                        ),
+                        child: TextField(
+                          onChanged: (value) =>
+                              controller.updateSearchText(value),
+                          style: GoogleFonts.inter(fontSize: 14),
+                          decoration: InputDecoration(
+                            hintText:
+                                '${translationService.getText('search')} jobs...',
+                            hintStyle: GoogleFonts.inter(
+                                color: Colors.grey[400], fontSize: 14),
+                            prefixIcon: Icon(Icons.search,
+                                color: const Color(0xFF000647)),
+                            border: InputBorder.none,
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 14),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
 
-                  // Apply local filtering
-                  final filteredJobs = _filterJobs(firebaseJobs, controller);
+                      // Horizontal Filters
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            _buildFilterChip(
+                                'Category',
+                                controller.selectedCategory.value,
+                                () => _showCategoryFilter(context, controller)),
+                            const SizedBox(width: 6),
+                            _buildFilterChip(
+                                'Type',
+                                controller.selectedJobType.value,
+                                () => _showJobTypeFilter(context, controller)),
+                            const SizedBox(width: 6),
+                            _buildFilterChip(
+                                'Location',
+                                controller.selectedLocation.value,
+                                () => _showLocationFilter(context, controller)),
+                            const SizedBox(width: 6),
+                            _buildFilterChip(
+                                'Sort',
+                                controller.selectedDateSort.value.label,
+                                () => _showDateSortFilter(context, controller)),
+                            if (controller.hasActiveFilters()) ...[
+                              const SizedBox(width: 6),
+                              GestureDetector(
+                                onTap: () => controller.clearAllFilters(),
+                                child: Container(
+                                  padding: const EdgeInsets.all(6),
+                                  decoration: BoxDecoration(
+                                    color: Colors.red[50],
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(Icons.refresh,
+                                      color: Colors.red[400], size: 14),
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
 
-                  if (filteredJobs.isEmpty) {
-                    return _buildEmptyState(translationService, isFilter: true);
-                  }
+                // Job List
+                Expanded(
+                  child: StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection("allPost")
+                        .where('isFromVerifiedEmployer', isEqualTo: true)
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(
+                            child: CircularProgressIndicator(
+                                color: Color(0xFF000647)));
+                      }
 
-                  return ListView.builder(
-                    padding: const EdgeInsets.only(bottom: 20, top: 0),
-                    itemCount: filteredJobs.length,
-                    itemBuilder: (context, index) {
-                      final job = filteredJobs[index];
-                      return _buildJobCard(context, job, translationService, index);
+                      if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                        return _buildEmptyState(translationService);
+                      }
+
+                      final firebaseJobs = snapshot.data!.docs.map((doc) {
+                        final data = doc.data() as Map<String, dynamic>;
+                        return {
+                          ...data,
+                          'source': 'firebase',
+                          'docId': doc.id,
+                          'snapshot': doc, // Keep reference for details screen
+                        };
+                      }).toList();
+
+                      // Apply local filtering
+                      final filteredJobs =
+                          _filterJobs(firebaseJobs, controller);
+
+                      if (filteredJobs.isEmpty) {
+                        return _buildEmptyState(translationService,
+                            isFilter: true);
+                      }
+
+                      return ListView.builder(
+                        padding: const EdgeInsets.only(bottom: 20, top: 0),
+                        itemCount: filteredJobs.length,
+                        itemBuilder: (context, index) {
+                          final job = filteredJobs[index];
+                          return _buildJobCard(
+                              context, job, translationService, index);
+                        },
+                      );
                     },
-                  );
-                },
-              ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
-    ));
+          ),
+        ));
   }
 
-  Widget _buildJobCard(BuildContext context, Map<String, dynamic> job, UnifiedTranslationService translationService, int index) {
+  Widget _buildJobCard(BuildContext context, Map<String, dynamic> job,
+      UnifiedTranslationService translationService, int index) {
     final position = job['Position'] ?? 'Unknown Position';
     final company = job['CompanyName'] ?? 'Unknown Company';
     final location = job['location'] ?? 'Remote';
     final salary = job['salary'] ?? 'Competitive';
-    
+
     // Determine job type safely
     final jobType = job['jobType'] ?? job['type'] ?? 'Full-time';
-    
+
     // Alternating Logo Color Logic
     final isBlack = index % 2 == 0;
-    final logoColors = isBlack 
-        ? [Colors.black, Colors.black87] 
+    final logoColors = isBlack
+        ? [Colors.black, Colors.black87]
         : [const Color(0xFF000647), const Color(0xFF000647).withOpacity(0.8)];
 
     return GestureDetector(
       onTap: () {
         // Navigate to details with the snapshot
         if (job['snapshot'] != null) {
-          Get.toNamed(AppRes.jobDetailScreen, arguments: {'saved': job['snapshot']});
+          Get.toNamed(AppRes.jobDetailScreen,
+              arguments: {'saved': job['snapshot']});
         }
       },
       child: Container(
@@ -262,16 +286,18 @@ class JobRecommendationScreen extends StatelessWidget {
                   width: 42,
                   height: 42,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    gradient: LinearGradient(
-                      colors: logoColors,
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    boxShadow: [
-                      BoxShadow(color: logoColors.first.withOpacity(0.3), blurRadius: 4, offset: Offset(0,2))
-                    ]
-                  ),
+                      borderRadius: BorderRadius.circular(10),
+                      gradient: LinearGradient(
+                        colors: logoColors,
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                            color: logoColors.first.withOpacity(0.3),
+                            blurRadius: 4,
+                            offset: Offset(0, 2))
+                      ]),
                   child: Icon(
                     Icons.business_center,
                     color: Colors.white,
@@ -310,9 +336,11 @@ class JobRecommendationScreen extends StatelessWidget {
                 ),
                 // Apply Button (Small)
                 InkWell(
-                  onTap: () => _showApplicationDialog(context, job, job['snapshot']),
+                  onTap: () =>
+                      _showApplicationDialog(context, job, job['snapshot']),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
                       color: const Color(0xFF000647).withOpacity(0.08),
                       borderRadius: BorderRadius.circular(20),
@@ -338,14 +366,10 @@ class JobRecommendationScreen extends StatelessWidget {
                   _buildTag(Icons.location_on, location, Colors.blue),
                   const SizedBox(width: 8),
                   if (salary != "0" && salary.isNotEmpty)
-                    _buildTag(
-                      Icons.euro, 
-                      "$salary", 
-                      Colors.grey, 
-                      customBg: Colors.grey[100],
-                      customIconColor: Colors.black,
-                      customTextColor: Colors.black
-                    ), // Black salary
+                    _buildTag(Icons.euro, "$salary", Colors.grey,
+                        customBg: Colors.grey[100],
+                        customIconColor: Colors.black,
+                        customTextColor: Colors.black), // Black salary
                   const SizedBox(width: 8),
                   _buildTag(Icons.work_outline, jobType, Colors.orange),
                 ],
@@ -357,13 +381,15 @@ class JobRecommendationScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTag(IconData icon, String text, MaterialColor color, {Color? customBg, Color? customIconColor, Color? customTextColor}) {
+  Widget _buildTag(IconData icon, String text, MaterialColor color,
+      {Color? customBg, Color? customIconColor, Color? customTextColor}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: customBg ?? color[50],
         borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: customBg != null ? Colors.transparent : color[100]!),
+        border: Border.all(
+            color: customBg != null ? Colors.transparent : color[100]!),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -388,7 +414,8 @@ class JobRecommendationScreen extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2), // Even smaller padding
+        padding: const EdgeInsets.symmetric(
+            horizontal: 6, vertical: 2), // Even smaller padding
         decoration: BoxDecoration(
           color: isActive ? const Color(0xFF000647) : Colors.white,
           borderRadius: BorderRadius.circular(20),
@@ -427,7 +454,8 @@ class JobRecommendationScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildEmptyState(UnifiedTranslationService translationService, {bool isFilter = false}) {
+  Widget _buildEmptyState(UnifiedTranslationService translationService,
+      {bool isFilter = false}) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -452,24 +480,57 @@ class JobRecommendationScreen extends StatelessWidget {
   }
 
   // ... Filter Dialog Helpers ...
-  void _showCategoryFilter(BuildContext context, JobRecommendationController controller) {
-    showDialog(context: context, builder: (context) => ModernFilterDialog(title: 'Category', options: controller.categories, selectedValue: controller.selectedCategory.value, onChanged: controller.updateCategory));
+  void _showCategoryFilter(
+      BuildContext context, JobRecommendationController controller) {
+    showDialog(
+        context: context,
+        builder: (context) => ModernFilterDialog(
+            title: 'Category',
+            options: controller.categories,
+            selectedValue: controller.selectedCategory.value,
+            onChanged: controller.updateCategory));
   }
-  void _showJobTypeFilter(BuildContext context, JobRecommendationController controller) {
-    showDialog(context: context, builder: (context) => ModernFilterDialog(title: 'Job Type', options: controller.jobTypes, selectedValue: controller.selectedJobType.value, onChanged: controller.updateJobType));
+
+  void _showJobTypeFilter(
+      BuildContext context, JobRecommendationController controller) {
+    showDialog(
+        context: context,
+        builder: (context) => ModernFilterDialog(
+            title: 'Job Type',
+            options: controller.jobTypes,
+            selectedValue: controller.selectedJobType.value,
+            onChanged: controller.updateJobType));
   }
-  void _showLocationFilter(BuildContext context, JobRecommendationController controller) {
-    showDialog(context: context, builder: (context) => ModernFilterDialog(title: 'Location', options: controller.locations, selectedValue: controller.selectedLocation.value, onChanged: controller.updateLocation));
+
+  void _showLocationFilter(
+      BuildContext context, JobRecommendationController controller) {
+    showDialog(
+        context: context,
+        builder: (context) => ModernFilterDialog(
+            title: 'Location',
+            options: controller.locations,
+            selectedValue: controller.selectedLocation.value,
+            onChanged: controller.updateLocation));
   }
-  void _showDateSortFilter(BuildContext context, JobRecommendationController controller) {
-    showDialog(context: context, builder: (context) => ModernSortDialog(title: 'Sort by', options: DateSortOption.values, selectedValue: controller.selectedDateSort.value, onChanged: controller.updateDateSort));
+
+  void _showDateSortFilter(
+      BuildContext context, JobRecommendationController controller) {
+    showDialog(
+        context: context,
+        builder: (context) => ModernSortDialog(
+            title: 'Sort by',
+            options: DateSortOption.values,
+            selectedValue: controller.selectedDateSort.value,
+            onChanged: controller.updateDateSort));
   }
 
   // Application Dialog
-  void _showApplicationDialog(BuildContext context, Map<String, dynamic> jobData, QueryDocumentSnapshot? doc) {
+  void _showApplicationDialog(BuildContext context,
+      Map<String, dynamic> jobData, QueryDocumentSnapshot? doc) {
     Get.defaultDialog(
       title: 'Apply Now',
-      titleStyle: GoogleFonts.inter(fontWeight: FontWeight.bold, color: const Color(0xFF000647)),
+      titleStyle: GoogleFonts.inter(
+          fontWeight: FontWeight.bold, color: const Color(0xFF000647)),
       content: Column(
         children: [
           Text(
@@ -483,11 +544,13 @@ class JobRecommendationScreen extends StatelessWidget {
             children: [
               OutlinedButton(
                 onPressed: () => Get.back(),
-                child: Text('Cancel', style: TextStyle(color: Colors.grey[600], fontSize: 16)),
+                child: Text('Cancel',
+                    style: TextStyle(color: Colors.grey[600], fontSize: 16)),
               ),
               const SizedBox(width: 16),
               ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF000647)),
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF000647)),
                 onPressed: () {
                   Get.back();
                   Get.toNamed(AppRes.jobApplicationScreen, arguments: {
@@ -495,7 +558,8 @@ class JobRecommendationScreen extends StatelessWidget {
                     'docId': doc?.id ?? jobData['docId'] ?? 'unknown',
                   });
                 },
-                child: const Text('Apply', style: TextStyle(color: Colors.white, fontSize: 16)),
+                child: const Text('Apply',
+                    style: TextStyle(color: Colors.white, fontSize: 16)),
               ),
             ],
           ),
@@ -505,27 +569,41 @@ class JobRecommendationScreen extends StatelessWidget {
   }
 
   // Filter Logic
-  List<Map<String, dynamic>> _filterJobs(List<Map<String, dynamic>> jobs, JobRecommendationController controller) {
-     List<Map<String, dynamic>> filteredJobs = List.from(jobs);
-  
+  List<Map<String, dynamic>> _filterJobs(
+      List<Map<String, dynamic>> jobs, JobRecommendationController controller) {
+    List<Map<String, dynamic>> filteredJobs = List.from(jobs);
+
     if (controller.searchText.value.isNotEmpty) {
       final searchQuery = controller.searchText.value.toLowerCase();
       filteredJobs = filteredJobs.where((job) {
         final position = (job['Position'] ?? '').toString().toLowerCase();
         final company = (job['CompanyName'] ?? '').toString().toLowerCase();
         final location = (job['location'] ?? '').toString().toLowerCase();
-        return position.contains(searchQuery) || company.contains(searchQuery) || location.contains(searchQuery);
+        return position.contains(searchQuery) ||
+            company.contains(searchQuery) ||
+            location.contains(searchQuery);
       }).toList();
     }
-    
+
     if (controller.selectedCategory.value != 'All') {
-      filteredJobs = filteredJobs.where((job) => job['category'] == controller.selectedCategory.value).toList();
+      filteredJobs = filteredJobs
+          .where((job) => job['category'] == controller.selectedCategory.value)
+          .toList();
     }
     if (controller.selectedJobType.value != 'All') {
-      filteredJobs = filteredJobs.where((job) => (job['jobType'] ?? job['type']) == controller.selectedJobType.value).toList();
+      filteredJobs = filteredJobs
+          .where((job) =>
+              (job['jobType'] ?? job['type']) ==
+              controller.selectedJobType.value)
+          .toList();
     }
     if (controller.selectedLocation.value != 'All') {
-      filteredJobs = filteredJobs.where((job) => (job['location'] ?? '').toString().toLowerCase().contains(controller.selectedLocation.value.toLowerCase())).toList();
+      filteredJobs = filteredJobs
+          .where((job) => (job['location'] ?? '')
+              .toString()
+              .toLowerCase()
+              .contains(controller.selectedLocation.value.toLowerCase()))
+          .toList();
     }
     if (controller.selectedSalaryRange.value != 'All') {
       // Basic salary filter if salary is number-like
@@ -534,14 +612,16 @@ class JobRecommendationScreen extends StatelessWidget {
       // Re-implementing simplified logic here for responsiveness.
       // ...
     }
-    
+
     // Sort
     filteredJobs.sort((a, b) {
       final aDate = DateTime.tryParse(a['postingDate'] ?? '') ?? DateTime.now();
       final bDate = DateTime.tryParse(b['postingDate'] ?? '') ?? DateTime.now();
-      return controller.selectedDateSort.value == DateSortOption.newest ? bDate.compareTo(aDate) : aDate.compareTo(bDate);
+      return controller.selectedDateSort.value == DateSortOption.newest
+          ? bDate.compareTo(aDate)
+          : aDate.compareTo(bDate);
     });
-    
+
     return filteredJobs;
   }
 }

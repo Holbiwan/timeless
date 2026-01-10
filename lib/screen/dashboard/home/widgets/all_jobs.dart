@@ -7,13 +7,13 @@ import 'package:timeless/common/widgets/modern_job_icon.dart';
 import 'package:timeless/screen/dashboard/home/home_controller.dart';
 import 'package:timeless/screen/job_recommendation_screen/job_recommendation_controller.dart';
 import 'package:timeless/services/unified_translation_service.dart';
-import 'package:timeless/services/indeed_jobs_service.dart';
 import 'package:timeless/utils/app_res.dart';
 import 'package:timeless/utils/app_style.dart';
 
 Widget allJobs(Stream stream, {bool? seeAll = false}) {
   final HomeController controller = Get.put(HomeController());
-  final UnifiedTranslationService translationService = Get.find<UnifiedTranslationService>();
+  final UnifiedTranslationService translationService =
+      Get.find<UnifiedTranslationService>();
 
   return StreamBuilder<QuerySnapshot>(
     stream: stream as Stream<QuerySnapshot>,
@@ -21,11 +21,11 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
       if (snapshot.connectionState == ConnectionState.waiting) {
         return const CommonLoader();
       }
-      
+
       if (snapshot.hasError) {
         return Center(child: Text('Error: ${snapshot.error}'));
       }
-      
+
       if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
         return Center(
           child: Column(
@@ -43,15 +43,18 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
         );
       }
 
-      final firebaseJobs = snapshot.data!.docs.map((doc) {
-        final data = doc.data() as Map<String, dynamic>;
-        return {
-          ...data,
-          'source': 'firebase',
-          'docId': doc.id,
-        };
-      }).where((job) => job['isFromVerifiedEmployer'] == true).toList();
-      
+      final firebaseJobs = snapshot.data!.docs
+          .map((doc) {
+            final data = doc.data() as Map<String, dynamic>;
+            return {
+              ...data,
+              'source': 'firebase',
+              'docId': doc.id,
+            };
+          })
+          .where((job) => job['isFromVerifiedEmployer'] == true)
+          .toList();
+
       return GetBuilder<JobRecommendationController>(
         id: "search",
         init: JobRecommendationController(),
@@ -60,7 +63,7 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
             // Use Firebase jobs with real-time updates
             final filteredJobs = _filterJobs(firebaseJobs, jrController);
             final total = filteredJobs.length;
-            
+
             controller.jobTypesSaved =
                 List.generate(total, (index) => false).obs;
 
@@ -76,9 +79,11 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      jrController.hasActiveFilters() 
-                          ? translationService.getText("no_results_found_filters")
-                          : translationService.getText("no_job_offers_available"),
+                      jrController.hasActiveFilters()
+                          ? translationService
+                              .getText("no_results_found_filters")
+                          : translationService
+                              .getText("no_job_offers_available"),
                       style: const TextStyle(
                         fontSize: 16,
                         color: Colors.grey,
@@ -90,7 +95,8 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
                       const SizedBox(height: 10),
                       TextButton(
                         onPressed: () => jrController.clearAllFilters(),
-                        child: Text(translationService.getText("reset_filters")),
+                        child:
+                            Text(translationService.getText("reset_filters")),
                       ),
                     ],
                   ],
@@ -111,28 +117,35 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
                 }
 
                 final docData = filteredJobs[revIndex];
-                final position = docData["Position"] ?? translationService.getText("not_specified");
-                final company = docData["CompanyName"] ?? translationService.getText("company_name_default");
-                final location = docData["location"] ?? translationService.getText("not_specified");
+                final position = docData["Position"] ??
+                    translationService.getText("not_specified");
+                final company = docData["CompanyName"] ??
+                    translationService.getText("company_name_default");
+                final location = docData["location"] ??
+                    translationService.getText("not_specified");
                 final salary = docData["salary"] ?? "0";
                 final category = docData["category"] ?? "";
 
                 // Filtrer les données de démo indésirables et employeurs non vérifiés
-                if (company.contains('DemoToday') || 
+                if (company.contains('DemoToday') ||
                     company.contains('FinanceExpert') ||
                     position.contains('DemoToday') ||
                     location.contains('DemoToday') ||
                     docData['isFromVerifiedEmployer'] != true) {
-                  return const SizedBox.shrink(); // Ne pas afficher ces annonces
+                  return const SizedBox
+                      .shrink(); // Ne pas afficher ces annonces
                 }
 
                 return Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   padding: const EdgeInsets.all(18),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: const Color(0xFF000647).withOpacity(0.1), width: 1.5),
+                    border: Border.all(
+                        color: const Color(0xFF000647).withOpacity(0.1),
+                        width: 1.5),
                     boxShadow: [
                       BoxShadow(
                         color: const Color(0xFF000647).withOpacity(0.08),
@@ -196,7 +209,8 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
                           border: Border.all(color: Colors.grey.shade200),
                         ),
                         child: Text(
-                          docData['description'] ?? _generateDefaultDescription(position, company),
+                          docData['description'] ??
+                              _generateDefaultDescription(position, company),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: appTextStyle(
@@ -216,16 +230,21 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
                               children: [
                                 if (salary != "0" && salary.isNotEmpty)
                                   Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8, vertical: 5),
                                     decoration: BoxDecoration(
                                       gradient: LinearGradient(
                                         colors: [
-                                          const Color(0xFFE67E22).withOpacity(0.1),
-                                          const Color(0xFFE67E22).withOpacity(0.05),
+                                          const Color(0xFFE67E22)
+                                              .withOpacity(0.1),
+                                          const Color(0xFFE67E22)
+                                              .withOpacity(0.05),
                                         ],
                                       ),
                                       borderRadius: BorderRadius.circular(6),
-                                      border: Border.all(color: const Color(0xFFE67E22).withOpacity(0.3)),
+                                      border: Border.all(
+                                          color: const Color(0xFFE67E22)
+                                              .withOpacity(0.3)),
                                     ),
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
@@ -248,16 +267,21 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
                                     ),
                                   ),
                                 Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 5),
                                   decoration: BoxDecoration(
                                     gradient: LinearGradient(
                                       colors: [
-                                        const Color(0xFF000647).withOpacity(0.1),
-                                        const Color(0xFF000647).withOpacity(0.05),
+                                        const Color(0xFF000647)
+                                            .withOpacity(0.1),
+                                        const Color(0xFF000647)
+                                            .withOpacity(0.05),
                                       ],
                                     ),
                                     borderRadius: BorderRadius.circular(6),
-                                    border: Border.all(color: const Color(0xFF000647).withOpacity(0.3)),
+                                    border: Border.all(
+                                        color: const Color(0xFF000647)
+                                            .withOpacity(0.3)),
                                   ),
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
@@ -287,10 +311,12 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
                           ),
                           const SizedBox(width: 8),
                           InkWell(
-                            onTap: () => _showApplicationDialog(context, docData, null),
+                            onTap: () =>
+                                _showApplicationDialog(context, docData, null),
                             borderRadius: BorderRadius.circular(8),
                             child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 8),
                               decoration: BoxDecoration(
                                 gradient: const LinearGradient(
                                   colors: [Colors.black, Colors.black87],
@@ -336,7 +362,8 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
           } catch (e) {
             if (kDebugMode) print(' AllJobs error: $e');
             return Center(
-              child: Text(translationService.getText('loading_jobs'), style: TextStyle(fontSize: 16)),
+              child: Text(translationService.getText('loading_jobs'),
+                  style: TextStyle(fontSize: 16)),
             );
           }
         },
@@ -345,8 +372,10 @@ Widget allJobs(Stream stream, {bool? seeAll = false}) {
   );
 }
 
-void _showApplicationDialog(BuildContext context, Map<String, dynamic> jobData, QueryDocumentSnapshot? doc) {
-  final UnifiedTranslationService translationService = Get.find<UnifiedTranslationService>();
+void _showApplicationDialog(BuildContext context, Map<String, dynamic> jobData,
+    QueryDocumentSnapshot? doc) {
+  final UnifiedTranslationService translationService =
+      Get.find<UnifiedTranslationService>();
   print('🎯 POPUP APPELÉ - Job: ${jobData["Position"]}');
   showDialog(
     context: context,
@@ -355,7 +384,8 @@ void _showApplicationDialog(BuildContext context, Map<String, dynamic> jobData, 
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
         ),
-        contentPadding: EdgeInsets.all(MediaQuery.of(context).size.width > 600 ? 32 : 20),
+        contentPadding:
+            EdgeInsets.all(MediaQuery.of(context).size.width > 600 ? 32 : 20),
         title: Row(
           children: [
             Icon(
@@ -461,11 +491,12 @@ void _showApplicationDialog(BuildContext context, Map<String, dynamic> jobData, 
 }
 
 String _generateDefaultDescription(String position, String company) {
-  final UnifiedTranslationService translationService = Get.find<UnifiedTranslationService>();
-  
+  final UnifiedTranslationService translationService =
+      Get.find<UnifiedTranslationService>();
+
   final descriptions = [
     translationService.getText("job_desc_1"),
-    translationService.getText("job_desc_2"), 
+    translationService.getText("job_desc_2"),
     translationService.getText("job_desc_3"),
     translationService.getText("job_desc_4"),
     translationService.getText("job_desc_5"),
@@ -473,7 +504,7 @@ String _generateDefaultDescription(String position, String company) {
     translationService.getText("job_desc_7"),
     translationService.getText("job_desc_8"),
   ];
-  
+
   final hash = (position + company).hashCode.abs();
   return descriptions[hash % descriptions.length];
 }
@@ -481,9 +512,10 @@ String _generateDefaultDescription(String position, String company) {
 // Real-time Firebase jobs now handled by StreamBuilder above
 
 // Fonction pour filtrer les jobs selon les critères du controller
-List<Map<String, dynamic>> _filterJobs(List<Map<String, dynamic>> jobs, dynamic controller) {
+List<Map<String, dynamic>> _filterJobs(
+    List<Map<String, dynamic>> jobs, dynamic controller) {
   List<Map<String, dynamic>> filteredJobs = List.from(jobs);
-  
+
   // Filtre de recherche textuelle (nom société, lieu, salaire, poste, description)
   if (controller.searchText.value.isNotEmpty) {
     final searchQuery = controller.searchText.value.toLowerCase();
@@ -494,16 +526,16 @@ List<Map<String, dynamic>> _filterJobs(List<Map<String, dynamic>> jobs, dynamic 
       final salary = (job['salary'] ?? '').toString().toLowerCase();
       final description = (job['description'] ?? '').toString().toLowerCase();
       final category = (job['category'] ?? '').toString().toLowerCase();
-      
+
       return position.contains(searchQuery) ||
-             company.contains(searchQuery) ||
-             location.contains(searchQuery) ||
-             salary.contains(searchQuery) ||
-             description.contains(searchQuery) ||
-             category.contains(searchQuery);
+          company.contains(searchQuery) ||
+          location.contains(searchQuery) ||
+          salary.contains(searchQuery) ||
+          description.contains(searchQuery) ||
+          category.contains(searchQuery);
     }).toList();
   }
-  
+
   // Filtre par catégorie
   if (controller.selectedCategory.value != 'All') {
     filteredJobs = filteredJobs.where((job) {
@@ -511,7 +543,7 @@ List<Map<String, dynamic>> _filterJobs(List<Map<String, dynamic>> jobs, dynamic 
       return jobCategory == controller.selectedCategory.value;
     }).toList();
   }
-  
+
   // Filtre par type d'emploi
   if (controller.selectedJobType.value != 'All') {
     filteredJobs = filteredJobs.where((job) {
@@ -519,7 +551,7 @@ List<Map<String, dynamic>> _filterJobs(List<Map<String, dynamic>> jobs, dynamic 
       return jobType == controller.selectedJobType.value;
     }).toList();
   }
-  
+
   // Filtre par localisation
   if (controller.selectedLocation.value != 'All') {
     filteredJobs = filteredJobs.where((job) {
@@ -528,13 +560,14 @@ List<Map<String, dynamic>> _filterJobs(List<Map<String, dynamic>> jobs, dynamic 
       return jobLocation.contains(selectedLoc);
     }).toList();
   }
-  
+
   // Filtre par fourchette salariale
   if (controller.selectedSalaryRange.value != 'All') {
     filteredJobs = filteredJobs.where((job) {
       final salaryStr = (job['salary'] ?? '0').toString();
-      final salary = int.tryParse(salaryStr.replaceAll(RegExp(r'[^\d]'), '')) ?? 0;
-      
+      final salary =
+          int.tryParse(salaryStr.replaceAll(RegExp(r'[^\d]'), '')) ?? 0;
+
       switch (controller.selectedSalaryRange.value) {
         case '< 35K':
           return salary < 35000;
@@ -551,13 +584,13 @@ List<Map<String, dynamic>> _filterJobs(List<Map<String, dynamic>> jobs, dynamic 
       }
     }).toList();
   }
-  
+
   // Tri par date selon le filtre de date
   try {
     filteredJobs.sort((a, b) {
       final aDate = DateTime.tryParse(a['postingDate'] ?? '') ?? DateTime.now();
       final bDate = DateTime.tryParse(b['postingDate'] ?? '') ?? DateTime.now();
-      
+
       switch (controller.selectedDateSort.value.name) {
         case 'newest':
           return bDate.compareTo(aDate); // Plus récent en premier
@@ -570,6 +603,6 @@ List<Map<String, dynamic>> _filterJobs(List<Map<String, dynamic>> jobs, dynamic 
   } catch (e) {
     print('Erreur lors du tri par date: $e');
   }
-  
+
   return filteredJobs;
 }

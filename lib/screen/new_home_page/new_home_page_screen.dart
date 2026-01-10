@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:timeless/controllers/candidate_controller.dart';
 import 'package:timeless/models/application_model.dart';
-import 'package:timeless/screen/new_home_page/new_home_page_controller.dart';
 import 'package:timeless/screen/profile/my_applications_screen.dart'; // For ApplicationCard reuse if possible, or we rebuild it
 import 'package:timeless/services/unified_translation_service.dart';
 import 'package:timeless/utils/color_res.dart';
@@ -13,9 +12,9 @@ class HomePageNewScreenU extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final homeController = Get.put(HomePageNewController());
     final candidateController = Get.put(CandidateController());
-    final UnifiedTranslationService translationService = Get.find<UnifiedTranslationService>();
+    final UnifiedTranslationService translationService =
+        Get.find<UnifiedTranslationService>();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -56,7 +55,7 @@ class HomePageNewScreenU extends StatelessWidget {
                     ),
                     TextButton(
                       onPressed: () {
-                         Get.to(() => const MyApplicationsScreen());
+                        Get.to(() => const MyApplicationsScreen());
                       },
                       child: Text(
                         translationService.getText('view_all'),
@@ -81,7 +80,8 @@ class HomePageNewScreenU extends StatelessWidget {
                     return _buildEmptyState(translationService);
                   }
 
-                  final recentApps = candidateController.applications.take(3).toList();
+                  final recentApps =
+                      candidateController.applications.take(3).toList();
 
                   return ListView.builder(
                     shrinkWrap: true,
@@ -89,12 +89,13 @@ class HomePageNewScreenU extends StatelessWidget {
                     itemCount: recentApps.length,
                     itemBuilder: (context, index) {
                       final app = recentApps[index];
-                      return _buildCompactApplicationCard(app, translationService);
+                      return _buildCompactApplicationCard(
+                          app, translationService);
                     },
                   );
                 }),
-                
-                const SizedBox(height: 80), 
+
+                const SizedBox(height: 80),
               ],
             ),
           ),
@@ -103,10 +104,12 @@ class HomePageNewScreenU extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(CandidateController controller, UnifiedTranslationService translationService) {
+  Widget _buildHeader(CandidateController controller,
+      UnifiedTranslationService translationService) {
     return Obx(() {
       final profile = controller.candidateProfile;
-      final name = profile?.fullName ?? translationService.getText('greeting_candidate');
+      final name =
+          profile?.fullName ?? translationService.getText('greeting_candidate');
       final photoUrl = profile?.photoURL;
 
       return Row(
@@ -136,7 +139,8 @@ class HomePageNewScreenU extends StatelessWidget {
             radius: 24,
             backgroundImage: (photoUrl != null && photoUrl.isNotEmpty)
                 ? NetworkImage(photoUrl)
-                : const AssetImage('assets/images/userImage.png') as ImageProvider,
+                : const AssetImage('assets/images/userImage.png')
+                    as ImageProvider,
             backgroundColor: ColorRes.containerColor,
           ),
         ],
@@ -147,7 +151,7 @@ class HomePageNewScreenU extends StatelessWidget {
   Widget _buildSearchBar(UnifiedTranslationService translationService) {
     return GestureDetector(
       onTap: () {
-         Get.toNamed('/search_job');
+        Get.toNamed('/search_job');
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -173,7 +177,8 @@ class HomePageNewScreenU extends StatelessWidget {
     );
   }
 
-  Widget _buildStatsSection(CandidateController controller, UnifiedTranslationService translationService) {
+  Widget _buildStatsSection(CandidateController controller,
+      UnifiedTranslationService translationService) {
     return Obx(() {
       final stats = controller.stats;
       final total = stats['totalApplications'] ?? 0;
@@ -252,16 +257,26 @@ class HomePageNewScreenU extends StatelessWidget {
     );
   }
 
-  Widget _buildCompactApplicationCard(ApplicationModel app, UnifiedTranslationService translationService) {
+  Widget _buildCompactApplicationCard(
+      ApplicationModel app, UnifiedTranslationService translationService) {
     // Determine status color locally or via helper
     Color statusColor;
     switch (app.status) {
-      case ApplicationStatus.pending: statusColor = ColorRes.orange; break;
-      case ApplicationStatus.viewed: statusColor = ColorRes.royalBlue; break;
-      case ApplicationStatus.rejected: statusColor = ColorRes.errorColor; break;
+      case ApplicationStatus.pending:
+        statusColor = ColorRes.orange;
+        break;
+      case ApplicationStatus.viewed:
+        statusColor = ColorRes.royalBlue;
+        break;
+      case ApplicationStatus.rejected:
+        statusColor = ColorRes.errorColor;
+        break;
       case ApplicationStatus.accepted:
-      case ApplicationStatus.hired: statusColor = ColorRes.successColor; break;
-      default: statusColor = ColorRes.textTertiary;
+      case ApplicationStatus.hired:
+        statusColor = ColorRes.successColor;
+        break;
+      default:
+        statusColor = ColorRes.textTertiary;
     }
 
     return Container(
@@ -299,7 +314,8 @@ class HomePageNewScreenU extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  translationService.getText('application_sent'), // Ideally Job Title
+                  translationService
+                      .getText('application_sent'), // Ideally Job Title
                   style: GoogleFonts.inter(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
@@ -325,7 +341,8 @@ class HomePageNewScreenU extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusChip(ApplicationStatus status, UnifiedTranslationService translationService) {
+  Widget _buildStatusChip(
+      ApplicationStatus status, UnifiedTranslationService translationService) {
     Color color;
     String label;
 
@@ -336,11 +353,13 @@ class HomePageNewScreenU extends StatelessWidget {
         break;
       case ApplicationStatus.viewed:
         color = ColorRes.royalBlue;
-        label = translationService.getText('viewed'); // Need to add 'viewed' key
+        label =
+            translationService.getText('viewed'); // Need to add 'viewed' key
         break;
       case ApplicationStatus.rejected:
         color = ColorRes.errorColor;
-        label = translationService.getText('rejected'); // Need to add 'rejected' key
+        label = translationService
+            .getText('rejected'); // Need to add 'rejected' key
         break;
       case ApplicationStatus.accepted:
       case ApplicationStatus.hired:
@@ -386,7 +405,7 @@ class HomePageNewScreenU extends StatelessWidget {
       ),
     );
   }
-  
+
   String _formatDate(DateTime date) {
     return '${date.day}/${date.month}/${date.year}';
   }

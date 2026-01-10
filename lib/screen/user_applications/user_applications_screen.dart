@@ -6,8 +6,6 @@ import 'package:timeless/screen/job_application/job_application_controller.dart'
 import 'package:timeless/screen/job_detail_screen/job_detail_screen.dart';
 import 'package:timeless/services/unified_translation_service.dart';
 import 'package:timeless/services/accessibility_service.dart';
-import 'package:timeless/services/google_auth_service.dart';
-import 'package:timeless/utils/app_theme.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -19,9 +17,12 @@ class UserApplicationsScreen extends StatefulWidget {
 }
 
 class _UserApplicationsScreenState extends State<UserApplicationsScreen> {
-  final JobApplicationController applicationController = Get.put(JobApplicationController());
-  final UnifiedTranslationService translationService = Get.find<UnifiedTranslationService>();
-  final AccessibilityService accessibilityService = Get.find<AccessibilityService>();
+  final JobApplicationController applicationController =
+      Get.put(JobApplicationController());
+  final UnifiedTranslationService translationService =
+      Get.find<UnifiedTranslationService>();
+  final AccessibilityService accessibilityService =
+      Get.find<AccessibilityService>();
 
   @override
   Widget build(BuildContext context) {
@@ -129,7 +130,8 @@ class _UserApplicationsScreenState extends State<UserApplicationsScreen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF000647),
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               ),
             ),
           ],
@@ -178,7 +180,8 @@ class _UserApplicationsScreenState extends State<UserApplicationsScreen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF000647),
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               ),
             ),
           ],
@@ -190,7 +193,7 @@ class _UserApplicationsScreenState extends State<UserApplicationsScreen> {
   Widget _buildApplicationCard(Map<String, dynamic> application) {
     final appliedAt = application['appliedAt']?.toDate() ?? DateTime.now();
     final formattedDate = DateFormat('dd/MM/yyyy à HH:mm').format(appliedAt);
-    
+
     final status = application['status'] ?? 'pending';
     Color statusColor;
     String statusText;
@@ -257,7 +260,8 @@ class _UserApplicationsScreenState extends State<UserApplicationsScreen> {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: statusColor.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(8),
@@ -284,9 +288,9 @@ class _UserApplicationsScreenState extends State<UserApplicationsScreen> {
                 ),
               ],
             ),
-            
+
             const SizedBox(height: 12),
-            
+
             // Location and application date
             Row(
               children: [
@@ -304,9 +308,9 @@ class _UserApplicationsScreenState extends State<UserApplicationsScreen> {
                 ),
               ],
             ),
-            
+
             const SizedBox(height: 8),
-            
+
             Row(
               children: [
                 Icon(Icons.schedule, size: 16, color: Colors.grey[600]),
@@ -323,9 +327,9 @@ class _UserApplicationsScreenState extends State<UserApplicationsScreen> {
                 ),
               ],
             ),
-            
+
             // Cover letter preview (if exists)
-            if (application['coverLetter'] != null && 
+            if (application['coverLetter'] != null &&
                 application['coverLetter'].toString().isNotEmpty) ...[
               const SizedBox(height: 12),
               Container(
@@ -360,9 +364,9 @@ class _UserApplicationsScreenState extends State<UserApplicationsScreen> {
                 ),
               ),
             ],
-            
+
             const SizedBox(height: 12),
-            
+
             // Actions
             Wrap(
               spacing: 8,
@@ -392,7 +396,8 @@ class _UserApplicationsScreenState extends State<UserApplicationsScreen> {
                 ),
                 TextButton.icon(
                   onPressed: () async {
-                    await _deleteApplication(application['id'], application['jobTitle'] ?? 'this application');
+                    await _deleteApplication(application['id'],
+                        application['jobTitle'] ?? 'this application');
                   },
                   icon: const Icon(Icons.delete_outline, size: 16),
                   label: const Text('Delete'),
@@ -463,7 +468,7 @@ class _UserApplicationsScreenState extends State<UserApplicationsScreen> {
 
       if (jobDoc.exists && jobDoc.data() != null) {
         final rawData = jobDoc.data()!;
-        
+
         // Debug: Print the raw data to see what fields are available
         print('=== DEBUG: Raw job data from Firestore ===');
         print('Keys available: ${rawData.keys.toList()}');
@@ -476,11 +481,14 @@ class _UserApplicationsScreenState extends State<UserApplicationsScreen> {
         print('RequirementsList: ${rawData['RequirementsList']}');
         print('requirements: ${rawData['requirements']}');
         print('=====================================');
-        
+
         // Create a safe job data map with null-safe values matching JobDetailScreen expectations
-        final List<dynamic> requirements = rawData['requirements'] ?? rawData['RequirementsList'] ?? [];
-        final List<dynamic> responsibilities = rawData['responsibilities'] ?? rawData['ResponsibilitiesList'] ?? [];
-        
+        final List<dynamic> requirements =
+            rawData['requirements'] ?? rawData['RequirementsList'] ?? [];
+        final List<dynamic> responsibilities = rawData['responsibilities'] ??
+            rawData['ResponsibilitiesList'] ??
+            [];
+
         // Ensure requirements and responsibilities are proper lists with string values
         final List<String> safeRequirements = requirements
             .map((item) => item?.toString() ?? 'No requirement specified')
@@ -488,7 +496,7 @@ class _UserApplicationsScreenState extends State<UserApplicationsScreen> {
         final List<String> safeResponsibilities = responsibilities
             .map((item) => item?.toString() ?? 'No responsibility specified')
             .toList();
-        
+
         // Add default items if lists are empty to prevent .length errors
         if (safeRequirements.isEmpty) {
           safeRequirements.add('Requirements not specified');
@@ -496,15 +504,19 @@ class _UserApplicationsScreenState extends State<UserApplicationsScreen> {
         if (safeResponsibilities.isEmpty) {
           safeResponsibilities.add('Responsibilities not specified');
         }
-        
+
         final Map<String, dynamic> jobData = {
           'id': jobDoc.id,
           'Position': rawData['Position']?.toString() ?? 'Unknown Position',
-          'CompanyName': rawData['CompanyName']?.toString() ?? 'Unknown Company',
-          'Description': rawData['Description']?.toString() ?? 'No description available',
+          'CompanyName':
+              rawData['CompanyName']?.toString() ?? 'Unknown Company',
+          'Description':
+              rawData['Description']?.toString() ?? 'No description available',
           'location': rawData['location']?.toString() ?? 'Unknown Location',
           'salary': rawData['salary']?.toString() ?? '0',
-          'type': rawData['jobType']?.toString() ?? rawData['type']?.toString() ?? 'CDI', // Map jobType to type
+          'type': rawData['jobType']?.toString() ??
+              rawData['type']?.toString() ??
+              'CDI', // Map jobType to type
           'category': rawData['category']?.toString() ?? 'General',
           'jobType': rawData['jobType']?.toString() ?? 'CDI',
           'isRemote': rawData['isRemote'] ?? false,
@@ -521,7 +533,8 @@ class _UserApplicationsScreenState extends State<UserApplicationsScreen> {
           'companyEmail': rawData['companyEmail']?.toString() ?? '',
           'responsibilities': safeResponsibilities,
           'requirements': safeRequirements,
-          'RequirementsList': safeRequirements, // Ensure this exists for JobDetailScreen
+          'RequirementsList':
+              safeRequirements, // Ensure this exists for JobDetailScreen
           'ResponsibilitiesList': safeResponsibilities,
           'applicationsCount': rawData['applicationsCount'] ?? 0,
           'BookMarkUserList': rawData['BookMarkUserList'] ?? [],
@@ -537,7 +550,8 @@ class _UserApplicationsScreenState extends State<UserApplicationsScreen> {
         print('location: ${jobData['location']}');
         print('salary: ${jobData['salary']}');
         print('type: ${jobData['type']}');
-        print('RequirementsList length: ${jobData['RequirementsList']?.length}');
+        print(
+            'RequirementsList length: ${jobData['RequirementsList']?.length}');
         print('RequirementsList: ${jobData['RequirementsList']}');
         print('==========================================');
 
@@ -568,7 +582,8 @@ class _UserApplicationsScreenState extends State<UserApplicationsScreen> {
   }
 
   // Delete application functionality
-  Future<void> _deleteApplication(String? applicationId, String jobTitle) async {
+  Future<void> _deleteApplication(
+      String? applicationId, String jobTitle) async {
     if (applicationId == null || applicationId.isEmpty) {
       Get.snackbar(
         'Error',
@@ -583,7 +598,8 @@ class _UserApplicationsScreenState extends State<UserApplicationsScreen> {
     final bool? confirmed = await Get.dialog<bool>(
       AlertDialog(
         title: const Text('Delete Application'),
-        content: Text('Are you sure you want to delete your application for "$jobTitle"?'),
+        content: Text(
+            'Are you sure you want to delete your application for "$jobTitle"?'),
         actions: [
           TextButton(
             onPressed: () => Get.back(result: false),
@@ -618,7 +634,6 @@ class _UserApplicationsScreenState extends State<UserApplicationsScreen> {
         // Optionally, you might also want to clean up the Applicants collection
         // This depends on your data structure and business logic
         await _cleanupApplicantsCollection(applicationId);
-
       } catch (e) {
         print('Error deleting application: $e');
         Get.snackbar(

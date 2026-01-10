@@ -1,3 +1,5 @@
+// ignore_for_file: unused_element, unused_shown_name
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb;
@@ -99,15 +101,6 @@ class SignInScreenController extends GetxController {
   // Helpers // --- SECTION: 
 
 
-
-  Future<void> _persistUserPrefs(User user, {String? email, String? fullName}) async {
-    await PreferencesService.setValue(PrefKeys.rol, "User");
-    await PreferencesService.setValue(PrefKeys.userId, user.uid);
-    if (email != null) await PreferencesService.setValue(PrefKeys.email, email);
-    if (fullName != null) await PreferencesService.setValue(PrefKeys.fullName, fullName);
-    
-    print('✅ User preferences saved: userId=${user.uid}, email=$email');
-  }
 
   Future<void> _mergeUserDoc({
     required String uid,

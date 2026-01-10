@@ -2,25 +2,19 @@
 // Displays comprehensive job information, company details, and provides apply/save actions
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:timeless/screen/job_detail_screen/job_detail_controller.dart';
-import 'package:timeless/screen/job_detail_screen/job_detail_widget/job_detail_widget.dart';
-import 'package:timeless/screen/savejobs/save_job_screen.dart';
 import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/app_res.dart';
-import 'package:timeless/utils/app_style.dart';
-import 'package:timeless/utils/asset_res.dart';
-import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/utils/string.dart';
 
 class JobDetailScreen extends StatelessWidget {
   JobDetailScreen({super.key});
   final JobDetailsController controller = Get.put(JobDetailsController());
-  var args = Get.arguments;
+  final dynamic args = Get.arguments;
 
   @override
   Widget build(BuildContext context) {
@@ -33,10 +27,12 @@ class JobDetailScreen extends StatelessWidget {
     final location = data['location'] ?? 'Unknown Location';
     final type = data['type'] ?? data['jobType'] ?? 'Full-time';
     final description = data['description'] ?? 'No description provided.';
-    final requirementsList = data['RequirementsList'] as List<dynamic>? ?? []; // Job requirements list
+    final requirementsList = data['RequirementsList'] as List<dynamic>? ??
+        []; // Job requirements list
 
     return Scaffold(
-      backgroundColor: Colors.grey[50], // Light background for content readability
+      backgroundColor:
+          Colors.grey[50], // Light background for content readability
       body: SafeArea(
         child: Column(
           children: [
@@ -81,7 +77,8 @@ class JobDetailScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.15),
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.white.withOpacity(0.2)),
+                        border:
+                            Border.all(color: Colors.white.withOpacity(0.2)),
                       ),
                       child: const Icon(
                         Icons.arrow_back,
@@ -107,15 +104,18 @@ class JobDetailScreen extends StatelessWidget {
                     id: "bookmark",
                     builder: (con) {
                       final bookmarks = data['BookMarkUserList'] as List? ?? [];
-                      final isBookmarked = bookmarks.contains(PreferencesService.getString(PrefKeys.userId));
+                      final isBookmarked = bookmarks.contains(
+                          PreferencesService.getString(PrefKeys.userId));
                       return GestureDetector(
                         onTap: () {
                           // Bookmark logic (copied from original, needs doc.id)
                           List updatedBookmarks = List.from(bookmarks);
                           if (isBookmarked) {
-                            updatedBookmarks.remove(PreferencesService.getString(PrefKeys.userId));
+                            updatedBookmarks.remove(
+                                PreferencesService.getString(PrefKeys.userId));
                           } else {
-                            updatedBookmarks.add(PreferencesService.getString(PrefKeys.userId));
+                            updatedBookmarks.add(
+                                PreferencesService.getString(PrefKeys.userId));
                           }
                           FirebaseFirestore.instance
                               .collection('allPost')
@@ -129,10 +129,13 @@ class JobDetailScreen extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: Colors.white.withOpacity(0.15),
                             borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: Colors.white.withOpacity(0.2)),
+                            border: Border.all(
+                                color: Colors.white.withOpacity(0.2)),
                           ),
                           child: Icon(
-                            isBookmarked ? Icons.bookmark : Icons.bookmark_border,
+                            isBookmarked
+                                ? Icons.bookmark
+                                : Icons.bookmark_border,
                             color: Colors.white,
                             size: 20,
                           ),
@@ -143,7 +146,7 @@ class JobDetailScreen extends StatelessWidget {
                 ],
               ),
             ),
-            
+
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -213,11 +216,14 @@ class JobDetailScreen extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _buildDetailRow(Icons.monetization_on, 'Salary', '$salary€', Colors.black), // Black salary
+                          _buildDetailRow(Icons.monetization_on, 'Salary',
+                              '$salary€', Colors.black), // Black salary
                           const Divider(height: 24),
-                          _buildDetailRow(Icons.work, 'Type', type, const Color(0xFF000647)),
+                          _buildDetailRow(Icons.work, 'Type', type,
+                              const Color(0xFF000647)),
                           const Divider(height: 24),
-                          _buildDetailRow(Icons.location_on, 'Location', location, Colors.blue),
+                          _buildDetailRow(Icons.location_on, 'Location',
+                              location, Colors.blue),
                         ],
                       ),
                     ),
@@ -294,7 +300,8 @@ class JobDetailScreen extends StatelessWidget {
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Icon(Icons.check_circle_outline, size: 18, color: const Color(0xFF000647)),
+                                Icon(Icons.check_circle_outline,
+                                    size: 18, color: const Color(0xFF000647)),
                                 const SizedBox(width: 8),
                                 Expanded(
                                   child: Text(
@@ -326,7 +333,8 @@ class JobDetailScreen extends StatelessWidget {
                 gradient: LinearGradient(
                   colors: [
                     const Color(0xFF000647), // Dark Blue
-                    const Color(0xFF000647).withOpacity(0.8), // Slightly lighter Dark Blue
+                    const Color(0xFF000647)
+                        .withOpacity(0.8), // Slightly lighter Dark Blue
                   ],
                 ),
                 boxShadow: [
@@ -365,7 +373,8 @@ class JobDetailScreen extends StatelessWidget {
   }
 
   // Helper widget for detail rows
-  Widget _buildDetailRow(IconData icon, String title, String value, Color iconColor) {
+  Widget _buildDetailRow(
+      IconData icon, String title, String value, Color iconColor) {
     return Row(
       children: [
         Icon(icon, color: iconColor, size: 20),

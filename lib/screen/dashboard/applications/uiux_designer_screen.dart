@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:timeless/common/widgets/back_button.dart';
 import 'package:timeless/utils/app_style.dart';
-import 'package:timeless/utils/asset_res.dart';
 import 'package:timeless/utils/color_res.dart';
 import 'package:timeless/services/unified_translation_service.dart'; // Import the translation service
 
@@ -23,14 +21,15 @@ class SentScreen extends StatelessWidget {
       this.location,
       this.type});
 
-  final translationService = Get.find<UnifiedTranslationService>(); // Inject translation service
+  final translationService =
+      Get.find<UnifiedTranslationService>(); // Inject translation service
 
   // Helper function to format salary - always show the real salary from the job posting
   String _formatSalary(String? salary) {
     if (salary == null || salary.isEmpty) {
       return "€3,500/month"; // Default salary if none provided
     }
-    
+
     // If it's just a number, format it as EUR per month
     if (RegExp(r'^\d+$').hasMatch(salary)) {
       final amount = int.parse(salary);
@@ -40,12 +39,14 @@ class SentScreen extends StatelessWidget {
         return "€${salary}/month";
       }
     }
-    
+
     // If it already contains currency or formatting, return as is
-    if (salary.contains('€') || salary.contains('\$') || salary.toLowerCase().contains('k')) {
+    if (salary.contains('€') ||
+        salary.contains('\$') ||
+        salary.toLowerCase().contains('k')) {
       return salary;
     }
-    
+
     // For any other format, add EUR
     return "€${salary}";
   }
@@ -55,10 +56,10 @@ class SentScreen extends StatelessWidget {
     if (location == null || location.isEmpty) {
       return "Remote"; // Default if no location provided
     }
-    
+
     // Clean up the location string and ensure proper formatting
     String cleanLocation = location.trim();
-    
+
     // If it's a single word, assume it's a city and add a country
     if (!cleanLocation.contains(',') && !cleanLocation.contains(' ')) {
       // Common city to country mappings
@@ -74,11 +75,11 @@ class SentScreen extends StatelessWidget {
         'vienna': 'Vienna, Austria',
         'stockholm': 'Stockholm, Sweden',
       };
-      
+
       final key = cleanLocation.toLowerCase();
       return cityToCountry[key] ?? "$cleanLocation, Europe";
     }
-    
+
     return cleanLocation;
   }
 
@@ -86,8 +87,18 @@ class SentScreen extends StatelessWidget {
   String _getTodaysDate() {
     final now = DateTime.now();
     final months = [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December'
     ];
     return "${months[now.month - 1]} ${now.day}, ${now.year}";
   }
@@ -259,7 +270,8 @@ class SentScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 16),
                           Container(
-                            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 16),
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 colors: [
@@ -373,7 +385,8 @@ class SentScreen extends StatelessWidget {
                                 ],
                               ),
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 4),
                                 decoration: BoxDecoration(
                                   color: ColorRes.primaryBlue.withOpacity(0.1),
                                   borderRadius: BorderRadius.circular(8),
@@ -465,7 +478,8 @@ class SentScreen extends StatelessWidget {
                     // Description Card
                     Container(
                       width: Get.width,
-                      margin: const EdgeInsets.symmetric(horizontal: 18, vertical: 5),
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 18, vertical: 5),
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(16),

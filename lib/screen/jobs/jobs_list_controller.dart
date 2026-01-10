@@ -1,4 +1,4 @@
-// ignore_for_file: unnecessary_null_comparison
+// ignore_for_file: unnecessary_null_comparison, unused_element
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -435,7 +435,7 @@ class JobsListController extends GetxController {
         experienceLevel: experienceFilter,
       );
 
-      jobs.value = jobsList as List<JobOfferModel>;
+      jobs.value = jobsList;
 
       // Si pas de jobs trouvés, utiliser des données factices filtrées
       if (jobsList.isEmpty) {
