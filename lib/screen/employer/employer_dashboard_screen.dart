@@ -31,6 +31,11 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
   final Color _primaryBlue = const Color(0xFF000647);
   final Color _accentOrange = const Color(0xFFE67E22);
 
+  // Helper to apply text scaling
+  double _getScaledFontSize(BuildContext context, double baseFontSize) {
+    return baseFontSize * MediaQuery.textScaleFactorOf(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     final accessibilityService = AccessibilityService.instance;
@@ -127,26 +132,30 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     // Back button
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.15),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: Colors.white.withOpacity(0.2),
-                          width: 1,
+                    Semantics(
+                      button: true,
+                      label: 'Back to Login',
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.15),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.2),
+                            width: 1,
+                          ),
                         ),
-                      ),
-                      child: IconButton(
-                        icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 18),
-                        onPressed: () {
-                          // Clear employer session and return to login choice
-                          PreferencesService.setBool(PrefKeys.isLogin, false);
-                          PreferencesService.remove(PrefKeys.userId);
-                          PreferencesService.remove(PrefKeys.employerId);
-                          PreferencesService.remove(PrefKeys.companyName);
-                          Get.offAllNamed(AppRes.firstScreen);
-                        },
-                        tooltip: 'Back to Login',
+                        child: IconButton(
+                          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 18),
+                          onPressed: () {
+                            // Clear employer session and return to login choice
+                            PreferencesService.setBool(PrefKeys.isLogin, false);
+                            PreferencesService.remove(PrefKeys.userId);
+                            PreferencesService.remove(PrefKeys.employerId);
+                            PreferencesService.remove(PrefKeys.companyName);
+                            Get.offAllNamed(AppRes.firstScreen);
+                          },
+                          tooltip: 'Back to Login',
+                        ),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -158,7 +167,7 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
                           Text(
                             'Employer Dashboard',
                             style: GoogleFonts.inter(
-                              fontSize: 18,
+                              fontSize: _getScaledFontSize(context, 18),
                               fontWeight: FontWeight.w700,
                               color: Colors.white,
                               letterSpacing: -0.5,
@@ -168,7 +177,7 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
                           Text(
                             'Manage your recruitment efficiently',
                             style: GoogleFonts.inter(
-                              fontSize: 12,
+                              fontSize: _getScaledFontSize(context, 12),
                               color: Colors.white.withOpacity(0.85),
                               fontWeight: FontWeight.w400,
                             ),
@@ -179,43 +188,51 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.15),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: IconButton(
-                            icon: const Icon(Icons.refresh_rounded, color: Colors.white, size: 16),
-                            onPressed: () {
-                              setState(() {});
-                              Get.snackbar(
-                                'Refreshed',
-                                'Dashboard data reloaded',
-                                snackPosition: SnackPosition.BOTTOM,
-                                backgroundColor: _primaryBlue,
-                                colorText: Colors.white,
-                                duration: const Duration(seconds: 1),
-                                margin: const EdgeInsets.all(16),
-                                borderRadius: 16,
-                              );
-                            },
-                            tooltip: 'Refresh',
+                        Semantics(
+                          button: true,
+                          label: 'Refresh Dashboard',
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.15),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: IconButton(
+                              icon: const Icon(Icons.refresh_rounded, color: Colors.white, size: 16),
+                              onPressed: () {
+                                setState(() {});
+                                Get.snackbar(
+                                  'Refreshed',
+                                  'Dashboard data reloaded',
+                                  snackPosition: SnackPosition.BOTTOM,
+                                  backgroundColor: _primaryBlue,
+                                  colorText: Colors.white,
+                                  duration: const Duration(seconds: 1),
+                                  margin: const EdgeInsets.all(16),
+                                  borderRadius: 16,
+                                );
+                              },
+                              tooltip: 'Refresh',
+                            ),
                           ),
                         ),
                         const SizedBox(width: 8),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: Colors.black.withOpacity(0.3),
-                              width: 1,
+                        Semantics(
+                          button: true,
+                          label: 'Logout',
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.black,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: Colors.black.withOpacity(0.3),
+                                width: 1,
+                              ),
                             ),
-                          ),
-                          child: IconButton(
-                            icon: const Icon(Icons.logout_rounded, color: Colors.white, size: 16),
-                            onPressed: _logout,
-                            tooltip: 'Logout',
+                            child: IconButton(
+                              icon: const Icon(Icons.logout_rounded, color: Colors.white, size: 16),
+                              onPressed: _logout,
+                              tooltip: 'Logout',
+                            ),
                           ),
                         ),
                       ],
@@ -333,39 +350,43 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
         ],
         border: Border.all(color: accentColor.withOpacity(0.15), width: 1.5),
       ),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(5),
-              decoration: BoxDecoration(
-                color: accentColor.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
+      child: Semantics(
+        button: true,
+        label: '$count $title', // Combine for clearer accessibility
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  color: accentColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(icon, color: accentColor, size: 14),
               ),
-              child: Icon(icon, color: accentColor, size: 14),
-            ),
-            const SizedBox(height: 6),
-            Text(
-              count.toString(),
-              style: GoogleFonts.inter(
-                fontSize: 15,
-                fontWeight: FontWeight.w700,
-                color: _primaryBlue,
+              const SizedBox(height: 6),
+              Text(
+                count.toString(),
+                style: GoogleFonts.inter(
+                  fontSize: _getScaledFontSize(context, 15),
+                  fontWeight: FontWeight.w700,
+                  color: _primaryBlue,
+                ),
               ),
-            ),
-            const SizedBox(height: 3),
-            Text(
-              title,
-              style: GoogleFonts.inter(
-                fontSize: 9,
-                fontWeight: FontWeight.w500,
-                color: Colors.grey.shade600,
+              const SizedBox(height: 3),
+              Text(
+                title,
+                style: GoogleFonts.inter(
+                  fontSize: _getScaledFontSize(context, 9),
+                  fontWeight: FontWeight.w500,
+                  color: Colors.grey.shade600,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -526,55 +547,59 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
     required VoidCallback onTap,
     bool isPrimary = false,
   }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        padding: const EdgeInsets.all(6),
-        decoration: BoxDecoration(
-          color: isPrimary ? color : Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: isPrimary ? color.withOpacity(0.4) : Colors.black.withOpacity(0.08),
-              blurRadius: isPrimary ? 20 : 16,
-              offset: Offset(0, isPrimary ? 8 : 6),
-              spreadRadius: isPrimary ? 4 : 2,
-            ),
-            if (!isPrimary)
+    return Semantics(
+      button: true,
+      label: title,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          padding: const EdgeInsets.all(6),
+          decoration: BoxDecoration(
+            color: isPrimary ? color : Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
               BoxShadow(
-                color: color.withOpacity(0.1),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
+                color: isPrimary ? color.withOpacity(0.4) : Colors.black.withOpacity(0.08),
+                blurRadius: isPrimary ? 20 : 16,
+                offset: Offset(0, isPrimary ? 8 : 6),
+                spreadRadius: isPrimary ? 4 : 2,
               ),
-          ],
-          border: isPrimary 
-              ? Border.all(color: Colors.white.withOpacity(0.2), width: 1.5)
-              : Border.all(color: color.withOpacity(0.15), width: 1.5),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              color: isPrimary ? Colors.white : color,
-              size: 22,
-            ),
-            const SizedBox(height: 6),
-            Text(
-              title,
-              style: GoogleFonts.inter(
-                fontSize: 10.5,
-                fontWeight: FontWeight.w600,
-                color: isPrimary ? Colors.white : _primaryBlue,
-                height: 1.1,
+              if (!isPrimary)
+                BoxShadow(
+                  color: color.withOpacity(0.1),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+            ],
+            border: isPrimary 
+                ? Border.all(color: Colors.white.withOpacity(0.2), width: 1.5)
+                : Border.all(color: color.withOpacity(0.15), width: 1.5),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                color: isPrimary ? Colors.white : color,
+                size: 22,
               ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
-            ),
-          ],
+              const SizedBox(height: 6),
+              Text(
+                title,
+                style: GoogleFonts.inter(
+                  fontSize: _getScaledFontSize(context, 10.5),
+                  fontWeight: FontWeight.w600,
+                  color: isPrimary ? Colors.white : _primaryBlue,
+                  height: 1.1,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       ),
     );

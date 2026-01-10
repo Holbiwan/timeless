@@ -36,6 +36,11 @@ class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
   Timer? _carouselTimer;
 
+  // Helper to apply text scaling
+  double _getScaledFontSize(BuildContext context, double baseFontSize) {
+    return baseFontSize * MediaQuery.textScaleFactorOf(context);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -155,7 +160,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           "Learning & Events",
                           textAlign: TextAlign.center,
                           style: GoogleFonts.inter(
-                            fontSize: 18,
+                            fontSize: _getScaledFontSize(context, 18),
                             fontWeight: FontWeight.w700,
                             letterSpacing: 0.5,
                             color: const Color(0xFF0D47A1),
@@ -274,73 +279,77 @@ class _HomeScreenState extends State<HomeScreen> {
     required VoidCallback onTap,
     int? badge,
   }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.grey[200]!, width: 1),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.08),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    color: color.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Icon(icon, color: color, size: 18),
-                ),
-                const Spacer(),
-                if (badge != null && badge > 0)
+    return Semantics(
+      button: true,
+      label: '$title, $subtitle${badge != null && badge > 0 ? ", $badge notifications" : ""}',
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.grey[200]!, width: 1),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.08),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
                   Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFE67E22),
-                      borderRadius: BorderRadius.circular(10),
+                      color: color.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(6),
                     ),
-                    child: Text(
-                      badge.toString(),
-                      style: GoogleFonts.inter(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
+                    child: Icon(icon, color: color, size: 18),
+                  ),
+                  const Spacer(),
+                  if (badge != null && badge > 0)
+                    Container(
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFE67E22),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Text(
+                        badge.toString(),
+                        style: GoogleFonts.inter(
+                          fontSize: _getScaledFontSize(context, 10),
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
-                  ),
-              ],
-            ),
-            const SizedBox(height: 6),
-            Text(
-              title,
-              style: GoogleFonts.inter(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                color: const Color(0xFF1F2937),
+                ],
               ),
-            ),
-            const SizedBox(height: 1),
-            Text(
-              subtitle,
-              style: GoogleFonts.inter(
-                fontSize: 11,
-                color: const Color(0xFF6B7280),
+              const SizedBox(height: 6),
+              Text(
+                title,
+                style: GoogleFonts.inter(
+                  fontSize: _getScaledFontSize(context, 13),
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF1F2937),
+                ),
               ),
-            ),
-          ],
+              const SizedBox(height: 1),
+              Text(
+                subtitle,
+                style: GoogleFonts.inter(
+                  fontSize: _getScaledFontSize(context, 11),
+                  color: const Color(0xFF6B7280),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -354,51 +363,55 @@ class _HomeScreenState extends State<HomeScreen> {
     required Color color,
     required VoidCallback onTap,
   }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(8), // Reduced from 12
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: color.withOpacity(0.3), width: 1.5),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.06),
-              blurRadius: 6,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(6),
+    return Semantics(
+      button: true,
+      label: '$title, $subtitle',
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.all(8), // Reduced from 12
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: color.withOpacity(0.3), width: 1.5),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.06),
+                blurRadius: 6,
+                offset: const Offset(0, 2),
               ),
-              child: Icon(icon, color: color, size: 16),
-            ),
-            const SizedBox(height: 4), // Reduced from 6
-            Text(
-              title,
-              style: GoogleFonts.inter(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: const Color(0xFF1F2937),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: color.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Icon(icon, color: color, size: 16),
               ),
-            ),
-            const SizedBox(height: 1),
-            Text(
-              subtitle,
-              style: GoogleFonts.inter(
-                fontSize: 10,
-                color: const Color(0xFF6B7280),
+              const SizedBox(height: 4), // Reduced from 6
+              Text(
+                title,
+                style: GoogleFonts.inter(
+                  fontSize: _getScaledFontSize(context, 12),
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF1F2937),
+                ),
               ),
-            ),
-          ],
+              const SizedBox(height: 1),
+              Text(
+                subtitle,
+                style: GoogleFonts.inter(
+                  fontSize: _getScaledFontSize(context, 10),
+                  color: const Color(0xFF6B7280),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
