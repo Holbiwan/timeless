@@ -242,16 +242,9 @@ timeless/
 ### Installation
 
 ```bash
-# 1. Clone the repository
 git clone https://github.com/Holbiwan/timeless.git
-
-# 2. Navigate to project directory
 cd timeless
-
-# 3. Install dependencies
 flutter pub get
-
-# 4. Run the app
 flutter run
 ```
 
