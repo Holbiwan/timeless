@@ -42,7 +42,6 @@ Fast, accessible, and intuitive job applications anytime, anywhere
 
 - 🚀 **Fast & Responsive** - Optimized performance with GetX state management
 - 🔒 **Secure Authentication** - Firebase Auth with email and Google Sign-In
-- 🌍 **Multi-language Support** - Available in English, French, and Spanish
 - 📱 **Cross-Platform** - Works on Android and iOS
 - 💼 **Dual User Roles** - Separate experiences for candidates and employers
 
