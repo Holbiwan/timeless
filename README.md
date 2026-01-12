@@ -267,10 +267,10 @@ You need to:
 The project includes **7 unit tests** covering core data models.
 
 ```bash
-# Run all tests
+Run all tests
 flutter test
 
-# Run tests with coverage
+Run tests with coverage
 flutter test --coverage
 ```
 
