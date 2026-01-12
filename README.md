@@ -135,7 +135,7 @@ Fast, accessible, and intuitive job applications anytime, anywhere
 - ✅ **Save Favorites** - Bookmark jobs for later review
 - ✅ **Track Applications** - Monitor application status in real-time
 - ✅ **Profile Management** - Build and update your professional profile
-- ✅ **Multi-language** - Switch between EN, FR, ES
+- ✅ **Multi-language** - Switch between EN, FR
 
 </td>
 <td width="50%">
