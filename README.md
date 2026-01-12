@@ -176,7 +176,7 @@ Fast, accessible, and intuitive job applications anytime, anywhere
 | **Database**          | Cloud Firestore                   |
 | **Storage**           | Firebase Storage                  |
 | **Notifications**     | Firebase Cloud Messaging (FCM)    |
-| **Localization**      | Easy Localization (EN, FR, ES)    |
+| **Localization**      | Easy Localization (EN, FR)    |
 | **Local Storage**     | SharedPreferences                 |
 | **File Handling**     | File Picker                       |
 
