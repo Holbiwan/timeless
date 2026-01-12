@@ -11,7 +11,7 @@
 [![License](https://img.shields.io/badge/License-MIT-02569B?style=for-the-badge)](LICENSE)
 
 
-**A modern Flutter job-search app powered by Firebase**
+**A modern Flutter job-search app powered by Firebase** 
 Fast, accessible, and intuitive job applications anytime, anywhere
 
 [🎬 Watch Demo](https://github.com/Holbiwan/timeless/releases/download/v1.0-demo/Timeless.demo.mp4) • [🌐 Landing Page](https://holbiwan.github.io/timeless-landing/) • [📱 Screenshots](#-screenshots)
