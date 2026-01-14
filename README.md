@@ -17,6 +17,14 @@ Fast, accessible, and intuitive job applications anytime, anywhere
 [🎬 Watch Demo](https://github.com/Holbiwan/timeless/releases/download/v1.0-demo/Timeless.demo.mp4) • [🌐 Landing Page](https://holbiwan.github.io/timeless-landing/) • [📱 Screenshots](#-screenshots)
 
 
+<<<<<<< HEAD
+=======
+<p align="center">
+  <img src="https://i.postimg.cc/tgfXWsFY/logo.png" alt="Timeless logo" width="270">
+  &nbsp;&nbsp;&nbsp;
+ 
+</p>
+>>>>>>> 6f211eccc644be48ea10bfd50cd5f98d3fe27d02
 
 </div>
 
