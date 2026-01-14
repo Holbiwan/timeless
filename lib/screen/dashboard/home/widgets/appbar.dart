@@ -19,8 +19,8 @@ Widget homeAppBar({VoidCallback? onRefresh}) {
     profileController.profileImageUrl.value; // Observe this value
     
     return Container(
-    margin: const EdgeInsets.fromLTRB(16, 4, 16, 6),
-    padding: const EdgeInsets.fromLTRB(16, 12, 4, 12),
+    margin: const EdgeInsets.fromLTRB(16, 4, 8, 6),
+    padding: const EdgeInsets.fromLTRB(16, 12, 0, 12),
     decoration: BoxDecoration(
       gradient: LinearGradient(
         begin: Alignment.topLeft,
@@ -133,8 +133,8 @@ Widget homeAppBar({VoidCallback? onRefresh}) {
                     profileController.onTapGallery1();
                   },
                   child: Obx(() => Container(
-                    width: 90,
-                    height: 90,
+                    width: 120,
+                    height: 120,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       gradient: LinearGradient(
@@ -166,7 +166,7 @@ Widget homeAppBar({VoidCallback? onRefresh}) {
                         shape: BoxShape.circle,
                       ),
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(43),
+                        borderRadius: BorderRadius.circular(60),
                         child: profileController.profileImageUrl.value.isNotEmpty
                           ? Image.network(
                               profileController.profileImageUrl.value,
@@ -175,7 +175,7 @@ Widget homeAppBar({VoidCallback? onRefresh}) {
                                 color: const Color(0xFF000647).withOpacity(0.1),
                                 child: const Icon(
                                   Icons.person, 
-                                  size: 54, 
+                                  size: 70, 
                                   color: Color(0xFF000647),
                                 ),
                               ),
@@ -184,7 +184,7 @@ Widget homeAppBar({VoidCallback? onRefresh}) {
                               color: const Color(0xFF000647).withOpacity(0.1),
                               child: const Icon(
                                 Icons.person, 
-                                size: 48, 
+                                size: 60, 
                                 color: Color(0xFF000647),
                               ),
                             ),
