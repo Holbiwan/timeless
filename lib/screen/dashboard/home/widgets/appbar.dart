@@ -19,8 +19,8 @@ Widget homeAppBar({VoidCallback? onRefresh}) {
     profileController.profileImageUrl.value; // Observe this value
     
     return Container(
-    margin: const EdgeInsets.fromLTRB(16, 4, 8, 6),
-    padding: const EdgeInsets.fromLTRB(16, 12, 0, 12),
+    margin: const EdgeInsets.fromLTRB(16, 4, 16, 2),
+    padding: const EdgeInsets.fromLTRB(12, 6, 12, 8),
     decoration: BoxDecoration(
       gradient: LinearGradient(
         begin: Alignment.topLeft,
@@ -48,79 +48,38 @@ Widget homeAppBar({VoidCallback? onRefresh}) {
     ),
     child: Column(
       children: [
-        // Header row avec actions
+        // Header avec bouton retour
         Padding(
-          padding: const EdgeInsets.only(top: 8),
+          padding: const EdgeInsets.only(top: 4, left: 0),
           child: Row(
             children: [
               accessibilityService.buildAccessibleWidget(
-              semanticLabel: 'Back to login',
-              onTap: () {
-                accessibilityService.triggerHapticFeedback();
-                Get.offAllNamed('/');
-              },
-              child: Container(
-                height: 40,
-                width: 40,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: Colors.white, // White background
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: const Color(0xFFFF8C00).withOpacity(0.2), width: 1),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
-                      blurRadius: 6,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: const Icon(
-                  Icons.arrow_back,
-                  color: Colors.black, // Black icon
-                  size: 20,
+                semanticLabel: 'Back',
+                onTap: () {
+                  accessibilityService.triggerHapticFeedback();
+                  Get.back();
+                },
+                child: Container(
+                  height: 32,
+                  width: 32,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Icon(
+                    Icons.arrow_back,
+                    color: Colors.white,
+                    size: 18,
+                  ),
                 ),
               ),
-            ),
-            
-            const Spacer(),
-
-            // User Menu Button
-            accessibilityService.buildAccessibleWidget(
-              semanticLabel: 'User menu',
-              onTap: () {
-                accessibilityService.triggerHapticFeedback();
-                _showUserMenu();
-              },
-              child: Container(
-                height: 40,
-                width: 40,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: Colors.white, // White background
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: const Color(0xFFFF8C00).withOpacity(0.2), width: 1),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
-                      blurRadius: 6,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: const Icon(
-                  Icons.menu,
-                  color: Colors.black, // Black icon
-                  size: 20,
-                ),
-              ),
-            ),
             ],
           ),
         ),
-        
-        const SizedBox(height: 2),
-        
+
+        const SizedBox(height: 4),
+
         // Profile section
         Column(
           children: [
@@ -133,8 +92,8 @@ Widget homeAppBar({VoidCallback? onRefresh}) {
                     profileController.onTapGallery1();
                   },
                   child: Obx(() => Container(
-                    width: 120,
-                    height: 120,
+                    width: 90,
+                    height: 90,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       gradient: LinearGradient(
@@ -166,7 +125,7 @@ Widget homeAppBar({VoidCallback? onRefresh}) {
                         shape: BoxShape.circle,
                       ),
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(60),
+                        borderRadius: BorderRadius.circular(45),
                         child: profileController.profileImageUrl.value.isNotEmpty
                           ? Image.network(
                               profileController.profileImageUrl.value,
@@ -174,8 +133,8 @@ Widget homeAppBar({VoidCallback? onRefresh}) {
                               errorBuilder: (context, error, stackTrace) => Container(
                                 color: const Color(0xFF000647).withOpacity(0.1),
                                 child: const Icon(
-                                  Icons.person, 
-                                  size: 70, 
+                                  Icons.person,
+                                  size: 48,
                                   color: Color(0xFF000647),
                                 ),
                               ),
@@ -183,8 +142,8 @@ Widget homeAppBar({VoidCallback? onRefresh}) {
                           : Container(
                               color: const Color(0xFF000647).withOpacity(0.1),
                               child: const Icon(
-                                Icons.person, 
-                                size: 60, 
+                                Icons.person,
+                                size: 45,
                                 color: Color(0xFF000647),
                               ),
                             ),
@@ -194,16 +153,16 @@ Widget homeAppBar({VoidCallback? onRefresh}) {
                 ),
                 // Camera icon pour upload
                 Positioned(
-                  bottom: 6,
-                  right: 6,
+                  bottom: 2,
+                  right: 2,
                   child: GestureDetector(
                     onTap: () {
                       accessibilityService.triggerHapticFeedback();
                       _showPhotoUploadOptions(profileController);
                     },
                     child: Container(
-                      width: 32,
-                      height: 32,
+                      width: 26,
+                      height: 26,
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
@@ -224,16 +183,16 @@ Widget homeAppBar({VoidCallback? onRefresh}) {
                       child: const Icon(
                         Icons.camera_alt,
                         color: Colors.white,
-                        size: 19,
+                        size: 14,
                       ),
                     ),
                   ),
                 ),
               ],
             ),
-              
-            const SizedBox(height: 6),
-            
+
+            const SizedBox(height: 2),
+
             // Welcome message avec gradient
             StreamBuilder(
               stream: AuthService.instance.getCurrentUserDataStream(),
@@ -256,7 +215,7 @@ Widget homeAppBar({VoidCallback? onRefresh}) {
                       text: TextSpan(
                         text: '${translationService.getText('welcome')} ',
                         style: accessibilityService.getAccessibleTextStyle(
-                          fontSize: 17,
+                          fontSize: 14,
                           color: Colors.white.withOpacity(0.9),
                           fontWeight: FontWeight.w400,
                         ),
@@ -264,7 +223,7 @@ Widget homeAppBar({VoidCallback? onRefresh}) {
                           TextSpan(
                             text: displayName,
                             style: accessibilityService.getAccessibleTextStyle(
-                              fontSize: 19,
+                              fontSize: 15,
                               color: Colors.white,
                               fontWeight: FontWeight.w700,
                             ),
@@ -272,7 +231,7 @@ Widget homeAppBar({VoidCallback? onRefresh}) {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 4),
                     InkWell(
                       onTap: () {
                         accessibilityService.triggerHapticFeedback();
@@ -288,23 +247,23 @@ Widget homeAppBar({VoidCallback? onRefresh}) {
                           borderRadius: 10,
                         );
                       },
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(16),
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                         decoration: BoxDecoration(
                           color: Colors.white.withOpacity(0.15),
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(16),
                           border: Border.all(color: Colors.white.withOpacity(0.3), width: 1),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(Icons.refresh, color: Colors.white, size: 14),
-                            const SizedBox(width: 6),
+                            const Icon(Icons.refresh, color: Colors.white, size: 11),
+                            const SizedBox(width: 3),
                             Text(
                               'Refresh',
                               style: accessibilityService.getAccessibleTextStyle(
-                                fontSize: 12,
+                                fontSize: 10,
                                 color: Colors.white,
                                 fontWeight: FontWeight.w600,
                               ),

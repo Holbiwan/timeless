@@ -7,6 +7,7 @@ import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'package:intl/intl.dart';
 import 'package:timeless/utils/debug_applications.dart';
+import 'package:timeless/services/interview_service.dart';
 
 class EnhancedApplicationsScreen extends StatefulWidget {
   const EnhancedApplicationsScreen({super.key});
@@ -1012,6 +1013,22 @@ class _EnhancedApplicationsScreenState extends State<EnhancedApplicationsScreen>
             ),
           ),
           if (application['candidateEmail'] != null) ...[
+            ElevatedButton.icon(
+              onPressed: () {
+                Get.back();
+                _proposeInterview(application);
+              },
+              icon: const Icon(Icons.event, size: 18),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFff6b6b),
+                foregroundColor: Colors.white,
+              ),
+              label: Text(
+                'Propose Interview',
+                style: GoogleFonts.inter(fontWeight: FontWeight.w600),
+              ),
+            ),
+            const SizedBox(width: 8),
             ElevatedButton(
               onPressed: () {
                 Get.back();
@@ -1166,5 +1183,228 @@ class _EnhancedApplicationsScreenState extends State<EnhancedApplicationsScreen>
         snackPosition: SnackPosition.BOTTOM,
       );
     }
+  }
+
+  // 🆕 Propose interview to candidate
+  Future<void> _proposeInterview(Map<String, dynamic> application) async {
+    final dateController = TextEditingController();
+    final timeController = TextEditingController();
+    final locationController = TextEditingController();
+    final notesController = TextEditingController();
+
+    await Get.dialog(
+      AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: const Color(0xFFff6b6b).withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Icon(
+                Icons.event,
+                color: Color(0xFFff6b6b),
+                size: 24,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                'Propose Interview',
+                style: GoogleFonts.inter(
+                  fontWeight: FontWeight.w700,
+                  color: _primaryBlue,
+                  fontSize: 20,
+                ),
+              ),
+            ),
+          ],
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Invite ${application['candidateName'] ?? 'this candidate'} for an interview',
+                style: GoogleFonts.inter(
+                  color: Colors.grey[700],
+                  fontSize: 14,
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              // Proposed Date
+              TextField(
+                controller: dateController,
+                decoration: InputDecoration(
+                  labelText: 'Proposed Date',
+                  hintText: 'e.g., Monday, January 20, 2026',
+                  prefixIcon: Icon(Icons.calendar_today, color: _primaryBlue),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: _primaryBlue, width: 2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Proposed Time
+              TextField(
+                controller: timeController,
+                decoration: InputDecoration(
+                  labelText: 'Proposed Time',
+                  hintText: 'e.g., 10:00 AM',
+                  prefixIcon: Icon(Icons.access_time, color: _primaryBlue),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: _primaryBlue, width: 2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Location
+              TextField(
+                controller: locationController,
+                decoration: InputDecoration(
+                  labelText: 'Location',
+                  hintText: 'e.g., Office, Zoom, Google Meet',
+                  prefixIcon: Icon(Icons.location_on, color: _primaryBlue),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: _primaryBlue, width: 2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Additional Notes
+              TextField(
+                controller: notesController,
+                maxLines: 3,
+                decoration: InputDecoration(
+                  labelText: 'Additional Notes (Optional)',
+                  hintText: 'Any additional information for the candidate...',
+                  prefixIcon: Icon(Icons.note, color: _primaryBlue),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: _primaryBlue, width: 2),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(),
+            child: Text(
+              'Cancel',
+              style: GoogleFonts.inter(color: Colors.grey[600]),
+            ),
+          ),
+          ElevatedButton.icon(
+            onPressed: () async {
+              if (dateController.text.trim().isEmpty ||
+                  timeController.text.trim().isEmpty) {
+                Get.snackbar(
+                  'Missing Information',
+                  'Please provide at least a date and time for the interview',
+                  backgroundColor: _warningOrange,
+                  colorText: Colors.white,
+                  snackPosition: SnackPosition.BOTTOM,
+                );
+                return;
+              }
+
+              Get.back();
+
+              // Show loading
+              Get.dialog(
+                const Center(
+                  child: CircularProgressIndicator(),
+                ),
+                barrierDismissible: false,
+              );
+
+              final success = await InterviewService.proposeInterview(
+                candidateEmail: application['candidateEmail'],
+                candidateName: application['candidateName'] ?? 'Candidate',
+                jobTitle: application['jobTitle'] ?? 'Position',
+                companyName: PreferencesService.getString(PrefKeys.companyName),
+                employerName: PreferencesService.getString(PrefKeys.fullName),
+                employerEmail: PreferencesService.getString(PrefKeys.email),
+                proposedDate: dateController.text.trim(),
+                proposedTime: timeController.text.trim(),
+                location: locationController.text.trim().isEmpty
+                    ? null
+                    : locationController.text.trim(),
+                additionalNotes: notesController.text.trim().isEmpty
+                    ? null
+                    : notesController.text.trim(),
+              );
+
+              // Add notification to candidate
+              if (success) {
+                await InterviewService.notifyCandidateInterview(
+                  candidateId: application['candidateId'],
+                  jobTitle: application['jobTitle'] ?? 'Position',
+                  companyName: PreferencesService.getString(PrefKeys.companyName),
+                  proposedDate: dateController.text.trim(),
+                );
+              }
+
+              Get.back(); // Close loading
+
+              if (success) {
+                Get.snackbar(
+                  'Interview Proposed! 🎉',
+                  'The candidate will receive an email with interview details',
+                  backgroundColor: _successGreen,
+                  colorText: Colors.white,
+                  snackPosition: SnackPosition.BOTTOM,
+                  duration: const Duration(seconds: 4),
+                );
+              } else {
+                Get.snackbar(
+                  'Error',
+                  'Failed to send interview proposal. Please try again.',
+                  backgroundColor: _dangerRed,
+                  colorText: Colors.white,
+                  snackPosition: SnackPosition.BOTTOM,
+                );
+              }
+            },
+            icon: const Icon(Icons.send, size: 18),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFff6b6b),
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            label: Text(
+              'Send Invitation',
+              style: GoogleFonts.inter(fontWeight: FontWeight.w600),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
