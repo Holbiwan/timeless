@@ -20,7 +20,7 @@ Widget homeAppBar({VoidCallback? onRefresh}) {
     
     return Container(
     margin: const EdgeInsets.fromLTRB(16, 4, 16, 6),
-    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+    padding: const EdgeInsets.fromLTRB(16, 12, 4, 12),
     decoration: BoxDecoration(
       gradient: LinearGradient(
         begin: Alignment.topLeft,
