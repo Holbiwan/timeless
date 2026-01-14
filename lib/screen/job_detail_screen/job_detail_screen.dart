@@ -30,6 +30,9 @@ class JobDetailScreen extends StatelessWidget {
     final requirementsList = data['RequirementsList'] as List<dynamic>? ??
         []; // Job requirements list
 
+    // Check application status when the screen initializes
+    controller.checkApplicationStatus(doc.id);
+
     return Scaffold(
       backgroundColor:
           Colors.grey[50], // Light background for content readability
@@ -324,48 +327,51 @@ class JobDetailScreen extends StatelessWidget {
               ),
             ),
             // Apply Now Button (Smaller and consistent)
-            Container(
-              height: 50, // Reduced height
-              width: double.infinity,
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                gradient: LinearGradient(
-                  colors: [
-                    const Color(0xFF000647), // Dark Blue
-                    const Color(0xFF000647)
-                        .withOpacity(0.8), // Slightly lighter Dark Blue
-                  ],
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFF000647).withOpacity(0.3),
-                    blurRadius: 10,
-                    offset: const Offset(0, 5),
-                  ),
-                ],
-              ),
-              child: MaterialButton(
-                onPressed: () {
-                  Get.toNamed(AppRes.jobApplicationScreen, arguments: {
-                    'job': data,
-                    'docId': doc.id,
-                  });
-                },
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                padding: EdgeInsets.zero,
-                child: Text(
-                  "Apply Now",
-                  style: GoogleFonts.inter(
-                    color: Colors.white,
-                    fontSize: 14, // Reduced font size
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-            ),
+            Obx(() => controller.hasApplied.isFalse
+                ? Container(
+                    height: 50, // Reduced height
+                    width: double.infinity,
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      gradient: LinearGradient(
+                        colors: [
+                          const Color(0xFF000647), // Dark Blue
+                          const Color(0xFF000647)
+                              .withOpacity(0.8), // Slightly lighter Dark Blue
+                        ],
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF000647).withOpacity(0.3),
+                          blurRadius: 10,
+                          offset: const Offset(0, 5),
+                        ),
+                      ],
+                    ),
+                    child: MaterialButton(
+                      onPressed: () {
+                        Get.toNamed(AppRes.jobApplicationScreen, arguments: {
+                          'job': data,
+                          'docId': doc.id,
+                        });
+                      },
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: EdgeInsets.zero,
+                      child: Text(
+                        "Apply Now",
+                        style: GoogleFonts.inter(
+                          color: Colors.white,
+                          fontSize: 14, // Reduced font size
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  )
+                : const SizedBox.shrink()),
           ],
         ),
       ),
