@@ -84,7 +84,9 @@ Widget homeAppBar({VoidCallback? onRefresh}) {
             ),
             
             const Spacer(),
-            
+
+            const SizedBox(width: 8), // Extra spacing before menu button
+
             // User Menu Button
             accessibilityService.buildAccessibleWidget(
               semanticLabel: 'User menu',

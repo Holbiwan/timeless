@@ -585,11 +585,19 @@ List<Map<String, dynamic>> _filterJobs(
     }).toList();
   }
 
-  // Tri par date selon le filtre de date
+  // Tri par date selon le filtre de date - Use createdAt Timestamp from Firebase
   try {
     filteredJobs.sort((a, b) {
-      final aDate = DateTime.tryParse(a['postingDate'] ?? '') ?? DateTime.now();
-      final bDate = DateTime.tryParse(b['postingDate'] ?? '') ?? DateTime.now();
+      // Get Timestamp from Firebase and convert to DateTime
+      final aTimestamp = a['createdAt'];
+      final bTimestamp = b['createdAt'];
+
+      final aDate = aTimestamp is Timestamp
+          ? aTimestamp.toDate()
+          : (DateTime.tryParse(a['postingDate'] ?? '') ?? DateTime.now());
+      final bDate = bTimestamp is Timestamp
+          ? bTimestamp.toDate()
+          : (DateTime.tryParse(b['postingDate'] ?? '') ?? DateTime.now());
 
       switch (controller.selectedDateSort.value.name) {
         case 'newest':
@@ -597,7 +605,7 @@ List<Map<String, dynamic>> _filterJobs(
         case 'oldest':
           return aDate.compareTo(bDate); // Plus ancien en premier
         default:
-          return bDate.compareTo(aDate);
+          return bDate.compareTo(aDate); // Par défaut: plus récent en premier
       }
     });
   } catch (e) {

@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'package:intl/intl.dart';
+import 'package:timeless/utils/debug_applications.dart';
 
 class EnhancedApplicationsScreen extends StatefulWidget {
   const EnhancedApplicationsScreen({super.key});
@@ -14,8 +16,7 @@ class EnhancedApplicationsScreen extends StatefulWidget {
 }
 
 class _EnhancedApplicationsScreenState extends State<EnhancedApplicationsScreen> {
-  final String employerId = PreferencesService.getString(PrefKeys.employerId);
-  final String currentUserId = PreferencesService.getString(PrefKeys.userId);
+  // Use FirebaseAuth ID as the source of truth to match the dashboard and job posts
   late final String actualEmployerId;
 
   // Brand Colors
@@ -30,7 +31,15 @@ class _EnhancedApplicationsScreenState extends State<EnhancedApplicationsScreen>
   @override
   void initState() {
     super.initState();
-    actualEmployerId = employerId.isNotEmpty ? employerId : currentUserId;
+    // Use the same logic as employer dashboard to get the employer ID
+    final uid = FirebaseAuth.instance.currentUser?.uid ?? PreferencesService.getString(PrefKeys.userId);
+    actualEmployerId = uid;
+
+    // Debug: Print employer ID
+    print('🔍 EnhancedApplicationsScreen - Looking for applications with employerId: $actualEmployerId');
+
+    // Run comprehensive debug check
+    DebugApplications.checkApplications();
   }
 
   @override
@@ -204,10 +213,18 @@ class _EnhancedApplicationsScreenState extends State<EnhancedApplicationsScreen>
         }
 
         if (snapshot.hasError) {
+          print('❌ Error loading applications: ${snapshot.error}');
           return _buildErrorState(snapshot.error.toString());
         }
 
         var applications = snapshot.data?.docs ?? [];
+        print('📥 Received ${applications.length} applications from Firebase');
+
+        // Debug: Print each application's employerId
+        for (var app in applications) {
+          final data = app.data() as Map<String, dynamic>;
+          print('   - Application from ${data['candidateName']} for employerId: ${data['employerId']}');
+        }
 
         // Apply status filter client-side
         if (selectedFilter != 'all') {

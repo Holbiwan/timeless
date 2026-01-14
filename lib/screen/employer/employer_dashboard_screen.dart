@@ -269,7 +269,7 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
                 count: count,
                 icon: Icons.work_outline_rounded,
                 accentColor: _primaryBlue,
-                onTap: () => Get.to(() => const MyJobsScreen()),
+                onTap: () => Get.to(() => const MyJobsScreen(filter: 'active')),
               );
             },
           ),
@@ -291,7 +291,7 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
                 count: count,
                 icon: Icons.list_alt_rounded, // Different icon for total
                 accentColor: Colors.purple, // Different color for total
-                onTap: () => Get.to(() => const MyJobsScreen()),
+                onTap: () => Get.to(() => const MyJobsScreen(filter: 'total')),
               );
             },
           ),
