@@ -53,6 +53,36 @@ Widget homeAppBar({VoidCallback? onRefresh}) {
           padding: const EdgeInsets.only(top: 8),
           child: Row(
             children: [
+              accessibilityService.buildAccessibleWidget(
+              semanticLabel: 'Back to login',
+              onTap: () {
+                accessibilityService.triggerHapticFeedback();
+                Get.offAllNamed('/');
+              },
+              child: Container(
+                height: 40,
+                width: 40,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: Colors.white, // White background
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: const Color(0xFFFF8C00).withOpacity(0.2), width: 1),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      blurRadius: 6,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: const Icon(
+                  Icons.arrow_back,
+                  color: Colors.black, // Black icon
+                  size: 20,
+                ),
+              ),
+            ),
+            
             const Spacer(),
 
             // User Menu Button
