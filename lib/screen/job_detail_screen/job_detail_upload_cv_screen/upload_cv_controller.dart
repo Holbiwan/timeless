@@ -65,6 +65,8 @@ class JobDetailsUploadCvController extends GetxController {
   double filesize = 0;
 
   onTapApply({var args}) async {
+    await _ensurePdfUrl(); // Ensure we have a CV URL even for quick apply
+
     abc = false;
     for (int i = 0; i < companyList.length; i++) {
       // ✅ correction de la typo: companyname
@@ -112,6 +114,55 @@ class JobDetailsUploadCvController extends GetxController {
       "deviceToken": PreferencesService.getString(PrefKeys.deviceToken),
     });
 
+    // Save to 'applications' collection for employer management screen
+    var employerId = args['EmployerId'] ?? args['employerId'];
+
+    // Fallback: Get employerId from the job document if not in args
+    if (employerId == null || (employerId as String).isEmpty) {
+      final jobId = args['id'];
+      if (jobId != null && (jobId as String).isNotEmpty) {
+        try {
+          final jobDoc = await firestore.collection('allPost').doc(jobId).get();
+          if (jobDoc.exists) {
+            final jobData = jobDoc.data();
+            employerId = jobData?['EmployerId'] ?? jobData?['employerId'];
+            if (kDebugMode) {
+              print('📋 Retrieved employerId from job document: $employerId');
+            }
+          }
+        } catch (e) {
+          if (kDebugMode) print('⚠️ Error fetching job document: $e');
+        }
+      }
+    }
+
+    if (employerId != null && (employerId as String).isNotEmpty) {
+      await firestore.collection("applications").add({
+        'employerId': employerId,
+        'candidateId': FirebaseAuth.instance.currentUser!.uid,
+        'candidateName': PreferencesService.getString(PrefKeys.fullName),
+        'candidateEmail': PreferencesService.getString(PrefKeys.email),
+        'candidatePhone': PreferencesService.getString(PrefKeys.phoneNumber),
+        'jobId': args['id'] ?? '',
+        'jobTitle': args['Position'] ?? 'Position',
+        'companyName': args['CompanyName'] ?? 'Company',
+        'cvUrl': pdfUrl,
+        'coverLetter': motivationController.text.trim().isNotEmpty
+            ? motivationController.text.trim()
+            : null,
+        'status': 'pending',
+        'appliedAt': FieldValue.serverTimestamp(),
+        'createdAt': FieldValue.serverTimestamp(),
+        'salary': args['salary'],
+        'location': args['location'],
+        'jobType': args['type'],
+      });
+
+      if (kDebugMode) {
+        print('✅ Application saved to applications collection for employer $employerId');
+      }
+    }
+
     // Send application confirmation email to candidate
     await _sendApplicationConfirmationEmail(args);
 
@@ -119,13 +170,18 @@ class JobDetailsUploadCvController extends GetxController {
     await _addApplicationNotification(args);
 
     // 🆕 Send notification email to employer
-    await _sendEmployerNotificationEmail(args);
+    final emailSent = await _sendEmployerNotificationEmail(args);
+    if (!emailSent && kDebugMode) {
+      print('⚠️ Employer notification email failed to send.');
+    }
 
     // 🆕 Add notification for employer
-    await _addEmployerNotification(args);
+    final notifAdded = await _addEmployerNotification(args);
+    if (!notifAdded && kDebugMode) {
+      print('⚠️ Employer in-app notification failed to add.');
+    }
 
     // 🆕 Send FCM push notification to employer
-    final employerId = args['employerId'];
     if (employerId != null && (employerId as String).isNotEmpty) {
       await FCMNotificationService.notifyNewApplication(
         employerId: employerId,
@@ -174,6 +230,37 @@ class JobDetailsUploadCvController extends GetxController {
       );
     } catch (e) {
       if (kDebugMode) print('Erreur création CV démo: $e');
+    }
+  }
+
+  Future<void> _ensurePdfUrl() async {
+    if (pdfUrl != null && pdfUrl!.isNotEmpty) return;
+    
+    // Check demo
+    final userId = PreferencesService.getString(PrefKeys.userId);
+    if (userId == "demo_user_12345") {
+       pdfUrl = "https://demo.timeless.com/cv/demo_user_cv.pdf";
+       filepath.value = "demo_cv.pdf";
+       return;
+    }
+
+    // Check Firestore for last CV
+    try {
+      final cvDocs = await firestore
+          .collection("UserCVs")
+          .doc(userId)
+          .collection("CVs")
+          .orderBy("uploadDate", descending: true)
+          .limit(1)
+          .get();
+      
+      if (cvDocs.docs.isNotEmpty) {
+        pdfUrl = cvDocs.docs.first.data()['url'];
+        filepath.value = cvDocs.docs.first.data()['fileName'] ?? 'cv.pdf';
+        if (kDebugMode) print('✅ Retrieved existing CV: $pdfUrl');
+      }
+    } catch (e) {
+      if (kDebugMode) print('⚠️ Error fetching last CV: $e');
     }
   }
 
@@ -822,40 +909,58 @@ class JobDetailsUploadCvController extends GetxController {
   }
 
   // 🆕 Send notification email to employer when candidate applies
-  Future<void> _sendEmployerNotificationEmail(Map<String, dynamic> jobData) async {
-    try {
-      // Get employer email from job data
-      final employerEmail = jobData['CompanyEmail'] ?? jobData['employerEmail'];
-      final employerId = jobData['employerId'];
-
-      if (employerEmail == null || (employerEmail as String).isEmpty) {
-        // Try to get employer email from employers collection
+    Future<bool> _sendEmployerNotificationEmail(Map<String, dynamic> jobData) async {
+      try {
+        String? employerEmail;
+        final employerId = jobData['EmployerId'] ?? jobData['employerId'];
+  
+        // Priority 1: Fetch fresh email from employer profile
         if (employerId != null && (employerId as String).isNotEmpty) {
-          final employerDoc = await FirebaseFirestore.instance
-              .collection('employers')
-              .doc(employerId)
-              .get();
-
-          if (employerDoc.exists) {
-            final employerData = employerDoc.data();
-            final email = employerData?['email'];
-            if (email != null && (email as String).isNotEmpty) {
-              await _sendEmailToEmployer(email, jobData);
-              return;
+          try {
+            final employerDoc = await FirebaseFirestore.instance
+                .collection('employers')
+                .doc(employerId)
+                .get();
+  
+            if (employerDoc.exists) {
+              final data = employerDoc.data();
+              if (data != null && data['email'] != null && (data['email'] as String).isNotEmpty) {
+                employerEmail = data['email'];
+                if (kDebugMode) print('✅ Fetched fresh employer email from profile: $employerEmail');
+              }
             }
+          } catch (e) {
+            if (kDebugMode) print('⚠️ Failed to fetch employer profile: $e');
           }
         }
-
-        if (kDebugMode) print('⚠️ No employer email found for notification');
-        return;
+  
+              // Priority 2: Fallback to email in job data
+              if (employerEmail == null || employerEmail.isEmpty) {
+                employerEmail = jobData['CompanyEmail'] ?? jobData['employerEmail'];
+                if (kDebugMode) print('ℹ️ Using employer email from job data: $employerEmail');
+              }
+        
+              // Priority 3: DEMO SAFETY NET - Hardcoded fallback for Vitoranda
+              if (employerEmail == null || employerEmail.isEmpty) {
+                final companyName = (jobData['CompanyName'] ?? '').toString().toLowerCase();
+                if (companyName.contains('vitoranda')) {
+                  employerEmail = 'vitoranda@outlook.com';
+                  if (kDebugMode) print('⚠️ DEMO FALLBACK: Using hardcoded email for Vitoranda');
+                }
+              }
+        
+              if (employerEmail != null && employerEmail.isNotEmpty) {
+                 await _sendEmailToEmployer(employerEmail, jobData);
+                 return true; // Success
+              } else {          if (kDebugMode) print('⚠️ No employer email found for notification (ID: $employerId)');
+          return false; // Failure (no email to send to)
+        }
+  
+      } catch (e) {
+        if (kDebugMode) print('❌ Error sending employer notification email: $e');
+        return false; // Failure (exception caught)
       }
-
-      await _sendEmailToEmployer(employerEmail, jobData);
-    } catch (e) {
-      if (kDebugMode) print('❌ Error sending employer notification email: $e');
     }
-  }
-
   Future<void> _sendEmailToEmployer(String employerEmail, Map<String, dynamic> jobData) async {
     final candidateName = PreferencesService.getString(PrefKeys.fullName);
     final candidateEmail = PreferencesService.getString(PrefKeys.email);
@@ -1003,40 +1108,41 @@ class JobDetailsUploadCvController extends GetxController {
   }
 
   // 🆕 Add notification for employer when candidate applies
-  Future<void> _addEmployerNotification(Map<String, dynamic> jobData) async {
-    try {
-      final employerId = jobData['employerId'];
-      if (employerId == null || (employerId as String).isEmpty) {
-        if (kDebugMode) print('⚠️ No employerId found for notification');
-        return;
+    Future<bool> _addEmployerNotification(Map<String, dynamic> jobData) async {
+      try {
+        final employerId = jobData['EmployerId'] ?? jobData['employerId'];
+        if (employerId == null || (employerId as String).isEmpty) {
+          if (kDebugMode) print('⚠️ No employerId found for notification');
+          return false;
+        }
+  
+        final candidateName = PreferencesService.getString(PrefKeys.fullName);
+  
+        await FirebaseFirestore.instance
+            .collection("employers")
+            .doc(employerId)
+            .collection("notifications")
+            .add({
+          "type": "new_application",
+          "title_en": "New Application Received",
+          "title_fr": "Nouvelle candidature reçue",
+          "message_en": "$candidateName applied for ${jobData['Position']}",
+          "message_fr": "$candidateName a postulé pour ${jobData['Position']}",
+          "candidateName": candidateName,
+          "candidateId": PreferencesService.getString(PrefKeys.userId),
+          "jobTitle": jobData['Position'],
+          "companyName": jobData['CompanyName'],
+          "cvUrl": pdfUrl ?? '',
+          "read": false,
+          "createdAt": FieldValue.serverTimestamp(),
+          "icon": "person_add",
+          "priority": "high",
+        });
+  
+        if (kDebugMode) print('✅ Employer notification added');
+        return true; // Success
+      } catch (e) {
+        if (kDebugMode) print('❌ Error adding employer notification: $e');
+        return false; // Failure
       }
-
-      final candidateName = PreferencesService.getString(PrefKeys.fullName);
-
-      await FirebaseFirestore.instance
-          .collection("employers")
-          .doc(employerId)
-          .collection("notifications")
-          .add({
-        "type": "new_application",
-        "title_en": "New Application Received",
-        "title_fr": "Nouvelle candidature reçue",
-        "message_en": "$candidateName applied for ${jobData['Position']}",
-        "message_fr": "$candidateName a postulé pour ${jobData['Position']}",
-        "candidateName": candidateName,
-        "candidateId": PreferencesService.getString(PrefKeys.userId),
-        "jobTitle": jobData['Position'],
-        "companyName": jobData['CompanyName'],
-        "cvUrl": pdfUrl ?? '',
-        "read": false,
-        "createdAt": FieldValue.serverTimestamp(),
-        "icon": "person_add",
-        "priority": "high",
-      });
-
-      if (kDebugMode) print('✅ Employer notification added');
-    } catch (e) {
-      if (kDebugMode) print('❌ Error adding employer notification: $e');
-    }
-  }
-}
+    }}

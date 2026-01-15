@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/pref_keys.dart';

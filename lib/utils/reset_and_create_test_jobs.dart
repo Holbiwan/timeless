@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
-/// Reset allPost collection and create clean test jobs
+// Reset allPost collection and create clean test jobs
 class ResetAndCreateTestJobs {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   static final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -22,10 +22,8 @@ class ResetAndCreateTestJobs {
       }
 
       // Get employer data
-      final employerDoc = await _firestore
-          .collection('employers')
-          .doc(user.uid)
-          .get();
+      final employerDoc =
+          await _firestore.collection('employers').doc(user.uid).get();
 
       if (!employerDoc.exists) {
         if (kDebugMode) print('❌ Employer not found');
@@ -38,7 +36,8 @@ class ResetAndCreateTestJobs {
       final siretCode = employerData['siretCode'] ?? '12345678901234';
       final apeCode = employerData['apeCode'] ?? '6201Z';
       final companyInfo = employerData['companyInfo'] ?? 'Tech company';
-      final logoUrl = employerData['logoUrl'] ?? 'https://i.imgur.com/bdlYq1p.png';
+      final logoUrl =
+          employerData['logoUrl'] ?? 'https://i.imgur.com/bdlYq1p.png';
 
       // Step 1: Delete all jobs from this employer
       if (kDebugMode) print('\n🗑️  Step 1: Deleting old jobs...');
@@ -68,7 +67,8 @@ class ResetAndCreateTestJobs {
           'jobType': 'full-time',
           'remote': true,
           'workMode': 'Remote',
-          'description': 'We are looking for a talented Software Engineer to join our team. You will work on exciting backend projects using modern technologies.',
+          'description':
+              'We are looking for a talented Software Engineer to join our team. You will work on exciting backend projects using modern technologies.',
         },
         {
           'Position': 'Frontend Developer',
@@ -80,7 +80,8 @@ class ResetAndCreateTestJobs {
           'jobType': 'full-time',
           'remote': false,
           'workMode': 'On-site',
-          'description': 'Join our frontend team to build amazing user interfaces. Experience with React or Vue.js is a plus.',
+          'description':
+              'Join our frontend team to build amazing user interfaces. Experience with React or Vue.js is a plus.',
         },
         {
           'Position': 'DevOps Engineer',
@@ -92,7 +93,8 @@ class ResetAndCreateTestJobs {
           'jobType': 'contract',
           'remote': true,
           'workMode': 'Remote',
-          'description': 'We need a DevOps expert to help us improve our CI/CD pipelines and infrastructure automation.',
+          'description':
+              'We need a DevOps expert to help us improve our CI/CD pipelines and infrastructure automation.',
         },
         {
           'Position': 'Data Scientist Intern',
@@ -104,7 +106,8 @@ class ResetAndCreateTestJobs {
           'jobType': 'internship',
           'remote': false,
           'workMode': 'On-site',
-          'description': 'Internship opportunity for a data science student. You will work on machine learning projects and data analysis.',
+          'description':
+              'Internship opportunity for a data science student. You will work on machine learning projects and data analysis.',
         },
         {
           'Position': 'Mobile Developer',
@@ -116,7 +119,8 @@ class ResetAndCreateTestJobs {
           'jobType': 'full-time',
           'remote': true,
           'workMode': 'Remote',
-          'description': 'We are seeking a mobile developer with Flutter or React Native experience to build cross-platform applications.',
+          'description':
+              'We are seeking a mobile developer with Flutter or React Native experience to build cross-platform applications.',
         },
         {
           'Position': 'UI/UX Designer',
@@ -128,7 +132,8 @@ class ResetAndCreateTestJobs {
           'jobType': 'part-time',
           'remote': true,
           'workMode': 'Remote',
-          'description': 'Part-time position for a creative UI/UX designer. You will design user interfaces and create wireframes.',
+          'description':
+              'Part-time position for a creative UI/UX designer. You will design user interfaces and create wireframes.',
         },
       ];
 
@@ -164,7 +169,8 @@ class ResetAndCreateTestJobs {
         count++;
 
         if (kDebugMode) {
-          print('   ✅ ${jobData['Position']} - ${jobData['location']} (${jobData['jobType']})');
+          print(
+              '   ✅ ${jobData['Position']} - ${jobData['location']} (${jobData['jobType']})');
         }
       }
 

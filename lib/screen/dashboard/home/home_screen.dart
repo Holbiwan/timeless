@@ -367,7 +367,6 @@ class _HomeScreenState extends State<HomeScreen> {
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          height: 130,
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
             color: Colors.white,
@@ -383,7 +382,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Container(
                 padding: const EdgeInsets.all(9),

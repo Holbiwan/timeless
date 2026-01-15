@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
-/// Quick utility to activate the current employer for testing
-/// This sets isVerified=true and status='active' so jobs appear in candidate dashboard
+// Quick utility to activate the current employer for testing
+// This sets isVerified=true and status='active' so jobs appear in candidate dashboard
 class ActivateTestEmployer {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   static final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -19,10 +19,8 @@ class ActivateTestEmployer {
       final employerId = user.uid;
 
       // Check if employer exists
-      final employerDoc = await _firestore
-          .collection('employers')
-          .doc(employerId)
-          .get();
+      final employerDoc =
+          await _firestore.collection('employers').doc(employerId).get();
 
       if (!employerDoc.exists) {
         if (kDebugMode) print('❌ Employer document not found for $employerId');

@@ -1,6 +1,8 @@
 // ignore_for_file: unused_element, duplicate_ignore
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -13,6 +15,7 @@ import 'package:timeless/screen/employer/enhanced_applications_screen.dart';
 import 'package:timeless/screen/employer/post_job_screen.dart';
 import 'package:timeless/screen/employer/simple_profile_screen.dart';
 import 'package:timeless/services/accessibility_service.dart';
+import 'package:timeless/utils/debug_employer_email.dart';
 
 class EmployerDashboardScreen extends StatefulWidget {
   const EmployerDashboardScreen({super.key});
@@ -34,6 +37,19 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
   // Helper to apply text scaling
   double _getScaledFontSize(BuildContext context, double baseFontSize) {
     return baseFontSize * MediaQuery.textScaleFactorOf(context);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _checkEmailVerification();
+  }
+
+  Future<void> _checkEmailVerification() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      await user.reload();
+    }
   }
 
   @override
@@ -218,20 +234,20 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
                         const SizedBox(width: 8),
                         Semantics(
                           button: true,
-                          label: 'Logout',
+                          label: 'Exit App',
                           child: Container(
                             decoration: BoxDecoration(
-                              color: Colors.black,
+                              color: Colors.red,
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
-                                color: Colors.black.withOpacity(0.3),
+                                color: Colors.red.withOpacity(0.3),
                                 width: 1,
                               ),
                             ),
                             child: IconButton(
                               icon: const Icon(Icons.logout_rounded, color: Colors.white, size: 16),
                               onPressed: _logout,
-                              tooltip: 'Logout',
+                              tooltip: 'Exit App',
                             ),
                           ),
                         ),
@@ -407,6 +423,16 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
           color: _accentOrange,
           isPrimary: true,
           onTap: () async {
+            // Check email verification
+            final user = FirebaseAuth.instance.currentUser;
+            if (user != null) {
+              await user.reload(); // Ensure we have the latest status
+              if (!user.emailVerified) {
+                _showVerificationDialog();
+                return;
+              }
+            }
+
             final result = await Get.to(() => const PostJobScreen());
             if (result == 'job_posted') {
               setState(() {});
@@ -1000,11 +1026,11 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
                   color: Colors.red.withOpacity(0.1),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.logout, color: Colors.red, size: 32),
+                child: const Icon(Icons.exit_to_app_rounded, color: Colors.red, size: 32),
               ),
               const SizedBox(height: 16),
               Text(
-                'Logout',
+                'Exit Application',
                 style: GoogleFonts.inter(
                   fontSize: 20,
                   fontWeight: FontWeight.w700,
@@ -1013,7 +1039,7 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
               ),
               const SizedBox(height: 8),
               Text(
-                'Are you sure you want to logout?',
+                'Are you sure you want to exit the application?',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.inter(color: Colors.grey[600]),
               ),
@@ -1043,11 +1069,7 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-                        PreferencesService.setValue(PrefKeys.isLogin, false as String);
-                        PreferencesService.remove(PrefKeys.userId);
-                        PreferencesService.remove(PrefKeys.employerId);
-                        PreferencesService.remove(PrefKeys.companyName);
-                        Get.offAllNamed(AppRes.firstScreen);
+                        SystemNavigator.pop();
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red,
@@ -1058,11 +1080,157 @@ class _EmployerDashboardScreenState extends State<EmployerDashboardScreen> {
                         ),
                       ),
                       child: Text(
-                        'Logout',
+                        'Exit',
                         style: GoogleFonts.inter(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
                         ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showVerificationDialog() {
+    Get.dialog(
+      Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.orange.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.mark_email_unread_outlined, color: Colors.orange, size: 32),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Email Verification Required',
+                style: GoogleFonts.inter(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  color: _primaryBlue,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Please verify your email address to start posting jobs. We sent a confirmation link to your inbox.',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.inter(color: Colors.grey[600], fontSize: 14),
+              ),
+              const SizedBox(height: 24),
+              Column(
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        final user = FirebaseAuth.instance.currentUser;
+                        if (user != null) {
+                          await user.reload();
+                          if (user.emailVerified) {
+                            Get.back();
+                            Get.snackbar(
+                              'Success',
+                              'Email verified! You can now post jobs.',
+                              backgroundColor: Colors.green,
+                              colorText: Colors.white,
+                            );
+                          } else {
+                            Get.snackbar(
+                              'Not Verified',
+                              'Email is not yet verified. Please check your inbox.',
+                              backgroundColor: Colors.orange,
+                              colorText: Colors.white,
+                            );
+                          }
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: _primaryBlue,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: Text(
+                        'I have verified my email',
+                        style: GoogleFonts.inter(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  TextButton(
+                    onPressed: () async {
+                      final user = FirebaseAuth.instance.currentUser;
+                      if (user != null) {
+                        try {
+                          // Try native Firebase first
+                          await FirebaseAuth.instance.setLanguageCode('en');
+                          await user.sendEmailVerification();
+
+                          Get.back(); // Close dialog
+                          Get.snackbar(
+                            'Email Sent',
+                            'Verification link resent to ${user.email}',
+                            backgroundColor: Colors.green,
+                            colorText: Colors.white,
+                            duration: const Duration(seconds: 3),
+                          );
+                        } catch (e) {
+                          // Handle errors gracefully
+                          String errorMessage = 'Failed to send verification email.';
+                          
+                          if (e is FirebaseAuthException) {
+                            if (e.code == 'too-many-requests') {
+                              errorMessage = 'Please wait a moment before requesting another email.';
+                            } else {
+                              errorMessage = e.message ?? errorMessage;
+                            }
+                          }
+
+                          if (kDebugMode) print('⚠️ Native verification failed: $e');
+
+                          Get.back(); // Close dialog
+                          Get.snackbar(
+                            'Verification Error',
+                            errorMessage,
+                            backgroundColor: Colors.red,
+                            colorText: Colors.white,
+                            duration: const Duration(seconds: 4),
+                          );
+                        }
+                      }
+                    },
+                    child: Text(
+                      'Resend Verification Email',
+                      style: GoogleFonts.inter(
+                        color: _primaryBlue,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: Get.back,
+                    child: Text(
+                      'Cancel',
+                      style: GoogleFonts.inter(
+                        color: Colors.grey[600],
                       ),
                     ),
                   ),

@@ -311,7 +311,7 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
       await JobService.submitApplication(
         jobId: widget.docId ?? 'unknown_job_id',
         candidateId: PreferencesService.getString(PrefKeys.userId),
-        employerId: widget.job['employerId'] ?? 'unknown_employer',
+        employerId: widget.job['EmployerId'] ?? widget.job['employerId'] ?? 'unknown_employer',
         candidateName: _nameController.text.trim(),
         candidateEmail: _emailController.text.trim(),
         candidatePhone: trimmedPhone.isNotEmpty ? trimmedPhone : '',

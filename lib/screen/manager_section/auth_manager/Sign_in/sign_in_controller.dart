@@ -9,6 +9,7 @@ import 'package:timeless/screen/organization_profile_screen/organization_profile
 import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/utils/color_res.dart';
+import 'package:timeless/utils/sync_employer_emails.dart';
 
 class SignInScreenControllerM extends GetxController {
   RxBool loading = false.obs;
@@ -55,6 +56,9 @@ class SignInScreenControllerM extends GetxController {
           if (kDebugMode) {
             print('✅ Connexion employeur réussie (nouvelle structure): ${data['companyName']}');
           }
+
+          // Synchroniser l'email de l'employeur (pour les comptes existants)
+          SyncEmployerEmails.syncCurrentEmployer();
 
           Get.off(() => ManagerDashBoardScreen());
           
