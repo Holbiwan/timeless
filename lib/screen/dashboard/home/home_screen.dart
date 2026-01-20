@@ -148,7 +148,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
 
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 4),
 
                   // Learning & Events section
                   Padding(
@@ -160,17 +160,17 @@ class _HomeScreenState extends State<HomeScreen> {
                           "Learning & Events",
                           textAlign: TextAlign.center,
                           style: GoogleFonts.inter(
-                            fontSize: _getScaledFontSize(context, 18),
+                            fontSize: _getScaledFontSize(context, 15),
                             fontWeight: FontWeight.w700,
                             letterSpacing: 0.5,
                             color: const Color(0xFF0D47A1),
                           ),
                         ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: 6),
 
                         // Video carousel
                         SizedBox(
-                          height: 120,
+                          height: 110,
                           child: PageView.builder(
                             controller: _pageController,
                             itemBuilder: (context, index) {
@@ -212,7 +212,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
 
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 4),
 
                         // Page indicator
                         Center(
@@ -220,15 +220,15 @@ class _HomeScreenState extends State<HomeScreen> {
                             activeIndex: _currentIndex,
                             count: _videoIds.length,
                             effect: const WormEffect(
-                              dotHeight: 8,
-                              dotWidth: 8,
+                              dotHeight: 7,
+                              dotWidth: 7,
                               activeDotColor: Color(0xFF000647),
                               dotColor: Colors.grey,
                             ),
                           ),
                         ),
 
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 4),
 
                         // Event action buttons
                         Row(
@@ -259,8 +259,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
                   ),
-
-                  const SizedBox(height: 16),
                 ],
               ),
             ),
@@ -285,7 +283,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(12),
@@ -304,12 +302,12 @@ class _HomeScreenState extends State<HomeScreen> {
               Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.all(6),
+                    padding: const EdgeInsets.all(7),
                     decoration: BoxDecoration(
                       color: color.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(6),
                     ),
-                    child: Icon(icon, color: color, size: 18),
+                    child: Icon(icon, color: color, size: 20),
                   ),
                   const Spacer(),
                   if (badge != null && badge > 0)
@@ -331,16 +329,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                 ],
               ),
-              const SizedBox(height: 6),
+              const SizedBox(height: 7),
               Text(
                 title,
                 style: GoogleFonts.inter(
-                  fontSize: _getScaledFontSize(context, 13),
+                  fontSize: _getScaledFontSize(context, 14),
                   fontWeight: FontWeight.w600,
                   color: const Color(0xFF1F2937),
                 ),
               ),
-              const SizedBox(height: 1),
+              const SizedBox(height: 2),
               Text(
                 subtitle,
                 style: GoogleFonts.inter(
@@ -369,10 +367,10 @@ class _HomeScreenState extends State<HomeScreen> {
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          padding: const EdgeInsets.all(8), // Reduced from 12
+          padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(12),
             border: Border.all(color: color.withOpacity(0.3), width: 1.5),
             boxShadow: [
               BoxShadow(
@@ -384,29 +382,30 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                padding: const EdgeInsets.all(6),
+                padding: const EdgeInsets.all(9),
                 decoration: BoxDecoration(
                   color: color.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(6),
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                child: Icon(icon, color: color, size: 16),
+                child: Icon(icon, color: color, size: 22),
               ),
-              const SizedBox(height: 4), // Reduced from 6
+              const SizedBox(height: 8),
               Text(
                 title,
                 style: GoogleFonts.inter(
-                  fontSize: _getScaledFontSize(context, 12),
+                  fontSize: _getScaledFontSize(context, 15),
                   fontWeight: FontWeight.w600,
                   color: const Color(0xFF1F2937),
                 ),
               ),
-              const SizedBox(height: 1),
+              const SizedBox(height: 2),
               Text(
                 subtitle,
                 style: GoogleFonts.inter(
-                  fontSize: _getScaledFontSize(context, 10),
+                  fontSize: _getScaledFontSize(context, 12),
                   color: const Color(0xFF6B7280),
                 ),
               ),

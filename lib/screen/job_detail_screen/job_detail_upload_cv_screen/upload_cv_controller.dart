@@ -9,6 +9,7 @@ import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/app_res.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:timeless/utils/pref_keys.dart';
+import 'package:timeless/services/fcm_notification_service.dart';
 // import 'package:pull_to_refresh/pull_to_refresh.dart'; // Package removed
 
 FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -64,6 +65,8 @@ class JobDetailsUploadCvController extends GetxController {
   double filesize = 0;
 
   onTapApply({var args}) async {
+    await _ensurePdfUrl(); // Ensure we have a CV URL even for quick apply
+
     abc = false;
     for (int i = 0; i < companyList.length; i++) {
       // ✅ correction de la typo: companyname
@@ -111,14 +114,86 @@ class JobDetailsUploadCvController extends GetxController {
       "deviceToken": PreferencesService.getString(PrefKeys.deviceToken),
     });
 
-    // Send application confirmation email
+    // Save to 'applications' collection for employer management screen
+    var employerId = args['EmployerId'] ?? args['employerId'];
+
+    // Fallback: Get employerId from the job document if not in args
+    if (employerId == null || (employerId as String).isEmpty) {
+      final jobId = args['id'];
+      if (jobId != null && (jobId as String).isNotEmpty) {
+        try {
+          final jobDoc = await firestore.collection('allPost').doc(jobId).get();
+          if (jobDoc.exists) {
+            final jobData = jobDoc.data();
+            employerId = jobData?['EmployerId'] ?? jobData?['employerId'];
+            if (kDebugMode) {
+              print('📋 Retrieved employerId from job document: $employerId');
+            }
+          }
+        } catch (e) {
+          if (kDebugMode) print('⚠️ Error fetching job document: $e');
+        }
+      }
+    }
+
+    if (employerId != null && (employerId as String).isNotEmpty) {
+      await firestore.collection("applications").add({
+        'employerId': employerId,
+        'candidateId': FirebaseAuth.instance.currentUser!.uid,
+        'candidateName': PreferencesService.getString(PrefKeys.fullName),
+        'candidateEmail': PreferencesService.getString(PrefKeys.email),
+        'candidatePhone': PreferencesService.getString(PrefKeys.phoneNumber),
+        'jobId': args['id'] ?? '',
+        'jobTitle': args['Position'] ?? 'Position',
+        'companyName': args['CompanyName'] ?? 'Company',
+        'cvUrl': pdfUrl,
+        'coverLetter': motivationController.text.trim().isNotEmpty
+            ? motivationController.text.trim()
+            : null,
+        'status': 'pending',
+        'appliedAt': FieldValue.serverTimestamp(),
+        'createdAt': FieldValue.serverTimestamp(),
+        'salary': args['salary'],
+        'location': args['location'],
+        'jobType': args['type'],
+      });
+
+      if (kDebugMode) {
+        print('✅ Application saved to applications collection for employer $employerId');
+      }
+    }
+
+    // Send application confirmation email to candidate
     await _sendApplicationConfirmationEmail(args);
 
-    // Add notification for application submission
+    // Add notification for candidate
     await _addApplicationNotification(args);
 
+    // 🆕 Send notification email to employer
+    final emailSent = await _sendEmployerNotificationEmail(args);
+    if (!emailSent && kDebugMode) {
+      print('⚠️ Employer notification email failed to send.');
+    }
+
+    // 🆕 Add notification for employer
+    final notifAdded = await _addEmployerNotification(args);
+    if (!notifAdded && kDebugMode) {
+      print('⚠️ Employer in-app notification failed to add.');
+    }
+
+    // 🆕 Send FCM push notification to employer
+    if (employerId != null && (employerId as String).isNotEmpty) {
+      await FCMNotificationService.notifyNewApplication(
+        employerId: employerId,
+        candidateName: PreferencesService.getString(PrefKeys.fullName),
+        jobTitle: args['Position'] ?? 'Position',
+        companyName: args['CompanyName'] ?? 'Company',
+        cvUrl: pdfUrl,
+      );
+    }
+
     // Success message will be shown via popup in the UI
-    
+
     Get.toNamed(AppRes.jobDetailSuccessOrFailed, arguments: [
       {"doc": args},
       {"error": false, "filename": filepath},
@@ -155,6 +230,37 @@ class JobDetailsUploadCvController extends GetxController {
       );
     } catch (e) {
       if (kDebugMode) print('Erreur création CV démo: $e');
+    }
+  }
+
+  Future<void> _ensurePdfUrl() async {
+    if (pdfUrl != null && pdfUrl!.isNotEmpty) return;
+    
+    // Check demo
+    final userId = PreferencesService.getString(PrefKeys.userId);
+    if (userId == "demo_user_12345") {
+       pdfUrl = "https://demo.timeless.com/cv/demo_user_cv.pdf";
+       filepath.value = "demo_cv.pdf";
+       return;
+    }
+
+    // Check Firestore for last CV
+    try {
+      final cvDocs = await firestore
+          .collection("UserCVs")
+          .doc(userId)
+          .collection("CVs")
+          .orderBy("uploadDate", descending: true)
+          .limit(1)
+          .get();
+      
+      if (cvDocs.docs.isNotEmpty) {
+        pdfUrl = cvDocs.docs.first.data()['url'];
+        filepath.value = cvDocs.docs.first.data()['fileName'] ?? 'cv.pdf';
+        if (kDebugMode) print('✅ Retrieved existing CV: $pdfUrl');
+      }
+    } catch (e) {
+      if (kDebugMode) print('⚠️ Error fetching last CV: $e');
     }
   }
 
@@ -560,32 +666,25 @@ class JobDetailsUploadCvController extends GetxController {
       final userId = PreferencesService.getString(PrefKeys.userId);
       if (userId.isEmpty) return;
 
-      // Check if this is an English job posting
-      final isEnglishJob = _isEnglishJobPosting(jobData);
-      
-      final title = isEnglishJob ? "Application Submitted" : "Candidature soumise";
-      final message = isEnglishJob 
-          ? "Your application for ${jobData['Position']} at ${jobData['CompanyName']} has been submitted successfully."
-          : "Votre candidature pour ${jobData['Position']} chez ${jobData['CompanyName']} a été soumise avec succès.";
-
       await FirebaseFirestore.instance
           .collection("users")
           .doc(userId)
           .collection("notifications")
           .add({
         "type": "application_submitted",
-        "title": title,
-        "message": message,
+        "title_en": "Application Submitted",
+        "title_fr": "Candidature soumise",
+        "message_en": "Your application for ${jobData['Position']} at ${jobData['CompanyName']} has been submitted successfully.",
+        "message_fr": "Votre candidature pour ${jobData['Position']} chez ${jobData['CompanyName']} a été soumise avec succès.",
         "jobTitle": jobData['Position'],
         "companyName": jobData['CompanyName'],
         "read": false,
         "createdAt": FieldValue.serverTimestamp(),
         "icon": "check_circle",
         "priority": "medium",
-        "language": isEnglishJob ? "english" : "french",
       });
 
-      if (kDebugMode) print('✅ Application notification added (${isEnglishJob ? "English" : "French"})');
+      if (kDebugMode) print('✅ Application notification added');
     } catch (e) {
       if (kDebugMode) print('❌ Error adding application notification: $e');
     }
@@ -808,4 +907,242 @@ class JobDetailsUploadCvController extends GetxController {
       """;
     }
   }
-}
+
+  // 🆕 Send notification email to employer when candidate applies
+    Future<bool> _sendEmployerNotificationEmail(Map<String, dynamic> jobData) async {
+      try {
+        String? employerEmail;
+        final employerId = jobData['EmployerId'] ?? jobData['employerId'];
+  
+        // Priority 1: Fetch fresh email from employer profile
+        if (employerId != null && (employerId as String).isNotEmpty) {
+          try {
+            final employerDoc = await FirebaseFirestore.instance
+                .collection('employers')
+                .doc(employerId)
+                .get();
+  
+            if (employerDoc.exists) {
+              final data = employerDoc.data();
+              if (data != null && data['email'] != null && (data['email'] as String).isNotEmpty) {
+                employerEmail = data['email'];
+                if (kDebugMode) print('✅ Fetched fresh employer email from profile: $employerEmail');
+              }
+            }
+          } catch (e) {
+            if (kDebugMode) print('⚠️ Failed to fetch employer profile: $e');
+          }
+        }
+  
+              // Priority 2: Fallback to email in job data
+              if (employerEmail == null || employerEmail.isEmpty) {
+                employerEmail = jobData['CompanyEmail'] ?? jobData['employerEmail'];
+                if (kDebugMode) print('ℹ️ Using employer email from job data: $employerEmail');
+              }
+        
+              // Priority 3: DEMO SAFETY NET - Hardcoded fallback for Vitoranda
+              if (employerEmail == null || employerEmail.isEmpty) {
+                final companyName = (jobData['CompanyName'] ?? '').toString().toLowerCase();
+                if (companyName.contains('vitoranda')) {
+                  employerEmail = 'vitoranda@outlook.com';
+                  if (kDebugMode) print('⚠️ DEMO FALLBACK: Using hardcoded email for Vitoranda');
+                }
+              }
+        
+              if (employerEmail != null && employerEmail.isNotEmpty) {
+                 await _sendEmailToEmployer(employerEmail, jobData);
+                 return true; // Success
+              } else {          if (kDebugMode) print('⚠️ No employer email found for notification (ID: $employerId)');
+          return false; // Failure (no email to send to)
+        }
+  
+      } catch (e) {
+        if (kDebugMode) print('❌ Error sending employer notification email: $e');
+        return false; // Failure (exception caught)
+      }
+    }
+  Future<void> _sendEmailToEmployer(String employerEmail, Map<String, dynamic> jobData) async {
+    final candidateName = PreferencesService.getString(PrefKeys.fullName);
+    final candidateEmail = PreferencesService.getString(PrefKeys.email);
+    final candidatePhone = PreferencesService.getString(PrefKeys.phoneNumber);
+
+    final emailHTML = _generateEmployerNotificationEmail(
+      candidateName: candidateName,
+      candidateEmail: candidateEmail,
+      candidatePhone: candidatePhone,
+      jobTitle: jobData['Position'] ?? 'Position',
+      companyName: jobData['CompanyName'] ?? 'Company',
+      cvUrl: pdfUrl ?? '',
+      motivationLetter: motivationController.text.trim(),
+    );
+
+    final subject = "🎯 New Application - $candidateName applied for ${jobData['Position']}";
+    final textMessage = "$candidateName has applied for ${jobData['Position']} position. Please review their application in your dashboard.";
+
+    // Send via Firebase Extensions
+    final mailDoc = await FirebaseFirestore.instance.collection("mail").add({
+      "to": [employerEmail],
+      "message": {
+        "subject": subject,
+        "html": emailHTML,
+        "text": textMessage
+      }
+    });
+
+    // Log the employer notification email
+    await FirebaseFirestore.instance.collection("employerNotificationEmails").add({
+      "to": employerEmail,
+      "candidateName": candidateName,
+      "candidateEmail": candidateEmail,
+      "jobTitle": jobData['Position'],
+      "companyName": jobData['CompanyName'],
+      "applicationDate": FieldValue.serverTimestamp(),
+      "status": "sent",
+      "mailDocId": mailDoc.id,
+      "employerId": jobData['employerId'] ?? '',
+    });
+
+    if (kDebugMode) print('✅ Employer notification email sent to $employerEmail');
+  }
+
+  String _generateEmployerNotificationEmail({
+    required String candidateName,
+    required String candidateEmail,
+    required String candidatePhone,
+    required String jobTitle,
+    required String companyName,
+    required String cvUrl,
+    required String motivationLetter,
+  }) {
+    return """
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Application - $jobTitle</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f5f5; margin: 0; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; background-color: white; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, #0d47a1 0%, #1976d2 100%); color: white; text-align: center; padding: 30px 20px; }
+        .header h1 { margin: 0; font-size: 26px; font-weight: 700; }
+        .content { padding: 30px; }
+        .candidate-info { background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #0d47a1; }
+        .info-row { display: flex; justify-content: space-between; margin: 8px 0; }
+        .info-label { font-weight: 600; color: #495057; }
+        .info-value { color: #0d47a1; font-weight: 600; }
+        .motivation-section { background: #e3f2fd; padding: 20px; border-radius: 10px; margin: 20px 0; }
+        .action-button { display: inline-block; background: #0d47a1; color: white; padding: 12px 30px; text-decoration: none; border-radius: 8px; margin: 10px 5px; font-weight: 600; }
+        .footer { background-color: #f8f9fa; text-align: center; padding: 20px; border-top: 1px solid #eee; }
+        .alert-icon { font-size: 48px; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="alert-icon">🎯</div>
+            <h1>New Application Received!</h1>
+            <p>A candidate has applied for your job posting</p>
+        </div>
+
+        <div class="content">
+            <h2>Hello,</h2>
+
+            <p>Great news! You have received a new application for your <strong>$jobTitle</strong> position at <strong>$companyName</strong>.</p>
+
+            <div class="candidate-info">
+                <h3 style="margin-top: 0; color: #333;">👤 Candidate Information</h3>
+                <div class="info-row">
+                    <span class="info-label">Name:</span>
+                    <span class="info-value">$candidateName</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Email:</span>
+                    <span class="info-value">$candidateEmail</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Phone:</span>
+                    <span class="info-value">$candidatePhone</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Position Applied:</span>
+                    <span class="info-value">$jobTitle</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Application Date:</span>
+                    <span class="info-value">${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}</span>
+                </div>
+            </div>
+
+            ${motivationLetter.isNotEmpty ? '''
+            <div class="motivation-section">
+                <h3 style="margin-top: 0; color: #333;">💭 Motivation Letter</h3>
+                <p style="margin: 0; white-space: pre-wrap;">$motivationLetter</p>
+            </div>
+            ''' : ''}
+
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="$cvUrl" class="action-button" target="_blank">📄 View CV</a>
+                <a href="https://timeless.com/employer/applications" class="action-button">📋 Review Application</a>
+            </div>
+
+            <p style="color: #666; margin-top: 20px;">
+                <strong>Next Steps:</strong><br>
+                • Review the candidate's CV and profile<br>
+                • Contact the candidate to schedule an interview<br>
+                • Update the application status in your dashboard
+            </p>
+        </div>
+
+        <div class="footer">
+            <h3>🌟 Timeless Recruiting Platform</h3>
+            <p>Find the perfect talent for your company</p>
+            <p style="font-size: 12px; color: #999;">
+                This is an automated notification email.
+            </p>
+        </div>
+    </div>
+</body>
+</html>
+    """;
+  }
+
+  // 🆕 Add notification for employer when candidate applies
+    Future<bool> _addEmployerNotification(Map<String, dynamic> jobData) async {
+      try {
+        final employerId = jobData['EmployerId'] ?? jobData['employerId'];
+        if (employerId == null || (employerId as String).isEmpty) {
+          if (kDebugMode) print('⚠️ No employerId found for notification');
+          return false;
+        }
+  
+        final candidateName = PreferencesService.getString(PrefKeys.fullName);
+  
+        await FirebaseFirestore.instance
+            .collection("employers")
+            .doc(employerId)
+            .collection("notifications")
+            .add({
+          "type": "new_application",
+          "title_en": "New Application Received",
+          "title_fr": "Nouvelle candidature reçue",
+          "message_en": "$candidateName applied for ${jobData['Position']}",
+          "message_fr": "$candidateName a postulé pour ${jobData['Position']}",
+          "candidateName": candidateName,
+          "candidateId": PreferencesService.getString(PrefKeys.userId),
+          "jobTitle": jobData['Position'],
+          "companyName": jobData['CompanyName'],
+          "cvUrl": pdfUrl ?? '',
+          "read": false,
+          "createdAt": FieldValue.serverTimestamp(),
+          "icon": "person_add",
+          "priority": "high",
+        });
+  
+        if (kDebugMode) print('✅ Employer notification added');
+        return true; // Success
+      } catch (e) {
+        if (kDebugMode) print('❌ Error adding employer notification: $e');
+        return false; // Failure
+      }
+    }}

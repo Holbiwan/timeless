@@ -11,6 +11,7 @@ import 'package:timeless/common/widgets/modern_filter_dialog.dart';
 import 'package:timeless/common/widgets/modern_sort_dialog.dart';
 import 'package:timeless/common/widgets/date_sort_filter.dart';
 import 'package:timeless/utils/app_res.dart';
+import 'package:timeless/utils/job_categories.dart';
 
 class JobRecommendationScreen extends StatelessWidget {
   const JobRecommendationScreen({super.key});
@@ -573,53 +574,89 @@ class JobRecommendationScreen extends StatelessWidget {
       List<Map<String, dynamic>> jobs, JobRecommendationController controller) {
     List<Map<String, dynamic>> filteredJobs = List.from(jobs);
 
+    // Search filter
     if (controller.searchText.value.isNotEmpty) {
       final searchQuery = controller.searchText.value.toLowerCase();
       filteredJobs = filteredJobs.where((job) {
         final position = (job['Position'] ?? '').toString().toLowerCase();
         final company = (job['CompanyName'] ?? '').toString().toLowerCase();
         final location = (job['location'] ?? '').toString().toLowerCase();
+        final salary = (job['salary'] ?? '').toString().toLowerCase();
+        final description = (job['description'] ?? '').toString().toLowerCase();
+        final category = (job['category'] ?? '').toString().toLowerCase();
+
         return position.contains(searchQuery) ||
             company.contains(searchQuery) ||
-            location.contains(searchQuery);
+            location.contains(searchQuery) ||
+            salary.contains(searchQuery) ||
+            description.contains(searchQuery) ||
+            category.contains(searchQuery);
       }).toList();
     }
 
-    if (controller.selectedCategory.value != 'All') {
-      filteredJobs = filteredJobs
-          .where((job) => job['category'] == controller.selectedCategory.value)
-          .toList();
-    }
-    if (controller.selectedJobType.value != 'All') {
-      filteredJobs = filteredJobs
-          .where((job) =>
-              (job['jobType'] ?? job['type']) ==
-              controller.selectedJobType.value)
-          .toList();
-    }
-    if (controller.selectedLocation.value != 'All') {
-      filteredJobs = filteredJobs
-          .where((job) => (job['location'] ?? '')
-              .toString()
-              .toLowerCase()
-              .contains(controller.selectedLocation.value.toLowerCase()))
-          .toList();
-    }
-    if (controller.selectedSalaryRange.value != 'All') {
-      // Basic salary filter if salary is number-like
-      // ... (Using basic string matching for now to avoid complexity in this file, or just relying on list filtering)
-      // The controller has complex salary logic, but we are working on mapped list.
-      // Re-implementing simplified logic here for responsiveness.
-      // ...
+    // Category filter - Use JobCategories helper for proper matching
+    if (controller.selectedCategory.value != 'All' && controller.selectedCategory.value.isNotEmpty) {
+      filteredJobs = filteredJobs.where((job) {
+        final jobCategory = job['category']?.toString() ?? '';
+        return JobCategories.categoryMatches(controller.selectedCategory.value, jobCategory);
+      }).toList();
     }
 
-    // Sort
+    // Job Type filter - Convert display type to internal type
+    if (controller.selectedJobType.value != 'All' && controller.selectedJobType.value.isNotEmpty) {
+      filteredJobs = filteredJobs.where((job) {
+        final internalJobType = JobCategories.jobTypeDisplayToInternal(controller.selectedJobType.value);
+        return job['jobType'] == internalJobType;
+      }).toList();
+    }
+
+    // Location filter
+    if (controller.selectedLocation.value != 'All' && controller.selectedLocation.value.isNotEmpty) {
+      filteredJobs = filteredJobs.where((job) {
+        final jobLocation = (job['location'] ?? '').toString().toLowerCase();
+        return jobLocation.contains(controller.selectedLocation.value.toLowerCase());
+      }).toList();
+    }
+
+    // Salary range filter
+    if (controller.selectedSalaryRange.value != 'All' && controller.selectedSalaryRange.value.isNotEmpty) {
+      filteredJobs = filteredJobs.where((job) {
+        final salaryStr = (job['salary'] ?? '0').toString();
+        final salary = int.tryParse(salaryStr.replaceAll(RegExp(r'[^\d]'), '')) ?? 0;
+
+        switch (controller.selectedSalaryRange.value) {
+          case '< 35K':
+            return salary < 35000;
+          case '35K-50K':
+            return salary >= 35000 && salary <= 50000;
+          case '50K-70K':
+            return salary > 50000 && salary <= 70000;
+          case '70K-90K':
+            return salary > 70000 && salary <= 90000;
+          case '90K+':
+            return salary > 90000;
+          default:
+            return true;
+        }
+      }).toList();
+    }
+
+    // Date sorting - Use createdAt Timestamp from Firebase
     filteredJobs.sort((a, b) {
-      final aDate = DateTime.tryParse(a['postingDate'] ?? '') ?? DateTime.now();
-      final bDate = DateTime.tryParse(b['postingDate'] ?? '') ?? DateTime.now();
+      // Get Timestamp from Firebase and convert to DateTime
+      final aTimestamp = a['createdAt'];
+      final bTimestamp = b['createdAt'];
+
+      final aDate = aTimestamp is Timestamp
+          ? aTimestamp.toDate()
+          : (DateTime.tryParse(a['postingDate'] ?? '') ?? DateTime.now());
+      final bDate = bTimestamp is Timestamp
+          ? bTimestamp.toDate()
+          : (DateTime.tryParse(b['postingDate'] ?? '') ?? DateTime.now());
+
       return controller.selectedDateSort.value == DateSortOption.newest
-          ? bDate.compareTo(aDate)
-          : aDate.compareTo(bDate);
+          ? bDate.compareTo(aDate)  // Newest first
+          : aDate.compareTo(bDate);  // Oldest first
     });
 
     return filteredJobs;

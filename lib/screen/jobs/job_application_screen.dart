@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 // Using Map<String, dynamic> for job data instead of dedicated model
 import 'package:timeless/services/job_service.dart';
 import 'package:timeless/services/preferences_service.dart';
@@ -88,6 +89,97 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
+    }
+  }
+
+  Future<void> _sendEmployerNotification() async {
+    try {
+      final employerId = widget.job['employerId'];
+      if (employerId == null) return;
+
+      // Get Employer Email
+      final userDoc = await FirebaseFirestore.instance.collection('users').doc(employerId).get();
+      final employerEmail = userDoc.data()?['email'];
+      
+      if (employerEmail == null) return;
+
+      // Get CV URL from the newly created application
+      String? cvUrl;
+      final candidateId = PreferencesService.getString(PrefKeys.userId);
+      final jobId = widget.docId ?? widget.job['jobId'];
+
+      if (candidateId.isNotEmpty && jobId != null) {
+         try {
+           final appQuery = await FirebaseFirestore.instance.collection('applications')
+              .where('jobId', isEqualTo: jobId)
+              .where('candidateId', isEqualTo: candidateId)
+              .orderBy('appliedAt', descending: true)
+              .limit(1)
+              .get();
+              
+           if (appQuery.docs.isNotEmpty) {
+             cvUrl = appQuery.docs.first.data()['cvUrl'];
+           }
+         } catch (e) {
+           print("Error fetching new application for CV URL: $e");
+         }
+      }
+
+      final candidateName = _nameController.text.trim();
+      final message = _commentController.text.trim();
+      final jobTitle = widget.job['Position'] ?? 'a position';
+
+      // HTML Email Content
+      final emailHtml = """
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+  .container { max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
+  .header { background-color: #000647; color: white; padding: 15px; text-align: center; border-radius: 8px 8px 0 0; }
+  .content { padding: 20px; }
+  .button { display: inline-block; padding: 10px 20px; background-color: #000647; color: white; text-decoration: none; border-radius: 5px; margin-top: 15px; }
+  .info-item { margin-bottom: 10px; }
+  .label { font-weight: bold; }
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h2>New Candidate Application</h2>
+    </div>
+    <div class="content">
+      <p>Hello,</p>
+      <p>You have received a new application for the position of <strong>$jobTitle</strong>.</p>
+      
+      <div class="info-item">
+        <span class="label">Candidate Name:</span> $candidateName
+      </div>
+      
+      ${message.isNotEmpty ? '<div class="info-item"><span class="label">Message:</span><br>$message</div>' : ''}
+      
+      ${cvUrl != null ? '<p><a href="$cvUrl" class="button" style="color: white;">View CV</a></p>' : '<p>The candidate has uploaded a CV. Please check your dashboard to view it.</p>'}
+      
+      <p>Log in to your Timeless dashboard to review the full application and manage your candidates.</p>
+    </div>
+  </div>
+</body>
+</html>
+""";
+
+      // Send Email via Firebase Extension
+       await FirebaseFirestore.instance.collection("mail").add({
+        "to": [employerEmail],
+        "message": {
+          "subject": "New Application for $jobTitle - $candidateName",
+          "html": emailHtml,
+          "text": "New application for $jobTitle from $candidateName. Log in to dashboard to view."
+        }
+      });
+      
+    } catch (e) {
+      print("Error sending employer notification: $e");
     }
   }
 
@@ -219,7 +311,7 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
       await JobService.submitApplication(
         jobId: widget.docId ?? 'unknown_job_id',
         candidateId: PreferencesService.getString(PrefKeys.userId),
-        employerId: widget.job['employerId'] ?? 'unknown_employer',
+        employerId: widget.job['EmployerId'] ?? widget.job['employerId'] ?? 'unknown_employer',
         candidateName: _nameController.text.trim(),
         candidateEmail: _emailController.text.trim(),
         candidatePhone: trimmedPhone.isNotEmpty ? trimmedPhone : '',
@@ -232,6 +324,9 @@ class _JobApplicationScreenState extends State<JobApplicationScreen> {
           'appliedAt': DateTime.now().toIso8601String(),
         },
       );
+
+      // Notify Employer via Email
+      await _sendEmployerNotification();
 
       _showSuccessDialog();
     } catch (e) {

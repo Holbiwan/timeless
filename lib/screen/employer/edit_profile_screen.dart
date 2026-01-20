@@ -21,7 +21,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   late TextEditingController _postalCodeController;
   late TextEditingController _countryController;
   late TextEditingController _companyInfoController;
-  
+  late TextEditingController _phoneController;
+
   bool _isLoading = false;
 
   @override
@@ -32,6 +33,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     _postalCodeController = TextEditingController(text: widget.employerData['postalCode'] ?? '');
     _countryController = TextEditingController(text: widget.employerData['country'] ?? '');
     _companyInfoController = TextEditingController(text: widget.employerData['companyInfo'] ?? '');
+    _phoneController = TextEditingController(text: widget.employerData['phone'] ?? '');
   }
 
   @override
@@ -41,6 +43,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     _postalCodeController.dispose();
     _countryController.dispose();
     _companyInfoController.dispose();
+    _phoneController.dispose();
     super.dispose();
   }
 
@@ -62,6 +65,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         'postalCode': _postalCodeController.text.trim(),
         'country': _countryController.text.trim(),
         'companyInfo': _companyInfoController.text.trim(),
+        'phone': _phoneController.text.trim(),
         'updatedAt': FieldValue.serverTimestamp(),
       };
 
@@ -176,9 +180,25 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 label: 'Country',
                 icon: Icons.flag,
               ),
-              
+
               const SizedBox(height: 16),
-              
+
+              _buildTextField(
+                controller: _phoneController,
+                label: 'Company Phone',
+                icon: Icons.phone,
+                validator: (value) {
+                  if (value != null && value.isNotEmpty) {
+                    if (!RegExp(r'^\+?[0-9\s\-\(\)]+$').hasMatch(value)) {
+                      return 'Please enter a valid phone number';
+                    }
+                  }
+                  return null;
+                },
+              ),
+
+              const SizedBox(height: 16),
+
               _buildTextField(
                 controller: _companyInfoController,
                 label: 'Company Description',

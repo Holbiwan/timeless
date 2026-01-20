@@ -59,7 +59,7 @@ class ApplicationController extends GetxController {
     try {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
-        allowedExtensions: ['pdf'],
+        allowedExtensions: ['pdf', 'doc', 'docx'],
         allowMultiple: false,
       );
 

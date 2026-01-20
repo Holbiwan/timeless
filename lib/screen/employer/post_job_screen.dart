@@ -63,7 +63,16 @@ class _PostJobScreenState extends State<PostJobScreen> {
       }
 
       // Check if employer can access dashboard
-      final canAccess = await EmployerService.canAccessEmployerDashboard();
+      bool canAccess = await EmployerService.canAccessEmployerDashboard();
+      
+      // DEMO AUTO-FIX: If access denied for Vitoranda, fix it automatically
+      if (!canAccess && user.email?.toLowerCase().contains('vitoranda') == true) {
+        debugPrint('⚠️ DEMO: Auto-fixing Vitoranda account...');
+        await EmployerSyncService.fixVitorandaAccount();
+        await Future.delayed(const Duration(seconds: 1));
+        canAccess = await EmployerService.canAccessEmployerDashboard();
+      }
+
       if (!canAccess) {
         if (mounted) {
           setState(() {
@@ -387,66 +396,6 @@ class _PostJobScreenState extends State<PostJobScreen> {
                   child: const Text('Retry'),
                 ),
                 const SizedBox(height: 12),
-                // Debug button to create sample employer (only in debug mode)
-                if (kDebugMode) ...[
-                  ElevatedButton(
-                    onPressed: () async {
-                      final user = FirebaseAuth.instance.currentUser;
-                      if (user != null) {
-                        setState(() {
-                          _isLoadingEmployerData = true;
-                          _employerError = null;
-                        });
-
-                        await EmployerService.createSampleEmployer(user.uid);
-                        await Future.delayed(const Duration(seconds: 1));
-                        await _loadEmployerData();
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.orange,
-                      foregroundColor: Colors.white,
-                    ),
-                    child: const Text('Create Sample Employer (Debug)'),
-                  ),
-                  const SizedBox(height: 12),
-                  ElevatedButton(
-                    onPressed: () async {
-                      setState(() {
-                        _isLoadingEmployerData = true;
-                        _employerError = null;
-                      });
-
-                      await EmployerSyncService.fixVitorandaAccount();
-                      await Future.delayed(const Duration(seconds: 1));
-                      await _loadEmployerData();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                      foregroundColor: Colors.white,
-                    ),
-                    child: const Text('Fix Vitoranda Account (Debug)'),
-                  ),
-                  const SizedBox(height: 12),
-                  ElevatedButton(
-                    onPressed: () async {
-                      setState(() {
-                        _isLoadingEmployerData = true;
-                        _employerError = null;
-                      });
-
-                      await EmployerSyncService.fixEmployerAccounts();
-                      await Future.delayed(const Duration(seconds: 1));
-                      await _loadEmployerData();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      foregroundColor: Colors.white,
-                    ),
-                    child: const Text('Fix All Employer Accounts (Debug)'),
-                  ),
-                  const SizedBox(height: 12),
-                ],
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
                   child: const Text('Go Back'),

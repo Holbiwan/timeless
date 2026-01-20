@@ -18,6 +18,14 @@ Fast, accessible, and intuitive job applications anytime, anywhere
 
 
 
+
+<p align="center">
+  <img src="https://i.postimg.cc/tgfXWsFY/logo.png" alt="Timeless logo" width="270">
+  &nbsp;&nbsp;&nbsp;
+ 
+</p>
+
+
 </div>
 
 ## 📖 Table of Contents

@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'package:intl/intl.dart';
+import 'package:timeless/utils/debug_applications.dart';
+import 'package:timeless/services/interview_service.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:timeless/utils/fix_applications_employer_id.dart';
 
 class EnhancedApplicationsScreen extends StatefulWidget {
   const EnhancedApplicationsScreen({super.key});
@@ -14,8 +19,7 @@ class EnhancedApplicationsScreen extends StatefulWidget {
 }
 
 class _EnhancedApplicationsScreenState extends State<EnhancedApplicationsScreen> {
-  final String employerId = PreferencesService.getString(PrefKeys.employerId);
-  final String currentUserId = PreferencesService.getString(PrefKeys.userId);
+  // Use FirebaseAuth ID as the source of truth to match the dashboard and job posts
   late final String actualEmployerId;
 
   // Brand Colors
@@ -30,7 +34,18 @@ class _EnhancedApplicationsScreenState extends State<EnhancedApplicationsScreen>
   @override
   void initState() {
     super.initState();
-    actualEmployerId = employerId.isNotEmpty ? employerId : currentUserId;
+    // Use the same logic as employer dashboard to get the employer ID
+    final uid = FirebaseAuth.instance.currentUser?.uid ?? PreferencesService.getString(PrefKeys.userId);
+    actualEmployerId = uid;
+
+    // Debug: Print employer ID
+    print('🔍 EnhancedApplicationsScreen - Looking for applications with employerId: $actualEmployerId');
+
+    // Fix applications with unknown_employer (one-time fix)
+    FixApplicationsEmployerId.fixAll();
+
+    // Run comprehensive debug check
+    DebugApplications.checkApplications();
   }
 
   @override
@@ -204,10 +219,18 @@ class _EnhancedApplicationsScreenState extends State<EnhancedApplicationsScreen>
         }
 
         if (snapshot.hasError) {
+          print('❌ Error loading applications: ${snapshot.error}');
           return _buildErrorState(snapshot.error.toString());
         }
 
         var applications = snapshot.data?.docs ?? [];
+        print('📥 Received ${applications.length} applications from Firebase');
+
+        // Debug: Print each application's employerId
+        for (var app in applications) {
+          final data = app.data() as Map<String, dynamic>;
+          print('   - Application from ${data['candidateName']} for employerId: ${data['employerId']}');
+        }
 
         // Apply status filter client-side
         if (selectedFilter != 'all') {
@@ -485,7 +508,7 @@ class _EnhancedApplicationsScreenState extends State<EnhancedApplicationsScreen>
     final candidateEmail = application['candidateEmail'] ?? application['email'] ?? '';
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: 16, left: 4, right: 4),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -503,7 +526,7 @@ class _EnhancedApplicationsScreenState extends State<EnhancedApplicationsScreen>
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -513,17 +536,17 @@ class _EnhancedApplicationsScreenState extends State<EnhancedApplicationsScreen>
               children: [
                 CircleAvatar(
                   backgroundColor: _primaryBlue.withOpacity(0.1),
-                  radius: 28,
+                  radius: 22,
                   child: Text(
                     candidateName[0].toUpperCase(),
                     style: GoogleFonts.inter(
                       fontWeight: FontWeight.w700,
                       color: _primaryBlue,
-                      fontSize: 20,
+                      fontSize: 16,
                     ),
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: 10),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -531,19 +554,21 @@ class _EnhancedApplicationsScreenState extends State<EnhancedApplicationsScreen>
                       Text(
                         candidateName,
                         style: GoogleFonts.inter(
-                          fontSize: 18,
+                          fontSize: 16,
                           fontWeight: FontWeight.w700,
                           color: _primaryBlue,
                         ),
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: 2),
                       Text(
                         jobTitle,
                         style: GoogleFonts.inter(
-                          fontSize: 16,
+                          fontSize: 14,
                           fontWeight: FontWeight.w500,
                           color: Colors.grey[700],
                         ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                       if (candidateEmail.isNotEmpty) ...[
                         const SizedBox(height: 4),
@@ -570,32 +595,35 @@ class _EnhancedApplicationsScreenState extends State<EnhancedApplicationsScreen>
                 _buildStatusBadge(status),
               ],
             ),
-            
-            const SizedBox(height: 16),
-            
+
+            const SizedBox(height: 10),
+
             // Application details
             Row(
               children: [
                 Icon(Icons.schedule, size: 16, color: Colors.grey[600]),
                 const SizedBox(width: 6),
-                Text(
-                  'Applied on $formattedDate',
-                  style: GoogleFonts.inter(
-                    fontSize: 14,
-                    color: Colors.grey[600],
+                Flexible(
+                  child: Text(
+                    'Applied on $formattedDate',
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      color: Colors.grey[600],
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
             ),
 
             // Candidate messages (if any)
-            if (application['candidateMessages'] != null && 
+            if (application['candidateMessages'] != null &&
                 (application['candidateMessages'] as List).isNotEmpty) ...[
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               _buildCandidateMessages(application['candidateMessages']),
             ],
 
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
 
             // Action buttons
             _buildActionButtons(application, status),
@@ -611,7 +639,7 @@ class _EnhancedApplicationsScreenState extends State<EnhancedApplicationsScreen>
     final text = _getStatusText(status);
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
         borderRadius: BorderRadius.circular(20),
@@ -623,12 +651,12 @@ class _EnhancedApplicationsScreenState extends State<EnhancedApplicationsScreen>
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, color: color, size: 16),
-          const SizedBox(width: 6),
+          Icon(icon, color: color, size: 14),
+          const SizedBox(width: 4),
           Text(
             text,
             style: GoogleFonts.inter(
-              fontSize: 12,
+              fontSize: 11,
               fontWeight: FontWeight.w600,
               color: color,
             ),
@@ -716,13 +744,13 @@ class _EnhancedApplicationsScreenState extends State<EnhancedApplicationsScreen>
       children: [
         Expanded(
           child: _buildActionButton(
-            'View Details',
+            'Details',
             Icons.visibility_outlined,
             _primaryBlue,
             () => _viewApplicationDetails(application),
           ),
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: 6),
         if (status == 'pending') ...[
           Expanded(
             child: _buildActionButton(
@@ -732,7 +760,7 @@ class _EnhancedApplicationsScreenState extends State<EnhancedApplicationsScreen>
               () => _updateApplicationStatus(application, 'accepted'),
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 6),
           Expanded(
             child: _buildActionButton(
               'Reject',
@@ -761,7 +789,7 @@ class _EnhancedApplicationsScreenState extends State<EnhancedApplicationsScreen>
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
         decoration: BoxDecoration(
           color: color.withOpacity(0.1),
           borderRadius: BorderRadius.circular(12),
@@ -772,15 +800,20 @@ class _EnhancedApplicationsScreenState extends State<EnhancedApplicationsScreen>
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Icon(icon, color: color, size: 16),
-            const SizedBox(width: 8),
-            Text(
-              label,
-              style: GoogleFonts.inter(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: color,
+            const SizedBox(width: 4),
+            Flexible(
+              child: Text(
+                label,
+                style: GoogleFonts.inter(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: color,
+                ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
               ),
             ),
           ],
@@ -857,6 +890,11 @@ class _EnhancedApplicationsScreenState extends State<EnhancedApplicationsScreen>
         'updatedBy': actualEmployerId,
       });
 
+      // Send email to candidate if accepted
+      if (newStatus.toLowerCase() == 'accepted') {
+        await _sendAcceptanceEmail(application);
+      }
+
       String message = '';
       Color bgColor = _successGreen;
 
@@ -890,6 +928,169 @@ class _EnhancedApplicationsScreenState extends State<EnhancedApplicationsScreen>
         snackPosition: SnackPosition.BOTTOM,
       );
     }
+  }
+
+  Future<void> _sendAcceptanceEmail(Map<String, dynamic> application) async {
+    try {
+      final candidateEmail = application['candidateEmail'];
+      final candidateName = application['candidateName'] ?? 'Candidate';
+      final jobTitle = application['jobTitle'] ?? 'Position';
+      final companyName = application['companyName'] ?? PreferencesService.getString(PrefKeys.companyName);
+
+      // Get employer phone from Firestore
+      String employerPhone = '+33123456789'; // Default fallback
+      try {
+        final employerDoc = await FirebaseFirestore.instance
+            .collection('employers')
+            .doc(actualEmployerId)
+            .get();
+        if (employerDoc.exists) {
+          final data = employerDoc.data();
+          if (data != null && data['phone'] != null && (data['phone'] as String).isNotEmpty) {
+            employerPhone = data['phone'];
+          }
+        }
+      } catch (e) {
+        print('⚠️ Could not fetch employer phone: $e');
+      }
+
+      final emailHTML = _generateAcceptanceEmail(
+        candidateName: candidateName,
+        jobTitle: jobTitle,
+        companyName: companyName,
+        contactEmail: 'contact@recrutement.com',
+        contactPhone: employerPhone,
+      );
+
+      await FirebaseFirestore.instance.collection('mail').add({
+        'to': [candidateEmail],
+        'message': {
+          'subject': '🎉 Congratulations! Your application has been accepted - $jobTitle',
+          'html': emailHTML,
+          'text': 'Congratulations! Your application for $jobTitle at $companyName has been accepted. Please contact us at contact@recrutement.com or $employerPhone.',
+        }
+      });
+
+      print('✅ Acceptance email sent to $candidateEmail');
+    } catch (e) {
+      print('❌ Error sending acceptance email: $e');
+    }
+  }
+
+  String _generateAcceptanceEmail({
+    required String candidateName,
+    required String jobTitle,
+    required String companyName,
+    required String contactEmail,
+    required String contactPhone,
+  }) {
+    return """
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Accepted - $jobTitle</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f5f5; margin: 0; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; background-color: white; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, #4caf50 0%, #45a049 100%); color: white; text-align: center; padding: 40px 20px; }
+        .header h1 { margin: 0; font-size: 28px; fontWeight: 700; }
+        .content { padding: 40px 30px; }
+        .success-icon { font-size: 64px; margin-bottom: 16px; }
+        .info-box { background: #e8f5e9; padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #4caf50; }
+        .contact-box { background: #e3f2fd; padding: 20px; border-radius: 10px; margin: 20px 0; }
+        .contact-item { display: flex; align-items: center; margin: 12px 0; padding: 10px; background: white; border-radius: 8px; }
+        .contact-icon { color: #0d47a1; margin-right: 12px; }
+        .action-button { display: inline-block; background: #4caf50; color: white; padding: 14px 35px; text-decoration: none; border-radius: 8px; margin: 15px 5px; font-weight: 600; font-size: 16px; }
+        .footer { background-color: #f8f9fa; text-align: center; padding: 20px; border-top: 1px solid #eee; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="success-icon">🎉</div>
+            <h1>Congratulations!</h1>
+            <p style="font-size: 18px; margin: 10px 0;">Your application has been accepted</p>
+        </div>
+
+        <div class="content">
+            <h2>Dear $candidateName,</h2>
+
+            <div class="info-box">
+                <h3 style="margin-top: 0; color: #2e7d32;">✅ Your Application Status: ACCEPTED</h3>
+                <p style="margin: 10px 0;"><strong>Position:</strong> $jobTitle</p>
+                <p style="margin: 10px 0;"><strong>Company:</strong> $companyName</p>
+            </div>
+
+            <p style="font-size: 16px; line-height: 1.6;">
+                We are pleased to inform you that your application for the <strong>$jobTitle</strong> position
+                at <strong>$companyName</strong> has been accepted!
+            </p>
+
+            <p style="font-size: 16px; line-height: 1.6;">
+                This is an exciting next step in your career journey. Our recruitment team is eager to discuss
+                the next steps with you.
+            </p>
+
+            <div class="contact-box">
+                <h3 style="margin-top: 0; color: #0d47a1;">📞 Please Contact Us</h3>
+                <p style="margin-bottom: 15px;">Please reach out to us to schedule the next steps:</p>
+
+                <div class="contact-item">
+                    <span class="contact-icon">✉️</span>
+                    <div>
+                        <strong>Email:</strong><br>
+                        <a href="mailto:$contactEmail" style="color: #0d47a1; text-decoration: none;">$contactEmail</a>
+                    </div>
+                </div>
+
+                <div class="contact-item">
+                    <span class="contact-icon">📱</span>
+                    <div>
+                        <strong>Phone:</strong><br>
+                        <a href="tel:$contactPhone" style="color: #0d47a1; text-decoration: none;">$contactPhone</a>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="mailto:$contactEmail?subject=Next Steps - $jobTitle Application" class="action-button">
+                    ✉️ Contact Recruitment Team
+                </a>
+            </div>
+
+            <div style="background: #fff3cd; padding: 15px; border-radius: 8px; border-left: 4px solid #ffc107; margin: 20px 0;">
+                <h4 style="margin-top: 0; color: #856404;">💡 Next Steps:</h4>
+                <ul style="margin: 10px 0; padding-left: 20px; color: #555;">
+                    <li>Contact us at the provided email or phone number</li>
+                    <li>Prepare your questions about the position and company</li>
+                    <li>Review the job description and requirements</li>
+                    <li>Be ready to discuss your availability for interviews</li>
+                </ul>
+            </div>
+
+            <p style="color: #666; margin-top: 25px;">
+                We look forward to hearing from you soon and moving forward with your application!
+            </p>
+
+            <p style="margin-top: 20px;">
+                Best regards,<br>
+                <strong>$companyName Recruitment Team</strong>
+            </p>
+        </div>
+
+        <div class="footer">
+            <h3>🌟 Timeless Recruiting Platform</h3>
+            <p>Connecting talent with opportunity</p>
+            <p style="font-size: 12px; color: #999;">
+                This is an automated notification email.
+            </p>
+        </div>
+    </div>
+</body>
+</html>
+    """;
   }
 
   void _viewApplicationDetails(Map<String, dynamic> application) {
@@ -943,37 +1144,29 @@ class _EnhancedApplicationsScreenState extends State<EnhancedApplicationsScreen>
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton.icon(
-                    onPressed: () {
-                      // Open CV URL
-                      // Assuming url_launcher is available or we can use a webview
-                      // For now, we'll try to use Get.to to a WebView or external launch
-                      // Simplest is to assume external launch via a service or url_launcher
-                      // Since I cannot check dependencies, I will try a generic approach or just print for now if deps are missing
-                      // But the prompt says "recruiter MUST be able to retrieve".
-                      // I'll assume Get.toNamed('/pdf-viewer', arguments: {'url': ...}) if it exists,
-                      // or better, just show the URL in a snackbar if I can't launch it easily without imports.
-                      // Actually, 'url_launcher' is a very standard package.
-                      // I'll try to import it at the top of the file if not present?
-                      // No, I can't easily add imports without risk.
-                      // I will use a simple dialog with the link to copy for now, or assume there's a helper.
-                      // Wait, I can try to find if url_launcher is used elsewhere.
-                      // Yes, it's in 'build/url_launcher_android/...'.
-                      // So I can probably use 'launchUrl'.
-                      // But I need to import 'package:url_launcher/url_launcher.dart'.
-                      // I will stick to a safe visual indication for now.
-                      // "View CV" -> Show a dialog with "CV Link: ..."
-                      Get.defaultDialog(
-                        title: "CV Link",
-                        content: Column(
-                          children: [
-                            Text("This candidate has uploaded a CV."),
-                            SizedBox(height: 10),
-                            SelectableText(application['cvUrl'], style: TextStyle(color: Colors.blue)),
-                          ],
-                        ),
-                        textConfirm: "Close",
-                        onConfirm: () => Get.back(),
-                      );
+                    onPressed: () async {
+                      final cvUrl = application['cvUrl'];
+                      if (cvUrl != null && (cvUrl as String).isNotEmpty) {
+                        try {
+                          final uri = Uri.parse(cvUrl);
+                          final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+                          if (!launched) {
+                            Get.snackbar(
+                              'Error',
+                              'Could not open CV. Please check the link.',
+                              backgroundColor: _dangerRed,
+                              colorText: Colors.white,
+                            );
+                          }
+                        } catch (e) {
+                          Get.snackbar(
+                            'Error',
+                            'Invalid CV URL: $e',
+                            backgroundColor: _dangerRed,
+                            colorText: Colors.white,
+                          );
+                        }
+                      }
                     },
                     icon: const Icon(Icons.picture_as_pdf),
                     label: const Text('View CV (PDF)'),
@@ -995,6 +1188,22 @@ class _EnhancedApplicationsScreenState extends State<EnhancedApplicationsScreen>
             ),
           ),
           if (application['candidateEmail'] != null) ...[
+            ElevatedButton.icon(
+              onPressed: () {
+                Get.back();
+                _proposeInterview(application);
+              },
+              icon: const Icon(Icons.event, size: 18),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFff6b6b),
+                foregroundColor: Colors.white,
+              ),
+              label: Text(
+                'Propose Interview',
+                style: GoogleFonts.inter(fontWeight: FontWeight.w600),
+              ),
+            ),
+            const SizedBox(width: 8),
             ElevatedButton(
               onPressed: () {
                 Get.back();
@@ -1149,5 +1358,228 @@ class _EnhancedApplicationsScreenState extends State<EnhancedApplicationsScreen>
         snackPosition: SnackPosition.BOTTOM,
       );
     }
+  }
+
+  // 🆕 Propose interview to candidate
+  Future<void> _proposeInterview(Map<String, dynamic> application) async {
+    final dateController = TextEditingController();
+    final timeController = TextEditingController();
+    final locationController = TextEditingController();
+    final notesController = TextEditingController();
+
+    await Get.dialog(
+      AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: const Color(0xFFff6b6b).withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Icon(
+                Icons.event,
+                color: Color(0xFFff6b6b),
+                size: 24,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                'Propose Interview',
+                style: GoogleFonts.inter(
+                  fontWeight: FontWeight.w700,
+                  color: _primaryBlue,
+                  fontSize: 20,
+                ),
+              ),
+            ),
+          ],
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Invite ${application['candidateName'] ?? 'this candidate'} for an interview',
+                style: GoogleFonts.inter(
+                  color: Colors.grey[700],
+                  fontSize: 14,
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              // Proposed Date
+              TextField(
+                controller: dateController,
+                decoration: InputDecoration(
+                  labelText: 'Proposed Date',
+                  hintText: 'e.g., Monday, January 20, 2026',
+                  prefixIcon: Icon(Icons.calendar_today, color: _primaryBlue),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: _primaryBlue, width: 2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Proposed Time
+              TextField(
+                controller: timeController,
+                decoration: InputDecoration(
+                  labelText: 'Proposed Time',
+                  hintText: 'e.g., 10:00 AM',
+                  prefixIcon: Icon(Icons.access_time, color: _primaryBlue),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: _primaryBlue, width: 2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Location
+              TextField(
+                controller: locationController,
+                decoration: InputDecoration(
+                  labelText: 'Location',
+                  hintText: 'e.g., Office, Zoom, Google Meet',
+                  prefixIcon: Icon(Icons.location_on, color: _primaryBlue),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: _primaryBlue, width: 2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Additional Notes
+              TextField(
+                controller: notesController,
+                maxLines: 3,
+                decoration: InputDecoration(
+                  labelText: 'Additional Notes (Optional)',
+                  hintText: 'Any additional information for the candidate...',
+                  prefixIcon: Icon(Icons.note, color: _primaryBlue),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: _primaryBlue, width: 2),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(),
+            child: Text(
+              'Cancel',
+              style: GoogleFonts.inter(color: Colors.grey[600]),
+            ),
+          ),
+          ElevatedButton.icon(
+            onPressed: () async {
+              if (dateController.text.trim().isEmpty ||
+                  timeController.text.trim().isEmpty) {
+                Get.snackbar(
+                  'Missing Information',
+                  'Please provide at least a date and time for the interview',
+                  backgroundColor: _warningOrange,
+                  colorText: Colors.white,
+                  snackPosition: SnackPosition.BOTTOM,
+                );
+                return;
+              }
+
+              Get.back();
+
+              // Show loading
+              Get.dialog(
+                const Center(
+                  child: CircularProgressIndicator(),
+                ),
+                barrierDismissible: false,
+              );
+
+              final success = await InterviewService.proposeInterview(
+                candidateEmail: application['candidateEmail'],
+                candidateName: application['candidateName'] ?? 'Candidate',
+                jobTitle: application['jobTitle'] ?? 'Position',
+                companyName: PreferencesService.getString(PrefKeys.companyName),
+                employerName: PreferencesService.getString(PrefKeys.fullName),
+                employerEmail: PreferencesService.getString(PrefKeys.email),
+                proposedDate: dateController.text.trim(),
+                proposedTime: timeController.text.trim(),
+                location: locationController.text.trim().isEmpty
+                    ? null
+                    : locationController.text.trim(),
+                additionalNotes: notesController.text.trim().isEmpty
+                    ? null
+                    : notesController.text.trim(),
+              );
+
+              // Add notification to candidate
+              if (success) {
+                await InterviewService.notifyCandidateInterview(
+                  candidateId: application['candidateId'],
+                  jobTitle: application['jobTitle'] ?? 'Position',
+                  companyName: PreferencesService.getString(PrefKeys.companyName),
+                  proposedDate: dateController.text.trim(),
+                );
+              }
+
+              Get.back(); // Close loading
+
+              if (success) {
+                Get.snackbar(
+                  'Interview Proposed! 🎉',
+                  'The candidate will receive an email with interview details',
+                  backgroundColor: _successGreen,
+                  colorText: Colors.white,
+                  snackPosition: SnackPosition.BOTTOM,
+                  duration: const Duration(seconds: 4),
+                );
+              } else {
+                Get.snackbar(
+                  'Error',
+                  'Failed to send interview proposal. Please try again.',
+                  backgroundColor: _dangerRed,
+                  colorText: Colors.white,
+                  snackPosition: SnackPosition.BOTTOM,
+                );
+              }
+            },
+            icon: const Icon(Icons.send, size: 18),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFff6b6b),
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            label: Text(
+              'Send Invitation',
+              style: GoogleFonts.inter(fontWeight: FontWeight.w600),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

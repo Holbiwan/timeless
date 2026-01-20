@@ -64,6 +64,10 @@ class DashBoardScreen extends StatelessWidget {
                     icon: const Icon(Icons.work, color: Colors.white, size: 18),
                     label: "Jobs",
                   ),
+                  BottomNavigationBarItem(
+                    icon: const Icon(Icons.menu, color: Colors.white, size: 18),
+                    label: "Menu",
+                  ),
                 ],
               ),
             );

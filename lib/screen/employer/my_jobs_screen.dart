@@ -1,27 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:timeless/services/preferences_service.dart';
 import 'package:timeless/utils/pref_keys.dart';
 import 'package:timeless/utils/color_res.dart';
 
 class MyJobsScreen extends StatefulWidget {
-  const MyJobsScreen({super.key});
+  final String? filter; // 'active', 'total', or null (show all)
+
+  const MyJobsScreen({super.key, this.filter});
 
   @override
   State<MyJobsScreen> createState() => _MyJobsScreenState();
 }
 
 class _MyJobsScreenState extends State<MyJobsScreen> {
-  final String currentUserId = PreferencesService.getString(PrefKeys.userId);
-  final String employerId = PreferencesService.getString(PrefKeys.employerId);
+  // Use FirebaseAuth ID as the source of truth to match dashboard and applications
+  late final String actualEmployerId;
   final String companyName = PreferencesService.getString(PrefKeys.companyName);
 
   @override
+  void initState() {
+    super.initState();
+    actualEmployerId = FirebaseAuth.instance.currentUser?.uid ?? PreferencesService.getString(PrefKeys.userId);
+  }
+
+  @override
   Widget build(BuildContext context) {
+    // Determine title based on filter
+    String title = 'My Jobs Ads';
+    if (widget.filter == 'active') {
+      title = 'Active Jobs';
+    } else if (widget.filter == 'total') {
+      title = 'All Jobs';
+    }
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Jobs Ads'),
+        title: Text(title),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: Get.back,
@@ -36,7 +53,7 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('allPost')
-            .where('EmployerId', isEqualTo: employerId.isNotEmpty ? employerId : currentUserId)
+            .where('EmployerId', isEqualTo: actualEmployerId)
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -61,37 +78,54 @@ class _MyJobsScreenState extends State<MyJobsScreen> {
             );
           }
 
-          final jobs = snapshot.data?.docs ?? [];
-          
+          var jobs = snapshot.data?.docs ?? [];
+
+          // Filter jobs based on the filter parameter
+          if (widget.filter == 'active') {
+            jobs = jobs.where((job) {
+              final data = job.data() as Map<String, dynamic>;
+              return data['isActive'] == true;
+            }).toList();
+          }
+          // No additional filter needed for 'total' or null - show all jobs
+
           // Sort job postings by creation date (most recent first)
           jobs.sort((a, b) {
             final aData = a.data() as Map<String, dynamic>;
             final bData = b.data() as Map<String, dynamic>;
             final aDate = aData['createdAt'] as Timestamp?;
             final bDate = bData['createdAt'] as Timestamp?;
-            
+
             if (aDate == null && bDate == null) return 0;
             if (aDate == null) return 1;
             if (bDate == null) return -1;
-            
+
             return bDate.compareTo(aDate);
           });
 
           if (jobs.isEmpty) {
+            String emptyMessage = 'No job postings published';
+            String emptySubMessage = 'Create your first job posting!';
+
+            if (widget.filter == 'active') {
+              emptyMessage = 'No active jobs';
+              emptySubMessage = 'Activate a job or create a new one';
+            }
+
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Icon(Icons.work_off, color: Colors.grey, size: 80),
                   const SizedBox(height: 16),
-                  const Text(
-                    'No job postings published',
-                    style: TextStyle(fontSize: 18, color: Colors.grey),
+                  Text(
+                    emptyMessage,
+                    style: const TextStyle(fontSize: 18, color: Colors.grey),
                   ),
                   const SizedBox(height: 8),
-                  const Text(
-                    'Create your first job posting!',
-                    style: TextStyle(color: Colors.grey, fontSize: 16),
+                  Text(
+                    emptySubMessage,
+                    style: const TextStyle(color: Colors.grey, fontSize: 16),
                   ),
                   const SizedBox(height: 20),
                   ElevatedButton.icon(

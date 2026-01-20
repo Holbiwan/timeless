@@ -76,6 +76,13 @@ class SignUpControllerM extends GetxController {
         password: passwordController.text.trim(),
       );
 
+      // 1b. Envoyer l'email de confirmation de compte (Natif Firebase) - PRIORITAIRE
+      if (!cred.user!.emailVerified) {
+        // Force English language for the verification email
+        await FirebaseAuth.instance.setLanguageCode('en');
+        await cred.user!.sendEmailVerification();
+      }
+
       // 2. Mettre à jour le profil utilisateur
       final displayName = '${firstnameController.text.trim()} ${lastnameController.text.trim()}'.trim();
       if (displayName.isNotEmpty) {
@@ -85,11 +92,6 @@ class SignUpControllerM extends GetxController {
 
       // 3. Sauvegarder les données dans Firestore
       await _saveEmployerToFirestore(cred.user!);
-
-      // 3b. Envoyer l'email de confirmation de compte (Natif Firebase)
-      if (!cred.user!.emailVerified) {
-        await cred.user!.sendEmailVerification();
-      }
 
       // 4. Envoyer email de bienvenue complet (avec confirmation et détails)
       await _sendWelcomeEmail(cred.user!);
