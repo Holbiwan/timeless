@@ -243,4 +243,4 @@ service-account.json
 # Demo directories removed
 lib/screen/demo/
 lib/services/demo_data_service.dart
-README_CLEAN.md
+README_CLEAN.mdanalysis_options.yaml
