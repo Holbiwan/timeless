@@ -20,7 +20,7 @@ Fast, accessible, and intuitive job applications anytime, anywhere
 
 
 <p align="center">
-  <img src="https://i.postimg.cc/tgfXWsFY/logo.png" alt="Timeless logo" width="270">
+  <img src="https://i.postimg.cc/tgfXWsFY/logo.png" alt="Timeless logo" width="440">
   &nbsp;&nbsp;&nbsp;
  
 </p>
