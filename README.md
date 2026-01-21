@@ -14,13 +14,16 @@
 A Flutter job-search app powered by Firebase  
 Fast, accessible, and intuitive job applications anytime, anywhere 
 
-[🎬 Watch Demo](https://github.com/Holbiwan/timeless/releases/download/v1.0-demo/Timeless.demo.mp4) • [🌐 Landing Page](https://holbiwan.github.io/timeless-landing/) • [📱 Screenshots](#-screenshots)
+[🎬 Watch Demo](https://github.com/Holbiwan/timeless/releases/download/v1.0-demo/Timeless.demo.mp4) • [🌐 Landing Page](https://holbiwan.github.io/timeless-landing/) 
+• [📱 Screenshots](#-screenshots)
 
 
 
 
 <p align="center">
-  <img src="https://i.postimg.cc/tgfXWsFY/logo.png" alt="Timeless logo" width="440">
+  <img src="https://i.postimg.cc/tgfXWsFY/logo.png" alt="Timeless logo" width="340">
+   <img src="https://zupimages.net/up/26/04/43vn.png" alt="Timeless logo" width="340">
+  
   &nbsp;&nbsp;&nbsp;
  
 </p>
