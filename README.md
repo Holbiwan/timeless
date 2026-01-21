@@ -21,8 +21,8 @@ Fast, accessible, and intuitive job applications anytime, anywhere
 
 
 <p align="center">
-  <img src="https://i.postimg.cc/tgfXWsFY/logo.png" alt="Timeless logo" width="340">
-   <img src="https://zupimages.net/up/26/04/43vn.png" alt="Timeless logo" width="340">
+  <img src="https://i.postimg.cc/tgfXWsFY/logo.png" alt="Timeless logo" width="440"> 
+   <img src="https://zupimages.net/up/26/04/43vn.png" alt="Timeless logo" width="220">
   
   &nbsp;&nbsp;&nbsp;
  
